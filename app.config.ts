@@ -1,5 +1,14 @@
 export default defineAppConfig({
+  title: 'Hello Nuxt',
+  theme: {
+    dark: true,
+  },
   ui: {
+    // https://ui.nuxt.com/elements/icon#dynamic
+    icons: {
+      dynamic: true,
+    },
+
     /* button: {
       default: {
         loadingIcon: 'i-octicon-sync-24',
