@@ -2,13 +2,15 @@ import antfu from '@antfu/eslint-config';
 
 export default antfu({
   // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
-  ignores: [],
+  ignores: ['node_modules', 'dist', '*.d.ts', '.nuxt', '.output'],
 
   // TypeScript and Vue are auto-detected, but had to explicitly enable typescript, else not working
   typescript: true,
 
   // Without `files`, they are general rules for all files
   rules: {
+    'no-console': 'warn',
+    'no-debugger': 'warn',
     'style/semi': ['error', 'always'],
     'style/comma-dangle': ['error', 'never']
   },
