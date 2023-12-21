@@ -13,7 +13,8 @@
     "lint:fix": "eslint . --fix",
     "preview": "nuxt preview",
     "sort": "npx sort-package-json",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "update-deps": "sh ./etc/update.deps.sh"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
@@ -21,9 +22,9 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-plugin-format": "^0.1.0",
-    "nuxt": "^3.8.1",
+    "nuxt": "^3.8.2",
     "rimraf": "^5.0.5",
-    "vue": "^3.3.8",
+    "vue": "^3.3.13",
     "vue-router": "^4.2.5"
   }
 }

@@ -7,7 +7,7 @@ export default antfu({
   vue: true,
 
   // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
-  ignores: ['node_modules', 'eslint.config.js', 'dist', '*.d.ts', '.nuxt', '.output'],
+  ignores: ['node_modules', 'nuxt.config.ts', '*-lock.json', 'eslint.config.js', 'dist', '*.d.ts', '.nuxt', '.output'],
 
   // Without `files`, they are general rules for all files
   rules: {
