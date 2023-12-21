@@ -1,7 +1,12 @@
+/** @type {import('tailwindcss').Config} */
 import type { Config } from 'tailwindcss'
 
 export default <Partial<Config>> {
   content: [
     'docs/content/**/*.md',
   ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
 }
