@@ -12,6 +12,7 @@
     "christian-kohler.path-intellisense",
     "bradlc.vscode-tailwindcss",
     "usernamehw.errorlens",
-    "naumovs.color-highlight"
+    "naumovs.color-highlight",
+    "wix.vscode-import-cost"
   ]
 }
