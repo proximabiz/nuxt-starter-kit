@@ -1,4 +1,4 @@
 {
   "upgrade": true,
-  "reject": ["pkg-dir"]
+  "reject": ["@antfu/eslint-config"]
 }
