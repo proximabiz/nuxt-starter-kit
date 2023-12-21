@@ -1,16 +1,19 @@
 {
   "name": "nuxt-app",
   "type": "module",
-  "private": true,
   "scripts": {
     "build": "nuxt build",
+    "check": "npm run typecheck && npm run lint:debug && npm run build",
+    "clean": "nuxt cleanup && rimraf .output/ ./dist",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "nuxt prepare && npm run sort",
     "lint": "eslint .",
+    "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
-    "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix"
+    "preview": "nuxt preview",
+    "sort": "npx sort-package-json",
+    "typecheck": "nuxt typecheck"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
@@ -19,6 +22,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-format": "^0.1.0",
     "nuxt": "^3.8.1",
+    "rimraf": "^5.0.5",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
   }
