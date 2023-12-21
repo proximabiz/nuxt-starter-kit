@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "nuxt-starter-kit",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
