@@ -88,7 +88,26 @@ const peoples = [{
         </ClientOnly>
       </UCard>
 
-      <div class="m-10 p-7 border rounded-md shadow-sm">
+      <UCard class="m-10">
+        <template #header>
+          <h2>Tooltips</h2>
+        </template>
+        <div class="flex justify-start items-center gap-4">
+          <UTooltip text="Tooltip example" :shortcuts="['⌘', 'O']">
+            <UButton color="green" label="Hover me" />
+          </UTooltip>
+
+          <UTooltip text="Tooltip example" :shortcuts="['⌘', 'O']" :popper="{ arrow: true }">
+            <UButton color="red" label="With Arrow" />
+          </UTooltip>
+
+          <UTooltip text="Tooltip example" :shortcuts="['⌘', 'O']" :popper="{ placement: 'right' }">
+            <UButton color="black" label="Placement" />
+          </UTooltip>
+        </div>
+      </UCard>
+
+      <div class="m-10 p-7 ring-1 ring-gray-200 shadow rounded-md">
         <h2 class="mb-4">
           Selects
         </h2>
