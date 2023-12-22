@@ -30,7 +30,7 @@ export default antfu({
     'semi': ['error', 'never'],
 
     // add parens ony when required in arrow function
-    'arrow-parens': ['error', 'as-needed'],
+    'arrow-parens': ['off', 'as-needed'],
 
     // add new line above comment
     'newline-before-return': 'error',

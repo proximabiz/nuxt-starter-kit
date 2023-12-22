@@ -44,6 +44,12 @@ const isDark = computed({
           </template>
         </ClientOnly>
       </UCard>
+
+      <UCard class="m-10">
+        <template #header>
+          <h2>Date Picker</h2>
+        </template>
+      </UCard>
     </UContainer>
   </div>
 </template>

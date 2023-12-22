@@ -17,7 +17,8 @@
     "update-deps": "sh ./etc/update.deps.sh"
   },
   "dependencies": {
-    "@nuxt/ui": "^2.11.1"
+    "@nuxt/ui": "^2.11.1",
+    "v-calendar": "^2.4.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
