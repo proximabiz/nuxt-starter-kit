@@ -8,12 +8,13 @@ export default defineAppConfig({
     icons: {
       dynamic: true,
     },
-
-    /* button: {
+    button: {
       default: {
-        loadingIcon: 'i-octicon-sync-24',
+        loadingIcon: 'lucide:loader-2',
       },
     },
+
+    /*
     input: {
       default: {
         loadingIcon: 'i-octicon-sync-24',

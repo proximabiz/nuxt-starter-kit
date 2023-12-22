@@ -90,20 +90,34 @@ const peoples = [{
 
       <UCard class="m-10">
         <template #header>
-          <h2>Tooltips</h2>
+          <h2>Buttons & Tooltips</h2>
         </template>
         <div class="flex justify-start items-center gap-4">
           <UTooltip text="Tooltip example" :shortcuts="['⌘', 'O']">
-            <UButton color="green" label="Hover me" />
+            <UButton color="green" label="Hover me" icon="lucide:mouse-pointer-click" />
           </UTooltip>
 
           <UTooltip text="Tooltip example" :shortcuts="['⌘', 'O']" :popper="{ arrow: true }">
-            <UButton color="red" label="With Arrow" />
+            <UButton
+              color="red" variant="outline"
+              label="With Arrow"
+            />
           </UTooltip>
 
-          <UTooltip text="Tooltip example" :shortcuts="['⌘', 'O']" :popper="{ placement: 'right' }">
-            <UButton color="black" label="Placement" />
+          <UTooltip text="Tooltip example" :shortcuts="['⌘', 'O']" :popper="{ placement: 'top' }">
+            <UButton
+              color="black" label="Placement" icon="lucide:move-right" variant="link"
+              trailing
+            />
           </UTooltip>
+
+          <UButton
+            color="blue"
+            variant="solid"
+            icon="i-heroicons-x-mark-20-solid"
+            :loading="true"
+            label="Loading"
+          />
         </div>
       </UCard>
 
