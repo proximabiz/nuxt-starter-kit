@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    // Recommended
+    "mikestead.dotenv",
+    "antfu.iconify",
+    "antfu.unocss",
+    "antfu.goto-alias",
+    "dbaeumer.vscode-eslint",
+    "vue.volar",
+    // Extra
+    "christian-kohler.npm-intellisense",
+    "christian-kohler.path-intellisense",
+    "bradlc.vscode-tailwindcss",
+    "usernamehw.errorlens",
+    "naumovs.color-highlight",
+    "wix.vscode-import-cost"
+  ]
+}
