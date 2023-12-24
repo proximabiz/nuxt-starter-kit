@@ -3,7 +3,7 @@ import { logger } from './logger'
 
 export default function validateEnvs() {
   try {
-    const envs = process.env as object
+    const envs = { ...process.env }
     const validation = Env.safeParse(envs)
     if (!validation.success) {
       validation.error.issues.forEach((issue) => {
