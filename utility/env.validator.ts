@@ -1,11 +1,5 @@
-import { z } from 'zod'
 import { Env } from '../env.schema'
 import { logger } from './logger'
-
-export const BaseSchema = z.object({
-  NUXT_HOST: z.string().optional(),
-  NUXT_PORT: z.string().optional(),
-})
 
 export default function validateEnvs() {
   try {
