@@ -9,12 +9,12 @@ export default antfu({
     'no-debugger': 'warn',
     'style/max-statements-per-line': ['error', { max: 2 }],
     'style/semi': ['error', 'never'],
-    'n/prefer-global/process': ['off', 'always'],
+    'node/prefer-global/process': 'off',
   },
   formatters: {
     css: true,
     html: true,
     markdown: 'prettier',
   },
-  overrides: []
+  overrides: [],
 })
