@@ -4,7 +4,7 @@
   "scripts": {
     "build": "nuxt build",
     "check": "pnpm typecheck && pnpm lint:debug && npm run build",
-    "clean": "nuxt cleanup && rimraf .output/ ./dist",
+    "clean": "nuxt cleanup && rimraf .unlighthouse/ .output/ ./dist",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "postinstall": "nuxt prepare && pnpm sort",
