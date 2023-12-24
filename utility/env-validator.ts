@@ -7,9 +7,11 @@ export default function validateEnvs() {
     const validation = Env.safeParse(envs)
     if (!validation.success) {
       validation.error.issues.forEach((issue) => {
-        logger.warn(`⚠️ Missing env ${issue.path.join('.')} ${issue.message}`)
+        logger.warn(`Missing env ${issue.path.join('.')} ${issue.message}`)
       })
+      process.exit(1)
     }
+    logger.info('Loaded environment variables')
   }
   catch (error) {
     logger.error('Error during environment variable validation:', error)
