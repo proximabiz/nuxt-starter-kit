@@ -5,4 +5,13 @@ export default defineNuxtConfig({
   ui: {
     global: true,
   },
+  tailwindcss: {
+    viewer: false,
+  },
+  unlighthouse: {
+    debug: false,
+    scanner: {
+      device: 'desktop',
+    },
+  },
 })
