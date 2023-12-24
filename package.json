@@ -14,9 +14,9 @@
     "preview": "nuxt preview",
     "sort": "pnpm dlx sort-package-json",
     "typecheck": "nuxt typecheck",
-    "update-deps": "sh ./etc/update.deps.sh",
-    "unlighthouse:debug": "pnpm dlx unlighthouse --site http://localhost:3000 --debug",
-    "unlighthouse": "pnpm build && pnpm preview && pnpm dlx unlighthouse --site http://localhost:3000"
+    "unlighthouse": "pnpm build && pnpm preview & pnpm dlx unlighthouse --desktop --site http://localhost:3000",
+    "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug",
+    "update-deps": "sh ./etc/update.deps.sh"
   },
   "dependencies": {
     "@nuxt/ui": "^2.11.1"
@@ -24,7 +24,6 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
     "@nuxt/devtools": "latest",
-    "@unlighthouse/nuxt": "^0.10.4",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-plugin-format": "^0.1.0",

@@ -1,17 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', 'nuxt-icon', '@unlighthouse/nuxt'],
+  modules: ['@nuxt/ui', 'nuxt-icon'],
   ui: {
     global: true,
   },
   tailwindcss: {
     viewer: false,
-  },
-  unlighthouse: {
-    debug: false,
-    scanner: {
-      device: 'desktop',
-    },
   },
 })
