@@ -3,18 +3,20 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "check": "npm run typecheck && npm run lint:debug && npm run build",
+    "check": "pnpm typecheck && pnpm lint:debug && npm run build",
     "clean": "nuxt cleanup && rimraf .output/ ./dist",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "postinstall": "nuxt prepare && npm run sort",
+    "postinstall": "nuxt prepare && pnpm sort",
     "lint": "eslint .",
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
     "preview": "nuxt preview",
-    "sort": "npx sort-package-json",
+    "sort": "pnpm dlx sort-package-json",
     "typecheck": "nuxt typecheck",
-    "update-deps": "sh ./etc/update.deps.sh"
+    "update-deps": "sh ./etc/update.deps.sh",
+    "unlighthouse:debug": "pnpm dlx unlighthouse --site http://localhost:3000 --debug",
+    "unlighthouse": "pnpm build && pnpm preview && pnpm dlx unlighthouse --site http://localhost:3000"
   },
   "dependencies": {
     "@nuxt/ui": "^2.11.1"
