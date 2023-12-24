@@ -1,6 +1,8 @@
 {
   "name": "nuxt-starter-kit",
   "type": "module",
+  "version": "1.0.0",
+  "description": "quick-start Nuxt apps for efficient development",
   "scripts": {
     "build": "nuxt build",
     "check": "npm run typecheck && npm run lint:debug && npm run build",
@@ -17,7 +19,8 @@
     "update-deps": "sh ./etc/update.deps.sh"
   },
   "dependencies": {
-    "@nuxt/ui": "^2.11.1"
+    "@nuxt/ui": "^2.11.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
