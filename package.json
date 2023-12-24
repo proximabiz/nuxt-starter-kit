@@ -1,8 +1,8 @@
 {
   "name": "nuxt-starter-kit",
-  "type": "module",
   "version": "1.0.0",
   "description": "quick-start Nuxt apps for efficient development",
+  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "check": "npm run typecheck && npm run lint:debug && npm run build",

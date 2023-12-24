@@ -10,6 +10,7 @@ export default antfu({
     'style/max-statements-per-line': ['error', { max: 2 }],
     'style/semi': ['error', 'never'],
     'node/prefer-global/process': 'off',
+    'jsonc/sort-keys': 'off',
   },
   formatters: {
     css: true,
