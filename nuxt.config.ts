@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import process from 'node:process'
+import validateEnvs from './utility/env-validator'
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -12,5 +13,8 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui', 'nuxt-icon'],
   ui: {
     global: true,
+  },
+  hooks: {
+    listen: () => validateEnvs(),
   },
 })
