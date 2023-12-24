@@ -1,9 +1,5 @@
 import { z } from 'zod'
-
-const BaseSchema = z.object({
-  NUXT_HOST: z.string().optional(),
-  NUXT_PORT: z.string().optional(),
-})
+import { BaseSchema } from './utility/env.validator'
 
 const PublicSchema = z.object({
   EXAMPLE_PUBLIC: z.string(),
