@@ -14,6 +14,6 @@ export default function validateEnvs() {
     logger.info('Loaded environment variables')
   }
   catch (error) {
-    logger.error('Error during environment variable validation:', error)
+    logger.error('Unable to parse .env. validation error:', error)
   }
 }
