@@ -2,10 +2,11 @@ version: '3.8'
 
 services:
   app:
-    container_name: nuxt_start_kit
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: nuxt_start_kit
+    platform: linux/amd64      
     ports:
       - "3000:3000"
     env_file:
