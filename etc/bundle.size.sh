@@ -15,16 +15,15 @@ list_files_with_size() {
     echo ""
 
     format_size() {
-        du -sh "$1" | cut -f1
+        local size_kb=$(du -sk "$1" | cut -f1)
+        echo "${size_kb}K"
     }
 
-    # Use find to recursively list all files
     find "$OUTPUT_DIR" -type f | while read -r file; do
         entry_size=$(format_size "$file")
         echo "  ├─ ${GREY}$file${GREY} ($entry_size)${NC}"
     done
 
-    # Calculating the total size
     total_size_hr=$(du -sh -c "$OUTPUT_DIR" | grep 'total$' | cut -f1)
     echo ""
     echo "Σ ${GREEN}SSR bundle size: $total_size_hr${NC}"
