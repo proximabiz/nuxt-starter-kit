@@ -12,6 +12,7 @@
     "deps:upgrade": "sh ./etc/update.deps.sh",
     "dev": "nuxt dev",
     "docker:build": "docker build --platform=linux/amd64 -t nuxt-starter-kit:latest .",
+    "docker:up": "docker-compose up -d",
     "generate": "nuxt generate",
     "postinstall": "nuxt prepare && pnpm deps:sort",
     "lint": "eslint .",
