@@ -6,8 +6,10 @@
   "scripts": {
     "build": "nuxt build",
     "build:analyze": "sh ./etc/bundle.size.sh",
-    "check": "pnpm typecheck && pnpm lint:debug && npm run build",
+    "check": "pnpm typecheck && pnpm lint:debug && pnpm run build",
     "clean": "nuxt cleanup && rimraf .unlighthouse/ .output/ ./dist",
+    "deps:sort": "pnpm dlx sort-package-json",
+    "deps:upgrade": "sh ./etc/update.deps.sh",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "postinstall": "nuxt prepare && pnpm deps:sort",
@@ -15,11 +17,9 @@
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
     "preview": "nuxt preview",
-    "deps:sort": "pnpm dlx sort-package-json",
     "typecheck": "nuxt typecheck",
     "unlighthouse": "pnpm build && pnpm preview & pnpm dlx unlighthouse --desktop --site http://localhost:3000",
-    "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug",
-    "deps:upgrade": "sh ./etc/update.deps.sh"
+    "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug"
   },
   "dependencies": {
     "@nuxt/ui": "^2.11.1",
