@@ -5,7 +5,7 @@
     "build": "nuxt build",
     "check": "npm run typecheck && npm run lint:debug && npm run build",
     "clean": "nuxt cleanup && rimraf .output/ ./dist",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --port 3005",
     "generate": "nuxt generate",
     "postinstall": "nuxt prepare && npm run sort",
     "lint": "eslint .",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
     "@nuxt/devtools": "latest",
+    "@nuxtjs/i18n": "8.0.0-rc.11",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-plugin-format": "^0.1.0",
