@@ -5,4 +5,4 @@ export default defineNuxtConfig({
   ui: {
     global: true,
   },
-});
+})

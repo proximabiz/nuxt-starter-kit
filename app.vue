@@ -1,19 +1,19 @@
 <script setup>
-const colorMode = useColorMode();
+const colorMode = useColorMode()
 
 const isDark = computed({
   get() {
-    return colorMode.value === 'dark';
+    return colorMode.value === 'dark'
   },
   set() {
-    colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
+    colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
   },
-});
+})
 
-const countries = ['India', 'United States', 'Canada', 'Mexico'];
-const country = ref(countries[0]);
-const people = ['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer'];
-const selected = ref([]);
+const countries = ['India', 'United States', 'Canada', 'Mexico']
+const country = ref(countries[0])
+const people = ['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer']
+const selected = ref([])
 
 const peoples = [{
   id: 1,
@@ -51,7 +51,7 @@ const peoples = [{
   title: 'Principal Designer',
   email: 'floyd.miles@example.com',
   role: 'Member',
-}];
+}]
 </script>
 
 <template>

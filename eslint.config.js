@@ -1,4 +1,4 @@
-import antfu from '@antfu/eslint-config';
+import antfu from '@antfu/eslint-config'
 
 export default antfu({
   // TypeScript and Vue are auto-detected, but had to explicitly enable typescript, else not working
@@ -12,7 +12,7 @@ export default antfu({
     'no-console': 'warn',
     'no-debugger': 'warn',
     'style/max-statements-per-line': ['error', { max: 2 }],
-    'style/semi': ['error', 'always'],
+    'style/semi': ['error', 'never'],
   },
 
   // eslint-plugin-format is responsible to format the following extension files
@@ -36,4 +36,4 @@ export default antfu({
      */
     markdown: 'prettier',
   },
-});
+})
