@@ -7,16 +7,16 @@
     "clean": "nuxt cleanup && rimraf .unlighthouse/ .output/ ./dist",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "postinstall": "nuxt prepare && pnpm sort",
+    "postinstall": "nuxt prepare && pnpm deps:sort",
     "lint": "eslint .",
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
     "preview": "nuxt preview",
-    "sort": "pnpm dlx sort-package-json",
+    "deps:sort": "pnpm dlx sort-package-json",
     "typecheck": "nuxt typecheck",
     "unlighthouse": "pnpm build && pnpm preview & pnpm dlx unlighthouse --desktop --site http://localhost:3000",
     "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug",
-    "update-deps": "sh ./etc/update.deps.sh"
+    "deps:upgrade": "sh ./etc/update.deps.sh"
   },
   "dependencies": {
     "@nuxt/ui": "^2.11.1"
