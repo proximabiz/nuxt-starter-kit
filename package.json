@@ -5,17 +5,19 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "check": "npm run typecheck && npm run lint:debug && npm run build",
-    "clean": "nuxt cleanup && rimraf .output/ ./dist",
+    "check": "pnpm typecheck && pnpm lint:debug && npm run build",
+    "clean": "nuxt cleanup && rimraf .unlighthouse/ .output/ ./dist",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "postinstall": "nuxt prepare && npm run sort",
+    "postinstall": "nuxt prepare && pnpm sort",
     "lint": "eslint .",
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
     "preview": "nuxt preview",
-    "sort": "npx sort-package-json",
+    "sort": "pnpm dlx sort-package-json",
     "typecheck": "nuxt typecheck",
+    "unlighthouse": "pnpm build && pnpm preview & pnpm dlx unlighthouse --desktop --site http://localhost:3000",
+    "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug",
     "update-deps": "sh ./etc/update.deps.sh"
   },
   "dependencies": {
