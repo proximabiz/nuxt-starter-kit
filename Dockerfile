@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y openssh-client g++ make python3 git
 
 # Copy package.json and related files to the container
 COPY package*.json /app/
+COPY .npmrc /app/
 COPY pnpm-lock.yaml /app/
 
 # Install pnpm globally within the container

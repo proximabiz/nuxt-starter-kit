@@ -1,5 +1,20 @@
 version: '3.8'
 
+services:
+  app:
+    container_name: nuxt_start_kit
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:3000
+    env_file:
+      - .env
+    # environment:
+    #   - NODE_ENV=production
+    #   - PROJECT_NAME=Nuxt-Starter-Kit
+
+
 # ❗ NOTES: 
 #   1. With NUXT server-side runtime envs you need to add NUXT_
 #      - eg. NUXT_OPENAI_API_KEY=xyz (✓)
@@ -8,17 +23,3 @@ version: '3.8'
 #   2. While using URLs, be careful with extra qoutes
 #      - eg. NUXT_API_ENDPOINT=http://localhost:3000/api/v1/prediction/6fac0499-e1bf-498f-a07d-89d52d8ac209   (✓)
 #      - eg. NUXT_API_ENDPOINT='http://localhost:3000/api/v1/prediction/6fac0499-e1bf-498f-a07d-89d52d8ac209' (✗)
-
-services:
-  app:
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    image: docker.io/jeetmetapercept/quizzee:latest
-    ports:
-      - "80:3000"
-    # env_file:
-    #   - .env
-    environment:
-      - NODE_ENV=production
-      - PROJECT_NAME=Nuxt-Starter-Kit
