@@ -1,7 +1,7 @@
 {
   "name": "nuxt-starter-kit",
   "version": "1.0.0",
-  "description": "quick-start Nuxt apps for efficient development",
+  "description": "quick-start nuxt apps for efficient development",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
