@@ -1,6 +1,4 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
-import process from 'node:process'
-import validateEnvs from './utility/env.validator'
+import validateEnvs from './envs/env.validator'
 
 export default defineNuxtConfig({
   devtools: { enabled: true },

@@ -1,5 +1,5 @@
-import { Env } from '../env.schema'
-import { logger } from './logger'
+import { logger } from '../utility/logger'
+import { Env } from './env.schema'
 
 export default function validateEnvs() {
   try {
