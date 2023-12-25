@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
+    "lint:preview": "npx eslint-flat-config-viewer",
     "preview": "nuxt preview",
     "sort": "npx sort-package-json",
     "typecheck": "nuxt typecheck",
