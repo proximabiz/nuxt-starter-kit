@@ -1,12 +1,15 @@
 {
   "name": "nuxt-starter-kit",
+  "version": "1.0.0",
+  "description": "quick-start Nuxt apps for efficient development",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "deps:sort": "npx sort-package-json",
-    "deps:upgrade": "sh ./etc/update.deps.sh",
-    "check": "pnpm typecheck && pnpm lint:debug && npm run build",
+    "build:analyze": "sh ./etc/bundle.size.sh",
+    "check": "pnpm typecheck && pnpm lint:debug && pnpm build",
     "clean": "nuxt cleanup && rimraf .unlighthouse/ .output/ ./dist",
+    "deps:sort": "pnpm dlx sort-package-json",
+    "deps:upgrade": "sh ./etc/update.deps.sh",
     "dev": "nuxt dev",
     "docker:build": "docker build --platform=linux/amd64 -t nuxt-starter-kit:latest .",
     "generate": "nuxt generate",
@@ -20,7 +23,9 @@
     "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug"
   },
   "dependencies": {
-    "@nuxt/ui": "^2.11.1"
+    "@nuxt/ui": "^2.11.1",
+    "consola": "^3.2.3",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
