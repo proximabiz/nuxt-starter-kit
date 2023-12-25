@@ -10,6 +10,7 @@ export default defineAppConfig({
     dark: true,
   },
   ui: {
+    gray: 'zinc',
     // https://ui.nuxt.com/elements/icon#dynamic
     icons: {
       dynamic: true,
