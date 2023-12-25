@@ -4,6 +4,7 @@ OUTPUT_DIR=".output/server"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
+GREY='\033[0;90m'
 NC='\033[0m'
 
 list_files_with_size() {
@@ -17,24 +18,16 @@ list_files_with_size() {
         du -sh "$1" | cut -f1
     }
 
-    for entry in "$OUTPUT_DIR"/*; do
-        if [[ -f "$entry" ]]; then
-            entry_size=$(format_size "$entry")
-            echo "  ├─ ${GREEN}$entry${NC} ($entry_size)"
-        elif [[ -d "$entry" ]]; then
-            echo "  ├─ ${RED}$entry${NC}"
-            for subentry in "$entry"/*; do
-                if [[ -f "$subentry" ]]; then
-                    entry_size=$(format_size "$subentry")
-                    echo "  │  ├─ $(basename "$subentry") ($entry_size)"
-                fi
-            done
-        fi
+    # Use find to recursively list all files
+    find "$OUTPUT_DIR" -type f | while read -r file; do
+        entry_size=$(format_size "$file")
+        echo "  ├─ ${GREY}$file${GREY} ($entry_size)${NC}"
     done
 
+    # Calculating the total size
     total_size_hr=$(du -sh -c "$OUTPUT_DIR" | grep 'total$' | cut -f1)
     echo ""
-    echo "Σ ${YELLOW}SSR bundle size: $total_size_hr${NC}"
+    echo "Σ ${GREEN}SSR bundle size: $total_size_hr${NC}"
 }
 
 if [[ -d "$OUTPUT_DIR" ]]; then
