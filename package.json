@@ -13,7 +13,7 @@
     "dev": "nuxt dev",
     "docker:build": "docker build --platform=linux/amd64 -t nuxt-starter-kit:latest .",
     "generate": "nuxt generate",
-    "postinstall": "nuxt prepare && npm run deps:sort",
+    "postinstall": "nuxt prepare && pnpm deps:sort",
     "lint": "eslint .",
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
