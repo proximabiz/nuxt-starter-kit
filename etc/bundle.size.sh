@@ -34,7 +34,7 @@ list_files_with_size() {
 
     total_size_hr=$(du -sh -c "$OUTPUT_DIR" | grep 'total$' | cut -f1)
     echo ""
-    echo "➜ ${YELLOW}Total bundle size: $total_size_hr${NC}"
+    echo "Σ ${YELLOW}Total bundle size: $total_size_hr${NC}"
 }
 
 if [[ -d "$OUTPUT_DIR" ]]; then
