@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
+    "build:analyze": "sh ./etc/bundle.size.sh",
     "check": "pnpm typecheck && pnpm lint:debug && npm run build",
     "clean": "nuxt cleanup && rimraf .unlighthouse/ .output/ ./dist",
     "dev": "nuxt dev",
