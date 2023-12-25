@@ -5,4 +5,7 @@ export default defineNuxtConfig({
   ui: {
     global: true,
   },
+  tailwindcss: {
+    viewer: false,
+  },
 })
