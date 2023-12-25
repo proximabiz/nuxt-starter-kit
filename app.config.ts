@@ -1,5 +1,11 @@
+import pkg from './package.json'
+
 export default defineAppConfig({
-  title: 'Hello Nuxt',
+  app: {
+    name: pkg.name,
+    desciption: pkg.name,
+    version: pkg.version,
+  },
   theme: {
     dark: true,
   },
