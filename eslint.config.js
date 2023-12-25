@@ -5,7 +5,7 @@ export default antfu({
   typescript: true,
 
   // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
-  ignores: ['*.d.ts'],
+  ignores: ['*.d.ts', '.unlighthouse'],
 
   // Without `files`, they are general rules for all files
   rules: {
