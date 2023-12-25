@@ -22,7 +22,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
     "@nuxt/devtools": "latest",
-    "@nuxtjs/i18n": "8.0.0-rc.11",
+    "@nuxtjs/i18n": "^8.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-plugin-format": "^0.1.0",
