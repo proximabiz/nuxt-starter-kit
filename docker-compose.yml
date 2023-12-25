@@ -10,9 +10,20 @@ services:
       - 80:3000
     env_file:
       - .env
-    # environment:
-    #   - NODE_ENV=production
-    #   - PROJECT_NAME=Nuxt-Starter-Kit
+    labels:
+      - "service.stack=nuxt"
+      - "service.name=nuxt_start_kit"
+      - "container.type=frontend"
+    networks:
+      - nuxt-internal
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: 10
+        max-size: 10m      
+
+networks:
+  nuxt-internal:    
 
 
 # ❗ NOTES: 
