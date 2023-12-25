@@ -6,7 +6,7 @@
   "scripts": {
     "build": "nuxt build",
     "build:analyze": "sh ./etc/bundle.size.sh",
-    "check": "pnpm typecheck && pnpm lint:debug && pnpm run build",
+    "check": "pnpm typecheck && pnpm lint:debug && pnpm build && pnpm build:analyze",
     "clean": "nuxt cleanup && rimraf .unlighthouse/ .output/ ./dist",
     "deps:sort": "pnpm dlx sort-package-json",
     "deps:upgrade": "sh ./etc/update.deps.sh",
