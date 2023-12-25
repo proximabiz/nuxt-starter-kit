@@ -5,17 +5,17 @@
     "build": "nuxt build",
     "check": "npm run typecheck && npm run lint:debug && npm run build",
     "clean": "nuxt cleanup && rimraf .output/ ./dist",
+    "deps:sort": "npx sort-package-json",
+    "deps:upgrade": "sh ./etc/update.deps.sh",
     "dev": "nuxt dev",
+    "docker:build": "docker build --platform=linux/amd64 -t nuxt-starter-kit:latest .",
     "generate": "nuxt generate",
-    "postinstall": "nuxt prepare && npm run sort",
+    "postinstall": "nuxt prepare && npm run deps:sort",
     "lint": "eslint .",
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
     "preview": "nuxt preview",
-    "sort": "npx sort-package-json",
-    "typecheck": "nuxt typecheck",
-    "update-deps": "sh ./etc/update.deps.sh",
-    "docker:build": "docker build --platform=linux/amd64 -t nuxt-starter-kit:latest ."
+    "typecheck": "nuxt typecheck"
   },
   "dependencies": {
     "@nuxt/ui": "^2.11.1"
