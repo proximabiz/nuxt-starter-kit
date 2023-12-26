@@ -1,8 +1,3 @@
-export interface UserInfo {
-  name: string
-  age: number
-}
-
 export interface Task {
   id: number
   title: string
@@ -10,8 +5,6 @@ export interface Task {
 }
 
 export interface State {
-  userList: UserInfo[]
-  user: UserInfo | null
   name: string
   tasks: Task[]
 }

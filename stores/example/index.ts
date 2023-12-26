@@ -2,8 +2,6 @@ import type { State, Task } from './types'
 
 export const useTaskStore = defineStore('taskStore', {
   state: (): State => ({
-    userList: [],
-    user: null,
     name: 'mario',
     tasks: [
       { id: 1, title: 'buy some milk', isFav: false },
