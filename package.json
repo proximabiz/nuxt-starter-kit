@@ -1,24 +1,33 @@
 {
   "name": "nuxt-starter-kit",
+  "version": "1.0.0",
+  "description": "quick-start nuxt apps for efficient development",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "check": "npm run typecheck && npm run lint:debug && npm run build",
-    "clean": "nuxt cleanup && rimraf .output/ ./dist",
-    "dev": "nuxt dev --port 3005",
+    "build:analyze": "sh ./etc/bundle.size.sh",
+    "check": "pnpm typecheck && pnpm lint:debug && pnpm build",
+    "clean": "nuxt cleanup && rimraf .unlighthouse/ .output/ ./dist",
+    "deps:sort": "pnpm dlx sort-package-json",
+    "deps:upgrade": "sh ./etc/update.deps.sh",
+    "dev": "nuxt dev",
+    "docker:build": "docker build --platform=linux/amd64 -t nuxt-starter-kit:latest .",
+    "docker:up": "docker-compose up -d",
     "generate": "nuxt generate",
-    "postinstall": "nuxt prepare && npm run sort",
+    "postinstall": "nuxt prepare && pnpm deps:sort",
     "lint": "eslint .",
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
     "lint:preview": "npx eslint-flat-config-viewer",
     "preview": "nuxt preview",
-    "sort": "npx sort-package-json",
     "typecheck": "nuxt typecheck",
-    "update-deps": "sh ./etc/update.deps.sh"
+    "unlighthouse": "pnpm build && pnpm preview & pnpm dlx unlighthouse --desktop --site http://localhost:3000",
+    "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug"
   },
   "dependencies": {
-    "@nuxt/ui": "^2.11.1"
+    "@nuxt/ui": "^2.11.1",
+    "consola": "^3.2.3",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
