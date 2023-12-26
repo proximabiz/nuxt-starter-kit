@@ -9,28 +9,26 @@ export const useTaskStore = defineStore('taskStore', {
     ],
   }),
   getters: {
-    favs(): Array<Task> {
+    GET_FAVS(): Array<Task> {
       return this.tasks.filter(t => t.isFav)
     },
-    favCount(): number {
+    GET_FAV_COUNT(): number {
       return this.tasks.reduce((p, c) => {
         return c.isFav ? p + 1 : p
       }, 0)
     },
-    totalCount: (state) => {
-      return state.tasks.length
-    },
+    GET_TOTAL_COUNT: state => state.tasks.length,
   },
   actions: {
-    addTask(task: { id: number, title: string, isFav: boolean }) {
+    ADD_TASK(task: { id: number, title: string, isFav: boolean }) {
       this.tasks.push(task)
     },
-    deleteTask(id: number) {
+    DELETE_TASK(id: number) {
       this.tasks = this.tasks.filter((t) => {
         return t.id !== id
       })
     },
-    toggleFav(id: number) {
+    TOGGLE_FAV(id: number) {
       const task = this.tasks.find(t => t.id === id)
 
       if (task)
