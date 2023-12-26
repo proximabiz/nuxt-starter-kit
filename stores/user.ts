@@ -18,21 +18,18 @@ export const useUserStore = defineStore({
         const { data, error } = await useFetch<any[]>('/api/user/list', {
           method: 'get',
         })
-
         if (error.value) {
           logger.error('Failed to fetch users:', error.value)
           return
         }
-
-        console.log(data.value)
-
         this.userList = data.value ? data.value : []
-
-        console.log(this.userList)
       }
       catch (err) {
         logger.error('Error fetching users:', err)
       }
+    },
+    async clearUsers() {
+      this.userList = []
     },
   },
   persist: {

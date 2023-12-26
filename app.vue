@@ -65,7 +65,7 @@ async function callAPI() {
     loader.value = false
   }
 }
-const clearUsersList = () => userStore.list = ''
+const clearUsersList = () => userStore.clearUsers
 </script>
 
 <template>
@@ -97,7 +97,9 @@ const clearUsersList = () => userStore.list = ''
         <h4 class="my-5 font-bold">
           API Response-
         </h4>
-        <UTable v-if="!loader" :rows="getUsersList" />
+        <ClientOnly v-if="!loader">
+          <UTable :rows="getUsersList" />
+        </ClientOnly>
         <div v-else>
           Loading...
         </div>
