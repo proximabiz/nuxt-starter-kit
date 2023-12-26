@@ -1,6 +1,5 @@
 <script setup>
 const colorMode = useColorMode()
-
 const isDark = computed({
   get() {
     return colorMode.value === 'dark'
@@ -9,12 +8,10 @@ const isDark = computed({
     colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
   },
 })
-
 const countries = ['India', 'United States', 'Canada', 'Mexico']
 const country = ref(countries[0])
 const people = ['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer']
 const selected = ref([])
-
 const peoples = [{
   id: 1,
   name: 'Lindsay Walton',
@@ -60,13 +57,20 @@ const peoples = [{
       <UCard class="m-10">
         <template #header>
           <div class="flex justify-between">
-            <h1>Welcome to Nuxt UI Starter</h1>
+            <h1>{{ $t('welcomeToNuxtStarter') }}</h1>
             <ColorScheme><USelect v-model="$colorMode.preference" :options="['system', 'light', 'dark']" /></ColorScheme>
           </div>
         </template>
         <UButton icon="i-heroicons-book-open" to="https://ui.nuxt.com" target="_blank">
           Open Nuxt UI Documentation
         </UButton>
+      </UCard>
+
+      <UCard class="m-10">
+        <h2 class="mb-4">
+          Locale Switcher
+        </h2>
+        <AppLocaleSwitcher />
       </UCard>
 
       <UCard class="m-10">

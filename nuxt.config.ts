@@ -8,12 +8,30 @@ export default defineNuxtConfig({
       EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
     },
   },
-  modules: ['@nuxt/ui', 'nuxt-icon'],
+  modules: ['@nuxt/ui', 'nuxt-icon', '@nuxtjs/i18n'],
   ui: {
     global: true,
   },
   tailwindcss: {
     viewer: false,
+  },
+  i18n: {
+    vueI18n: './i18n.config.ts',
+    defaultLocale: 'en',
+    langDir: 'lang',
+    detectBrowserLanguage: false,
+    locales: [
+      {
+        code: 'en',
+        name: 'English',
+        file: 'en.json',
+      },
+      {
+        code: 'fr',
+        name: 'Français',
+        file: 'fr.json',
+      },
+    ],
   },
   hooks: {
     listen: () => validateEnvs(),

@@ -18,6 +18,7 @@
     "lint": "eslint .",
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
+    "lint:preview": "pnpm dlx eslint-flat-config-viewer",
     "preview": "nuxt preview",
     "typecheck": "nuxt typecheck",
     "unlighthouse": "pnpm build && pnpm preview & pnpm dlx unlighthouse --desktop --site http://localhost:3000",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.6",
     "@nuxt/devtools": "latest",
+    "@nuxtjs/i18n": "^8.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-plugin-format": "^0.1.0",
