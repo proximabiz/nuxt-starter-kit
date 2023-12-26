@@ -1,26 +1,33 @@
-// stores/counter.js
-export const useUserStore = defineStore('user', () => {
-  // State
-  const list = ref()
+import { logger } from '~/utility/logger'
 
-  // Getters
-  const getList = computed(() => list)
+export const useUserStore = defineStore({
+  id: 'user',
+  state: () => ({
+    userList: ref<any[]>([]),
+  }),
+  getters: {
+    getUsers: state => state.userList,
+  },
+  actions: {
+    async fetchUsers() {
+      try {
+        const { data, error } = await useFetch<any[]>('/api/user/list', {
+          method: 'get',
+        })
 
-  // Actions
-  const fetchUsers = async () => {
-    const { data } = await useFetch('/api/user/list', {
-      method: 'get',
-    })
+        if (error.value) {
+          logger.error('Failed to fetch users:', error.value)
+          return
+        }
 
-    list.value = data.value
-  }
-
-  return {
-    list,
-    getList,
-    fetchUsers,
-  }
-}, { persist: {
-  key: 'user',
-  storage: persistedState.localStorage,
-} })
+        this.userList = data.value || []
+      }
+      catch (err) {
+        logger.error('Error fetching users:', err)
+      }
+    },
+  },
+  persist: {
+    storage: persistedState.localStorage,
+  },
+})
