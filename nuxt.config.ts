@@ -8,7 +8,13 @@ export default defineNuxtConfig({
       EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
     },
   },
-  modules: ['@nuxt/ui', 'nuxt-icon', '@nuxtjs/i18n'],
+  modules: [
+    '@nuxt/ui',
+    'nuxt-icon',
+    '@nuxtjs/i18n',
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
+  ],
   ui: {
     global: true,
   },
