@@ -19,8 +19,8 @@
     "lint:debug": "cross-env DEBUG=eslint:cli-engine eslint . --fix",
     "lint:fix": "eslint . --fix",
     "lint:preview": "pnpm dlx eslint-flat-config-viewer",
-    "setup:local": "sh ./etc/setup.local.sh",
     "preview": "nuxt preview",
+    "setup:local": "sh ./etc/setup.local.sh",
     "typecheck": "nuxt typecheck",
     "unlighthouse": "pnpm build && pnpm preview & pnpm dlx unlighthouse --desktop --site http://localhost:3000",
     "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug"
