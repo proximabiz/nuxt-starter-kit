@@ -65,7 +65,7 @@ async function callAPI() {
     loader.value = false
   }
 }
-const clearUsersList = () => userStore.clearUsers
+const clearUsersList = () => userStore.clearUsers()
 </script>
 
 <template>
@@ -90,7 +90,7 @@ const clearUsersList = () => userStore.clearUsers
         <UButton @click="callAPI()">
           Test API
         </UButton>
-        <UButton class="ms-4" color="red" @click="clearUsersList()">
+        <UButton class="ms-4" color="red" @click="clearUsersList">
           Clear Data
         </UButton>
 
