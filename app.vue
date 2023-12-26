@@ -8,7 +8,6 @@ const isDark = computed({
     colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
   },
 })
-const { locale, locales, setLocale } = useI18n()
 const countries = ['India', 'United States', 'Canada', 'Mexico']
 const country = ref(countries[0])
 const people = ['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer']
@@ -50,9 +49,6 @@ const peoples = [{
   email: 'floyd.miles@example.com',
   role: 'Member',
 }]
-watch(locale, (newVal) => {
-  setLocale(newVal.code)
-})
 </script>
 
 <template>
@@ -74,9 +70,7 @@ watch(locale, (newVal) => {
         <h2 class="mb-4">
           Locale Switcher
         </h2>
-        <div class="grid grid-cols-2 gap-4">
-          <USelect v-model="locale" :options="locales" option-attribute="name" value-attribute="code" />
-        </div>
+        <AppLocaleSwitcher />
       </UCard>
 
       <UCard class="m-10">
