@@ -1,9 +1,13 @@
 import { logger } from '~/utility/logger'
 
+interface State {
+  userList: any[]
+}
+
 export const useUserStore = defineStore({
   id: 'user',
-  state: () => ({
-    userList: ref<any[]>([]),
+  state: (): State => ({
+    userList: [],
   }),
   getters: {
     getUsers: state => state.userList,
@@ -20,7 +24,11 @@ export const useUserStore = defineStore({
           return
         }
 
-        this.userList = data.value || []
+        console.log(data.value)
+
+        this.userList = data.value ? data.value : []
+
+        console.log(this.userList)
       }
       catch (err) {
         logger.error('Error fetching users:', err)

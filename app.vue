@@ -52,7 +52,7 @@ const peoples = [{
 }]
 // Pinia testing
 const loader = ref(false)
-const getUsersList = computed(() => userStore.getList.value)
+const getUsersList = computed(() => userStore.getUsers)
 async function callAPI() {
   try {
     loader.value = true
