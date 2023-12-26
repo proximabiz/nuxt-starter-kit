@@ -1,10 +1,51 @@
-# Nuxt 3 Minimal Starter
+# Nuxt 3 starter kit
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+> Now supporting [Nuxt v3](https://nuxt.com)
 
-## Setup
+**Are you going to create a nuxt project? Want to quickly start with an end-to-end setup? [TRY Nuxt-Starter-Kit!](https://github.com/proximabiz/nuxt-starter-kit)**
+
+### What is included
+
+- [NUXT v3](https://nuxt.com)
+- [nuxt UI](https://ui.nuxt.com.com)
+- [Validation library- ZOD](https://zod.dev/?id=introduction)
+- [antfu/eslint-config](https://github.com/antfu/eslint-config)
+- [i18n localization](https://i18n.nuxtjs.org/)
+- [Vue Use core](https://vueuse.org/)
+- Docker enabled setup
+- Dependency upgrade scripts
+- Helpful CLI commands
+- .VSCode related extensions
+- Utility/helper functions
+
+### TODO
+
+- Pinia
+- Transition/animation
+- Icons, fonts, image
+- SEO, sitemap, robots
+- Layout
+- Custom/shared components
+- Composables
+- Analytics
+
+## Local setup
 
 **Use `pnpm` as a package manager.**
+
+#### Quick Start
+
+```bash
+pnpm local:setup
+```
+
+After setup successfully, start the local server-
+
+```bash
+pnpm dev
+```
+
+#### Manual steps
 
 - To install the dependencies:
 
@@ -15,34 +56,16 @@ pnpm install
 - To start the dev server
 
 ```bash
-pnpm run dev
+pnpm dev
 ```
 
 - To build the app-
 
 ```bash
-pnpm run build
+pnpm build
 ```
 
-- To locally preview production build:
-
-```bash
-pnpm run preview
-```
-
-- To format the files
-
-```bash
-pnpm run format
-```
-
-- To check for lint errors
-
-```bash
-pnpm run lint
-```
-
-- To fix possible lint errors
+- To check and fix possible lint errors
 
 ```bash
 pnpm run lint:fix
@@ -50,7 +73,7 @@ pnpm run lint:fix
 
 ## Contribution guides
 
-This repository is a boilerplate for the Nuxt projects. So, developers must follow these guidelines while contributing to the codebase-
+Developers must follow these guidelines while contributing to the codebase-
 
 #### Branch naming convention-
 
