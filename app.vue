@@ -8,6 +8,7 @@ const isDark = computed({
     colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
   },
 })
+const userStore = useUserStore()
 const countries = ['India', 'United States', 'Canada', 'Mexico']
 const country = ref(countries[0])
 const people = ['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer']
@@ -49,6 +50,22 @@ const peoples = [{
   email: 'floyd.miles@example.com',
   role: 'Member',
 }]
+// Pinia testing
+const loader = ref(false)
+const getUsersList = computed(() => userStore.getUsers)
+async function callAPI() {
+  try {
+    loader.value = true
+    await userStore.fetchUsers()
+  }
+  catch (error) {
+    console.error('Error', error)
+  }
+  finally {
+    loader.value = false
+  }
+}
+const clearUsersList = () => userStore.clearUsers()
 </script>
 
 <template>
@@ -64,6 +81,25 @@ const peoples = [{
         <UButton icon="i-heroicons-book-open" to="https://ui.nuxt.com" target="_blank">
           Open Nuxt UI Documentation
         </UButton>
+      </UCard>
+
+      <UCard class="m-10">
+        <h2 class="mb-4">
+          Pinia Integration
+        </h2>
+        <UButton @click="callAPI()">
+          Test API
+        </UButton>
+        <UButton class="ms-4" color="red" @click="clearUsersList">
+          Clear Data
+        </UButton>
+
+        <h4 class="my-5 font-bold">
+          API Response-
+        </h4>
+        <ClientOnly>
+          <UTable :loading="loader" :rows="getUsersList" />
+        </ClientOnly>
       </UCard>
 
       <UCard class="m-10">
