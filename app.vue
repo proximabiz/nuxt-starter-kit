@@ -97,12 +97,9 @@ const clearUsersList = () => userStore.clearUsers()
         <h4 class="my-5 font-bold">
           API Response-
         </h4>
-        <ClientOnly v-if="!loader">
-          <UTable :rows="getUsersList" />
+        <ClientOnly>
+          <UTable :loading="loader" :rows="getUsersList" />
         </ClientOnly>
-        <div v-else>
-          Loading...
-        </div>
       </UCard>
 
       <UCard class="m-10">
