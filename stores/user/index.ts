@@ -1,8 +1,5 @@
+import type { State, User } from './types'
 import { logger } from '~/utility/logger'
-
-interface State {
-  userList: any[]
-}
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -15,8 +12,8 @@ export const useUserStore = defineStore({
   actions: {
     async fetchUsers() {
       try {
-        const { data, error } = await useFetch<any[]>('/api/user/list', {
-          method: 'get',
+        const { data, error } = await useFetch<User[]>('/api/user/list', {
+          method: 'GET',
         })
         if (error.value) {
           logger.error('Failed to fetch users:', error.value)

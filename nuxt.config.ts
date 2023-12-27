@@ -42,4 +42,7 @@ export default defineNuxtConfig({
   hooks: {
     listen: () => validateEnvs(),
   },
+  experimental: {
+    typedPages: true,
+  },
 })

@@ -1,4 +1,6 @@
 <script setup>
+import { useUserStore } from '~/stores'
+
 const colorMode = useColorMode()
 const isDark = computed({
   get() {
@@ -53,6 +55,7 @@ const peoples = [{
 // Pinia testing
 const loader = ref(false)
 const getUsersList = computed(() => userStore.getUsers)
+
 async function callAPI() {
   try {
     loader.value = true
@@ -97,6 +100,7 @@ const clearUsersList = () => userStore.clearUsers()
         <h4 class="my-5 font-bold">
           API Response-
         </h4>
+
         <ClientOnly>
           <UTable :loading="loader" :rows="getUsersList" />
         </ClientOnly>
