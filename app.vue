@@ -1,6 +1,4 @@
 <script setup>
-import { useUserStore } from '~/stores'
-
 const colorMode = useColorMode()
 const isDark = computed({
   get() {
@@ -69,16 +67,47 @@ async function callAPI() {
   }
 }
 const clearUsersList = () => userStore.clearUsers()
+
+const items = ref(['😏', '😐', '😑', '😒', '😕'])
+function shuffleItems() {
+  items.value = shuffle(items.value)
+}
 </script>
 
 <template>
   <div>
-    <UContainer>
+    <div class="py-24 sm:py-32 md:py-40 relative mb-[calc(var(--header-height)*2)]">
+      <div class="mx-auto px-4 sm:px-6 lg:px-8 gap-16 sm:gap-y-24 max-w-4xl flex flex-col">
+        <div class="relative z-[1] text-center">
+          <h1 class="text-5xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-7xl">
+            <span>A <span class="text-primary">Nuxt Starter kit</span> for<br class="hidden lg:block"> Modern Web
+              Apps</span>
+          </h1>
+          <p class="mt-6 text-lg tracking-tight text-gray-600 dark:text-gray-300">
+            <span>Nuxt UI simplifies the creation of stunning and responsive web applications with its<br
+              class="hidden lg:block"
+            > comprehensive collection of fully styled and customizable UI components designed
+              for Nuxt.</span>
+          </p>
+
+          <div class="mt-6 flex flex-wrap gap-x-6 gap-y-3 justify-center">
+            <UButton label="Get Started" icon="lucide:rocket" size="lg" to="#examples" />
+          </div>
+        </div>
+      </div>
+      <ClientOnly>
+        <HomeTetris />
+      </ClientOnly>
+    </div>
+
+    <UContainer id="examples" class="py-24">
       <UCard class="m-10">
         <template #header>
           <div class="flex justify-between">
             <h1>{{ $t('welcomeToNuxtStarter') }}</h1>
-            <ColorScheme><USelect v-model="$colorMode.preference" :options="['system', 'light', 'dark']" /></ColorScheme>
+            <ColorScheme>
+              <USelect v-model="$colorMode.preference" :options="['system', 'light', 'dark']" />
+            </ColorScheme>
           </div>
         </template>
         <UButton icon="i-heroicons-book-open" to="https://ui.nuxt.com" target="_blank">
@@ -102,8 +131,20 @@ const clearUsersList = () => userStore.clearUsers()
         </h4>
 
         <ClientOnly>
-          <UTable :loading="loader" :rows="getUsersList" />
+          <UTable :loading="loader" :rows="map(getUsersList, item => pick(item, ['id', 'name', 'username', 'email']))" />
         </ClientOnly>
+      </UCard>
+
+      <UCard class="m-10">
+        <h2 class="mb-4">
+          Auto Animate
+        </h2>
+        <h5>Click emojis to shuffle them.</h5>
+        <ul v-auto-animate class="flex gap-2">
+          <UButton v-for="item in items" :key="item" variant="ghost" class="text-xl" @click="shuffleItems(item)">
+            {{ item }}
+          </UButton>
+        </ul>
       </UCard>
 
       <UCard class="m-10">
@@ -119,11 +160,8 @@ const clearUsersList = () => userStore.clearUsers()
         </template>
         <ClientOnly>
           <UButton
-            :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"
-            color="gray"
-            variant="ghost"
-            aria-label="Theme"
-            @click="isDark = !isDark"
+            :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'" color="gray" variant="ghost"
+            aria-label="Theme" @click="isDark = !isDark"
           />
 
           <template #fallback>
@@ -142,26 +180,14 @@ const clearUsersList = () => userStore.clearUsers()
           </UTooltip>
 
           <UTooltip text="Tooltip example" :shortcuts="['⌘', 'O']" :popper="{ arrow: true }">
-            <UButton
-              color="red" variant="outline"
-              label="With Arrow"
-            />
+            <UButton color="red" variant="outline" label="With Arrow" />
           </UTooltip>
 
           <UTooltip text="Tooltip example" :shortcuts="['⌘', 'O']" :popper="{ placement: 'top' }">
-            <UButton
-              color="black" label="Placement" icon="lucide:move-right" variant="link"
-              trailing
-            />
+            <UButton color="black" label="Placement" icon="lucide:move-right" variant="link" trailing />
           </UTooltip>
 
-          <UButton
-            color="blue"
-            variant="solid"
-            icon="i-heroicons-x-mark-20-solid"
-            :loading="true"
-            label="Loading"
-          />
+          <UButton color="blue" variant="solid" icon="i-heroicons-x-mark-20-solid" :loading="true" label="Loading" />
         </div>
       </UCard>
 
@@ -187,3 +213,9 @@ const clearUsersList = () => userStore.clearUsers()
     </UContainer>
   </div>
 </template>
+
+<style>
+html {
+  scroll-behavior: smooth;
+}
+</style>
