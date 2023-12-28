@@ -107,7 +107,7 @@ function shuffleItems() {
         </h4>
 
         <ClientOnly>
-          <UTable :loading="loader" :rows="getUsersList" />
+          <UTable :loading="loader" :rows="map(getUsersList, item => pick(item, ['id', 'name', 'username', 'email']))" />
         </ClientOnly>
       </UCard>
 
