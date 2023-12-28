@@ -205,6 +205,10 @@ function shuffleItems() {
         </template>
         <UTable :rows="peoples" />
       </UCard>
+
+      <ClientOnly>
+        <HomeTetris />
+      </ClientOnly>
     </UContainer>
   </div>
 </template>
