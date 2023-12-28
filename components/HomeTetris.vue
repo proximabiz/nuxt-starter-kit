@@ -1,4 +1,6 @@
 <script setup>
+import { useElementSize } from '@vueuse/core'
+
 const el = ref(null)
 const grid = ref([])
 const rows = ref(0)
@@ -91,8 +93,8 @@ onMounted(() => {
   </Transition>
 </template>
 
-  <style scoped>
-  .fade-enter-active,
+<style scoped>
+.fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;
 }

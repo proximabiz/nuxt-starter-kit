@@ -11,7 +11,7 @@ export default defineAppConfig({
   },
   ui: {
     // https://ui.nuxt.com/getting-started/theming
-    primary: 'blue',
+    primary: 'green',
     gray: 'zinc',
     icons: {
       dynamic: true,
