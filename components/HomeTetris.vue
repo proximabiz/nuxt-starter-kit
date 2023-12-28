@@ -55,13 +55,17 @@ function calcGrid() {
 
 watch(width, calcGrid)
 
+let gridInterval
 onMounted(() => {
   setTimeout(calcGrid, 50)
 
-  setInterval(() => {
+  gridInterval = setInterval(() => {
     moveCellsDown()
     createNewCell()
   }, 1000)
+})
+onUnmounted(() => {
+  clearInterval(gridInterval)
 })
 </script>
 
