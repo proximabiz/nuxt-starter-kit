@@ -116,11 +116,13 @@ function shuffleItems() {
           Auto Animate
         </h2>
         <h5>Click emojis to shuffle them.</h5>
-        <ul class="flex gap-2">
+        <ul v-auto-animate class="flex gap-2">
           <UButton
             v-for="item in items"
             :key="item"
             variant="ghost"
+            size="xl"
+            class="text-xl"
             @click="shuffleItems(item)"
           >
             {{ item }}
