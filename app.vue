@@ -1,6 +1,4 @@
 <script setup>
-import { useUserStore } from '~/stores'
-
 const colorMode = useColorMode()
 const isDark = computed({
   get() {
