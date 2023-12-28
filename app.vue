@@ -121,7 +121,6 @@ function shuffleItems() {
             v-for="item in items"
             :key="item"
             variant="ghost"
-            size="xl"
             class="text-xl"
             @click="shuffleItems(item)"
           >
