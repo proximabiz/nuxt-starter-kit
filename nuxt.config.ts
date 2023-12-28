@@ -14,6 +14,8 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
+    'nuxt-lodash',
+    '@formkit/auto-animate/nuxt',
   ],
   ui: {
     global: true,
@@ -38,6 +40,9 @@ export default defineNuxtConfig({
         file: 'fr.json',
       },
     ],
+  },
+  lodash: {
+    prefix: false,
   },
   hooks: {
     listen: () => validateEnvs(),

@@ -69,6 +69,11 @@ async function callAPI() {
   }
 }
 const clearUsersList = () => userStore.clearUsers()
+
+const items = ref(['😏', '😐', '😑', '😒', '😕'])
+function shuffleItems() {
+  items.value = shuffle(items.value)
+}
 </script>
 
 <template>
@@ -104,6 +109,23 @@ const clearUsersList = () => userStore.clearUsers()
         <ClientOnly>
           <UTable :loading="loader" :rows="getUsersList" />
         </ClientOnly>
+      </UCard>
+
+      <UCard class="m-10">
+        <h2 class="mb-4">
+          Auto Animate
+        </h2>
+        <h5>Click emojis to shuffle them.</h5>
+        <ul class="flex gap-2">
+          <UButton
+            v-for="item in items"
+            :key="item"
+            variant="ghost"
+            @click="shuffleItems(item)"
+          >
+            {{ item }}
+          </UButton>
+        </ul>
       </UCard>
 
       <UCard class="m-10">

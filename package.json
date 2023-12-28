@@ -26,6 +26,7 @@
     "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.1",
     "@nuxt/ui": "^2.11.1",
     "@pinia/nuxt": "^0.5.1",
     "consola": "^3.2.3",
@@ -41,6 +42,7 @@
     "eslint-plugin-format": "^0.1.0",
     "nuxt": "^3.8.2",
     "nuxt-icon": "^0.6.7",
+    "nuxt-lodash": "^2.5.3",
     "rimraf": "^5.0.5",
     "vue": "^3.3.13",
     "vue-router": "^4.2.5"
