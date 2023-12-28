@@ -100,7 +100,7 @@ function shuffleItems() {
       </ClientOnly>
     </div>
 
-    <UContainer id="examples" class="my-24">
+    <UContainer id="examples" class="py-24">
       <UCard class="m-10">
         <template #header>
           <div class="flex justify-between">
