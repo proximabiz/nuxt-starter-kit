@@ -33,15 +33,15 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.4.6",
+    "@antfu/eslint-config": "^2.6.1",
     "@nuxt/devtools": "latest",
     "@nuxtjs/i18n": "^8.0.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-plugin-format": "^0.1.0",
-    "nuxt": "^3.8.2",
-    "nuxt-icon": "^0.6.7",
+    "nuxt": "^3.9.0",
+    "nuxt-icon": "^0.6.8",
     "nuxt-lodash": "^2.5.3",
     "rimraf": "^5.0.5",
     "vue": "^3.3.13",
