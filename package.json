@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "build:size": "sh ./etc/bundle.size.sh",
     "build:analyze": "nuxt analyze",
+    "build:size": "sh ./etc/bundle.size.sh",
     "check": "pnpm deps:info && pnpm typecheck && pnpm lint:debug && pnpm build",
     "clean": "nuxt cleanup && rimraf .unlighthouse/ .output/ ./dist",
-    "deps:sort": "pnpm dlx sort-package-json",
     "deps:info": "nuxt info",
+    "deps:sort": "pnpm dlx sort-package-json",
     "deps:upgrade": "pnpm dlx npm-check-updates -i",
     "dev": "nuxt dev",
     "docker:build": "docker build --platform=linux/amd64 -t nuxt-starter-kit:latest .",
@@ -48,5 +48,9 @@
     "rimraf": "^5.0.5",
     "vue": "^3.3.13",
     "vue-router": "^4.2.5"
+  },
+  "packageManager": "^pnpm@8.6.5",
+  "engines": {
+    "node": ">= 18"
   }
 }
