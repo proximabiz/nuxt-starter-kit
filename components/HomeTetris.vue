@@ -11,8 +11,9 @@ const { width, height } = useElementSize(el)
 function createGrid() {
   grid.value = []
 
-  for (let i = 0; i < rows.value; i++)
-    grid.value.push(Array(cols.value).fill(null))
+  for (let i = 0; i <= rows.value; i++)
+    // eslint-disable-next-line unicorn/no-new-array
+    grid.value.push(new Array(cols.value).fill(null))
 }
 
 function createNewCell() {

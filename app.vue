@@ -9,6 +9,19 @@ const isDark = computed({
   },
 })
 const userStore = useUserStore()
+const features = [
+  { name: 'Nuxt UI', url: 'https://nuxt-ui.com/' },
+  { name: 'Tailwind', url: 'https://tailwindcss.com/' },
+  { name: 'ESLint', url: 'https://eslint.org/' },
+  { name: 'Icons', url: 'https://icones.js.org/' },
+  { name: 'Pinia', url: 'https://pinia.vuejs.org/' },
+  { name: 'i18n', url: 'https://vue-i18n.intlify.dev/' },
+  { name: 'Zod', url: 'https://github.com/colinhacks/zod' },
+  { name: 'VueUse', url: 'https://vueuse.org/' },
+  { name: 'Lodash', url: 'https://lodash.com/' },
+  { name: 'Animate', url: 'https://auto-animate.formkit.com/' },
+  { name: 'Docker', url: 'https://www.docker.com/' },
+]
 const countries = ['India', 'United States', 'Canada', 'Mexico']
 const country = ref(countries[0])
 const people = ['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer']
@@ -88,6 +101,12 @@ function shuffleItems() {
               class="hidden lg:block"
             > Supercharge your development experience with one powerful kit</span>
           </p>
+
+          <div class="flex justify-center">
+            <div class="mt-6 flex flex-wrap gap-x-2 gap-y-2 justify-center max-w-xl">
+              <Pill v-for="feature in features" :key="feature.name" :text="feature.name" />
+            </div>
+          </div>
 
           <div class="mt-6 flex flex-wrap gap-x-6 gap-y-3 justify-center">
             <UButton label="Get Started" icon="lucide:rocket" size="lg" to="#examples" />
