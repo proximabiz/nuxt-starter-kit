@@ -14,6 +14,8 @@ const features = [
   { name: 'Tailwind', url: 'https://tailwindcss.com/' },
   { name: 'ESLint', url: 'https://eslint.org/' },
   { name: 'Icons', url: 'https://icones.js.org/' },
+  { name: 'Fonts', url: 'https://fonts.google.com/' },
+  { name: 'Color Mode', url: 'https://nuxt.com/modules/color-mode' },
   { name: 'Pinia', url: 'https://pinia.vuejs.org/' },
   { name: 'i18n', url: 'https://vue-i18n.intlify.dev/' },
   { name: 'Zod', url: 'https://github.com/colinhacks/zod' },
@@ -21,6 +23,8 @@ const features = [
   { name: 'Lodash', url: 'https://lodash.com/' },
   { name: 'Animate', url: 'https://auto-animate.formkit.com/' },
   { name: 'Docker', url: 'https://www.docker.com/' },
+  { name: 'Web Vitals', url: 'https://web.dev/explore/learn-core-web-vitals' },
+
 ]
 const countries = ['India', 'United States', 'Canada', 'Mexico']
 const country = ref(countries[0])
@@ -104,7 +108,7 @@ function shuffleItems() {
 
           <div class="flex justify-center">
             <div class="mt-6 flex flex-wrap gap-x-2 gap-y-2 justify-center max-w-xl">
-              <Pill v-for="feature in features" :key="feature.name" :text="feature.name" />
+              <Pill v-for="feature in features" :key="feature.name" :text="feature.name" :link="feature.url" />
             </div>
           </div>
 
