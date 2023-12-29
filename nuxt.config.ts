@@ -11,6 +11,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     'nuxt-icon',
+    '@nuxtjs/fontaine',
+    '@nuxtjs/google-fonts',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
@@ -22,6 +24,14 @@ export default defineNuxtConfig({
   },
   tailwindcss: {
     viewer: false,
+  },
+  googleFonts: {
+    families: {
+      Inter: [200, 400, 500, 600],
+    },
+  },
+  fontMetrics: {
+    fonts: ['Inter'],
   },
   i18n: {
     vueI18n: './i18n.config.ts',
