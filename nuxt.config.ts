@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     fonts: ['Inter'],
   },
   i18n: {
-    vueI18n: './i18n.config.ts',
+    vueI18n: 'locales/i18n.config.ts',
     defaultLocale: 'en',
     langDir: 'locales/lang',
     detectBrowserLanguage: false,
