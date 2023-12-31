@@ -174,6 +174,9 @@ function shuffleItems() {
           Locale Switcher
         </h2>
         <AppLocaleSwitcher />
+        <h2 class="py-2">
+          {{ $t('welcomeToNuxtStarter') }}
+        </h2>
       </UCard>
 
       <UCard class="m-10">
