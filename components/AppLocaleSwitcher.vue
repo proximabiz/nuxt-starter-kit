@@ -12,7 +12,7 @@ const languages = computed({
 </script>
 
 <template>
-  <div class="grid grid-cols-2 gap-4">
+  <div class="grid grid-cols-4 gap-4">
     <USelect v-model="languages" :options="locales" option-attribute="name" value-attribute="code" />
   </div>
 </template>
