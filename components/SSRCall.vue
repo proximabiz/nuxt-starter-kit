@@ -1,25 +1,20 @@
 <script setup lang="ts">
+interface Rating {
+  rate: number
+  count: number
+}
+
 interface Product {
   id: number
   title: string
-  description: string
   price: number
-  discountPercentage: number
-  rating: number
-  stock: number
-  brand: string
+  description: string
   category: string
-  thumbnail: string
-  images: string[]
+  image: string
+  rating: Rating
 }
 
-interface ApiResponse {
-  products: Product[]
-  total: number
-  skip: number
-  limit: number
-}
-const { data, pending } = useFetch<ApiResponse>('https://dummyjson.com/products', {
+const { data: products, pending } = useFetch<Array<Product>>('https://fakestoreapi.com/products', {
   params: {
     limit: 12,
   },
@@ -41,9 +36,9 @@ const { data, pending } = useFetch<ApiResponse>('https://dummyjson.com/products'
       </h2>
 
       <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-        <div v-for="product in data?.products" :key="product.id" class="group relative border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <!-- <div v-for="product in products" :key="product.id" class="group relative border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
           <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-            <img :src="product.thumbnail" :alt="product.description" class="h-full w-full object-cover object-center lg:h-full lg:w-full">
+            <img :src="product.image" :alt="product.description" class="h-full w-full object-cover object-center lg:h-full lg:w-full">
           </div>
           <div class="mt-4 flex justify-between px-2">
             <div>
@@ -54,11 +49,30 @@ const { data, pending } = useFetch<ApiResponse>('https://dummyjson.com/products'
                 </a>
               </h3>
               <p class="mt-1 text-sm text-gray-500">
-                {{ product.brand }}
+                {{ product.category }}
               </p>
             </div>
             <p class="text-sm font-medium text-gray-900">
               ${{ product.price }}
+            </p>
+          </div>
+        </div> -->
+
+        <div v-for="product in products" :key="product.id" class="group block overflow-hidden rounded border border-gray-200 p-6">
+          <div class="relative h-[350px]">
+            <img
+              :src="product.image" :alt="product.description"
+              class="absolute inset-0 w-full object-cover opacity-100 group-hover:opacity-80"
+            >
+          </div>
+
+          <div class="relative bg-white pt-3">
+            <h3 class="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
+              Limited Edition Sports Trainer
+            </h3>
+
+            <p class="mt-1.5 tracking-wide text-gray-900">
+              $189.99
             </p>
           </div>
         </div>
