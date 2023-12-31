@@ -19,21 +19,15 @@ export default defineNuxtConfig({
     'nuxt-lodash',
     '@formkit/auto-animate/nuxt',
   ],
-  ui: {
-    global: true,
-  },
-  tailwindcss: {
-    viewer: false,
-  },
+  ui: { global: true },
+  tailwindcss: { viewer: false },
   googleFonts: {
     families: {
       Inter: [200, 400, 500, 600],
     },
     display: 'swap',
   },
-  fontMetrics: {
-    fonts: ['Inter'],
-  },
+  fontMetrics: { fonts: ['Inter'] },
   i18n: {
     vueI18n: 'locales/i18n.config.ts',
     defaultLocale: 'en',
@@ -52,13 +46,9 @@ export default defineNuxtConfig({
       },
     ],
   },
-  lodash: {
-    prefix: false,
-  },
+  lodash: { prefix: false },
   hooks: {
     listen: () => validateEnvs(),
   },
-  experimental: {
-    typedPages: true,
-  },
+  experimental: { typedPages: true },
 })
