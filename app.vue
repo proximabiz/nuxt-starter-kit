@@ -235,6 +235,14 @@ function shuffleItems() {
         </template>
         <UTable :rows="peoples" />
       </UCard>
+
+      <UCard class="m-10">
+        <template #header>
+          <h2>SSR</h2>
+        </template>
+        <h5>Rendered on Server Side</h5>
+        <SSRCall />
+      </UCard>
     </UContainer>
   </div>
 </template>
