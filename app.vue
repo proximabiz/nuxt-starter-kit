@@ -242,5 +242,6 @@ function shuffleItems() {
 <style>
 html {
   scroll-behavior: smooth;
+  font-family: 'Inter', 'Open Sans', sans-serif;
 }
 </style>

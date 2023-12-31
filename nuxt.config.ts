@@ -29,6 +29,7 @@ export default defineNuxtConfig({
     families: {
       Inter: [200, 400, 500, 600],
     },
+    display: 'swap',
   },
   fontMetrics: {
     fonts: ['Inter'],
