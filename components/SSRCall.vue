@@ -23,8 +23,6 @@ const { data: products, pending } = await useFetch<Array<Product>>('https://fake
 </script>
 
 <template>
-  <!-- <pre>{{ data?.products }}</pre> -->
-
   <div v-if="pending">
     please wait...
   </div>
@@ -34,7 +32,6 @@ const { data: products, pending } = await useFetch<Array<Product>>('https://fake
         <h2 class="text-2xl font-bold tracking-tight text-gray-900">
           Products
         </h2>
-        <UButton color="primary" variant="outline" label="Shuffle" icon="lucide:shuffle" size="sm" />
       </div>
 
       <div class="mt-6 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2 lg:grid-cols-6">
