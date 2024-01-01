@@ -20,6 +20,15 @@ const { data: products, pending } = await useFetch<Array<Product>>('https://fake
   },
   lazy: true,
 })
+
+function shuffleProducts() {
+  if (products.value) {
+    for (let i = products.value.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [products.value[i], products.value[j]] = [products.value[j], products.value[i]]
+    }
+  }
+}
 </script>
 
 <template>
@@ -32,9 +41,10 @@ const { data: products, pending } = await useFetch<Array<Product>>('https://fake
         <h2 class="text-2xl font-bold tracking-tight text-gray-900">
           Products
         </h2>
+        <UButton color="primary" variant="outline" label="Shuffle" icon="lucide:shuffle" size="sm" @click="shuffleProducts" />
       </div>
 
-      <div class="mt-6 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2 lg:grid-cols-6">
+      <div v-auto-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2 lg:grid-cols-6">
         <div v-for="product in products" :key="product.id" class="group block overflow-hidden rounded border border-gray-200 p-6">
           <div class="relative h-[175px]">
             <img
