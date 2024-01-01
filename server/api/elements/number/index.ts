@@ -4,5 +4,5 @@ export default defineEventHandler(() => {
   if (AUTH_REQUIRED)
     return returnUnauthorized()
 
-  return returnError('Element Number required')
+  return returnError('Element number required')
 })
