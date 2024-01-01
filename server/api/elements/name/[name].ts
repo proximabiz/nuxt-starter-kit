@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import db from '~/server/api/elements/elements.json'
+import { elements } from '~/server/api/elements/database'
 import { AUTH_REQUIRED, returnError, returnUnauthorized, validateParams } from '~/server/api/elements/utility'
 
 const paramsSchema = z.object({
@@ -17,7 +17,7 @@ export default defineEventHandler((event) => {
   if (!validationResult.success)
     return validateParams(validationResult.error.issues)
 
-  const element = db.elements.find(e => e.name.toLowerCase() === validationResult.data.name.toLowerCase())
+  const element = elements.find(e => e.name.toLowerCase() === validationResult.data.name.toLowerCase())
   if (!element)
     returnError('Element not found')
 

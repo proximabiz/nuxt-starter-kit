@@ -1,5 +1,13 @@
 <script setup lang="ts">
+import type { Element } from '~/server/api/elements/database'
+
 const createArray = (n: number) => Array.from({ length: n }, (_, i) => i + 1)
+
+const elements = ref<Array<Element> | null>([])
+useLazyFetch<Array<Element>>('/api/elements').then((data) => {
+  console.log('recevied')
+  elements.value = data.data.value
+})
 </script>
 
 <template>
