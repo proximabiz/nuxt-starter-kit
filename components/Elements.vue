@@ -1,23 +1,33 @@
 <script setup lang="ts">
 import type { Element } from '~/server/api/elements/database'
 
-const createArray = (n: number) => Array.from({ length: n }, (_, i) => i + 1)
-
-const elements = ref<Array<Element> | null>([])
-useLazyFetch<Array<Element>>('/api/elements').then((data) => {
-  console.log('recevied')
-  elements.value = data.data.value
+const { data: elements, execute } = useFetch<Array<Element>>('/api/elements', {
+  lazy: false,
 })
+
+function shuffleElements() {
+  if (elements.value) {
+    for (let i = elements.value.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [elements.value[i], elements.value[j]] = [elements.value[j], elements.value[i]]
+    }
+  }
+}
+
+function resetElements() {
+  execute()
+}
 </script>
 
 <template>
-  <div v-if="false">
-    please wait...
-  </div>
-  <div v-else>
+  <div>
     <div class="py-6">
-      <div class="flex flex-wrap  gap-4">
-        <UButton v-for="item in createArray(10)" :key="item" :label="item.toString()" color="gray" class="w-12 h-12 justify-center" />
+      <div class="flex gap-2 justify-start pb-4">
+        <UButton icon="lucide:refresh-ccw" label="reset" @click="resetElements()" />
+        <UButton icon="lucide:shuffle" color="gray" @click="shuffleElements()" />
+      </div>
+      <div v-auto-animate class="flex flex-wrap gap-4">
+        <UButton v-for="el in elements" :key="el.number" size="sm" :label="el.symbol" color="gray" variant="solid" class="min-w-12 min-h-12 justify-center hover:shadow-md hover:scale-125" />
       </div>
     </div>
   </div>

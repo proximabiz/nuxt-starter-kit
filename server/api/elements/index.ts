@@ -28,5 +28,6 @@ export default defineEventHandler(async (event) => {
     const matchesAtomicName = validationResult.data.name ? element.name === validationResult.data.name : true
     return matchesAtomicNumber && matchesAtomicName
   })
+
   return el
 })
