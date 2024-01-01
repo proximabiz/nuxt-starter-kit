@@ -26,8 +26,17 @@ function resetElements() {
         <UButton icon="lucide:refresh-ccw" label="reset" @click="resetElements()" />
         <UButton icon="lucide:shuffle" color="gray" @click="shuffleElements()" />
       </div>
-      <div v-auto-animate class="flex flex-wrap gap-4">
+      <!-- <div v-auto-animate class="flex flex-wrap gap-4">
         <UButton v-for="el in elements" :key="el.number" size="sm" :label="el.symbol" color="gray" variant="solid" class="min-w-12 min-h-12 justify-center hover:shadow-md hover:scale-125" />
+      </div> -->
+      <div v-auto-animate class="flex flex-wrap gap-2">
+        <UTooltip v-for="el in elements" :key="el.number">
+          <UButton :label="el.symbol" color="gray" variant="solid" size="sm" class="min-w-12 min-h-12 justify-center" />
+
+          <template #text>
+            <span class="font-semibold">{{ el.name }} ({{ el.number }}) </span>
+          </template>
+        </UTooltip>
       </div>
     </div>
   </div>
