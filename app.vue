@@ -93,6 +93,17 @@ function shuffleItems() {
 
 <template>
   <div>
+    <UCard class="m-10">
+      <template #header>
+        <h2>Elements</h2>
+      </template>
+      <UAlert
+        title="Elements SSR"
+        description="Rendered on Server Side"
+      />
+      <Elements />
+    </UCard>
+
     <div class="py-24 sm:py-32 md:py-40 relative mb-[calc(var(--header-height)*2)]">
       <div class="mx-auto px-4 sm:px-6 lg:px-8 gap-16 sm:gap-y-24 max-w-4xl flex flex-col">
         <div class="relative z-[1] text-center">
