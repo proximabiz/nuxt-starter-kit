@@ -14,7 +14,7 @@ interface Product {
   rating: Rating
 }
 
-const { data: products, pending } = await useFetch<Array<Product>>('https://fakestoreapi.com/products', {
+const { data: products, pending } = useFetch<Array<Product>>('https://fakestoreapi.com/products', {
   params: {
     limit: 12,
   },
