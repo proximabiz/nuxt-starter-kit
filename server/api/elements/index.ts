@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { filter } from 'lodash-es'
+import { filter as elementFilter } from 'lodash-es'
 import db from './elements.json'
 import { AUTH_REQUIRED, returnUnauthorized, validateParams } from '~/server/api/elements/utility'
 
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
   if (!validationResult.success)
     return validateParams(validationResult.error.issues)
 
-  const el = filter(db.elements, (element) => {
+  const el = elementFilter(db.elements, (element) => {
     const matchesAtomicNumber = validationResult.data.number ? element.number.toString() === validationResult.data.number : true
     const matchesAtomicName = validationResult.data.name ? element.name === validationResult.data.name : true
     return matchesAtomicNumber && matchesAtomicName
