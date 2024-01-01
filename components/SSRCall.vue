@@ -19,7 +19,6 @@ const { data: products, pending } = useFetch<Array<Product>>('https://fakestorea
     limit: 12,
   },
   lazy: true,
-
 })
 </script>
 
