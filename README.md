@@ -36,7 +36,7 @@
 #### Quick Start
 
 ```bash
-pnpm local:setup
+pnpm setup:local
 ```
 
 After setup successfully, start the local server-

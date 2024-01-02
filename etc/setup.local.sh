@@ -7,19 +7,19 @@ if [[ "$OSTYPE" != "darwin"* && "$OSTYPE" != "linux"* ]]; then
 fi
 
 # Check if Node.js is installed
-if ! command -v node &> /dev/null; then
+if ! command -v node; then
     echo "Node.js is not installed. Please install Node.js before running the application."
     exit 1
 fi
 
 # Check if npm is installed
-if ! command -v npm &> /dev/null; then
+if ! command -v npm; then
     echo "npm is not installed. Please install npm before running the application."
     exit 1
 fi
 
 # Check if pnpm is installed, if not, install it
-if ! command -v pnpm &> /dev/null; then
+if ! command -v pnpm; then
     echo "pnpm is not installed. Installing pnpm..."
     npm install -g pnpm
 fi
