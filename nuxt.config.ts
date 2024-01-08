@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     '@pinia-plugin-persistedstate/nuxt',
     'nuxt-lodash',
     '@formkit/auto-animate/nuxt',
+    '@nuxtjs/tailwindcss',
   ],
   ui: { global: true },
   tailwindcss: { viewer: false },
@@ -51,4 +52,5 @@ export default defineNuxtConfig({
     listen: () => validateEnvs(),
   },
   experimental: { typedPages: true },
+  css: ['~/assets/css/main.css'],
 })
