@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   tailwindcss: { viewer: false },
   googleFonts: {
     families: {
-      Inter: [200, 400, 500, 600],
+      Inter: [200, 400, 500, 600, 700],
     },
     display: 'swap',
   },

@@ -97,7 +97,7 @@ function shuffleItems() {
       <div class="mx-auto px-4 sm:px-6 lg:px-8 gap-16 sm:gap-y-24 max-w-4xl flex flex-col">
         <div class="relative z-[1] text-center">
           <h1 class="text-5xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-7xl">
-            <span>A <span class="text-primary">Nuxt Starter Kit</span> for<br class="hidden lg:block"> Modern Web
+            <span>A <span class="text-primary animate-pulse">Nuxt Starter Kit</span> for<br class="hidden lg:block"> Modern Web
               Apps</span>
           </h1>
           <p class="mt-6 text-lg tracking-tight text-gray-600 dark:text-gray-300">
@@ -167,6 +167,13 @@ function shuffleItems() {
             {{ item }}
           </UButton>
         </ul>
+
+        <UAlert
+          title="Elements SSR"
+          description="Rendered on Server Side"
+          class="mt-6"
+        />
+        <Elements />
       </UCard>
 
       <UCard class="m-10">
@@ -234,6 +241,14 @@ function shuffleItems() {
           <h2>Table</h2>
         </template>
         <UTable :rows="peoples" />
+      </UCard>
+
+      <UCard class="m-10">
+        <template #header>
+          <h2>SSR</h2>
+        </template>
+        <h5>Rendered on Server Side</h5>
+        <SSRCall />
       </UCard>
     </UContainer>
   </div>
