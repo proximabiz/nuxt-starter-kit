@@ -2,9 +2,7 @@
   <UCard class="app-view">
     <LayoutAppBar />
     <UContainer>
-      <UCard>
-        <slot />
-      </UCard>
+      <slot />
     </UContainer>
     <LayoutAppFooter />
   </UCard>

@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <Website />
+  <div>Product page</div>
 </template>
