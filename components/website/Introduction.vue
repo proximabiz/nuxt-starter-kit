@@ -14,7 +14,9 @@
         This tool is built to Enhance Productivity and Visualize Ideas with AI Flow Mapper.<br>
         It Simplifies the Complex Concepts into Elegant Diagrams.
       </p>
-      <UButton class="mt-10" icon="i-heroicons-pencil-square" color="blue">Continue with google</UButton>
+      <UButton class="mt-10" icon="i-heroicons-pencil-square" color="blue">
+        Continue with google
+      </UButton>
     </div>
   </UContainer>
 </template>
