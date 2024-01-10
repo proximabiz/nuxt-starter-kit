@@ -7,17 +7,17 @@ import { ref } from "vue";
 <template>
   <div class="flex flex-col items-center">
     <span class="text-3xl font-medium">Choose Your AI Flow Mapper Plan</span>
-    <div>
+    <div class="rounded-full border mt-2">
       <label for="Toggle4" class="inline-flex items-center p-1 cursor-pointer dark:bg-gray-300 dark:text-gray-800">
         <input id="Toggle4" type="checkbox" class="hidden peer" />
-        <span class="px-4 py-2 dark:bg-gray-600 peer-checked:dark:bg-gray-300">Monthly</span>
-        <span class="px-4 py-2 dark:bg-gray-300 peer-checked:dark:bg-violet-400">Annually</span>
+        <span class="px-3 py-1 rounded-full text-white font-medium bg-indigo-600">Monthly</span>
+        <span class="px-3 py-1">Annually</span>
       </label>
     </div>
   </div>
 
-  <div class="max-w-screen-lg px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
-    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-12">
+  <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
+    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-24">
       <div class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm">
         <div class="p-4 sm:pt-4 sm:pb-0">
           <h2 class="text-lg font-medium text-gray-900">
