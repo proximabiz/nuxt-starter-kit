@@ -1,7 +1,43 @@
 <script lang="ts" setup></script>
 
 <template>
-  <nav class="bg-white border-gray-200 dark:bg-gray-900">
+    <nav
+      class="flex w-full bg-white border-gray-200 dark:bg-gray-900"
+    >
+      <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo"/>
+      <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white margin-align">AI Flow Mapper</span>
+      <!-- <NuxtImg
+        class="ms-7"
+        src="@/assets/img/logo.png"
+        :width="40"
+        :height="40"
+        contain
+      /> -->
+      <ul class="flex w-full items-center justify-center">
+        <li class="lg:pr-5 font-medium">
+          <NuxtLink to="/">Home</NuxtLink>
+        </li>
+        <li class="lg:pr-5 font-medium">
+          <NuxtLink to="/about">About Product</NuxtLink>
+        </li>
+        <li class="lg:pr-5 font-medium">
+          <NuxtLink to="/pricing">Pricing</NuxtLink>
+        </li>
+        <li class="lg:pr-5 font-medium">
+          <NuxtLink to="/posts/2">Contact Sales</NuxtLink>
+        </li>
+      </ul>
+      <button
+        type="button"
+        class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        <Icon name="tabler:logout" class="font-medium text-lg" color="white" />
+        Login
+      </button>
+  
+    </nav>
+  
+  <!-- <nav class="bg-white border-gray-200 dark:bg-gray-900">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
       <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo">
@@ -30,5 +66,10 @@
         </ul>
       </div>
     </div>
-  </nav>
+  </nav> -->
 </template>
+<style scoped>
+.margin-align{
+  margin:0 0 10px 20px;
+}
+</style>

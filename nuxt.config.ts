@@ -1,7 +1,7 @@
 import validateEnvs from './envs/env.validator'
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   runtimeConfig: {
     EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
     public: {
