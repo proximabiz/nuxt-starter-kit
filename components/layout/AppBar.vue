@@ -4,8 +4,11 @@
     <nav
       class="flex w-full bg-white border-gray-200 dark:bg-gray-900"
     >
+    <NuxtLink to="/">
+      <div class="flex">
       <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo"/>
       <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white margin-align">AI Flow Mapper</span>
+    </div>
       <!-- <NuxtImg
         class="ms-7"
         src="@/assets/img/logo.png"
@@ -13,6 +16,7 @@
         :height="40"
         contain
       /> -->
+    </NuxtLink>
       <ul class="flex w-full items-center justify-center">
         <li class="lg:pr-5 font-medium">
           <NuxtLink to="/">Home</NuxtLink>
@@ -24,7 +28,7 @@
           <NuxtLink to="/pricing">Pricing</NuxtLink>
         </li>
         <li class="lg:pr-5 font-medium">
-          <NuxtLink to="/posts/2">Contact Sales</NuxtLink>
+          <NuxtLink to="/contact">Contact Sales</NuxtLink>
         </li>
       </ul>
       <button
