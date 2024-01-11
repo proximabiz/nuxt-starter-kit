@@ -5,9 +5,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
     public: {
+      OPENAI_API_KEY:process.env.OPENAI_API_KEY,
       EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
     },
   },
+
   modules: [
     '@nuxt/ui',
     'nuxt-icon',
@@ -18,6 +20,7 @@ export default defineNuxtConfig({
     '@pinia-plugin-persistedstate/nuxt',
     'nuxt-lodash',
     '@formkit/auto-animate/nuxt',
+    '@nuxtjs/supabase'
   ],
   ui: { global: true },
   tailwindcss: { viewer: false },
@@ -51,4 +54,8 @@ export default defineNuxtConfig({
     listen: () => validateEnvs(),
   },
   experimental: { typedPages: true },
+  supabase:{
+    url:process.env.SUPABASE_URL,
+    key:process.env.SUPABASE_KEY
+  }
 })
