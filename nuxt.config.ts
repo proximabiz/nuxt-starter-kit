@@ -4,8 +4,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
+    OPENAI_API_KEY:process.env.OPENAI_API_KEY,
     public: {
-      OPENAI_API_KEY:process.env.OPENAI_API_KEY,
       EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
     },
   },
