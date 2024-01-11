@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
+    OPENAI_API_KEY:process.env.OPENAI_API_KEY,
     public: {
       EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
     },
@@ -19,6 +20,7 @@ export default defineNuxtConfig({
     'nuxt-lodash',
     '@formkit/auto-animate/nuxt',
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/supabase'
   ],
   ui: { global: true },
   tailwindcss: { viewer: false },
@@ -53,4 +55,8 @@ export default defineNuxtConfig({
   },
   experimental: { typedPages: true },
   css: ['~/assets/css/main.css'],
+  supabase:{
+    url:process.env.SUPABASE_URL,
+    key:process.env.SUPABASE_KEY
+  }
 })
