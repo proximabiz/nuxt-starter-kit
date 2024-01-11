@@ -34,7 +34,7 @@ const globalStore = useGlobalStore()
               />
 
               <template #panel="{ close }">
-                <div class="p-8">
+                <div class="p-8" @click="close">
                   some info
                 </div>
               </template>
