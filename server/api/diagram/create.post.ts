@@ -1,7 +1,8 @@
-import {serverSupabaseClient} from '#supabase/server'
+import { serverSupabaseClient } from '#supabase/server';
 import { OpenAI } from 'openai';
-import {ChartValidation} from '../../utils/validations'
-import { ChartResponseType, DiagramType } from '~/server/types/chart';
+import { ChartResponseType, DiagramType } from '../../types/chart';
+import { protectRoute } from '../../utlis/route.protector';
+import { ChartValidation } from '../../utlis/validations';
 
 
 export default defineEventHandler(async (event) => {
