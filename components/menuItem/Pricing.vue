@@ -1,7 +1,25 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
-// const isChecked = ref(false);
+const isMonthly = ref(true);
+
+const monthlyPrices = {
+  Free: 0,
+  Pro: 5,
+  Enterprise: "Custom"
+};
+const annualPrices = {
+  Free: 0,
+  Pro: monthlyPrices.Pro*12,
+  Enterprise: "Custom"
+};
+
+const prices = computed(() => {
+  return isMonthly.value ? monthlyPrices : annualPrices;
+});
+
+
+
 </script>
 
 <template>
@@ -9,33 +27,35 @@ import { ref } from "vue";
     <span class="text-3xl font-medium">Choose Your AI Flow Mapper Plan</span>
     <div class="rounded-full border mt-2">
       <label for="Toggle4" class="inline-flex items-center p-1 cursor-pointer dark:bg-gray-300 dark:text-gray-800">
-        <input id="Toggle4" type="checkbox" class="hidden peer" />
-        <span class="px-3 py-1 rounded-full text-white font-medium bg-indigo-600">Monthly</span>
-        <span class="px-3 py-1">Annually</span>
+        <input id="Toggle4" type="checkbox" class="hidden peer" @change="isMonthly = !isMonthly" />
+        <span :class="{ 'bg-indigo-600 text-white': isMonthly, 'text-gray-700': !isMonthly }"
+          class="px-3 py-1 rounded-full font-medium">Monthly</span>
+        <span :class="{ 'bg-indigo-600 text-white': !isMonthly, 'text-gray-700': isMonthly }"
+          class="px-3 py-1 rounded-full font-medium">Annually</span>
       </label>
     </div>
   </div>
 
   <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
-    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-24">
-      <div class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm">
+    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-24"
+      >
+      <div class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm" v-for="(price, plan) in prices" :key="plan">
         <div class="p-4 sm:pt-4 sm:pb-0">
           <h2 class="text-lg font-medium text-gray-900">
-            Free
+            {{ plan }}
             <span class="sr-only">Plan</span>
           </h2>
           <p class="text-gray-700">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </p>
-          <!-- <p class="mt-2 sm:mt-4"> -->
-            <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-              0$
-            </strong>
-            <span class="text-sm font-medium text-gray-700">/month</span>
-          <!-- </p> -->
+          <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
+            {{ price }}{{ price === 'Custom' ? '' : '$' }}
+          </strong>
+          <span class="text-sm font-medium text-gray-700">{{price==="Custom"?"":isMonthly  ? '/month' : '/year'}}</span>
+
           <a class="mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
             href="#">
-            Get Started
+            {{ price === 'Custom' ? 'Contact Sales' : 'Get Started' }}            
           </a>
         </div>
         <div class="p-2 sm:px-4">
@@ -88,7 +108,7 @@ import { ref } from "vue";
           </ul>
         </div>
       </div>
-      <div class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm">
+      <!-- <div class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm">
         <div class="p-4 sm:pt-4 sm:pb-0">
           <h2 class="text-lg font-medium text-gray-900">
             Pro
@@ -97,12 +117,12 @@ import { ref } from "vue";
           <p class="text-gray-700">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </p>
-          
-            <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-              30$
-            </strong>
-            <span class="text-sm font-medium text-gray-700">/month</span>
-       
+
+          <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
+            30$
+          </strong>
+          <span class="text-sm font-medium text-gray-700">/month</span>
+
           <a class="mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
             href="#">
             Get Started
@@ -167,10 +187,9 @@ import { ref } from "vue";
           <p class="text-gray-700">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </p>
-          
-            <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-              Custom
-            </strong>   
+          <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
+            Custom
+          </strong>
           <a class="mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
             href="#">
             Contact Sales
@@ -225,7 +244,7 @@ import { ref } from "vue";
             </li>
           </ul>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
