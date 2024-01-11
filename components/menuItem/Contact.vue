@@ -1,5 +1,40 @@
 <script setup lang="ts">
+import { z } from 'zod'
+import type { FormError, FormSubmitEvent } from '#ui/types'
 
+const state = reactive({
+  name:undefined,
+  email: undefined,
+  phone: undefined,
+  message:undefined
+})
+const schema = z.object({
+  name: z.string().nonempty('Name is required'),
+  email: z.string().email('Invalid email'),
+  phone: z
+    .string()
+    .refine((value) => /^[0-9]+$/.test(value) && value.length >= 10, {
+      message: 'Phone must be a valid number with at least 10 digits',
+    }),
+    message: z.string().nonempty('Name is required'),
+})
+
+// type Schema = z.output<typeof schema>
+
+
+
+// const validate = (state: any): FormError[] => {
+//   const errors = []
+//   if (!state.name) errors.push({ path: 'name', message: 'Required' })
+//   if (!state.email) errors.push({ path: 'email', message: 'Required' })
+//   if (!state.phone) errors.push({ path: 'phone', message: 'Required' })
+//   return errors
+// }
+
+async function onSubmit(event: FormSubmitEvent<any>) {
+  // Do something with data
+  console.log(event.data)
+}
 </script>
 
 <template>
@@ -8,42 +43,41 @@
       <p class="text-3xl font-extrabold text-blue-800">Send Us A Message</p>
       <p class="text-4xl font-extrabold text-slate-600">Quick Contact</p>
     </section>
-    <section class="grid grid-cols-2 gap-12">
-      <div class="flex flex-col gap-8">
-        <!-- <UForm :validate="validate" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormGroup label="Email" name="email">
-      <UInput v-model="state.email" />
-    </UFormGroup>
+    <!-- <section class="grid grid-cols-2 gap-12"> -->
 
-    <UFormGroup label="Password" name="password">
-      <UInput v-model="state.password" type="password" />
-    </UFormGroup>
+      <UForm :schema="schema" :state="state" class="grid grid-cols-2 gap-12" @submit="onSubmit">
+        <div class="flex flex-col gap-8">
+          <UFormGroup  name="name">
+            <UInput v-model="state.name" placeholder="Your Name"/>
+          </UFormGroup>
+          <UFormGroup  name="email">
+            <UInput v-model="state.email" placeholder="Your Email"/>
+          </UFormGroup>
+          <UFormGroup  name="phone">
+            <UInput v-model="state.phone" placeholder="Your Phone no"/>
+          </UFormGroup>
+        </div>
+        <div class="flex flex-col gap-6">
+          <UFormGroup  name="message">
+          <UTextarea color="white" v-model="state.message" variant="outline" placeholder="Write your query/message" />
+        </UFormGroup>
+          <UButton type="submit" class="btn" color="blue">
+            Submit
+          </UButton>
+        </div>
 
-    <UButton type="submit">
-      Submit
-    </UButton>
-  </UForm> -->
-        <UInput color="white" variant="outline" placeholder="Your Name" />
-        <UInput color="white" variant="outline" placeholder="Your Email" />
-        <UInput color="white" variant="outline" placeholder="Your Telephone No." /> 
-
-        <!-- <input type="text" placeholder="Your Name" class="rounded-md">
-        <input type="text" placeholder="Your Email" class="rounded-md">
-        <input type="text" placeholder="Your Telephone No." class="rounded-md"> -->
-      </div>
-      <div class="flex flex-col gap-6">
-        <UTextarea color="white" variant="outline" placeholder="Write your query/message" />
-        <button type="button"
-          class="btn text-white bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-lg px-6 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-          Submit
-        </button>
-      </div>
-    </section>
+      </UForm>  
+    <!-- </section> -->
   </div>
 </template>
 <style scoped>
-.btn{
+.btn {
   display: inline-block;
   width: fit-content;
+}
+
+.custom-input {
+  border-color: black !important;
+  /* Set the outline color to black */
 }
 </style>
