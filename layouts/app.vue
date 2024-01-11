@@ -1,9 +1,9 @@
 <template>
   <UCard class="app-view">
-    <LayoutWebsiteTopBar />
-    <UContainer>
+    <LayoutAppTopBar />
+    <LayoutAppDrawer />
+    <UContainer class="pt-10">
       <slot />
     </UContainer>
-    <LayoutWebsiteFooter />
   </UCard>
 </template>
