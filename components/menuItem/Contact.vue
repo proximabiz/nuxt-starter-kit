@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { z } from 'zod'
-import type { FormError, FormSubmitEvent } from '#ui/types'
+import { VueTelInput } from 'vue-tel-input';
+import 'vue-tel-input/vue-tel-input.css';
+import type {FormSubmitEvent } from '#ui/types'
 
 const state = reactive({
   name:undefined,
@@ -8,28 +10,25 @@ const state = reactive({
   phone: undefined,
   message:undefined
 })
+// const schema = z.object({
+//   name: z.string().min(1,'Name is required'),
+//   email: z.string().email('Invalid email'),
+//   phone: z
+//     .string()
+//     .refine((value) => /^[0-9]+$/.test(value) && value.length >= 10, {
+//       message: 'Phone must be a valid number with at least 10 digits',
+//     }),
+//     message: z.string().min(1,'Name is required'),
+// })
+
 const schema = z.object({
-  name: z.string().nonempty('Name is required'),
-  email: z.string().email('Invalid email'),
-  phone: z
-    .string()
-    .refine((value) => /^[0-9]+$/.test(value) && value.length >= 10, {
-      message: 'Phone must be a valid number with at least 10 digits',
-    }),
-    message: z.string().nonempty('Name is required'),
-})
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email Id'),
+  phone: z.number().max(10,'Phone must be a valid number with at least 10 digits'),
+  message: z.string().min(1, 'Message is required'),
+});
 
 // type Schema = z.output<typeof schema>
-
-
-
-// const validate = (state: any): FormError[] => {
-//   const errors = []
-//   if (!state.name) errors.push({ path: 'name', message: 'Required' })
-//   if (!state.email) errors.push({ path: 'email', message: 'Required' })
-//   if (!state.phone) errors.push({ path: 'phone', message: 'Required' })
-//   return errors
-// }
 
 async function onSubmit(event: FormSubmitEvent<any>) {
   // Do something with data
@@ -47,21 +46,22 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 
       <UForm :schema="schema" :state="state" class="grid grid-cols-2 gap-16" @submit="onSubmit">
         <div class="flex flex-col gap-6">
-          <UFormGroup  name="name">
+          <UFormGroup  name="name" label="Name">
             <UInput v-model="state.name" placeholder="Your Name" class="custom-input"/>
           </UFormGroup>
-          <UFormGroup  name="email">
+          <UFormGroup  name="email" label="Email">
             <UInput v-model="state.email" placeholder="Your Email"/>
           </UFormGroup>
-          <UFormGroup  name="phone">
-            <UInput v-model="state.phone" placeholder="Your Phone no"/>
+          <UFormGroup  name="phone" label="Phone No">
+            <!-- <UInput v-model="state.phone" placeholder="Your Phone no"/> -->
+            <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" required :maxlength="10" />
           </UFormGroup>
         </div>
-        <div class="flex flex-col gap-4">
-          <UFormGroup  name="message">
+        <div class="flex flex-col gap-8">
+          <UFormGroup  name="message" label="Message">
           <UTextarea color="white" v-model="state.message" size="xl" variant="outline" placeholder="Write your query/message" />
         </UFormGroup>
-          <UButton type="submit" class="btn" color="blue">
+          <UButton type="submit" class="btn p-4" color="blue">
             Submit
           </UButton>
         </div>
@@ -74,7 +74,6 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 .btn {
   display: inline-block;
   width: fit-content;
-  padding: .5rem;
 }
  .custom-input input[type="text"] {
   border-color: black !important;    

@@ -17,9 +17,6 @@ const annualPrices = {
 const prices = computed(() => {
   return isMonthly.value ? monthlyPrices : annualPrices;
 });
-
-
-
 </script>
 
 <template>

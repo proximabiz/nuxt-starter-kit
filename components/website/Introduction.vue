@@ -1,20 +1,24 @@
 <template>
-  <UContainer class="w-full bg-pink-200">
+  <UContainer class="w-full bg-pink-100">
     <div class="mt-5 text-center p-6 border-gray-200">
       <div class="flex justify-center items-center">
         <img class="h-20 max-w-20" src="/assets/media/mind.gif" alt="image description">
       </div>
       <a href="#">
-        <h5 class="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Let AI Shape Your Ideas With</h5>
+        <h5 class="mt-5 text-xl font-bold tracking-tight text-gray-900 dark:text-white">Let AI Shape Your Ideas With</h5>
       </a>
-      <p class="font-bold text-gray-700 dark:text-gray-400 mt-5">
+      <p class="text-3xl font-bold text-blue-800 dark:text-gray-400 mt-5">
         AI FLOW MAPPER
       </p>
       <p class="mt-5 font-normal text-gray-700 dark:text-gray-400">
         This tool is built to Enhance Productivity and Visualize Ideas with AI Flow Mapper.<br>
         It Simplifies the Complex Concepts into Elegant Diagrams.
       </p>
-      <UButton class="mt-10" icon="i-heroicons-pencil-square" color="blue">
+      <UButton class="mt-10 rounded-full p-2" color="blue">
+        <div class="bg-white px-1 rounded-full pb-1">
+          <Icon name="logos:google-icon" />
+        </div>
+        
         Continue with google
       </UButton>
     </div>
