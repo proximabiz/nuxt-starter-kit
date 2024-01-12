@@ -45,10 +45,10 @@ async function onSubmit(event: FormSubmitEvent<any>) {
     </section>
     <!-- <section class="grid grid-cols-2 gap-12"> -->
 
-      <UForm :schema="schema" :state="state" class="grid grid-cols-2 gap-12" @submit="onSubmit">
-        <div class="flex flex-col gap-8">
+      <UForm :schema="schema" :state="state" class="grid grid-cols-2 gap-16" @submit="onSubmit">
+        <div class="flex flex-col gap-6">
           <UFormGroup  name="name">
-            <UInput v-model="state.name" placeholder="Your Name"/>
+            <UInput v-model="state.name" placeholder="Your Name" class="custom-input"/>
           </UFormGroup>
           <UFormGroup  name="email">
             <UInput v-model="state.email" placeholder="Your Email"/>
@@ -57,9 +57,9 @@ async function onSubmit(event: FormSubmitEvent<any>) {
             <UInput v-model="state.phone" placeholder="Your Phone no"/>
           </UFormGroup>
         </div>
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4">
           <UFormGroup  name="message">
-          <UTextarea color="white" v-model="state.message" variant="outline" placeholder="Write your query/message" />
+          <UTextarea color="white" v-model="state.message" size="xl" variant="outline" placeholder="Write your query/message" />
         </UFormGroup>
           <UButton type="submit" class="btn" color="blue">
             Submit
@@ -74,10 +74,9 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 .btn {
   display: inline-block;
   width: fit-content;
+  padding: .5rem;
 }
-
-.custom-input {
-  border-color: black !important;
-  /* Set the outline color to black */
+ .custom-input input[type="text"] {
+  border-color: black !important;    
 }
 </style>

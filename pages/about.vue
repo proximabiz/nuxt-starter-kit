@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <div>About</div>
+ <MenuItemAbout/>
 </template>
