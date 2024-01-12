@@ -4,13 +4,15 @@ import { ref, computed } from "vue";
 const isMonthly = ref(true);
 
 const monthlyPrices = {
-  Free: 0,
+  Basic: "Free",
+  Personal: 2,
   Pro: 5,
   Enterprise: "Custom"
 };
 const annualPrices = {
-  Free: 0,
-  Pro: monthlyPrices.Pro*12,
+  Basic: "Free",
+  Personal: monthlyPrices.Personal * 12,
+  Pro: monthlyPrices.Pro * 12,
   Enterprise: "Custom"
 };
 
@@ -34,9 +36,9 @@ const prices = computed(() => {
   </div>
 
   <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
-    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-24"
-      >
-      <div class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm" v-for="(price, plan) in prices" :key="plan">
+    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-4 md:gap-8">
+      <div class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm" v-for="(price, plan) in prices"
+        :key="plan">
         <div class="p-4 sm:pt-4 sm:pb-0">
           <h2 class="text-lg font-medium text-gray-900">
             {{ plan }}
@@ -46,13 +48,13 @@ const prices = computed(() => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </p>
           <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-            {{ price }}{{ price === 'Custom' ? '' : '$' }}
+            {{ price }}{{ price === 'Custom' ? '' : price === 'Free' ? '' : '$'}}
           </strong>
-          <span class="text-sm font-medium text-gray-700">{{price==="Custom"?"":isMonthly  ? '/month' : '/year'}}</span>
+          <span class="text-sm font-medium text-gray-700">{{ price === 'Custom' || price === 'Free' ? '' : isMonthly ? '/month' : '/year' }}</span>
 
           <a class="mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
             href="#">
-            {{ price === 'Custom' ? 'Contact Sales' : 'Get Started' }}            
+            {{ price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
           </a>
         </div>
         <div class="p-2 sm:px-4">

@@ -16,9 +16,8 @@
       </p>
       <UButton class="mt-10 rounded-full p-2" color="blue">
         <div class="bg-white px-1 rounded-full pb-1">
-          <Icon name="logos:google-icon" />
-        </div>
-        
+          <Icon name="logos:google-icon" class="text-xl mt-1"/>
+        </div>        
         Continue with google
       </UButton>
     </div>
