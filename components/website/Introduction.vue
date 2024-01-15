@@ -11,9 +11,9 @@ const isLoggedIn = computed(() => authStore.isLoggedIn)
         <img class="h-20 max-w-20" src="/assets/media/mind.gif" alt="image description">
       </div>
       <a href="#">
-        <h5 class="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Let AI Shape Your Ideas With</h5>
+        <h5 class="mt-5 text-xl font-bold tracking-tight text-gray-900 dark:text-white">Let AI Shape Your Ideas With</h5>
       </a>
-      <p class="font-bold text-gray-700 dark:text-gray-400 mt-5">
+      <p class="text-3xl font-bold text-blue-800 dark:text-gray-400 mt-5">
         AI FLOW MAPPER
       </p>
       <p class="mt-5 font-normal text-gray-700 dark:text-gray-400">

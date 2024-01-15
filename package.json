@@ -37,6 +37,7 @@
     "joi": "^17.11.0",
     "openai": "^4.24.3",
     "typescript": "^5.3.3",
+    "vue-tel-input": "^8.3.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
