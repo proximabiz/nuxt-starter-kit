@@ -1,5 +1,5 @@
 <template>
-   <MenuItemPrivacy/>
+   <WebsitePrivacy/>
 </template>
 
 <script setup>

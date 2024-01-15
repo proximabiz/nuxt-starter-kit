@@ -1,7 +1,9 @@
-<script setup lang="ts">
-
+<script lang="ts" setup>
+definePageMeta({
+  middleware: ['redirect'],
+})
 </script>
 
 <template>
-  <Website />
+  <div />
 </template>
