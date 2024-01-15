@@ -27,7 +27,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <nav class="flex w-full bg-white border-gray-200 dark:bg-gray-900">
+  <nav class="flex w-full bg-white border-gray-200 dark:bg-gray-900 pt-6 px-6 pb-3">
     <NuxtLink to="/">
       <div class="flex">
         <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo" />

@@ -39,7 +39,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 <template>
   <div class="mt-8 p-8">
     <section class="flex flex-col gap-2 items-center mb-8">
-      <p class="text-3xl font-extrabold text-blue-800">Send Us A Message</p>
+      <p class="text-3xl font-extrabold text-blue-700">Send Us A Message</p>
       <p class="text-4xl font-extrabold text-slate-600">Quick Contact</p>
     </section>
     <!-- <section class="grid grid-cols-2 gap-12"> -->
@@ -57,13 +57,14 @@ async function onSubmit(event: FormSubmitEvent<any>) {
             <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" required :maxlength="10" />
           </UFormGroup>
         </div>
-        <div class="flex flex-col gap-8">
+        <div class="flex flex-col gap-6">
           <UFormGroup  name="message" label="Message">
           <UTextarea color="white" v-model="state.message" size="xl" variant="outline" placeholder="Write your query/message" />
         </UFormGroup>
-          <UButton type="submit" class="btn p-4" color="blue">
+          <UButton type="submit" class="btn p-3" color="blue">
             Submit
           </UButton>
+          <NuxtLink to="/privacy" class="font-medium hover:text-blue-700">Privacy Policy</NuxtLink>
         </div>
 
       </UForm>  
