@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="w-full bg-pink-200">
+  <UContainer class="w-full">
     <div class="mt-5 text-center p-6 border-gray-200">
       <div class="flex justify-center items-center">
         <img class="h-20 max-w-20" src="/assets/media/mind.gif" alt="image description">

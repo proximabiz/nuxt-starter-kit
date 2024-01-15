@@ -1,25 +1,22 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { computed, ref } from 'vue'
 
-const isMonthly = ref(true);
+const isMonthly = ref(true)
 
 const monthlyPrices = {
   Free: 0,
   Pro: 5,
-  Enterprise: "Custom"
-};
+  Enterprise: 'Custom',
+}
 const annualPrices = {
   Free: 0,
-  Pro: monthlyPrices.Pro*12,
-  Enterprise: "Custom"
-};
+  Pro: monthlyPrices.Pro * 12,
+  Enterprise: 'Custom',
+}
 
 const prices = computed(() => {
-  return isMonthly.value ? monthlyPrices : annualPrices;
-});
-
-
-
+  return isMonthly.value ? monthlyPrices : annualPrices
+})
 </script>
 
 <template>
@@ -27,19 +24,22 @@ const prices = computed(() => {
     <span class="text-3xl font-medium">Choose Your AI Flow Mapper Plan</span>
     <div class="rounded-full border mt-2">
       <label for="Toggle4" class="inline-flex items-center p-1 cursor-pointer dark:bg-gray-300 dark:text-gray-800">
-        <input id="Toggle4" type="checkbox" class="hidden peer" @change="isMonthly = !isMonthly" />
-        <span :class="{ 'bg-indigo-600 text-white': isMonthly, 'text-gray-700': !isMonthly }"
-          class="px-3 py-1 rounded-full font-medium">Monthly</span>
-        <span :class="{ 'bg-indigo-600 text-white': !isMonthly, 'text-gray-700': isMonthly }"
-          class="px-3 py-1 rounded-full font-medium">Annually</span>
+        <input id="Toggle4" type="checkbox" class="hidden peer" @change="isMonthly = !isMonthly">
+        <span
+          :class="{ 'bg-indigo-600 text-white': isMonthly, 'text-gray-700': !isMonthly }"
+          class="px-3 py-1 rounded-full font-medium"
+        >Monthly</span>
+        <span
+          :class="{ 'bg-indigo-600 text-white': !isMonthly, 'text-gray-700': isMonthly }"
+          class="px-3 py-1 rounded-full font-medium"
+        >Annually</span>
       </label>
     </div>
   </div>
 
   <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
-    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-24"
-      >
-      <div class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm" v-for="(price, plan) in prices" :key="plan">
+    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-24">
+      <div v-for="(price, plan) in prices" :key="plan" class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm">
         <div class="p-4 sm:pt-4 sm:pb-0">
           <h2 class="text-lg font-medium text-gray-900">
             {{ plan }}
@@ -51,11 +51,13 @@ const prices = computed(() => {
           <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
             {{ price }}{{ price === 'Custom' ? '' : '$' }}
           </strong>
-          <span class="text-sm font-medium text-gray-700">{{price==="Custom"?"":isMonthly  ? '/month' : '/year'}}</span>
+          <span class="text-sm font-medium text-gray-700">{{ price === "Custom" ? "" : isMonthly ? '/month' : '/year' }}</span>
 
-          <a class="mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
-            href="#">
-            {{ price === 'Custom' ? 'Contact Sales' : 'Get Started' }}            
+          <a
+            class="mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
+            href="#"
+          >
+            {{ price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
           </a>
         </div>
         <div class="p-2 sm:px-4">
@@ -64,43 +66,55 @@ const prices = computed(() => {
           </p>
           <ul class="mt-2 space-y-2 sm:mt-2">
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-indigo-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-indigo-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
               <span class="text-gray-700"> 10 users </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-indigo-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-indigo-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
               <span class="text-gray-700"> 2GB of storage </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-indigo-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-indigo-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
               <span class="text-gray-700"> Email support </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-red-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-red-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span class="text-gray-700"> Help center access </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-red-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-red-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span class="text-gray-700"> Phone support </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-red-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-red-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span class="text-gray-700"> Community access </span>
