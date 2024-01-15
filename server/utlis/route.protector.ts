@@ -2,7 +2,6 @@ import type { H3Event } from 'h3'
 import { serverSupabaseClient } from '#supabase/server'
 
 export async function protectRoute(event: H3Event) {
-  console.log('HERE______')
   // Use the Supabase client
   const client = await serverSupabaseClient(event)
   const authorizationHeader = await getHeader(event, 'Authorization')

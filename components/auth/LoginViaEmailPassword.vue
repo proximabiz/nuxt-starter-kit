@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import type { FormSubmitEvent } from '#ui/types';
-import { z } from 'zod';
-import { useAuthStore } from '~/stores';
+import { z } from 'zod'
+import { useAuthStore } from '~/stores'
 
 const notify = useNotification()
 const authStore = useAuthStore()
@@ -10,20 +9,18 @@ const schema = z.object({
   password: z.string().min(1, 'This field is required'),
 })
 
-type Schema = z.output<typeof schema>
-
 // State
 const form = reactive({
   email: '',
   password: '',
 })
-const isLoading = ref(false);
+const isLoading = ref(false)
 
 // Computed
 const isLoggedIn = computed(() => authStore.isLoggedIn)
 
 // Methods
-async function signIn(event: FormSubmitEvent<Schema>) {
+async function signIn() {
   try {
     isLoading.value = true
     // Do something with data
@@ -39,7 +36,8 @@ async function signIn(event: FormSubmitEvent<Schema>) {
   }
   catch (error) {
     notify.error(error.statusMessage)
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }

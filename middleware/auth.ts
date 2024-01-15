@@ -7,11 +7,12 @@ export default defineNuxtRouteMiddleware((to) => {
   if (to.fullPath.includes('/auth') && accessToken)
     return navigateTo('/')
 
-  if (!to.fullPath.includes('/auth') && !accessToken)
+  if (!to.fullPath.includes('/auth') && !accessToken) {
     return navigateTo({
       path: '/auth',
       query: {
-        action: 'signin'
-      }
+        action: 'signin',
+      },
     })
+  }
 })

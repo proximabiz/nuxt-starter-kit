@@ -1,4 +1,4 @@
-import type { NotificationColor } from "@nuxt/ui/dist/runtime/types"
+import type { NotificationColor } from '@nuxt/ui/dist/runtime/types'
 
 export function useNotification() {
   const toast = useToast()

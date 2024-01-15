@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <div>Contact</div>
+  <WebsiteAbout />
 </template>
