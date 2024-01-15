@@ -9,6 +9,13 @@ export default defineEventHandler(async (event) => {
     password: params.password,
   })
 
+  if (error) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: error.message,
+    })
+  }
+
   return {
     data,
     error,

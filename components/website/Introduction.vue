@@ -1,3 +1,9 @@
+<script lang="ts" setup>
+const authStore = useAuthStore()
+
+const isLoggedIn = computed(() => authStore.isLoggedIn)
+</script>
+
 <template>
   <UContainer>
     <div class="mt-5 text-center p-6 border-gray-200">
@@ -14,8 +20,8 @@
         This tool is built to Enhance Productivity and Visualize Ideas with AI Flow Mapper.<br>
         It Simplifies the Complex Concepts into Elegant Diagrams.
       </p>
-      <UButton class="mt-10" icon="i-heroicons-pencil-square" color="blue">
-        Continue with google
+      <UButton v-if="isLoggedIn" class="mt-10" color="blue" @click="navigateTo('/app/maps')">
+        Get Started
       </UButton>
     </div>
   </UContainer>
