@@ -11,8 +11,8 @@ const monthlyPrices = {
 };
 const annualPrices = {
   Basic: "Free",
-  Personal: monthlyPrices.Personal * 12,
-  Pro: monthlyPrices.Pro * 12,
+  Personal: monthlyPrices.Personal * 11,
+  Pro: monthlyPrices.Pro * 11,
   Enterprise: "Custom"
 };
 
