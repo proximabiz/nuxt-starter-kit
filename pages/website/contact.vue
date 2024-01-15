@@ -3,5 +3,9 @@
 </script>
 
 <template>
-  <div>Pricing page</div>
+  <WebsiteContact />
 </template>
+
+<style scoped>
+
+</style>

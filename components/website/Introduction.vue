@@ -1,8 +1,8 @@
 <template>
-  <UContainer>
+  <UContainer class="w-full">
     <div class="mt-5 text-center p-6 border-gray-200">
       <div class="flex justify-center items-center">
-        <img class="h-auto max-w-10" src="/assets/media/mind.gif" alt="image description">
+        <img class="h-20 max-w-20" src="/assets/media/mind.gif" alt="image description">
       </div>
       <a href="#">
         <h5 class="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Let AI Shape Your Ideas With</h5>

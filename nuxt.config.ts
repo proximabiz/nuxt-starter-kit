@@ -1,7 +1,7 @@
 import validateEnvs from './envs/env.validator'
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   runtimeConfig: {
     EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
     public: {
@@ -53,4 +53,11 @@ export default defineNuxtConfig({
   },
   experimental: { typedPages: true },
   css: ['~/assets/css/main.css'],
+  // app: {
+  //   head: {
+  //     link: [
+  //       { rel: 'icon', type: 'image/png', href: '@/assets/media/logo.png' }
+  //     ]
+  //   }
+  // }
 })

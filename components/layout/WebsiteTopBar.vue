@@ -1,34 +1,67 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+// Define the structure of your link objects for better TypeScript support
+interface NavLink {
+  name: string
+  to: string
+}
+
+const links = ref<NavLink[]>([
+  { name: 'Home', to: '/website' },
+  { name: 'About Product', to: '/website/about' },
+  { name: 'Pricing', to: '/website/pricing' },
+  { name: 'Contact Sales', to: '/website/contact' },
+])
+
+const route = useRoute()
+
+function isActiveRoute(to: string) {
+  return route.path === to
+}
+
+onMounted(() => {
+  // Any additional logic to run after the component is mounted
+})
+</script>
 
 <template>
-  <nav class="bg-white border-gray-200 dark:bg-gray-900">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-      <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+  <nav class="flex w-full bg-white border-gray-200 dark:bg-gray-900">
+    <NuxtLink to="/">
+      <div class="flex">
         <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo">
-        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">AI Flow Mapper</span>
-      </a>
-      <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
-        <span class="sr-only">Open main menu</span>
-        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15" />
-        </svg>
-      </button>
-      <div id="navbar-default" class="hidden w-full md:block md:w-auto">
-        <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-          <li>
-            <a class="block py-2 px-3 cursor-pointer text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page" @click="navigateTo('/')">Home</a>
-          </li>
-          <li>
-            <a class="block py-2 px-3 cursor-pointer text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" @click="navigateTo('/about')">About Product</a>
-          </li>
-          <li>
-            <a class="block py-2 px-3 cursor-pointer text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" @click="navigateTo('/pricing')">Pricing</a>
-          </li>
-          <li>
-            <a class="block py-2 px-3 cursor-pointer text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" @click="navigateTo('/contact')">Contact Sales</a>
-          </li>
-        </ul>
+        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white margin-align">AI Flow
+          Mapper</span>
       </div>
-    </div>
+    </NuxtLink>
+    <ul class="flex w-full items-center justify-center">
+      <li
+        v-for="link in links" :key="link.name" class="lg:pr-5 font-medium"
+        :class="{ 'active-link': isActiveRoute(link.to) }"
+      >
+        <NuxtLink :to="link.to">
+          {{ link.name }}
+        </NuxtLink>
+      </li>
+    </ul>
+    <button
+      type="button"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    >
+      <Icon name="tabler:logout" class="font-medium text-lg" color="white" />
+      Login
+    </button>
   </nav>
 </template>
+
+<style scoped>
+.margin-align {
+  margin: 0 0 10px 20px;
+}
+
+.active-link {
+  color: rgb(48, 48, 250);
+  font-weight: 700;
+}
+</style>
