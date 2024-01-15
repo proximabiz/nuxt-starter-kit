@@ -3,9 +3,5 @@
 </script>
 
 <template>
-  <MenuItemContact/>
+  <Website />
 </template>
-
-<style scoped>
-
-</style>
