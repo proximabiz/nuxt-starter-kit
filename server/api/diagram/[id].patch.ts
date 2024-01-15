@@ -1,9 +1,9 @@
 import { OpenAI } from 'openai'
 import { protectRoute } from '../../utlis/route.protector'
 import { ChartUpdateValidation } from '../../utlis/validations'
+import { serverSupabaseClient } from '#supabase/server'
 import type { ChartResponseType } from '~/server/types/chart'
 import { DiagramType } from '~/server/types/chart'
-import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
             `,
       ).eq('id', diagramId).limit(1)
 
-      if (!data || Array.isArray(data) && data.length === 0) {
+      if (!data || (Array.isArray(data) && data.length === 0)) {
         const k = createError(`no diagram found for the diagramId:${diagramId}`)
         return {
           k,
