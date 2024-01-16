@@ -1,0 +1,90 @@
+<script lang="ts" setup>
+import { useGlobalStore } from '~/stores'
+
+const globalStore = useGlobalStore()
+const authStore = useAuthStore()
+const notify = useNotification()
+
+const items = [
+  [{
+    label: 'ben@example.com',
+    slot: 'account',
+    disabled: true,
+  }],
+  [{
+    label: 'Settings',
+    icon: 'i-heroicons-cog-8-tooth',
+    action: 'navigateToSettings',
+    click: () => navigateTo('/settings'),
+  }],
+  [{
+    label: 'Sign out',
+    icon: 'i-heroicons-arrow-left-on-rectangle',
+    action: 'singOut',
+    click: () => singOut(),
+  }],
+]
+
+const authUser = computed(() => authStore.authUser)
+const isLoggedIn = computed(() => authStore.isLoggedIn)
+
+async function singOut() {
+  try {
+    // Do something with data
+    await authStore.signOut()
+
+    if (!isLoggedIn.value)
+      navigateTo('/')
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
+}
+</script>
+
+<template>
+  <nav class="bg-white border-gray-200 dark:bg-gray-900">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div>
+        <UButton
+          :padded="false"
+          color="blue"
+          variant="link"
+          size="xl"
+          icon="i-heroicons-bars-3" @click="globalStore.toggleDrawer()"
+        />
+        <UButton
+          color="blue"
+          variant="link"
+          size="xl"
+          class="ms-5"
+          icon="i-heroicons-home" @click="navigateTo('/')"
+        />
+      </div>
+      <div id="navbar-default" class="hidden w-full md:block md:w-auto">
+        <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+          <li>
+            <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }">
+              <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
+              <template #account>
+                <div class="text-left">
+                  <p>
+                    Signed in as
+                  </p>
+                  <p class="truncate font-medium text-gray-900 dark:text-white">
+                    {{ authUser.email }}
+                  </p>
+                </div>
+              </template>
+
+              <template #item="{ item }">
+                <span class="truncate">{{ item.label }}</span>
+                <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto" />
+              </template>
+            </UDropdown>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</template>

@@ -1,9 +1,10 @@
 import validateEnvs from './envs/env.validator'
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   runtimeConfig: {
     EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     public: {
       EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
     },
@@ -18,6 +19,8 @@ export default defineNuxtConfig({
     '@pinia-plugin-persistedstate/nuxt',
     'nuxt-lodash',
     '@formkit/auto-animate/nuxt',
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/supabase',
   ],
   ui: { global: true },
   tailwindcss: { viewer: false },
@@ -51,4 +54,17 @@ export default defineNuxtConfig({
     listen: () => validateEnvs(),
   },
   experimental: { typedPages: true },
+  css: ['~/assets/css/main.css'],
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
+    redirect: false,
+  },
+  // app: {
+  //   head: {
+  //     link: [
+  //       { rel: 'icon', type: 'image/png', href: '@/assets/media/logo.png' }
+  //     ]
+  //   }
+  // }
 })
