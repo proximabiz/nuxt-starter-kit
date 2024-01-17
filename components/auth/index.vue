@@ -15,7 +15,7 @@ const isSignUpRoute = computed(() => currentRouteQueryAction.value === 'signup')
         <AuthSignUpViaEmailPassword v-if="isSignUpRoute" />
         <AuthLoginViaEmailPassword v-else />
       </div>
-      <UDivider label="OR" color="gray" class="my-10" />
+      <UDivider label="OR" class="my-10" />
       <div>
         <AuthLoginViaGoogle />
       </div>
@@ -28,7 +28,7 @@ const isSignUpRoute = computed(() => currentRouteQueryAction.value === 'signup')
           query: {
             action: 'signin',
           },
-        }" class="font-thin text-md text-blue-500 underline"
+        }" class="font-thin text-md text-custom1-500 underline"
       >
         Sign In
       </NuxtLink>
@@ -41,7 +41,7 @@ const isSignUpRoute = computed(() => currentRouteQueryAction.value === 'signup')
           query: {
             action: 'signup',
           },
-        }" class="font-thin text-md text-blue-500 underline"
+        }" class="font-thin text-md text-custom1-500 underline"
       >
         Sign Up
       </NuxtLink>

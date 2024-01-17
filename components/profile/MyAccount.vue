@@ -3,12 +3,10 @@
 </script>
 
 <template>
-    <div>
-your account
-    </div>
+  <div>
+    your account
+  </div>
 </template>
-
-
 
 <style lang="scss" scoped>
 
