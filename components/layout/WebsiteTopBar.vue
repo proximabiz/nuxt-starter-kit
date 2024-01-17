@@ -22,7 +22,7 @@ function isActiveRoute(to: string) {
 </script>
 
 <template>
-  <nav class="flex w-full bg-white border-gray-200 dark:bg-gray-900">
+  <nav class="flex w-full border-gray-200 dark:bg-gray-900">
     <NuxtLink to="/">
       <div class="flex">
         <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo">
@@ -41,7 +41,7 @@ function isActiveRoute(to: string) {
       </li>
     </ul>
     <UButton
-      v-if="!isLoggedIn" color="blue" @click="navigateTo({
+      v-if="!isLoggedIn" @click="navigateTo({
         path: '/auth',
         query: {
           action: 'signin',

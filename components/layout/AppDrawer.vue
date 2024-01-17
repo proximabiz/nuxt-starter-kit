@@ -22,13 +22,13 @@ const links = [{
 <template>
   <div>
     <USlideover v-model="globalStore.drawer" prevent-close side="left">
-      <UCard class="flex flex-col flex-2" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+      <UCard class="flex flex-col flex-2" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100' }">
         <template #header>
           <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            <h3 class="text-base font-semibold leading-6 text-gray-90">
               AI Flow Mapper
             </h3>
-            <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="globalStore.toggleDrawer" />
+            <UButton variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="globalStore.toggleDrawer" />
           </div>
         </template>
         <UVerticalNavigation :links="links" />

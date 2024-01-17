@@ -3,7 +3,7 @@
 </script>
 
 <template>
-   <ProfileMyAccount/>
+  <ProfileMyAccount />
 </template>
 
 <style lang="scss" scoped>

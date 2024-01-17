@@ -36,10 +36,10 @@ async function onSubmit() {
 <template>
   <div class="mt-8 p-8">
     <section class="flex flex-col gap-2 items-center mb-8">
-      <p class="text-3xl font-extrabold text-blue-800">
+      <p class="text-3xl font-extrabold text-custom1-500">
         Send Us A Message
       </p>
-      <p class="text-4xl font-extrabold text-slate-600">
+      <p class="text-4xl font-extrabold text-custom5-500">
         Quick Contact
       </p>
     </section>
@@ -59,9 +59,9 @@ async function onSubmit() {
       </div>
       <div class="flex flex-col gap-4">
         <UFormGroup name="message">
-          <UTextarea v-model="state.message" color="white" size="xl" variant="outline" placeholder="Write your query/message" />
+          <UTextarea v-model="state.message" size="xl" variant="outline" placeholder="Write your query/message" />
         </UFormGroup>
-        <UButton type="submit" class="btn" color="blue">
+        <UButton type="submit" class="btn">
           Submit
         </UButton>
       </div>
