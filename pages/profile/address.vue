@@ -1,10 +1,10 @@
-<template>
-    <ProfileAddresDetails/>
-</template>
-
 <script setup>
 
 </script>
+
+<template>
+  <ProfileAddresDetails />
+</template>
 
 <style lang="scss" scoped>
 

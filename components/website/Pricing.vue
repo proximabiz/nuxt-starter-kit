@@ -4,17 +4,17 @@ import { computed, ref } from 'vue'
 const isMonthly = ref(true)
 
 const monthlyPrices = {
-  Basic: "Free",
+  Basic: 'Free',
   Personal: 2,
   Pro: 5,
   Enterprise: 'Custom',
 }
 const annualPrices = {
-  Basic: "Free",
+  Basic: 'Free',
   Personal: monthlyPrices.Personal * 11,
   Pro: monthlyPrices.Pro * 11,
-  Enterprise: "Custom"
-};
+  Enterprise: 'Custom',
+}
 
 const prices = computed(() => {
   return isMonthly.value ? monthlyPrices : annualPrices
@@ -41,8 +41,10 @@ const prices = computed(() => {
 
   <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
     <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-4 md:gap-8">
-      <div class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm" v-for="(price, plan) in prices"
-        :key="plan">
+      <div
+        v-for="(price, plan) in prices" :key="plan"
+        class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm"
+      >
         <div class="p-4 sm:pt-4 sm:pb-0">
           <h2 class="text-lg font-medium text-gray-900">
             {{ plan }}
@@ -52,12 +54,14 @@ const prices = computed(() => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </p>
           <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-            {{ price }}{{ price === 'Custom' ? '' : price === 'Free' ? '' : '$'}}
+            {{ price }}{{ price === 'Custom' ? '' : price === 'Free' ? '' : '$' }}
           </strong>
           <span class="text-sm font-medium text-gray-700">{{ price === 'Custom' || price === 'Free' ? '' : isMonthly ? '/month' : '/year' }}</span>
 
-          <a class="mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
-            href="#">
+          <a
+            class="mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
+            href="#"
+          >
             {{ price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
           </a>
         </div>

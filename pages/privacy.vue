@@ -1,10 +1,10 @@
-<template>
-   <WebsitePrivacy/>
-</template>
-
 <script setup>
 
 </script>
+
+<template>
+  <WebsitePrivacy />
+</template>
 
 <style lang="scss" scoped>
 

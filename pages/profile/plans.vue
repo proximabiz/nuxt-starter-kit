@@ -1,10 +1,10 @@
-<template>
-   <ProfileMyPlans/>
-</template>
-
 <script setup lang="ts">
 
 </script>
+
+<template>
+  <ProfileMyPlans />
+</template>
 
 <style scoped>
 
