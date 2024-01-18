@@ -61,7 +61,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
           <UFormGroup  name="message" label="Message">
           <UTextarea color="white" v-model="state.message" size="xl" variant="outline" placeholder="Write your query/message" />
         </UFormGroup>
-          <UButton type="submit" class="btn p-3" color="blue">
+          <UButton type="submit" class="w-fit p-3" color="blue">
             Submit
           </UButton>
           <NuxtLink to="/privacy" class="font-medium hover:text-blue-700">Privacy Policy</NuxtLink>
@@ -74,7 +74,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 <style scoped>
 .btn {
   display: inline-block;
-  width: fit-content;
+ 
 }
  .custom-input input[type="text"] {
   border-color: black !important;    
