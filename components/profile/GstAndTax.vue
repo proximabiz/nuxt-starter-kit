@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { FormSubmitEvent } from '#ui/types'
 
 interface State {
@@ -40,7 +39,6 @@ const handleDeleteConfirm = async (): Promise<void> => {
   }
 };
 
-
 </script>
 
 <template>
@@ -63,7 +61,7 @@ const handleDeleteConfirm = async (): Promise<void> => {
         </div>
       </UForm>
       <Icon v-if="state.gst" name="material-symbols-light:delete-rounded" color="black" class="text-2xl mt-1 cursor-pointer" @click="showModal"/>
-      <Confirmation :isOpen="isModalVisible" @DeleteConfirm="handleDeleteConfirm"/>
+      <Confirmation v-model="isModalVisible"  @update:isOpen="isModalVisible=$event" :isOpen="isModalVisible" @DeleteConfirm="handleDeleteConfirm"/>
     </div>
   </div>
 </template>
