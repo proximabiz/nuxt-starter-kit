@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import { customColors } from './utility/appColors'
 
 export default <Partial<Config>> {
   content: [
@@ -11,7 +12,9 @@ export default <Partial<Config>> {
     './node_modules/flowbite/**/*.{js,ts}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: customColors,
+    },
   },
   plugins: [
     // eslint-disable-next-line ts/no-require-imports
