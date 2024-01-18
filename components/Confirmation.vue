@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 interface Props {
   isOpen: boolean;
+  onDeleteConfirm:()=>void
 }
 interface Emit {
   (e: 'update:isOpen', value: boolean): void;
@@ -11,6 +12,7 @@ const emit = defineEmits<Emit>();
 const isOpen = ref(false)
 
 const confirmDeletion = () => {
+  props.onDeleteConfirm()
   emit('update:isOpen', false)
 }
 const cancel = () => {

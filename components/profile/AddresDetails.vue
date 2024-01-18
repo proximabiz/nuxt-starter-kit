@@ -17,7 +17,7 @@ const initialState = {
 
 const state = reactive({ ...initialState })
 
-async function onSubmit(event: FormSubmitEvent<any>) {
+const onSubmit=async (event: FormSubmitEvent<any>)=> {
     // Do something with data
     console.log(event.data)
 }

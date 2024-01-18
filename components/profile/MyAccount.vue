@@ -11,7 +11,7 @@ const cards = [
     { id: 3, text: 'Billing & Payments', iconSrc: card,to:"" },
     { id: 4, text: 'My Plan', iconSrc: plan,to:"/profile/plans" },
 ];
-function isActiveCard(to: string) {
+const isActiveCard=(to: string)=> {
   return route.path === to
 }
 </script>
