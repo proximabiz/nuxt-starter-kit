@@ -28,7 +28,7 @@ function resetElements() {
       </div>
       <div v-auto-animate class="flex flex-wrap gap-2">
         <UTooltip v-for="el in elements" :key="el.number" :shortcuts="[`${el.number}`]">
-          <UButton :label="el.symbol" color="gray" variant="solid" class=" min-w-12 min-h-12 justify-center" />
+          <UButton :label="el.symbol" variant="solid" class=" min-w-12 min-h-12 justify-center" />
 
           <template #text>
             <span class="font-medium">{{ el.name }}</span>

@@ -2,7 +2,7 @@
 
 <template>
   <div class="flex">
-    <UCard class="w-64 min-h-64 mx-auto inline-flex align-center justify-center items-center bg-blue">
+    <UCard class="w-64 min-h-64 mx-auto inline-flex align-center justify-center items-center">
       <UIcon name="i-heroicons-plus" class="text-2xl" />
     </UCard>
     <UCard v-for="i in 4" :key="i" class="w-64 mx-auto">
@@ -15,7 +15,7 @@
       Some Description or image
 
       <template #footer>
-        <UButton color="blue">
+        <UButton>
           Start Editing
         </UButton>
       </template>

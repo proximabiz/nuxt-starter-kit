@@ -53,6 +53,6 @@ async function signUp() {
       <UInput v-model="form.password" type="password" />
     </UFormGroup>
 
-    <UButton label="Sign Up" color="primary" block class="mt-5" type="submit" :loading="isLoading" />
+    <UButton label="Sign Up" block class="mt-5" type="submit" :loading="isLoading" />
   </UForm>
 </template>

@@ -43,18 +43,16 @@ async function singOut() {
 </script>
 
 <template>
-  <nav class="bg-white border-gray-200 dark:bg-gray-900 p-4">
+  <nav class="border-gray-200">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
       <div>
         <UButton
           :padded="false"
-          color="blue"
           variant="link"
           size="xl"
           icon="i-heroicons-bars-3" @click="globalStore.toggleDrawer()"
         />
         <UButton
-          color="blue"
           variant="link"
           size="xl"
           class="ms-5"
@@ -62,7 +60,7 @@ async function singOut() {
         />
       </div>
       <div id="navbar-default" class="hidden w-full md:block md:w-auto">
-        <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+        <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
           <li>
             <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }">
               <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
@@ -71,7 +69,7 @@ async function singOut() {
                   <p>
                     Signed in as
                   </p>
-                  <p class="truncate font-medium text-gray-900 dark:text-white">
+                  <p class="truncate font-medium text-gray-900">
                     {{ authUser.email }}
                   </p>
                 </div>
@@ -79,7 +77,7 @@ async function singOut() {
 
               <template #item="{ item }">
                 <span class="truncate">{{ item.label }}</span>
-                <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto" />
+                <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto" />
               </template>
             </UDropdown>
           </li>

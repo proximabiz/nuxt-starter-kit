@@ -10,15 +10,22 @@ export default defineAppConfig({
     dark: true,
   },
   ui: {
-    // https://ui.nuxt.com/getting-started/theming
-    primary: 'green',
-    gray: 'zinc',
     icons: {
       dynamic: true,
     },
     button: {
       default: {
-        loadingIcon: 'lucide:loader-2',
+        color: 'custom1',
+      },
+    },
+    input: {
+      default: {
+        color: 'custom1',
+      },
+    },
+    textarea: {
+      default: {
+        color: 'custom1',
       },
     },
   },
