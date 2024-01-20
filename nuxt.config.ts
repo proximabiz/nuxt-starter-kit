@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     'nuxt-lodash',
     '@formkit/auto-animate/nuxt',
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/supabase',
+    // '@nuxtjs/supabase',
   ],
   ui: { global: true },
   tailwindcss: { viewer: false },

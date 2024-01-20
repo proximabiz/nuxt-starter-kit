@@ -7,8 +7,8 @@ export const BaseSchema = z.object({
 
 const PublicSchema = z.object({
   // EXAMPLE_PUBLIC: z.string(),
-  SUPABASE_URL: z.string(),
-  SUPABASE_KEY: z.string(),
+  // SUPABASE_URL: z.string(),
+  // SUPABASE_KEY: z.string(),
 })
 
 const PrivateSchema = z.object({
