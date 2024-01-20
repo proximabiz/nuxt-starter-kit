@@ -75,4 +75,4 @@ jobs:
           steps: ${{ toJson(steps) }}
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           channel: ${{ secrets.SLACK_CHANNEL }}
-          config: .github/slack.yml
+          config: .github/workflows/slack.yml
