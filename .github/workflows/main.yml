@@ -39,7 +39,7 @@ jobs:
 
   Deploy:
     runs-on: ubuntu-latest
-    needs: Build
+    # needs: Build
 
     steps:
       - name: Checkout code
@@ -75,4 +75,4 @@ jobs:
           steps: ${{ toJson(steps) }}
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           channel: ${{ secrets.SLACK_CHANNEL }}
-          config: .github/workflows/slack.yml
+          config: .github/config/slack.yml
