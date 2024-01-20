@@ -12,8 +12,6 @@ const PublicSchema = z.object({
 const PrivateSchema = z.object({
   // EXAMPLE_SECRET: z.string(),
   OPENAI_API_KEY: z.string(),
-  SUPABASE_URL: z.string(),
-  SUPABASE_KEY: z.string(),
 })
 
 export const Env = BaseSchema.merge(PublicSchema).merge(PrivateSchema)

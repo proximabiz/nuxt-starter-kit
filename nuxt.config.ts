@@ -3,10 +3,10 @@ import validateEnvs from './envs/env.validator'
 export default defineNuxtConfig({
   devtools: { enabled: false },
   runtimeConfig: {
-    EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
+    // EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     public: {
-      EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
+      // EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
     },
   },
   modules: [
@@ -56,8 +56,8 @@ export default defineNuxtConfig({
   experimental: { typedPages: true },
   css: ['~/assets/css/main.css'],
   supabase: {
-    url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_KEY,
+    // url: process.env.SUPABASE_URL,
+    // key: process.env.SUPABASE_KEY,
     redirect: false,
   },
   // app: {
