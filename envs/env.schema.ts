@@ -6,11 +6,11 @@ export const BaseSchema = z.object({
 })
 
 const PublicSchema = z.object({
-  EXAMPLE_PUBLIC: z.string(),
+  // EXAMPLE_PUBLIC: z.string(),
 })
 
 const PrivateSchema = z.object({
-  EXAMPLE_SECRET: z.string(),
+  // EXAMPLE_SECRET: z.string(),
   OPENAI_API_KEY: z.string(),
   SUPABASE_URL: z.string(),
   SUPABASE_KEY: z.string(),
