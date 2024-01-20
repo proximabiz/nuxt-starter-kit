@@ -55,9 +55,6 @@ export default defineNuxtConfig({
   },
   experimental: { typedPages: true },
   css: ['~/assets/css/main.css'],
-  supabase: {
-    redirect: false,
-  },
   // app: {
   //   head: {
   //     link: [
