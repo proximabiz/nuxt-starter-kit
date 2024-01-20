@@ -1,0 +1,36 @@
+name: Netlify Workflow
+
+on:
+  push:
+    branches:
+      - preview
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.13.0
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install project dependencies with pnpm
+        run: pnpm install
+
+      - name: Build the project with pnpm
+        run: pnpm build
+
+      - name: Deploy to Netlify
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --prod
