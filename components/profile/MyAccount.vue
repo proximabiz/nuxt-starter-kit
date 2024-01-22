@@ -21,7 +21,7 @@ const isActiveCard=(to: string) =>{
   <UContainer>
     <section class="mt-8">
       <h1 class="text-2xl font-semibold">
-        Your Account
+        My Account
       </h1>
     </section>
     <section class="grid place-items-center">
