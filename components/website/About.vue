@@ -1,41 +1,47 @@
 <script setup lang="ts">
-import diamond from "@/assets/media/diamond.png"
+
+import efficiency from "@/assets/media/efficiency.png"
+import direction from "@/assets/media/direction.png"
+import arrow from "@/assets/media/arrow.png"
+import learning from "@/assets/media/learning.png"
+import storage from "@/assets/media/data-storage.png"
+import support from "@/assets/media/support.png"
 
 const features = [
   {
-    title: "Free Forever",
+    title: "Time Efficiency",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-    iconSrc: diamond,
+    iconSrc: efficiency,
     bgColor: "bg-pink-200"
   },
   {
-    title: "Group Collaboration",
+    title: "Collaboration and Flexibility",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-    iconSrc: diamond,
+    iconSrc: direction,
     bgColor: "bg-yellow-200"
   },
   {
-    title: "Save Your Work",
+    title: "Easy to download",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-    iconSrc: diamond,
+    iconSrc: arrow,
     bgColor: "bg-blue-200"
   },
   {
-    title: "Free Forever",
+    title: "Skill gap",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-    iconSrc: diamond,
+    iconSrc: learning,
     bgColor: "bg-orange-200"
   },
   {
-    title: "Free Forever",
+    title: "Save your work",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-    iconSrc: diamond,
+    iconSrc: storage,
     bgColor: "bg-green-200"
   },
   {
-    title: "Free Forever",
+    title: "24/7 support",
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-    iconSrc: diamond,
+    iconSrc: support,
     bgColor: "bg-pink-200"
   },
 
@@ -44,8 +50,24 @@ const features = [
 
 
 <template>
+   <section class="flex flex-col gap-2 items-center mb-8">
+    <p class="text-2xl font-bold text-slate-700">
+      What We're Trying to Solve
+    </p>
+  </section>
+  <section>
+    <div class="grid grid-cols-3 gap-16">
+      <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col">
+        <div class="rounded-xl p-6" :class="feature.bgColor">
+          <img :src="feature.iconSrc" alt="" width="32px" height="32px">
+        </div>
+        <h2 class="text-2xl font-semibold">{{ feature.title }}</h2>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+  </section>
   
-    <section class="flex flex-col gap-2 items-center mb-8">
+    <section class="flex flex-col gap-2 items-center mb-8 mt-4">
       <p class="text-2xl font-bold text-slate-700">
         About The Product
       </p>
@@ -88,21 +110,5 @@ const features = [
         <div>image</div>
       </div>
     </section>
-  
-  <section class="flex flex-col gap-2 items-center mb-8 mt-4">
-    <p class="text-2xl font-bold text-slate-700">
-      What We're Trying to Solve
-    </p>
-  </section>
-  <section>
-    <div class="grid grid-cols-3 gap-16">
-      <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col">
-        <div class="rounded-xl p-6" :class="feature.bgColor">
-          <img :src="feature.iconSrc" alt="" width="32px" height="32px">
-        </div>
-        <h2 class="text-2xl font-semibold">{{ feature.title }}</h2>
-        <p>{{ feature.description }}</p>
-      </div>
-    </div>
-  </section>
+
 </template>

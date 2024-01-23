@@ -11,6 +11,10 @@ watchEffect(() => {
 </script>
 
 <template>
+  <UBreadcrumb
+    divider=">"
+    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'My Plan' }]"
+  />
   <section class="grid place-items-center mb-8">
     <h1 class="font-semibold mb-4">
       My Plan

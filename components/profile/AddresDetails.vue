@@ -2,7 +2,21 @@
 import { VueTelInput } from 'vue-tel-input'
 import type { FormSubmitEvent } from '#ui/types'
 
-const initialState = {
+const isDisabled=ref(true)
+
+interface FormState {
+  name: string;
+  orgname: string;
+  country: string;
+  zip: string;
+  city: string;
+  region: string;
+  address: string;
+  phone: string;
+  email: string;
+  isEditable: boolean;
+}
+const initialState:FormState = {
   name: 'Ipsita',
   orgname: 'Proxima',
   country: 'India',
@@ -15,24 +29,51 @@ const initialState = {
   isEditable: false,
 }
 
-const state = reactive({ ...initialState })
+const state = reactive<FormState>({ ...initialState })
 
  const onSubmit=async(event: FormSubmitEvent<any>)=> {
   // Do something with data
   console.log(event.data)
 }
+// watch(state, (newValue) => {
+//   isDisabled.value= newValue !==state
+// } );
+
+// function deepCompare(obj1: any, obj2: any): boolean {
+//   if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+//     return state.isDisabled==false ;
+//   }
+
+//   for (const key in obj1) {
+//     if (obj1[key] !== obj2[key]) {
+//       return state.isDisabled==false //Difference found
+//     }
+//   }
+
+//   return state.isDisabled==true // No differences found
+// }
+
+// const isChanged = computed(() => {
+//   return deepCompare(initialState, state);
+// });
 
 const toggleEdit=() =>{
   state.isEditable = !state.isEditable
+  isDisabled.value=true
 }
 
 const onCancel=() =>{
   Object.assign(state, initialState)
-  state.isEditable = false
+  
 }
+
 </script>
 
 <template>
+    <UBreadcrumb
+    divider=">"
+    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'Address and Contact Details' }]"
+  />
   <section class="grid place-items-center mb-8">
     <h1 class="font-semibold mb-4">
       Address and Contact Details
@@ -49,7 +90,7 @@ const onCancel=() =>{
         </div>
         <div class="flex gap-2">
           <UFormGroup label="Country" name="country">
-            <UInput v-model="state.country" color="blue" :disabled="!state.isEditable" />
+            <UInput v-model="state.country" color="blue" :disabled="!state.isEditable"/>
           </UFormGroup>
           <UFormGroup label="Zip" name="zip">
             <UInput v-model="state.zip" color="blue" :disabled="!state.isEditable" />
@@ -76,8 +117,11 @@ const onCancel=() =>{
           <UButton type="submit" color="blue" @click="onCancel">
             Cancel
           </UButton>
-          <UButton type="submit" color="blue" @click="toggleEdit">
-            {{ state.isEditable ? "Save" : "Edit" }}
+          <UButton v-if="!state.isEditable" color="blue" @click="toggleEdit">
+            Edit
+          </UButton>         
+          <UButton v-else type="submit" color="blue"  :disabled="isDisabled">
+            Save
           </UButton>
         </div>
       </UForm>

@@ -19,18 +19,22 @@ const prices = computed(() => {
   return isMonthly.value ? monthlyPrices : annualPrices
 })
 
-
 onMounted(() => {
-  if (typeof window !== 'undefined') {
     const storedPlan = localStorage.getItem('currentPlan');
     if (storedPlan) {
       currentPlan.value = storedPlan;
     }
-  }
+  
+  console.log(currentPlan.value);
 });
-watch(currentPlan, (newValue) => {
-  localStorage.setItem('currentPlan', newValue);
-});
+
+
+// watch(currentPlan, (newValue) => {
+//   const storedPlan = localStorage.getItem('currentPlan');
+//     if (storedPlan) {
+//       currentPlan.value = storedPlan;
+//     }
+// });
 
 console.log(currentPlan.value);
 </script>
