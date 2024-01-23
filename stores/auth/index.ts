@@ -1,4 +1,4 @@
-import type { State, User, signInViaEmailPasswordPayload, signupViaEmailPasswordPayload } from './types'
+import type { State, signInViaEmailPasswordPayload, signupViaEmailPasswordPayload } from './types'
 
 function initialState() {
   return {
@@ -31,8 +31,8 @@ export const useAuthStore = defineStore('authStore', {
       return this.session.access_token
     },
 
-    getAuthUser(): User {
-      return this.authUser
+    getAuthUser() {
+      return useSupabaseUser()
     },
   },
   actions: {
