@@ -7,7 +7,7 @@ export interface ChartResponseType {
 }
 
 export enum DiagramType {
-  MINDMAP = 'mindmap',
+  MINDMAP = 'Mind Mapping',
   FLOWCHART = 'flowchart',
-  MINDELIXIR = 'mindelixir',
+  MINDELIXIR = 'Mind Elixir',
 }
