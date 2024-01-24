@@ -8,10 +8,11 @@ export default defineEventHandler(async (event) => {
   if (!userID)
     throw new CustomError('Error: no user found!', 404)
 
+  const addressId: string = getRouterParam(event, 'id')!
   const client = await serverSupabaseClient(event)
   const { data, error, status } = await client.from('user_address_details').select(
     `*`,
-  ).eq('user_id', userID)
+  ).eq('id', addressId).eq('user_id', userID)
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)
 
