@@ -1,4 +1,4 @@
-import { CustomError } from '../../utlis/custom.error'
+import { CustomError } from '../../../utlis/custom.error'
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     throw new CustomError(`Error: ${error.message}`, 400)
 
   if (Array.isArray(data) && data.length === 0)
-    throw new CustomError('Error: no user found!', 404)
+    throw new CustomError('Error: no user GST details found!', 404)
 
   return {
     data,
