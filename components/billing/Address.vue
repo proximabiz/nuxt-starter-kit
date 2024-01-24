@@ -11,8 +11,6 @@ interface FormState {
     region: string;
     address: string;
     phone: string;
-    email: string;
-    isEditable: boolean;
 }
 const initialState= {
     name: '',
@@ -23,7 +21,7 @@ const initialState= {
     region: '',
     address: '',
     phone: '',
-    email: '',
+   
 
 }
 const state = reactive({ ...initialState })
@@ -66,9 +64,9 @@ const state = reactive({ ...initialState })
                 <UFormGroup label="Phone no" name="phone">
                     <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" />
                 </UFormGroup>
-                <UFormGroup label="Email Id" name="email">
+                <!-- <UFormGroup label="Email Id" name="email">
                     <UInput v-model="state.email" color="blue" />
-                </UFormGroup>
+                </UFormGroup> -->
             </UForm>
         </UCard>
         <NuxtLink to="/billing/card-details">
