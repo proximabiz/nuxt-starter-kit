@@ -1,6 +1,6 @@
-import { CustomError } from '../../../utlis/custom.error'
-import { protectRoute } from '../../../utlis/route.protector'
 import { serverSupabaseClient } from '#supabase/server'
+import { CustomError } from '~/server/utlis/custom.error'
+import { protectRoute } from '~/server/utlis/route.protector'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -8,11 +8,15 @@ export default defineEventHandler(async (event) => {
   if (!userID)
     throw new CustomError('Error: no user found!', 404)
 
-  const addressId: string = getRouterParam(event, 'id')!
+  // const addressId: string = getRouterParam(event, 'id')!
   const client = await serverSupabaseClient(event)
+  // const { data, error, status } = await client.from('user_address_details').select(
+  //   `*`,
+  // ).eq('id', addressId).eq('user_id', userID)
+
   const { data, error, status } = await client.from('user_address_details').select(
     `*`,
-  ).eq('id', addressId).eq('user_id', userID)
+  ).eq('user_id', userID)
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)
 
