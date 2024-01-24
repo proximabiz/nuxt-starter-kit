@@ -5,12 +5,11 @@ import { serverSupabaseClient } from '#supabase/server'
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
   const userID = event.context.user.id
-
   if (!userID)
     throw new CustomError('Error: no user found!', 404)
 
   const client = await serverSupabaseClient(event)
-  const { data, error, status } = await client.from('user_address').select(
+  const { data, error, status } = await client.from('user_address_details').select(
     `*`,
   ).eq('user_id', userID)
   if (error)
