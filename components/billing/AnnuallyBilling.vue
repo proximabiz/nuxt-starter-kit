@@ -1,21 +1,22 @@
-
 <script setup lang="ts">
 const users = ['1user', '2users', '3users']
 
 const user = ref(users[0])
 </script>
+   
+
 <template>
     <div class="grid place-items-center mt-8 ">
         <UCard>
             <div class="divide-y divide-solid">
             <header class="flex justify-start">
-                AI Flow mapper Personal
+                AI Flow mapper Pro
             </header>
             <section class="grid grid-cols-2 gap-32 mt-3 py-4">
                 <USelect v-model="user" :options="users" />
                 <div>
-                    <span>1 month * 5 </span>
-                    <span class="font-semibold"> $05.00</span>
+                    <span>12 months * 5 </span>
+                    <span class="font-semibold"> $60.00</span>
                 </div>
             </section>
             <section class="grid grid-cols-2 gap-32 mt-3 py-4">
@@ -33,4 +34,7 @@ const user = ref(users[0])
         </NuxtLink>       
     </div>
 </template>
-<style scoped></style>
+
+<style scoped>
+
+</style>

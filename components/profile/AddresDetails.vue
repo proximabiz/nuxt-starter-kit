@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { VueTelInput } from 'vue-tel-input'
 import type { FormSubmitEvent } from '#ui/types'
+import { useAddressStore } from '~/stores'
 
+const notify = useNotification()
+const addressStore = useAddressStore()
 const isDisabled=ref(true)
 
 interface FormState {
@@ -31,31 +34,27 @@ const initialState:FormState = {
 
 const state = reactive<FormState>({ ...initialState })
 
+
+async function getAddress() {
+  try {
+  const addressData=  await addressStore.fetchAddress()
+  // console.log(addressData)
+  return addressData
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
+}
+
+onMounted(async () => {
+  console.log("i am calling")
+  await getAddress();
+});
+
  const onSubmit=async(event: FormSubmitEvent<any>)=> {
   // Do something with data
-  console.log(event.data)
+  // console.log(event.data)
 }
-// watch(state, (newValue) => {
-//   isDisabled.value= newValue !==state
-// } );
-
-// function deepCompare(obj1: any, obj2: any): boolean {
-//   if (Object.keys(obj1).length !== Object.keys(obj2).length) {
-//     return state.isDisabled==false ;
-//   }
-
-//   for (const key in obj1) {
-//     if (obj1[key] !== obj2[key]) {
-//       return state.isDisabled==false //Difference found
-//     }
-//   }
-
-//   return state.isDisabled==true // No differences found
-// }
-
-// const isChanged = computed(() => {
-//   return deepCompare(initialState, state);
-// });
 
 const toggleEdit=() =>{
   state.isEditable = !state.isEditable

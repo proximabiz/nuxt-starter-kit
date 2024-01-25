@@ -17,8 +17,8 @@ const monthlyPrices:PricePlan[] = [
 
 const annualPrices:PricePlan[] = [
   { plan: 'Basic', price: 'Free',path:""},
-  { plan: 'Personal', price: monthlyPrices[1].price * 11,path:"" },
-  { plan: 'Pro', price: monthlyPrices[2].price * 11,path:"" },
+  { plan: 'Personal', price: monthlyPrices[1].price * 11,path:"/billing/annually-billing" },
+  { plan: 'Pro', price: monthlyPrices[2].price * 11,path:"/billing/annually-billing" },
   { plan: 'Enterprise', price: 'Custom',path:"" }
 ];
 
