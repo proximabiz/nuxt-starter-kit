@@ -1,5 +1,5 @@
-import type { H3Event } from 'h3'
 import { serverSupabaseClient } from '#supabase/server'
+import type { H3Event } from 'h3'
 
 export async function protectRoute(event: H3Event) {
   // Use the Supabase client

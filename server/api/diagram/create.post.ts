@@ -1,9 +1,9 @@
+import { serverSupabaseClient } from '#supabase/server'
 import { OpenAI } from 'openai'
 import { CustomError } from '../../utlis/custom.error'
 import { getPrompt } from '../../utlis/prompts'
 import { protectRoute } from '../../utlis/route.protector'
 import { ChartValidation } from '../../utlis/validations'
-import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -42,6 +42,13 @@ export default defineEventHandler(async (event) => {
     ] as any).select()
     if (error)
       throw new CustomError(`Supabase Error: ${error.message}`, status)
+    
+    await client.from('diagram_version').insert([{
+      diagram_id:diagram[0].id,
+      user_id:event.context.user.id,
+      response:chart,
+      versions:new Date().toISOString()
+    }]as any)
 
     return { message: 'Success!', data: { diagram }, status }
   }
