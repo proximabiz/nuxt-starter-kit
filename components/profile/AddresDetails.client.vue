@@ -38,7 +38,7 @@ const state = reactive<FormState>({ ...initialState })
 async function getAddress() {
   try {
   const addressData=  await addressStore.fetchAddress()
-  // console.log(addressData)
+  console.log(addressData)
   return addressData
   }
   catch (error) {
@@ -47,13 +47,12 @@ async function getAddress() {
 }
 
 onMounted(async () => {
-  console.log("i am calling")
   await getAddress();
 });
 
  const onSubmit=async(event: FormSubmitEvent<any>)=> {
   // Do something with data
-  // console.log(event.data)
+  console.log(event.data)
 }
 
 const toggleEdit=() =>{

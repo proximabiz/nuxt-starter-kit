@@ -2,7 +2,6 @@ import type { State, Address } from './types'
 import { logger } from '~/utility/logger'
 import { useAuthStore } from '~/stores'
 
-// const authStore = useAuthStore()
 
 export const useAddressStore = defineStore({
     id: 'address',
@@ -14,20 +13,20 @@ export const useAddressStore = defineStore({
     },
     actions: {
       async fetchAddress() {
-        console.log("called from action")
         try {
-          const { data, error } = await useFetch<Address[]>('/api/user/address-contact', {
+          const authStore = useAuthStore()
+          const { data, error } = await useFetch('/api/user/address-contact', {
             method: 'GET',
-        //     headers: {
-        //         Authorization: `Bearer ${authStore.session.access_token}`,
-        //       },
+            headers: {
+                Authorization: `Bearer ${authStore.session.access_token}`,
+              },
            })
           if (error.value) {
             logger.error('Failed to fetch address:', error.value)
             return
           }
-          console.log("data",data)
-          this.AddressDetails = data.value ? data.value : []
+          // console.log("123 updating",data.value.userData)
+          this.AddressDetails = data.value ? data?.value : []
         }
         catch (err) {
           logger.error('Error fetching address:', err)

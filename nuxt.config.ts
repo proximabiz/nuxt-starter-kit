@@ -60,10 +60,13 @@ export default defineNuxtConfig({
     key: process.env.SUPABASE_KEY,
     redirect: false,
   },
+  routeRules:{
+    '/profile/address': { ssr: false },
+  },
   // app: {
   //   head: {
   //     link: [
-  //       { rel: 'icon', type: 'image/png', href: '@/assets/media/logo.png' }
+  //       { rel: 'icon', type: 'image/png', href: logo }
   //     ]
   //   }
   // }
