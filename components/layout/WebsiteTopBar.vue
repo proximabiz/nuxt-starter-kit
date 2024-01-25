@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+const notify = useNotification()
 const authStore = useAuthStore()
 const route = useRoute()
 const isLoggedIn = computed(() => authStore.isLoggedIn)
@@ -19,10 +20,22 @@ const links = ref<NavLink[]>([
 function isActiveRoute(to: string) {
   return route.path === to
 }
+async function singOut() {
+  try {
+    // Do something with data
+    await authStore.signOut()
+
+    if (!isLoggedIn.value)
+      navigateTo('/')
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
+}
 </script>
 
 <template>
-  <nav class="flex w-full border-gray-200 dark:bg-gray-900">
+  <nav class="flex w-full border-gray-200 dark:bg-gray-900 px-5 my-5">
     <NuxtLink to="/">
       <div class="flex">
         <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo">
@@ -49,6 +62,11 @@ function isActiveRoute(to: string) {
       })"
     >
       Login
+    </UButton>
+    <UButton
+      v-else="isLoggedIn" @click="singOut()"
+    >
+      Loout
     </UButton>
   </nav>
 </template>
