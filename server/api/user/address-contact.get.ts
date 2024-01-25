@@ -11,27 +11,34 @@ export default defineEventHandler(async (event) => {
     throw new CustomError('Error: no user found!', 404)
 
   const client = await serverSupabaseClient(event)
+  try {
+    const { data: userDetails, error, status } = await client
+      .from('user_details')
+      .select(`*`)
+      .eq('user_id', userID)
 
-  const { data: userDetails, error, status } = await client
-    .from('user_details')
-    .select(`*`)
-    .eq('user_id', userID)
+    if (error)
+      throw new CustomError(`Supabase Error: ${error.message}`, status)
 
-  if (error)
-    throw new CustomError(`Supabase Error: ${error.message}`, status)
+    const { data: userAddress, error: errorAddress } = await client
+      .from('user_address_details')
+      .select(`*`)
+      .eq('user_id', userID)
 
-  const { data: userAddress, error: errorAddress } = await client
-    .from('user_address_details')
-    .select(`*`)
-    .eq('user_id', userID)
+    if (errorAddress)
+      throw new CustomError(`Supabase Error: ${errorAddress.message}`, status)
 
-  if (errorAddress)
-    throw new CustomError(`Supabase Error: ${errorAddress.message}`, status)
-
-  return {
-    status,
-    userData,
-    userDetails,
-    userAddress,
+    return {
+      status,
+      userData,
+      userDetails,
+      userAddress,
+    }
+  }
+  catch (error: any) {
+    return {
+      message: `Supabase Error: ${error.message}`,
+      status: 401,
+    }
   }
 })
