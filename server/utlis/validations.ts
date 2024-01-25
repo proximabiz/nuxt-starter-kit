@@ -18,3 +18,13 @@ export const SignupValidation = Joi.object({
   password: Joi.string().required(),
   name: Joi.string().optional(),
 })
+
+export const UserAddressValidation = Joi.object({
+  country: Joi.string().required(),
+  state: Joi.string().optional(),
+  region: Joi.string().required(),
+  city: Joi.string().required(),
+  zipcode: Joi.string().required(),
+  address: Joi.string().required(),
+  phoneNumber: Joi.string().required(),
+})
