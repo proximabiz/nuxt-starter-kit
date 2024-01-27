@@ -4,6 +4,7 @@ import { useGlobalStore } from '~/stores'
 const globalStore = useGlobalStore()
 const authStore = useAuthStore()
 const notify = useNotification()
+const supabaseClient = useSupabaseClient()
 
 const items = [
   [{
@@ -25,16 +26,13 @@ const items = [
   }],
 ]
 
-const authUser = computed(() => authStore.authUser)
-const isLoggedIn = computed(() => authStore.isLoggedIn)
+const authUser = computed(() => authStore.getAuthUser.value)
 
 async function singOut() {
   try {
     // Do something with data
-    await authStore.signOut()
-
-    if (!isLoggedIn.value)
-      navigateTo('/')
+    await supabaseClient.auth.signOut()
+    navigateTo('/')
   }
   catch (error) {
     notify.error(error.statusMessage)
@@ -70,7 +68,7 @@ async function singOut() {
                     Signed in as
                   </p>
                   <p class="truncate font-medium text-gray-900">
-                    {{ authUser.email }}
+                    {{ authUser?.email }}
                   </p>
                 </div>
               </template>

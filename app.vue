@@ -1,4 +1,19 @@
 <script setup lang="ts">
+const authStore = useAuthStore()
+const route = useRoute()
+
+const authUser = computed(() => authStore.getAuthUser.value)
+
+watch(
+  () => authUser.value,
+  (user) => {
+    if (!user && !route.fullPath.includes('/login'))
+      navigateTo('/login')
+    if (user && route.fullPath.includes('/login'))
+      navigateTo('/')
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
