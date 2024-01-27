@@ -1,22 +1,21 @@
 <script setup lang="ts">
 import { VueTelInput } from 'vue-tel-input'
-import type { FormSubmitEvent } from '#ui/types'
 
-const isDisabled=ref(true)
+const isDisabled = ref(true)
 
 interface FormState {
-  name: string;
-  orgname: string;
-  country: string;
-  zip: string;
-  city: string;
-  region: string;
-  address: string;
-  phone: string;
-  email: string;
-  isEditable: boolean;
+  name: string
+  orgname: string
+  country: string
+  zip: string
+  city: string
+  region: string
+  address: string
+  phone: string
+  email: string
+  isEditable: boolean
 }
-const initialState:FormState = {
+const initialState: FormState = {
   name: 'Ipsita',
   orgname: 'Proxima',
   country: 'India',
@@ -31,9 +30,8 @@ const initialState:FormState = {
 
 const state = reactive<FormState>({ ...initialState })
 
- const onSubmit=async(event: FormSubmitEvent<any>)=> {
+async function onSubmit() {
   // Do something with data
-  console.log(event.data)
 }
 // watch(state, (newValue) => {
 //   isDisabled.value= newValue !==state
@@ -57,20 +55,18 @@ const state = reactive<FormState>({ ...initialState })
 //   return deepCompare(initialState, state);
 // });
 
-const toggleEdit=() =>{
+function toggleEdit() {
   state.isEditable = !state.isEditable
-  isDisabled.value=true
+  isDisabled.value = true
 }
 
-const onCancel=() =>{
+function onCancel() {
   Object.assign(state, initialState)
-  
 }
-
 </script>
 
 <template>
-    <UBreadcrumb
+  <UBreadcrumb
     divider=">"
     :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'Address and Contact Details' }]"
   />
@@ -90,7 +86,7 @@ const onCancel=() =>{
         </div>
         <div class="flex gap-2">
           <UFormGroup label="Country" name="country">
-            <UInput v-model="state.country" color="blue" :disabled="!state.isEditable"/>
+            <UInput v-model="state.country" color="blue" :disabled="!state.isEditable" />
           </UFormGroup>
           <UFormGroup label="Zip" name="zip">
             <UInput v-model="state.zip" color="blue" :disabled="!state.isEditable" />
@@ -119,8 +115,8 @@ const onCancel=() =>{
           </UButton>
           <UButton v-if="!state.isEditable" color="blue" @click="toggleEdit">
             Edit
-          </UButton>         
-          <UButton v-else type="submit" color="blue"  :disabled="isDisabled">
+          </UButton>
+          <UButton v-else type="submit" color="blue" :disabled="isDisabled">
             Save
           </UButton>
         </div>
