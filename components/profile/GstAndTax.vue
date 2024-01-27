@@ -1,0 +1,70 @@
+<script setup lang="ts">
+interface State {
+  gst: string
+}
+interface ApiResponse {
+  success: boolean
+}
+
+const state = ref<State>({
+  gst: '7627GHW7889',
+})
+const isModalVisible = ref(false)
+
+function showModal() {
+  isModalVisible.value = true
+}
+
+async function onSubmit() {
+}
+
+async function handleDeleteConfirm(): Promise<void> {
+  try {
+    // Simulating a dummy API request with a TypeScript type
+    const response = await new Promise<ApiResponse>((resolve) => {
+      setTimeout(() => resolve({ success: true }), 1000)
+    })
+
+    if (response.success) {
+      // Clear the GST number from state
+      state.value.gst = ''
+      isModalVisible.value = false
+    }
+  }
+  catch (error) {
+  }
+}
+</script>
+
+<template>
+  <UBreadcrumb
+    divider=">"
+    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'GST And TAX details' }]"
+  />
+  <div class="flex justify-center items-center flex-col py-8">
+    <h1 class="font-semibold">
+      Tax ID and GST Details
+    </h1>
+    <div class="flex mt-4">
+      <span class="px-4">Tax ID / GST Number : </span>
+      <UForm :state="state" class="" @submit="onSubmit">
+        <UFormGroup name="gst">
+          <UInput
+            v-model="state.gst" placeholder="Enter your Tax ID/GST No." :disabled="!!state.gst" class="custom-input"
+            color="blue"
+          />
+        </UFormGroup>
+        <div class="flex gap-6 mt-8">
+          <UButton v-if="!state.gst" type="submit" class="w-fit" color="blue">
+            Cancel
+          </UButton>
+          <UButton v-if="!state.gst" type="submit" class="w-fit" color="blue">
+            Save
+          </UButton>
+        </div>
+      </UForm>
+      <Icon v-if="state.gst" name="material-symbols-light:delete-rounded" color="black" class="text-2xl mt-1 cursor-pointer" @click="showModal" />
+      <Confirmation v-model="isModalVisible" :is-open="isModalVisible" @update:is-open="isModalVisible = $event" @delete-confirm="handleDeleteConfirm" />
+    </div>
+  </div>
+</template>

@@ -1,22 +1,36 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-
 const isMonthly = ref(true)
+const currentPlan = ref('')
 
 const monthlyPrices = {
-  Free: 0,
+  Basic: 'Free',
+  Personal: 2,
   Pro: 5,
   Enterprise: 'Custom',
 }
 const annualPrices = {
-  Free: 0,
-  Pro: monthlyPrices.Pro * 12,
+  Basic: 'Free',
+  Personal: monthlyPrices.Personal * 11,
+  Pro: monthlyPrices.Pro * 11,
   Enterprise: 'Custom',
 }
 
 const prices = computed(() => {
   return isMonthly.value ? monthlyPrices : annualPrices
 })
+
+onMounted(() => {
+  const storedPlan = localStorage.getItem('currentPlan')
+  if (storedPlan)
+    currentPlan.value = storedPlan
+})
+
+// watch(currentPlan, (newValue) => {
+//   const storedPlan = localStorage.getItem('currentPlan');
+//     if (storedPlan) {
+//       currentPlan.value = storedPlan;
+//     }
+// });
 </script>
 
 <template>
@@ -26,11 +40,11 @@ const prices = computed(() => {
       <label for="Toggle4" class="inline-flex items-center p-1 cursor-pointer dark:bg-gray-300 dark:text-gray-800">
         <input id="Toggle4" type="checkbox" class="hidden peer" @change="isMonthly = !isMonthly">
         <span
-          :class="{ 'bg-custom1-500 text-white': isMonthly, 'text-gray-700': !isMonthly }"
+          :class="{ 'bg-indigo-600 text-white': isMonthly, 'text-gray-700': !isMonthly }"
           class="px-3 py-1 rounded-full font-medium"
         >Monthly</span>
         <span
-          :class="{ 'bg-custom1-500 text-white': !isMonthly, 'text-gray-700': isMonthly }"
+          :class="{ 'bg-indigo-600 text-white': !isMonthly, 'text-gray-700': isMonthly }"
           class="px-3 py-1 rounded-full font-medium"
         >Annually</span>
       </label>
@@ -38,8 +52,11 @@ const prices = computed(() => {
   </div>
 
   <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
-    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-24">
-      <div v-for="(price, plan) in prices" :key="plan" class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm">
+    <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-4 md:gap-8">
+      <div
+        v-for="(price, plan) in prices" :key="plan"
+        class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm"
+      >
         <div class="p-4 sm:pt-4 sm:pb-0">
           <h2 class="text-lg font-medium text-gray-900">
             {{ plan }}
@@ -49,16 +66,16 @@ const prices = computed(() => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </p>
           <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-            {{ price }}{{ price === 'Custom' ? '' : '$' }}
+            {{ price }}{{ price === 'Custom' ? '' : price === 'Free' ? '' : '$' }}
           </strong>
-          <span class="text-sm font-medium text-gray-700">{{ price === "Custom" ? "" : isMonthly ? '/month' : '/year' }}</span>
-
-          <a
-            class="mt-2 block rounded border border-custom1-500 bg-custom1-500 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-custom1-500 focus:outline-none focus:ring active:text-custom1-500 sm:mt-2"
-            href="#"
+          <span class="text-sm font-medium text-gray-700">{{ price === 'Custom' || price === 'Free' ? '' : isMonthly
+            ? '/month' : '/year' }}</span>
+          <UButton
+            class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
+            :disabled="plan === currentPlan"
           >
             {{ price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
-          </a>
+          </UButton>
         </div>
         <div class="p-2 sm:px-4">
           <p class="text-lg font-medium text-gray-900 sm:text-xl">
@@ -68,7 +85,7 @@ const prices = computed(() => {
             <li class="flex items-center gap-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-custom1-500"
+                stroke="currentColor" class="h-5 w-5 text-indigo-700"
               >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
@@ -77,7 +94,7 @@ const prices = computed(() => {
             <li class="flex items-center gap-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-custom1-500"
+                stroke="currentColor" class="h-5 w-5 text-indigo-700"
               >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
@@ -86,7 +103,7 @@ const prices = computed(() => {
             <li class="flex items-center gap-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-custom1-500"
+                stroke="currentColor" class="h-5 w-5 text-indigo-700"
               >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
