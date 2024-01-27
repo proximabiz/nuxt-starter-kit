@@ -3,11 +3,7 @@ import validateEnvs from './envs/env.validator'
 export default defineNuxtConfig({
   devtools: { enabled: false },
   runtimeConfig: {
-    EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    public: {
-      EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
-    },
   },
   modules: [
     '@nuxt/ui',
@@ -58,13 +54,10 @@ export default defineNuxtConfig({
   supabase: {
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,
-    redirect: false,
+    redirectOptions: {
+      login: '/login',
+      callback: '/app/maps',
+      exclude: ['/website/*'],
+    },
   },
-  // app: {
-  //   head: {
-  //     link: [
-  //       { rel: 'icon', type: 'image/png', href: '@/assets/media/logo.png' }
-  //     ]
-  //   }
-  // }
 })

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useGlobalStore } from '~/stores';
+import { useGlobalStore } from '~/stores'
 
 const globalStore = useGlobalStore()
 const authStore = useAuthStore()
