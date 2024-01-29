@@ -1,10 +1,16 @@
 <script lang="ts" setup>
 const mindmapStore = useMindmapStore()
+const notify = useNotification()
 
 const maps = computed(() => mindmapStore.maps)
 
 async function fetchMaps() {
-  await mindmapStore.list()
+  try {
+    await mindmapStore.list()
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
 }
 
 onMounted(() => {

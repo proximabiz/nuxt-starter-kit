@@ -2,20 +2,13 @@
 const route = useRoute()
 
 const currentPageHeading = computed(() => {
-  switch (route.fullPath) {
-    case '/profile/account':
-
-      return 'My Account'
-    case '/profile/plans':
-
-      return 'My Plans'
-    case '/app/maps':
-
-      return 'My Maps'
-
-    default:
-      break
-  }
+  if (route.fullPath === '/profile/account')
+    return 'My Account'
+  if (route.fullPath === '/app/maps')
+    return 'My Maps'
+  if (/\/app\/maps\/[\d-]+/.test(route.fullPath))
+    return 'My Map'
+  return 'My Heading'
 })
 </script>
 
