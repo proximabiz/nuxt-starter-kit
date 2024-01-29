@@ -1,21 +1,33 @@
-<script></script>
+<script lang="ts" setup>
+const mindmapStore = useMindmapStore()
+
+const maps = computed(() => mindmapStore.maps)
+
+async function fetchMaps() {
+  await mindmapStore.list()
+}
+
+onMounted(() => {
+  fetchMaps()
+})
+</script>
 
 <template>
   <div class="flex">
     <UCard class="w-64 min-h-64 mx-auto inline-flex align-center justify-center items-center">
       <UIcon name="i-heroicons-plus" class="text-2xl" />
     </UCard>
-    <UCard v-for="i in 4" :key="i" class="w-64 mx-auto">
+    <UCard v-for="(item, index) in maps" :key="index" class="w-64 mx-auto">
       <template #header>
         <div class="font-bold">
-          Map {{ i }}
+          {{ item.title }}
         </div>
       </template>
 
       Some Description or image
 
       <template #footer>
-        <UButton>
+        <UButton @click="navigateTo(`/app/maps/${item.id}`)">
           Start Editing
         </UButton>
       </template>

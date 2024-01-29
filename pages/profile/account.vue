@@ -1,10 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'custom',
-  // middleware: ['auth'],
+  layout: 'app',
 })
 </script>
-
 <template>
   <ProfileMyAccount />
 </template>

@@ -1,9 +1,13 @@
 <template>
-  <UCard class="app-view">
-    <LayoutAppTopBar />
-    <LayoutAppDrawer />
-    <UContainer class="p-10">
-      <slot />
-    </UContainer>
-  </UCard>
+  <div class="flex">
+    <div class="flex-none">
+      <LayoutAppDrawer />
+    </div>
+    <div class="flex-1">
+      <LayoutAppTopBar />
+      <UContainer class="my-16 ps-16 pt-5">
+        <slot />
+      </UContainer>
+    </div>
+  </div>
 </template>
