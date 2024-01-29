@@ -48,7 +48,7 @@ const features = [
 </script>
 
 <template>
-  <section class="flex flex-col gap-2 items-center mb-8">
+  <section class="flex flex-col gap-2 mt-5 items-center mb-8">
     <p class="text-2xl font-bold text-slate-700">
       What We're Trying to Solve
     </p>
