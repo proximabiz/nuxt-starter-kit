@@ -5,5 +5,5 @@ definePageMeta({
 </script>
 
 <template>
-  <MapsList />
+  <MapList />
 </template>
