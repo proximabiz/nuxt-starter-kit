@@ -1,5 +1,4 @@
 <script setup lang="ts">
-<<<<<<< HEAD
 
 import efficiency from "@/assets/media/efficiency.png"
 import direction from "@/assets/media/direction.png"
@@ -9,14 +8,6 @@ import storage from "@/assets/media/data-storage.png"
 import support from "@/assets/media/support.png"
 import mindmap from "@/assets/media/mindmap.png"
 import flowchart from "@/assets/media/flowchart.png"
-=======
-import efficiency from '@/assets/media/efficiency.png'
-import direction from '@/assets/media/direction.png'
-import arrow from '@/assets/media/arrow.png'
-import learning from '@/assets/media/learning.png'
-import storage from '@/assets/media/data-storage.png'
-import support from '@/assets/media/support.png'
->>>>>>> f3850f6c98f4c47188c50a669b2c25c1334036dd
 
 const features = [
   {
@@ -78,7 +69,6 @@ const features = [
       </div>
     </div>
   </section>
-<<<<<<< HEAD
   
     <section class="flex flex-col gap-2 items-center mb-8 mt-20">
       <p class="text-2xl font-bold text-slate-700">
@@ -127,8 +117,6 @@ const features = [
         <div><img :src="flowchart" class="" alt=""></div>
       </div>
     </section>
-=======
->>>>>>> f3850f6c98f4c47188c50a669b2c25c1334036dd
 
   <section class="flex flex-col gap-2 items-center mb-8 mt-4">
     <p class="text-2xl font-bold text-slate-700">

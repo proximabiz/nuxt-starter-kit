@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import { VueTelInput } from 'vue-tel-input'
-<<<<<<< HEAD:components/profile/AddresDetails.client.vue
 import type { FormSubmitEvent } from '#ui/types'
 import { useAddressStore } from '~/stores'
 
 const notify = useNotification()
 const addressStore = useAddressStore()
 const isDisabled=ref(true)
-=======
-
-const isDisabled = ref(true)
->>>>>>> f3850f6c98f4c47188c50a669b2c25c1334036dd:components/profile/AddresDetails.vue
 
 interface FormState {
   name: string
@@ -39,7 +34,6 @@ const initialState: FormState = {
 
 const state = reactive<FormState>({ ...initialState })
 
-<<<<<<< HEAD:components/profile/AddresDetails.client.vue
 
 async function getAddress() {
   try {
@@ -57,9 +51,6 @@ onMounted(async () => {
 });
 
  const onSubmit=async(event: FormSubmitEvent<any>)=> {
-=======
-async function onSubmit() {
->>>>>>> f3850f6c98f4c47188c50a669b2c25c1334036dd:components/profile/AddresDetails.vue
   // Do something with data
 }
 
