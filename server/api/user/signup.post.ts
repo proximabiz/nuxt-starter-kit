@@ -1,6 +1,6 @@
-import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '../../utlis/custom.error'
 import { SignupValidation } from '../../utlis/validations'
+import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)

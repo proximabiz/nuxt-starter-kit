@@ -1,5 +1,5 @@
-import { v4 } from "uuid";
+import { v4 } from 'uuid'
 
-export function generateUniqueIdentifier(){
-    return v4();
-} 
+export function generateUniqueIdentifier() {
+  return v4()
+}

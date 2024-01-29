@@ -1,10 +1,10 @@
-import { serverSupabaseClient } from '#supabase/server'
 import { OpenAI } from 'openai'
-import type { ChartResponseType } from '~/server/types/chart'
-import { DiagramType } from '~/server/types/chart'
 import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
 import { ChartUpdateValidation } from '../../utlis/validations'
+import { DiagramType } from '~/server/types/chart'
+import type { ChartResponseType } from '~/server/types/chart'
+import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -104,11 +104,11 @@ export default defineEventHandler(async (event) => {
             } as never,
           ).eq('id', diagramId).select()
           await client.from('diagram_version').insert([{
-            diagram_id:diagramId,
-            user_id:event.context.user.id,
-            response:chart,
-            versions:new Date().toISOString()
-          }]as any)
+            diagram_id: diagramId,
+            user_id: event.context.user.id,
+            response: chart,
+            versions: new Date().toISOString(),
+          }] as any)
 
           return { message: 'Success!', data: { data, response, error }, status: 200 }
         }
