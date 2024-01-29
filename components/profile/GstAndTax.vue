@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
-
 interface State {
   gst: string
 }
@@ -17,11 +15,10 @@ function showModal() {
   isModalVisible.value = true
 }
 
- const onSubmit=async(event: FormSubmitEvent<any>) =>{
-  console.log(event.data)
+async function onSubmit() {
 }
 
- const handleDeleteConfirm=async(): Promise<void> =>{
+async function handleDeleteConfirm(): Promise<void> {
   try {
     // Simulating a dummy API request with a TypeScript type
     const response = await new Promise<ApiResponse>((resolve) => {
@@ -32,17 +29,15 @@ function showModal() {
       // Clear the GST number from state
       state.value.gst = ''
       isModalVisible.value = false
-      console.log('GST number deleted successfully')
     }
   }
   catch (error) {
-    console.error('Error deleting GST number', error)
   }
 }
 </script>
 
 <template>
-    <UBreadcrumb
+  <UBreadcrumb
     divider=">"
     :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'GST And TAX details' }]"
   />

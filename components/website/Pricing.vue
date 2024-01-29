@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const isMonthly = ref(true)
-const currentPlan = ref('');
+const currentPlan = ref('')
 
 interface PricePlan {
   plan: String;
@@ -41,8 +41,6 @@ onMounted(() => {
 //       currentPlan.value = storedPlan;
 //     }
 // });
-
-console.log(currentPlan.value);
 </script>
 
 <template>
@@ -51,10 +49,14 @@ console.log(currentPlan.value);
     <div class="rounded-full border mt-2">
       <label for="Toggle4" class="inline-flex items-center p-1 cursor-pointer dark:bg-gray-300 dark:text-gray-800">
         <input id="Toggle4" type="checkbox" class="hidden peer" @change="isMonthly = !isMonthly">
-        <span :class="{ 'bg-indigo-600 text-white': isMonthly, 'text-gray-700': !isMonthly }"
-          class="px-3 py-1 rounded-full font-medium">Monthly</span>
-        <span :class="{ 'bg-indigo-600 text-white': !isMonthly, 'text-gray-700': isMonthly }"
-          class="px-3 py-1 rounded-full font-medium">Annually</span>
+        <span
+          :class="{ 'bg-indigo-600 text-white': isMonthly, 'text-gray-700': !isMonthly }"
+          class="px-3 py-1 rounded-full font-medium"
+        >Monthly</span>
+        <span
+          :class="{ 'bg-indigo-600 text-white': !isMonthly, 'text-gray-700': isMonthly }"
+          class="px-3 py-1 rounded-full font-medium"
+        >Annually</span>
       </label>
     </div>
   </div>
@@ -90,43 +92,55 @@ console.log(currentPlan.value);
           </p>
           <ul class="mt-2 space-y-2 sm:mt-2">
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-indigo-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-indigo-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
               <span class="text-gray-700"> 10 users </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-indigo-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-indigo-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
               <span class="text-gray-700"> 2GB of storage </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-indigo-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-indigo-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
               <span class="text-gray-700"> Email support </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-red-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-red-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span class="text-gray-700"> Help center access </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-red-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-red-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span class="text-gray-700"> Phone support </span>
             </li>
             <li class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 text-red-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="h-5 w-5 text-red-700"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span class="text-gray-700"> Community access </span>

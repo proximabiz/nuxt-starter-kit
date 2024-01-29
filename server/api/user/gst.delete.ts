@@ -1,7 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
-import { UserGSTValidation } from '~/server/utlis/validations'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)

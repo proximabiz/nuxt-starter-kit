@@ -1,13 +1,10 @@
 <script setup lang="ts">
-
-const pricingRef: Ref<HTMLElement | any> = ref("");
+const pricingRef: Ref<HTMLElement | any> = ref('')
 
 watchEffect(() => {
-  if (pricingRef.value) {
-    localStorage.setItem('currentPlan', pricingRef.value.textContent);
-  }
-});
-
+  if (pricingRef.value)
+    localStorage.setItem('currentPlan', pricingRef.value.textContent)
+})
 </script>
 
 <template>
@@ -21,7 +18,7 @@ watchEffect(() => {
     </h1>
     <UCard>
       <div class="sm:pb-0">
-        <h2 class="text-lg font-medium text-gray-900" ref="pricingRef">
+        <h2 ref="pricingRef" class="text-lg font-medium text-gray-900">
           Pro
         </h2>
         <p class="text-gray-700">
@@ -94,7 +91,9 @@ watchEffect(() => {
         <UButton type="submit" class="w-fit mt-2" color="blue">
           Cancel Subscription
         </UButton>
-        <p class="text-red-500 text-xs">Your plan will be auto renewed on 19 feb 2024</p>
+        <p class="text-red-500 text-xs">
+          Your plan will be auto renewed on 19 feb 2024
+        </p>
       </div>
     </UCard>
     <NuxtLink to="/website/pricing">

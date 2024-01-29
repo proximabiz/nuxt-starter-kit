@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const authStore = useAuthStore()
 
-const isLoggedIn = computed(() => authStore.isLoggedIn)
+const authUser = computed(() => authStore.getAuthUser.value)
 </script>
 
 <template>
@@ -20,7 +20,7 @@ const isLoggedIn = computed(() => authStore.isLoggedIn)
         This tool is built to Enhance Productivity and Visualize Ideas with AI Flow Mapper.<br>
         It Simplifies the Complex Concepts into Elegant Diagrams.
       </p>
-      <UButton v-if="isLoggedIn" class="mt-10" @click="navigateTo('/app/maps')">
+      <UButton v-if="authUser" class="mt-10" @click="navigateTo('/app/maps')">
         Get Started
       </UButton>
     </div>

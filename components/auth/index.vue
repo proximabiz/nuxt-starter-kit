@@ -1,50 +1,23 @@
 <script setup lang="ts">
-const route = useRoute()
+// Import predefined theme
+import { Auth } from '@nuxtbase/auth-ui-vue'
+import { ThemeSupa } from '@supabase/auth-ui-shared'
 
-const currentRouteQueryAction = computed(() => route.query.action)
-const isSignUpRoute = computed(() => currentRouteQueryAction.value === 'signup')
+const supabaseClient = useSupabaseClient() as unknown as any
 </script>
 
 <template>
   <UContainer class="max-w-screen-sm mt-5">
-    <UCard class="text-xl font-bold text-center border-none border-transparent">
-      {{ isSignUpRoute ? 'Sign Up' : 'Sign In' }}
-    </UCard>
-    <UCard class="w-full h-full">
-      <div>
-        <AuthSignUpViaEmailPassword v-if="isSignUpRoute" />
-        <AuthLoginViaEmailPassword v-else />
-      </div>
-      <UDivider label="OR" class="my-10" />
-      <div>
-        <AuthLoginViaGoogle />
-      </div>
-    </UCard>
-    <UCard v-if="isSignUpRoute" class="text-lg text-center border-none">
-      Already have an account?
-      <NuxtLink
-        :to="{
-          path: '/auth',
-          query: {
-            action: 'signin',
-          },
-        }" class="font-thin text-md text-custom1-500 underline"
-      >
-        Sign In
-      </NuxtLink>
-    </UCard>
-    <UCard v-else class="text-lg text-center border-none">
-      New to AI Flow Mapper?
-      <NuxtLink
-        :to="{
-          path: '/auth',
-          query: {
-            action: 'signup',
-          },
-        }" class="font-thin text-md text-custom1-500 underline"
-      >
-        Sign Up
-      </NuxtLink>
-    </UCard>
+    <Auth
+      :supabase-client="supabaseClient"
+      :appearance="{
+        theme: ThemeSupa,
+        style: {
+          button: { background: '#435cff', color: 'white' },
+          anchor: { color: '#435cff' },
+        },
+      }"
+      :providers="['google']"
+    />
   </UContainer>
 </template>

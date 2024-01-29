@@ -12,7 +12,7 @@ const cards = [
   { id: 3, text: 'Billing & Payments', iconSrc: card, to: '' },
   { id: 4, text: 'My Plan', iconSrc: plan, to: '/profile/plans' },
 ]
-const isActiveCard=(to: string) =>{
+function isActiveCard(to: string) {
   return route.path === to
 }
 </script>
@@ -26,14 +26,14 @@ const isActiveCard=(to: string) =>{
     </section>
     <section class="grid place-items-center">
       <div class="grid grid-cols-2 gap-10 mt-20">
-        <UCard v-for="card in cards" :key="card.id" :class="{ 'bg-gray-300': isActiveCard(card.to) }" class="minimum-width hover:bg-gray-300 delay-150 cursor-pointer sm:min-w-20">
-          <NuxtLink :to="card.to">
+        <UCard v-for="item in cards" :key="item.id" :class="{ 'bg-gray-300': isActiveCard(item.to) }" class="minimum-width hover:bg-gray-300 delay-150 cursor-pointer sm:min-w-20">
+          <NuxtLink :to="item.to">
             <div class="flex items-center">
               <div>
-                <img :src="card.iconSrc" class="h-10" alt="">
+                <img :src="item.iconSrc" class="h-10" alt="">
               </div>
               <div class="text">
-                {{ card.text }}
+                {{ item.text }}
               </div>
             </div>
           </NuxtLink>

@@ -11,11 +11,11 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emit>()
 const isOpen = ref(false)
 
-const confirmDeletion=()=> {
+function confirmDeletion() {
   props.onDeleteConfirm()
   emit('update:isOpen', false)
 }
-const cancel=()=> {
+function cancel() {
   emit('update:isOpen', false)
 }
 </script>

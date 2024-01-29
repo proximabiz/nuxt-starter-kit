@@ -2,7 +2,6 @@
 import { z } from 'zod'
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
-import type { FormSubmitEvent } from '#ui/types'
 
 const state = reactive({
   name: undefined,
@@ -30,9 +29,8 @@ const schema = z.object({
 
 // type Schema = z.output<typeof schema>
 
-const onSubmit=async (event: FormSubmitEvent<any>)=> {
+async function onSubmit() {
   // Do something with data
-  console.log(event.data)
 }
 </script>
 

@@ -2,8 +2,8 @@
 const notify = useNotification()
 const authStore = useAuthStore()
 const route = useRoute()
-const isLoggedIn = computed(() => authStore.isLoggedIn)
 
+const authUser = computed(() => authStore.getAuthUser.value)
 // Define the structure of your link objects for better TypeScript support
 interface NavLink {
   name: string
@@ -54,11 +54,8 @@ async function singOut() {
       </li>
     </ul>
     <UButton
-      v-if="!isLoggedIn" @click="navigateTo({
-        path: '/auth',
-        query: {
-          action: 'signin',
-        },
+      v-if="!authUser" @click="navigateTo({
+        path: '/login',
       })"
     >
       Login
