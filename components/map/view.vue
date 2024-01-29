@@ -10,16 +10,22 @@ interface Props {
 
 const props = defineProps<Props>()
 const mindmapStore = useMindmapStore()
+const notify = useNotification()
 
 const apiResponse = ref()
 const mind = ref()
 
 async function fetchMap() {
-  apiResponse.value = await mindmapStore.get({
-    diagramId: props.diagramId,
-  })
+  try {
+    apiResponse.value = await mindmapStore.get({
+      diagramId: props.diagramId,
+    })
 
-  init()
+    init()
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
 }
 
 function init() {

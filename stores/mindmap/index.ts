@@ -20,33 +20,32 @@ export const useMindmapStore = defineStore('mindmapStore', {
   getters: {},
   actions: {
     async list(): Promise<void> {
+      const supabaseClient = useSupabaseClient()
       const authStore = useAuthStore()
 
-      const { data, error } = await useFetch('/api/diagram', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${authStore.session.access_token}`,
-        },
-      })
-      if (error.value)
-        throw error.value
+      const { data: supabaseResponse, error: diagramError } = await supabaseClient
+        .from('diagrams')
+        .select()
+        .eq('user_id', authStore.getAuthUser.value?.id as string)
 
-      this.maps = data.value?.data || null
+      if (diagramError)
+        throw diagramError
+
+      this.maps = supabaseResponse
     },
 
     async get(payload: getAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
 
-      const { data, error } = await useFetch(`/api/diagram/${payload.diagramId}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${authStore.session.access_token}`,
-        },
-      })
-      if (error.value)
-        throw error.value
+      const { data: supabaseResponse, error: diagramError } = await supabaseClient
+        .from('diagrams')
+        .select()
+        .eq('id', payload.diagramId)
 
-      return data.value?.data
+      if (diagramError)
+        throw diagramError
+
+      return supabaseResponse
     },
 
     async create(payload: createAPIPayload) {
