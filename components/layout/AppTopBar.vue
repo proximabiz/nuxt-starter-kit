@@ -26,7 +26,7 @@ async function singOut() {
     navigateTo('/')
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    notify.error(error)
   }
 }
 </script>

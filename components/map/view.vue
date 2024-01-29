@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import MindElixir from 'mind-elixir'
-import nodeMenu from '@mind-elixir/node-menu'
-import '@mind-elixir/node-menu/dist/style.css'
-import type { MindElixirData, Options } from 'mind-elixir'
+import nodeMenu from '@mind-elixir/node-menu';
+import '@mind-elixir/node-menu/dist/style.css';
+import type { MindElixirData, Options } from 'mind-elixir';
+import MindElixir from 'mind-elixir';
 
 interface Props {
   diagramId: string
@@ -21,10 +21,11 @@ async function fetchMap() {
       diagramId: props.diagramId,
     })
 
-    init()
+    if (apiResponse.value[0].response.length)
+      init()
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    notify.error(error)
   }
 }
 

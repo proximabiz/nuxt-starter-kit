@@ -20,15 +20,19 @@ export default defineEventHandler(async (event) => {
     apiKey: useRuntimeConfig().public.OPENAI_API_KEY as string,
   })
   try {
-    const completion: any = await openai.completions.create({
-      model: 'gpt-3.5-turbo-instruct',
-      prompt,
-      max_tokens: 2000,
-      temperature: 0.7,
-    })
-    const chart: object = JSON.parse(completion.choices[0].text)
-    if (!chart)
-      throw new CustomError('Error: Server is busy please, try again!', 408)
+    let chart: Array<any> = []
+    // Do not create map through AI if the title is default 
+    if (params.title !== 'default') {
+      const completion: any = await openai.completions.create({
+        model: 'gpt-3.5-turbo-instruct',
+        prompt,
+        max_tokens: 2000,
+        temperature: 0.7,
+      })
+      chart = JSON.parse(completion.choices[0].text)
+      if (!chart)
+        throw new CustomError('Error: Server is busy please, try again!', 408)
+    }
     // Storing open-ai response in database.
     const { data: diagram, error, status } = await client.from('diagrams').insert([
       {
