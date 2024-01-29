@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   console.log("diagramId",diagramId);
   
   const client = await serverSupabaseClient(event);
-  const {data,error,status} = await client. from('diagram_version').select('*').eq('diagram_id',diagramId).select();
+  const { data, error, status} = await client. from('diagram_version').select('*').eq('diagram_id',diagramId).select();
 
   return {
     data,

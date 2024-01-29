@@ -97,7 +97,6 @@ export default defineEventHandler(async (event) => {
           }
 
           const { data, error } = await client.from('diagrams').update(
-
             {
               keywords: userKeyword,
               details: userRequirement,
