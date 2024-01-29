@@ -1,5 +1,5 @@
 <template>
-  <UCard class="app-view">
+  <UCard class="h-screen">
     <LayoutAppTopBar />
     <LayoutAppDrawer />
     <UContainer class="p-10">

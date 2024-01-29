@@ -1,6 +1,7 @@
-import { useTaskStore } from './example'
-import { useUserStore } from './user'
-import { useGlobalStore } from './global'
 import { useAuthStore } from './auth'
+import { useTaskStore } from './example'
+import { useGlobalStore } from './global'
+import { useMindmapStore } from './mindmap'
+import { useUserStore } from './user'
 
-export { useTaskStore, useUserStore, useGlobalStore, useAuthStore }
+export { useAuthStore, useGlobalStore, useMindmapStore, useTaskStore, useUserStore }

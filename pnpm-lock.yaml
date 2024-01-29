@@ -8,6 +8,9 @@ dependencies:
   '@formkit/auto-animate':
     specifier: ^0.8.1
     version: 0.8.1
+  '@mind-elixir/node-menu':
+    specifier: ^1.0.3
+    version: 1.0.3(mind-elixir@3.3.2)
   '@nuxt/ui':
     specifier: ^2.11.1
     version: 2.11.1(nuxt@3.9.0)(rollup@3.29.4)(vite@5.0.10)(vue@3.3.13)
@@ -26,6 +29,9 @@ dependencies:
   joi:
     specifier: ^17.11.0
     version: 17.11.0
+  mind-elixir:
+    specifier: ^3.3.2
+    version: 3.3.2
   openai:
     specifier: ^4.24.3
     version: 4.24.3
@@ -1125,6 +1131,14 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  /@mind-elixir/node-menu@1.0.3(mind-elixir@3.3.2):
+    resolution: {integrity: sha512-iRGl280bja8CDevceHaxlpagIJnGS7oNrzfYdzwWgq4AMUq+pTEZWWHmEma1d/VG+UOB0jT3XrLLWZT9Tz+y0g==}
+    peerDependencies:
+      mind-elixir: ^2.0.1
+    dependencies:
+      mind-elixir: 3.3.2
+    dev: false
 
   /@miyaneee/rollup-plugin-json5@1.1.2(rollup@3.29.4):
     resolution: {integrity: sha512-3jfS/jq0dQiSKxm4Ou87qsF51KbPj4iD0n/lQcJEwxzyu4uTbZ77nyRtNNz3G7jc1GNDNuXcV6FzcLhCU8JWAw==}
@@ -5742,6 +5756,10 @@ packages:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
     dev: true
+
+  /mind-elixir@3.3.2:
+    resolution: {integrity: sha512-SHHospQXT7ARaNMMnaZLFzBsOela9tc8rgSYHPhAPrV8Jxh6MCo1X8qQxJAvuqIVvN8uSGnXf+Po4nhzzSmWWQ==}
+    dev: false
 
   /mini-svg-data-uri@1.4.4:
     resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
