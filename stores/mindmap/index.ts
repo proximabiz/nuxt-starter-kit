@@ -9,6 +9,11 @@ interface createAPIPayload {
   diagramTypeId: string
 }
 
+interface updateAPIPayload {
+  title: string
+  diagramTypeId: string
+}
+
 function initialState() {
   return {
     maps: null,
@@ -54,14 +59,31 @@ export const useMindmapStore = defineStore('mindmapStore', {
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/diagram/create', {
         method: 'POST',
         headers: {
-          Authorization: await authStore.getBearerToken
+          Authorization: await authStore.getBearerToken,
         },
         body: payload,
       })
 
       if (supabaseError.value)
         throw supabaseError.value
-      
+
+      return supabaseResponse.value?.data
+    },
+
+    async update(payload: updateAPIPayload) {
+      const authStore = useAuthStore()
+
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${payload.diagramId}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: await authStore.getBearerToken,
+        },
+        body: payload,
+      })
+
+      if (supabaseError.value)
+        throw supabaseError.value
+
       return supabaseResponse.value?.data
     },
   },

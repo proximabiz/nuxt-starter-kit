@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
   })
   try {
     let chart: Array<any> = []
-    // Do not create map through AI if the title is default 
+    // Do not create map through AI if the title is default
     if (params.title !== 'default') {
       const completion: any = await openai.completions.create({
         model: 'gpt-3.5-turbo-instruct',
