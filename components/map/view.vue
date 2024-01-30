@@ -87,6 +87,11 @@ async function downloadMap() {
   URL.revokeObjectURL(url)
 }
 
+async function exportJSON() {
+  // https://github.com/SSShooter/mind-elixir-core?tab=readme-ov-file#data-export-and-import
+  // And download JSON in a file
+}
+
 onMounted(() => {
   fetchMap()
 })
