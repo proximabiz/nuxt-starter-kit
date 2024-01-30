@@ -4,7 +4,6 @@ import card from '@/assets/media/card.png'
 import tax from '@/assets/media/gst.png'
 import plan from '@/assets/media/plan.png'
 
-const route = useRoute()
 
 // Refs
 const selectedComponent = ref()
@@ -15,9 +14,7 @@ const cards = [
   { id: 3, text: 'Billing & Payments', iconSrc: card, componentName: '', },
   { id: 4, text: 'My Plan', iconSrc: plan, componentName: 'ProfileMyPlans',},
 ]
-function isActiveCard(to: string) {
-  return route.path === to
-}
+
 
 function setComponentName(componentName: string) {
   selectedComponent.value = componentName

@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { z } from 'zod'
 import { VueTelInput } from 'vue-tel-input'
+import 'vue-tel-input/vue-tel-input.css'
 import type { FormSubmitEvent } from '#ui/types'
 import { useAddressStore } from '~/stores'
 
@@ -33,6 +35,17 @@ const initialState: FormState = {
 }
 
 const state = reactive<FormState>({ ...initialState })
+// #validation
+const schema = z.object({
+  country: z.string().min(1, 'Country is required'),
+  zip: z.string().min(1, 'Zip is required'),
+  city:z.string().min(1, 'City is required'),
+  region:z.string().min(1, 'Region is required'),
+  address:z.string().min(1, 'Address is required'),
+  phone: z.number().max(10, 'Phone must be a valid number with at least 10 digits'),
+
+  message: z.string().min(1, 'Message is required'),
+})
 
 
 async function getAddress() {
@@ -74,7 +87,7 @@ function onCancel() {
       Address and Contact Details
     </h1>
     <UCard class="mb-8">
-      <UForm :state="state" class="space-y-4 " @submit="onSubmit">
+      <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
           <UFormGroup label="Name" name="name">
             <UInput v-model="state.name" color="blue" :disabled="true" />
@@ -115,7 +128,7 @@ function onCancel() {
           <UButton v-if="!state.isEditable" color="blue" @click="toggleEdit">
             Edit
           </UButton>
-          <UButton v-else type="submit" color="blue" :disabled="isDisabled">
+          <UButton v-else type="submit" color="blue">
             Save
           </UButton>
         </div>
