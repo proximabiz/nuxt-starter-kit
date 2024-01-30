@@ -7,7 +7,7 @@ import { useAddressStore } from '~/stores'
 
 const notify = useNotification()
 const addressStore = useAddressStore()
-const isDisabled=ref(true)
+const isDisabled = ref(true)
 
 interface FormState {
   name: string
@@ -39,20 +39,19 @@ const state = reactive<FormState>({ ...initialState })
 const schema = z.object({
   country: z.string().min(1, 'Country is required'),
   zip: z.string().min(1, 'Zip is required'),
-  city:z.string().min(1, 'City is required'),
-  region:z.string().min(1, 'Region is required'),
-  address:z.string().min(1, 'Address is required'),
+  city: z.string().min(1, 'City is required'),
+  region: z.string().min(1, 'Region is required'),
+  address: z.string().min(1, 'Address is required'),
   phone: z.number().max(10, 'Phone must be a valid number with at least 10 digits'),
 
   message: z.string().min(1, 'Message is required'),
 })
 
-
 async function getAddress() {
   try {
-  const addressData=  await addressStore.fetchAddress()
-  console.log(addressData)
-  return addressData
+    const addressData = await addressStore.fetchAddress()
+    console.log(addressData)
+    return addressData
   }
   catch (error) {
     notify.error(error.statusMessage)
@@ -60,10 +59,10 @@ async function getAddress() {
 }
 
 onMounted(async () => {
-  await getAddress();
-});
+  await getAddress()
+})
 
- const onSubmit=async(event: FormSubmitEvent<any>)=> {
+async function onSubmit(event: FormSubmitEvent<any>) {
   // Do something with data
 }
 

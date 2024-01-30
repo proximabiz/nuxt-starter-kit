@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import nodeMenu from '@mind-elixir/node-menu';
-import '@mind-elixir/node-menu/dist/style.css';
-import type { MindElixirData, Options } from 'mind-elixir';
-import MindElixir from 'mind-elixir';
+import nodeMenu from '@mind-elixir/node-menu'
+import '@mind-elixir/node-menu/dist/style.css'
+import type { MindElixirData, Options } from 'mind-elixir'
+import MindElixir from 'mind-elixir'
 
 interface Props {
   diagramId: string

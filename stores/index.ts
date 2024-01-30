@@ -4,6 +4,6 @@ import { useTaskStore } from './example'
 import { useGlobalStore } from './global'
 import { useMindmapStore } from './mindmap'
 import { useUserStore } from './user'
-import {useAddressStore} from './address'
+import { useAddressStore } from './address'
 
-export { useAuthStore, useDiagramStore, useGlobalStore, useMindmapStore, useTaskStore, useUserStore,useAddressStore}
+export { useAuthStore, useDiagramStore, useGlobalStore, useMindmapStore, useTaskStore, useUserStore, useAddressStore }

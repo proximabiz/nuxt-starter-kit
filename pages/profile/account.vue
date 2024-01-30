@@ -3,6 +3,7 @@ definePageMeta({
   layout: 'app',
 })
 </script>
+
 <template>
   <ProfileMyAccount />
 </template>

@@ -3,8 +3,9 @@
 </script>
 
 <template>
-    <BillingCarddetails/>
+  <BillingCarddetails />
 </template>
+
 <style scoped>
 
 </style>

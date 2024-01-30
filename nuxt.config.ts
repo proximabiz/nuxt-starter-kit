@@ -60,7 +60,7 @@ export default defineNuxtConfig({
       exclude: ['/website/*'],
     },
   },
-  routeRules:{
+  routeRules: {
     '/profile/address': { ssr: false },
   },
   // app: {

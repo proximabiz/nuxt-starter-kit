@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <BillingAnnuallyBilling/>
+  <BillingAnnuallyBilling />
 </template>
 
 <style scoped>

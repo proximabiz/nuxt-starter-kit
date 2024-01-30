@@ -62,7 +62,7 @@ async function createMap() {
       diagramTypeId: mindmapTypeDiagram.id,
     })
 
-    redirectToPath(response.diagrams[0].id);
+    redirectToPath(response.diagrams[0].id)
   }
   catch (error) {
     notify.error(error)

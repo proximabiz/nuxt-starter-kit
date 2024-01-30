@@ -3,11 +3,11 @@
 </script>
 
 <template>
-  <LayoutTopBarWithoutMenu/>
+  <LayoutTopBarWithoutMenu />
   <UContainer class="p-5">
-      <slot />
-    </UContainer>
-    <!-- <LayoutWebsiteFooter /> -->
+    <slot />
+  </UContainer>
+  <!-- <LayoutWebsiteFooter /> -->
 </template>
 
 <style lang="scss" scoped>

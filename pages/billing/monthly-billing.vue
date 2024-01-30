@@ -1,10 +1,11 @@
-
 <script setup lang="ts">
 
 </script>
+
 <template>
-   <BillingMonthlyBilling/>
+  <BillingMonthlyBilling />
 </template>
+
 <style scoped>
 
 </style>

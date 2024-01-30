@@ -1,9 +1,11 @@
 <script setup lang="ts">
 
 </script>
+
 <template>
-   <BillingAddress/>
+  <BillingAddress />
 </template>
+
 <style scoped>
 
 </style>
