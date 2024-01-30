@@ -19,7 +19,7 @@ interface Props {
           <USelect v-model="user" :options="users" />
           <div>
             <span>{{ props.planDetails.month }} {{ props.planDetails.month > 1 ? "months" : "month" }} * 5 </span>
-            <span class="font-semibold"> $05.00</span>
+            <span class="font-semibold pl-1"> $05.00</span>
           </div>
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">

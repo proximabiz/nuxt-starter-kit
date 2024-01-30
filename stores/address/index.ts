@@ -42,8 +42,21 @@ export const useAddressStore = defineStore({
       })
       if (error.value)
         throw error.value
-      return data.value?.data
+      return data.value
     },
-  },
 
+    async addAddress(payload: addressPayload) {
+      const authStore = useAuthStore()
+      const { data, error } = await useFetch('/api/user/address', {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${authStore.session.access_token}`,
+        },
+        body: payload,
+      })
+      if (error.value)
+        throw error.value
+      return data.value
+    },
+  }, 
 })
