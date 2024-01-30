@@ -34,6 +34,12 @@ export const useAuthStore = defineStore('authStore', {
     getAuthUser() {
       return useSupabaseUser()
     },
+
+    async getBearerToken() {
+      const supabaseClient = useSupabaseClient()
+      const session = await supabaseClient.auth.getSession()
+      return `Bearer ${session.data.session?.access_token}`
+    },
   },
   actions: {
     async signup(payload: signupViaEmailPasswordPayload) {
