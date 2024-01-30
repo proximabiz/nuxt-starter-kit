@@ -57,7 +57,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/app/maps',
-      exclude: ['/website/*'],
+      exclude: ['/website', '/website/*'],
     },
   },
 })
