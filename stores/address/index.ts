@@ -17,7 +17,7 @@ export const useAddressStore = defineStore({
         const { data, error } = await useFetch('/api/user/address-contact', {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${authStore.session.access_token}`,
+            Authorization: await authStore.getBearerToken,
           },
         })
         if (error.value) {

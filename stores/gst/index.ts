@@ -1,8 +1,8 @@
 import type {State, taxGst } from './types'
 import { logger } from '~/utility/logger'
 
-export const useAddressStore = defineStore({
-    id: 'address',
+export const useGstTaxStore = defineStore({
+    id: 'gst',
     state: (): State => ({
       GstDetails: [],
     }),
@@ -13,10 +13,10 @@ export const useAddressStore = defineStore({
       async fetchTaxGst() {
         try {
           const authStore = useAuthStore()
-          const { data, error } = await useFetch('/api/user/address-contact', {
+          const { data, error } = await useFetch('/api/user/gst', {
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${authStore.session.access_token}`,
+              Authorization: await authStore.getBearerToken,
             },
           })
           if (error.value) {
@@ -35,7 +35,7 @@ export const useAddressStore = defineStore({
         const { data, error } = await useFetch('/api/user/address', {
           method: 'PUT',
           headers: {
-            Authorization: `Bearer ${authStore.session.access_token}`,
+            Authorization: await authStore.getBearerToken,
           },
           body: payload,
         })
@@ -44,12 +44,12 @@ export const useAddressStore = defineStore({
         return data.value
       },
   
-      async addAddress(payload: taxGst) {
+      async deleteTaxGst(payload: taxGst) {
         const authStore = useAuthStore()
         const { data, error } = await useFetch('/api/user/address', {
           method: 'PUT',
           headers: {
-            Authorization: `Bearer ${authStore.session.access_token}`,
+            Authorization: await authStore.getBearerToken,
           },
           body: payload,
         })
