@@ -3,38 +3,43 @@ import { z } from 'zod'
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 import type { FormSubmitEvent } from '#ui/types'
-import { useAddressStore } from '~/stores'
 
-const notify = useNotification()
-const addressStore = useAddressStore()
+interface Props {
+  addressDetails: any
+}
+const props = defineProps<Props>()
+
 const isDisabled = ref(true)
 
-interface FormState {
-  name: string
-  orgname: string
-  country: string
-  zip: string
-  city: string
-  region: string
-  address: string
-  phone: string
-  email: string
-  isEditable: boolean
-}
-const initialState: FormState = {
-  name: 'Ipsita',
-  orgname: 'Proxima',
-  country: 'India',
-  zip: '76534',
-  city: 'Bangalore',
-  region: 'Karnataka',
-  address: 'test',
-  phone: '9875547899',
-  email: 'ipsitap@proximabiz.com',
-  isEditable: false,
-}
 
-const state = reactive<FormState>({ ...initialState })
+// addressDetails.value=props.addressDetails
+
+// interface FormState {
+//   name: string
+//   orgname: string
+//   country: string
+//   zip: string
+//   city: string
+//   region: string
+//   address: string
+//   phone: string
+//   email: string
+//   isEditable: boolean
+// }
+// const initialState: FormState = {
+//   name: 'Ipsita',
+//   orgname: 'Proxima',
+//   country: "",
+//   zip: '76534',
+//   city: 'Bangalore',
+//   region: 'Karnataka',
+//   address: 'test',
+//   phone: '9875547899',
+//   email: 'ipsitap@proximabiz.com',
+//   isEditable: false,
+// }
+
+// const state = reactive<FormState>({ ...initialState })
 // #validation
 const schema = z.object({
   country: z.string().min(1, 'Country is required'),
@@ -47,33 +52,19 @@ const schema = z.object({
   message: z.string().min(1, 'Message is required'),
 })
 
-async function getAddress() {
-  try {
-    const addressData = await addressStore.fetchAddress()
-    console.log(addressData)
-    return addressData
-  }
-  catch (error) {
-    notify.error(error.statusMessage)
-  }
-}
-
-onMounted(async () => {
-  await getAddress()
-})
 
 async function onSubmit(event: FormSubmitEvent<any>) {
   // Do something with data
 }
 
-function toggleEdit() {
-  state.isEditable = !state.isEditable
-  isDisabled.value = true
-}
+// function toggleEdit() {
+//   state.isEditable = !state.isEditable
+//   isDisabled.value = true
+// }
 
-function onCancel() {
-  Object.assign(state, initialState)
-}
+// function onCancel() {
+//   Object.assign(state, initialState)
+// }
 </script>
 
 <template>
@@ -85,37 +76,38 @@ function onCancel() {
     <h1 class="font-semibold mb-4">
       Address and Contact Details
     </h1>
+  address printing {{ addressDetails }}
     <UCard class="mb-8">
-      <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
+      <UForm :schema="schema" :state="props.addressDetails" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
-          <UFormGroup label="Name" name="name">
+          <!-- <UFormGroup label="Name" name="name">
             <UInput v-model="state.name" color="blue" :disabled="true" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
             <UInput v-model="state.orgname" color="blue" :disabled="true" />
-          </UFormGroup>
+          </UFormGroup> -->
         </div>
         <div class="flex gap-2">
           <UFormGroup label="Country" name="country">
-            <UInput v-model="state.country" color="blue" :disabled="!state.isEditable" />
+            <UInput v-model="props.addressDetails?.country" color="blue" :disabled="!addressDetails.isEditable" />
           </UFormGroup>
           <UFormGroup label="Zip" name="zip">
-            <UInput v-model="state.zip" color="blue" :disabled="!state.isEditable" />
+            <UInput v-model="props.addressDetails?.zip" color="blue" :disabled="!addressDetails.isEditable" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="City" name="city">
-            <UInput v-model="state.city" color="blue" :disabled="!state.isEditable" />
+            <UInput v-model="props.addressDetails?.city" color="blue" :disabled="!addressDetails.isEditable" />
           </UFormGroup>
           <UFormGroup label="Region" name="region">
-            <UInput v-model="state.region" color="blue" :disabled="!state.isEditable" />
+            <UInput v-model="addressDetails?.region" color="blue" :disabled="!addressDetails.isEditable" />
           </UFormGroup>
         </div>
         <UFormGroup label="Address" name="address">
-          <UInput v-model="state.address" color="blue" :disabled="!state.isEditable" />
+          <UInput v-model="props.addressDetails?.address" color="blue" :disabled="!addressDetails.isEditable" />
         </UFormGroup>
-        <UFormGroup label="Phone no" name="phone">
-          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" :disabled="!state.isEditable" />
+        <!-- <UFormGroup label="Phone no" name="phone">
+          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" :disabled="!addressDetails.isEditable" />
         </UFormGroup>
         <UFormGroup label="Email Id" name="email">
           <UInput v-model="state.email" color="blue" :disabled="true" />
@@ -130,7 +122,7 @@ function onCancel() {
           <UButton v-else type="submit" color="blue">
             Save
           </UButton>
-        </div>
+        </div> -->
       </UForm>
     </UCard>
   </section>
