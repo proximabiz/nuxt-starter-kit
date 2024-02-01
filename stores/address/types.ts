@@ -20,5 +20,5 @@ export interface addressPayload {
   phone: string
 }
 export interface State {
-  AddressDetails: Address[]
+  addressDetails: Address[]
 }

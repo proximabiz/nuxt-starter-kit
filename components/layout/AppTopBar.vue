@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import { signOut } from '~/server/utlis/route.protector';
+import { useGlobalStore } from '~/stores'
+
+const globalStore = useGlobalStore()
 const authStore = useAuthStore()
 const notify = useNotification()
 const supabaseClient = useSupabaseClient()

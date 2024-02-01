@@ -2,35 +2,35 @@ import type { State, addressPayload } from './types'
 import { logger } from '~/utility/logger'
 import { useAuthStore } from '~/stores'
 
-function initialState() {
-  return {
-    address: null,
-  }
-}
+
 
 export const useAddressStore = defineStore({
-
   id: 'address',
-  state: (): State => initialState(),
+  state: ():State => ({
+    addressDetails: [],
+  }),
   getters:{},
   actions: {   
     async fetchAddress():Promise<void> {
       const authStore = useAuthStore()
       const supabaseClient = useSupabaseClient()
       
-      // const address = {};
-      const { data: supabaseUserAddress, error: supabaseError } = await supabaseClient
+      const { data: supabaseUserAddress, error: supabaseUserAddressError } = await supabaseClient
         .from('user_address_details')
         .select()
         .eq('user_id', authStore.getAuthUser.value?.id as string)
-        const { data: supabaseUserDetails, error: supabaseAddressError } = await supabaseClient
+        const { data: supabaseUserDetails, error: supabaseUserDetailsError } = await supabaseClient
         .from('user_details')
         .select()
         .eq('user_id', authStore.getAuthUser.value?.id as string)
 
-      if (supabaseError)
-        throw supabaseError
-      return supabaseUserAddress[0]
+      if (supabaseUserAddressError)
+        throw supabaseUserAddressError
+      if(supabaseUserDetailsError)
+      throw supabaseUserDetailsError
+      const userInfoAddress = {supabaseUserAddress, ...supabaseUserDetails};
+console.log(userInfoAddress)
+      return 
     }
     // async fetchAddress() {
     //   try {
@@ -82,3 +82,5 @@ export const useAddressStore = defineStore({
     
   }, 
 })
+
+

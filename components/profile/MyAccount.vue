@@ -4,11 +4,9 @@ import card from '@/assets/media/card.png'
 import tax from '@/assets/media/gst.png'
 import plan from '@/assets/media/plan.png'
 
-const notify = useNotification()
-const addressStore = useAddressStore()
 // Refs
 const selectedComponent = ref()
-const userAddress=ref()
+
 
 const cards = [
   { id: 1, text: 'Address, Contact Details', iconSrc: address, componentName: 'ProfileAddressDetails' },
@@ -17,20 +15,8 @@ const cards = [
   { id: 4, text: 'My Plan', iconSrc: plan, componentName: 'ProfileMyPlans' },
 ]
 
-async function getAddress() {
-  try {
-    userAddress.value= await addressStore.fetchAddress()
-  }
-  catch (error) {
-    notify.error(error.statusMessage)
-  }
-}
-
 async function setComponentName(componentName: string) {
   selectedComponent.value = componentName
- if(selectedComponent.value === 'ProfileAddressDetails'){
-  await getAddress()
- }
 }
 </script>
 
@@ -54,7 +40,7 @@ async function setComponentName(componentName: string) {
     </div>
   </section>
 
-  <ProfileAddresDetails v-if="selectedComponent === 'ProfileAddressDetails'" :addressDetails="userAddress"/>
+  <ProfileAddresDetails v-if="selectedComponent === 'ProfileAddressDetails'"/>
   <ProfileGstAndTax v-if="selectedComponent === 'ProfileGstAndTax'" />
   <ProfileMyPlans v-if="selectedComponent === 'ProfileMyPlans'" />
 </template>
