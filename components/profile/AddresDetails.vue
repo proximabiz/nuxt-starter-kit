@@ -53,7 +53,8 @@ const schema = z.object({
 const  getAddress=async() =>{
   try {
     const response= await addressStore.fetchAddress(); 
-    
+    state.name=response.name
+    state.orgname=response.organisation_name
     state.country=response.country
     state.zip=response.zip_code
     state.city=response.city
@@ -97,12 +98,12 @@ function onCancel() {
     <UCard class="mb-8">
       <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
-          <!-- <UFormGroup label="Name" name="name">
+          <UFormGroup label="Name" name="name">
             <UInput v-model="state.name" color="blue" :disabled="true" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
             <UInput v-model="state.orgname" color="blue" :disabled="true" />
-          </UFormGroup> -->
+          </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="Country" name="country">

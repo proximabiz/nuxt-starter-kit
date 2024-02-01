@@ -1,37 +1,67 @@
 <script setup lang="ts">
-interface State {
-  gst: string
-}
-interface ApiResponse {
-  success: boolean
-}
+import { useGstTaxStore } from '~/stores/gst';
 
-const state = ref<State>({
-  gst: '7627GHW7889',
+interface State {
+  gstNumber: string
+}
+interface ResponseType {
+  status: number;
+  message: string; 
+}
+const notify = useNotification()
+const taxGstStore = useGstTaxStore()
+const state = reactive<State>({
+  gstNumber: '',
 })
 const isModalVisible = ref(false)
+const isDisabled=ref(false)
+
+const  getTaxGst=async() =>{
+  try {
+    const response= await taxGstStore.fetchTaxGst(); 
+    state.gstNumber=response?.gst_number 
+    isDisabled.value = true
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
+}
+
+onMounted(async () => {
+  await getTaxGst()
+});
 
 function showModal() {
   isModalVisible.value = true
 }
 
-async function onSubmit() {
-}
+const onSubmit=async(): Promise<void>=> {
 
-async function handleDeleteConfirm(): Promise<void> {
   try {
-    // Simulating a dummy API request with a TypeScript type
-    const response = await new Promise<ApiResponse>((resolve) => {
-      setTimeout(() => resolve({ success: true }), 1000)
-    })
-
-    if (response.success) {
+    const response = await taxGstStore.addTaxGst(state)
+    if (response?.status==200) {    
+      isDisabled.value = true
+      isModalVisible.value = false   
+      notify.success(response.message)
+    }
+  } 
+  catch (error) {
+    notify.error(error.statusMessage)
+  } 
+}
+ const handleDeleteConfirm= async (): Promise<void> => {
+  try {
+    const response = await taxGstStore.deleteTaxGst()
+    if (response?.status==200) {
       // Clear the GST number from state
-      state.value.gst = ''
-      isModalVisible.value = false
+      state.gstNumber = ''
+      isDisabled.value = false
+      isModalVisible.value = false   
+      notify.success(response.message)
     }
   }
   catch (error) {
+    notify.error(error.statusMessage)
   }
 }
 </script>
@@ -50,20 +80,20 @@ async function handleDeleteConfirm(): Promise<void> {
       <UForm :state="state" class="" @submit="onSubmit">
         <UFormGroup name="gst">
           <UInput
-            v-model="state.gst" placeholder="Enter your Tax ID/GST No." :disabled="!!state.gst" class="custom-input"
+            v-model="state.gstNumber" placeholder="Enter your Tax ID/GST No." :disabled="isDisabled" class="custom-input"
             color="blue"
           />
         </UFormGroup>
         <div class="flex gap-6 mt-8">
-          <UButton v-if="!state.gst" type="submit" class="w-fit" color="blue">
+          <UButton v-if="!isDisabled" type="submit" class="w-fit" color="blue">
             Cancel
           </UButton>
-          <UButton v-if="!state.gst" type="submit" class="w-fit" color="blue">
+          <UButton v-if="!isDisabled" type="submit" class="w-fit" color="blue">
             Save
           </UButton>
         </div>
       </UForm>
-      <Icon v-if="state.gst" name="material-symbols-light:delete-rounded" color="black" class="text-2xl mt-1 cursor-pointer" @click="showModal" />
+      <Icon v-if="isDisabled" name="material-symbols-light:delete-rounded" color="black" class="text-2xl mt-1 cursor-pointer" @click="showModal" />
       <Confirmation v-model="isModalVisible" :is-open="isModalVisible" @update:is-open="isModalVisible = $event" @delete-confirm="handleDeleteConfirm" />
     </div>
   </div>

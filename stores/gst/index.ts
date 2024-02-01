@@ -10,7 +10,7 @@ export const useGstTaxStore = defineStore({
       getGst: state => state.GstDetails,
     },
     actions: {
-      async fetchTaxGst() {
+      async fetchTaxGst():Promise<any> {
         try {
           const authStore = useAuthStore()
           const { data, error } = await useFetch('/api/user/gst', {
@@ -23,17 +23,16 @@ export const useGstTaxStore = defineStore({
             logger.error('Failed to fetch address:', error.value)
             return
           }
-          // console.log("123 updating",data.value.userData)
-          return this.GstDetails = data.value ? data?.value : []
+         return this.GstDetails = data.value ? data?.value?.data as taxGst[] : []
         }
         catch (err) {
           logger.error('Error fetching address:', err)
         }
       },
-      async AddTaxGst(payload: taxGst) {
+      async addTaxGst(payload: taxGst) {
         const authStore = useAuthStore()
-        const { data, error } = await useFetch('/api/user/address', {
-          method: 'PUT',
+        const { data, error } = await useFetch('/api/user/gst', {
+          method: 'POST',
           headers: {
             Authorization: await authStore.getBearerToken,
           },
@@ -44,14 +43,14 @@ export const useGstTaxStore = defineStore({
         return data.value
       },
   
-      async deleteTaxGst(payload: taxGst) {
+      async deleteTaxGst() {
         const authStore = useAuthStore()
-        const { data, error } = await useFetch('/api/user/address', {
-          method: 'PUT',
+        const { data, error } = await useFetch('/api/user/gst', {
+          method: 'DELETE',
           headers: {
             Authorization: await authStore.getBearerToken,
           },
-          body: payload,
+         
         })
         if (error.value)
           throw error.value

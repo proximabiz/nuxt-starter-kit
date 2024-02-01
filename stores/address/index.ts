@@ -11,7 +11,7 @@ export const useAddressStore = defineStore({
   }),
   getters:{},
   actions: {   
-    async fetchAddress():Promise<void> {
+    async fetchAddress():Promise<state> {
       const authStore = useAuthStore()
       const supabaseClient = useSupabaseClient()
       
@@ -28,9 +28,12 @@ export const useAddressStore = defineStore({
         throw supabaseUserAddressError
       if(supabaseUserDetailsError)
       throw supabaseUserDetailsError
-      const userInfoAddress = {supabaseUserAddress, ...supabaseUserDetails};
-console.log(userInfoAddress)
-      return 
+      let userInfoAddress = supabaseUserAddress.map(address => {
+      let userDetails = supabaseUserDetails.find(detail => detail.user_id === address.user_id);
+      return {...address, ...userDetails};
+    });
+
+      return userInfoAddress[0]
     }
     // async fetchAddress() {
     //   try {

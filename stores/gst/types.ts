@@ -1,5 +1,5 @@
 export interface taxGst {
-    gst_number: string
+    gstNumber: string
 }
 
 export interface State {
