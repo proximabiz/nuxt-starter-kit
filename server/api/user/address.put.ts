@@ -29,9 +29,14 @@ export default defineEventHandler(async (event) => {
         } as never,
       ).eq('user_id', userID).select().single()
 
-      if (error)
+      if (error) {
         return { message: 'Error!', error, status: 400 }
-
+      }
+      else {
+        await client.auth.updateUser({
+          phone: chartValidation.phoneNumber,
+        })
+      }
       return { message: 'Success!', data, status: 200 }
     }
   }
