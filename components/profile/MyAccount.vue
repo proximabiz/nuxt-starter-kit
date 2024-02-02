@@ -7,7 +7,6 @@ import plan from '@/assets/media/plan.png'
 // Refs
 const selectedComponent = ref()
 
-
 const cards = [
   { id: 1, text: 'Address, Contact Details', iconSrc: address, componentName: 'ProfileAddressDetails' },
   { id: 2, text: 'Tax ID / GST Details', iconSrc: tax, componentName: 'ProfileGstAndTax' },
@@ -40,7 +39,7 @@ async function setComponentName(componentName: string) {
     </div>
   </section>
 
-  <ProfileAddresDetails v-if="selectedComponent === 'ProfileAddressDetails'"/>
+  <ProfileAddresDetails v-if="selectedComponent === 'ProfileAddressDetails'" />
   <ProfileGstAndTax v-if="selectedComponent === 'ProfileGstAndTax'" />
   <ProfileMyPlans v-if="selectedComponent === 'ProfileMyPlans'" />
 </template>

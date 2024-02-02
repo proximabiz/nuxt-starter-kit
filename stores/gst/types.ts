@@ -1,7 +1,7 @@
 export interface taxGst {
-    gstNumber: string
+  gstNumber: string
 }
 
 export interface State {
-    GstDetails: taxGst[]
-  }
+  GstDetails: taxGst[]
+}

@@ -2,19 +2,17 @@ import type { State, addressPayload } from './types'
 import { logger } from '~/utility/logger'
 import { useAuthStore } from '~/stores'
 
-
-
 export const useAddressStore = defineStore({
   id: 'address',
-  state: ():State => ({
+  state: (): State => ({
     addressDetails: [],
   }),
-  getters:{},
-  actions: {   
+  getters: {},
+  actions: {
     // async fetchAddress():Promise<any> {
     //   const authStore = useAuthStore()
     //   const supabaseClient = useSupabaseClient()
-      
+
     //   const { data: supabaseUserAddress, error: supabaseUserAddressError } = await supabaseClient
     //     .from('user_address_details')
     //     .select()
@@ -28,7 +26,7 @@ export const useAddressStore = defineStore({
     //     throw supabaseUserAddressError
     //   if(supabaseUserDetailsError)
     //   throw supabaseUserDetailsError
-      
+
     //   let userInfoAddress = supabaseUserAddress.map(address => {
     //   let userDetails = supabaseUserDetails.find(detail => detail.user_id  === address.user_id);
     //   return {...address, ...userDetails};
@@ -36,7 +34,7 @@ export const useAddressStore = defineStore({
 
     //   return userInfoAddress[0]
     // }
-    async fetchAddress():Promise<any> {
+    async fetchAddress(): Promise<any> {
       try {
         const authStore = useAuthStore()
         const { data, error } = await useFetch('/api/user/address-contact', {
@@ -49,13 +47,13 @@ export const useAddressStore = defineStore({
           logger.error('Failed to fetch address:', error.value)
           return
         }
-        
-        const allAddressDetails={
+
+        const allAddressDetails = {
           ...data.value?.userData,
-          ...data.value?.userDetails[0], 
-          ...data.value?.userAddress[0]
-      };
-      // console.log("123 updating",allAddressDetails)
+          ...data.value?.userDetails[0],
+          ...data.value?.userAddress[0],
+        }
+        // console.log("123 updating",allAddressDetails)
         return allAddressDetails
       }
       catch (err) {
@@ -89,8 +87,6 @@ export const useAddressStore = defineStore({
         throw error.value
       return data.value
     },
-    
-  }, 
+
+  },
 })
-
-

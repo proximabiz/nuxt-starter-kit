@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { signOut } from '~/server/utlis/route.protector';
 import { useGlobalStore } from '~/stores'
 
 const globalStore = useGlobalStore()

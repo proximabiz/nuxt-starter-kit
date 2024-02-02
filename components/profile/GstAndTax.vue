@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useGstTaxStore } from '~/stores/gst';
+import { useGstTaxStore } from '~/stores/gst'
 
 interface State {
   gstNumber: string
 }
 interface ResponseType {
-  status: number;
-  message: string; 
+  status: number
+  message: string
 }
 const notify = useNotification()
 const taxGstStore = useGstTaxStore()
@@ -14,15 +14,15 @@ const state = reactive<State>({
   gstNumber: '',
 })
 const isModalVisible = ref(false)
-const isDisabled=ref(false)
-const isLoading= ref(true)
+const isDisabled = ref(false)
+const isLoading = ref(true)
 
-const  getTaxGst=async() =>{
+async function getTaxGst() {
   try {
-    const response= await taxGstStore.fetchTaxGst(); 
-    state.gstNumber=response?.gst_number 
+    const response = await taxGstStore.fetchTaxGst()
+    state.gstNumber = response?.gst_number
     isDisabled.value = true
-    isLoading.value=false
+    isLoading.value = false
   }
   catch (error) {
     notify.error(error.statusMessage)
@@ -31,34 +31,33 @@ const  getTaxGst=async() =>{
 
 onMounted(async () => {
   await getTaxGst()
-});
+})
 
 function showModal() {
   isModalVisible.value = true
 }
 
-const onSubmit=async(): Promise<void>=> {
-
+async function onSubmit(): Promise<void> {
   try {
     const response = await taxGstStore.addTaxGst(state)
-    if (response?.status==200) {    
+    if (response?.status == 200) {
       isDisabled.value = true
-      isModalVisible.value = false   
+      isModalVisible.value = false
       notify.success(response.message)
     }
-  } 
+  }
   catch (error) {
     notify.error(error.statusMessage)
-  } 
+  }
 }
- const handleDeleteConfirm= async (): Promise<void> => {
+async function handleDeleteConfirm(): Promise<void> {
   try {
     const response = await taxGstStore.deleteTaxGst()
-    if (response?.status==200) {
+    if (response?.status == 200) {
       // Clear the GST number from state
       state.gstNumber = ''
       isDisabled.value = false
-      isModalVisible.value = false   
+      isModalVisible.value = false
       notify.success(response.message)
     }
   }
@@ -72,7 +71,7 @@ const onSubmit=async(): Promise<void>=> {
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />
     <UCard>
-      Fetching your<span class="font-bold">GST / TAX No.</span> 
+      Fetching your<span class="font-bold">GST / TAX No.</span>
     </UCard>
   </UModal>
   <UBreadcrumb
