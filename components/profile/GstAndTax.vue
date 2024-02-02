@@ -4,10 +4,10 @@ import { useGstTaxStore } from '~/stores/gst'
 interface State {
   gstNumber: string
 }
-interface ResponseType {
-  status: number
-  message: string
-}
+// interface ResponseType {
+//   status: number
+//   message: string
+// }
 const notify = useNotification()
 const taxGstStore = useGstTaxStore()
 const state = reactive<State>({
@@ -40,7 +40,7 @@ function showModal() {
 async function onSubmit(): Promise<void> {
   try {
     const response = await taxGstStore.addTaxGst(state)
-    if (response?.status == 200) {
+    if (response?.status === 200) {
       isDisabled.value = true
       isModalVisible.value = false
       notify.success(response.message)
@@ -53,7 +53,7 @@ async function onSubmit(): Promise<void> {
 async function handleDeleteConfirm(): Promise<void> {
   try {
     const response = await taxGstStore.deleteTaxGst()
-    if (response?.status == 200) {
+    if (response?.status === 200) {
       // Clear the GST number from state
       state.gstNumber = ''
       isDisabled.value = false

@@ -71,7 +71,7 @@ async function getAddress() {
     // && response.city==""
     // && response.region==""
     // && response.address==""
-      response.phone == ''
+      response.phone === ''
     ) {
       // isEditable.value=true
     }
@@ -99,7 +99,6 @@ watch(state, (newState) => {
 })
 
 async function onSubmit() {
-  console.log('i am calling')
   const payload = {
     country: state.country,
     region: state.region,
@@ -110,8 +109,7 @@ async function onSubmit() {
   }
   try {
     const response = await addressStore.editAddress(payload)
-    console.log(response)
-    if (response?.status == 200) {
+    if (response?.status === 200) {
       notify.success(response.message)
       await getAddress()
       isEditable.value = false
