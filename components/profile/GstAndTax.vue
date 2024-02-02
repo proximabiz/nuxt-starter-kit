@@ -15,12 +15,14 @@ const state = reactive<State>({
 })
 const isModalVisible = ref(false)
 const isDisabled=ref(false)
+const isLoading= ref(true)
 
 const  getTaxGst=async() =>{
   try {
     const response= await taxGstStore.fetchTaxGst(); 
     state.gstNumber=response?.gst_number 
     isDisabled.value = true
+    isLoading.value=false
   }
   catch (error) {
     notify.error(error.statusMessage)
@@ -67,6 +69,12 @@ const onSubmit=async(): Promise<void>=> {
 </script>
 
 <template>
+  <UModal v-model="isLoading">
+    <UProgress animation="carousel" />
+    <UCard>
+      Fetching your<span class="font-bold">GST / TAX No.</span> 
+    </UCard>
+  </UModal>
   <UBreadcrumb
     divider=">"
     :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'GST And TAX details' }]"

@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
-import type { FormSubmitEvent } from '#ui/types'
+
 
 interface Props {
   addressDetails: any
@@ -11,20 +11,20 @@ interface Props {
 const notify = useNotification()
 const addressStore = useAddressStore()
 
-
-const isDisabled = ref(true)
+const isDisabled = ref(false)
+const isEditable= ref(false)
+const isLoading= ref(true)
 
 interface FormState {
-  name: string
-  orgname: string
+  name?: string
+  orgname?: string
   country: string
   zip: string
   city: string
   region: string
   address: string
   phone: string
-  email: string
-  isEditable: boolean
+  email?: string
 }
 const initialState: FormState = {
   name: '',
@@ -36,23 +36,25 @@ const initialState: FormState = {
   address: '',
   phone: '',
   email: '',
-  isEditable: false,
 }
 const state = reactive<FormState>({ ...initialState })
 // #validation
-const schema = z.object({
-  country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip is required'),
-  city: z.string().min(1, 'City is required'),
-  region: z.string().min(1, 'Region is required'),
-  address: z.string().min(1, 'Address is required'),
-  phone: z.number().max(10, 'Phone must be a valid number with at least 10 digits'),
-  message: z.string().min(1, 'Message is required'),
-})
+// const schema = z.object({
+//   country: z.string().min(1, 'Country is required'),
+//   zip: z.string().min(1, 'Zip is required'),
+//   city: z.string().min(1, 'City is required'),
+//   region: z.string().min(1, 'Region is required'),
+//   address: z.string().min(1, 'Address is required'),
+//   phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
+//   message: z.string().min(1, 'Message is required'),
+// })
 
 const  getAddress=async() =>{
   try {
     const response= await addressStore.fetchAddress(); 
+
+    if(response){
+    isLoading.value=false
     state.name=response.name
     state.orgname=response.organisation_name
     state.country=response.country
@@ -60,23 +62,72 @@ const  getAddress=async() =>{
     state.city=response.city
     state.region=response.region
     state.address=response.address
+    state.phone=response.phone
+    state.email=response.email
+  }
+    if(
+      // response.name==""
+    // && response.organisation_name==""
+    // && response.country==""
+    // && response.zip_code==""
+    // && response.city==""
+    // && response.region==""
+    // && response.address==""
+     response.phone==""
+     ){
+      // isEditable.value=true
+    }
   }
   catch (error) {
     notify.error(error.statusMessage)
   }
 }
 
-
 onMounted(async () => {
   await getAddress()
 });
 
-async function onSubmit(event: FormSubmitEvent<any>) {
-  // Do something with data
+const originalState = ref({ ...initialState });
+
+// Computed property to check if the form has been modified
+const isFormModified = computed(() => {
+  return JSON.stringify(state) !== JSON.stringify(originalState.value);
+});
+
+// Watch for changes in the form state
+watch(state, (newState) => {
+  if (JSON.stringify(newState) !== JSON.stringify(initialState)) {
+    originalState.value = { ...newState };
+  }
+});
+
+
+const onSubmit = async ()=> {
+  console.log("i am calling")
+  let payload={
+  country:state.country,
+  region:state.region,
+  city:state.city,
+  zipcode:state.zip,
+  address:state.address,
+  phoneNumber:state.phone
+}
+  try {
+    const response= await addressStore.editAddress(payload); 
+    console.log(response)
+    if (response?.status==200) {
+    notify.success(response.message)
+    await getAddress()
+    isEditable.value=false
+    }
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
 }
 
 function toggleEdit() {
-  state.isEditable = !state.isEditable
+  isEditable.value = !isEditable.value
   isDisabled.value = true
 }
 
@@ -86,6 +137,13 @@ function onCancel() {
 </script>
 
 <template>
+  <UModal v-model="isLoading">
+    <UProgress animation="carousel" />
+    <UCard>
+      Fetching your<span class="font-bold">Address and contact</span>  details...
+    </UCard>
+  </UModal>
+  
   <UBreadcrumb
     divider=">"
     :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'Address and Contact Details' }]"
@@ -96,45 +154,45 @@ function onCancel() {
     </h1>
  
     <UCard class="mb-8">
-      <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
+      <UForm schema="" :state="state" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
           <UFormGroup label="Name" name="name">
-            <UInput v-model="state.name" color="blue" :disabled="true" />
+            <UInput v-model="state.name" color="blue" :disabled="state.name!==''" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
-            <UInput v-model="state.orgname" color="blue" :disabled="true" />
+            <UInput v-model="state.orgname" color="blue" :disabled="state.orgname!==''" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="Country" name="country">
-            <UInput v-model="state.country" color="blue" :disabled="!state.isEditable" />
+            <UInput v-model="state.country" color="blue" :disabled="!isEditable" />
           </UFormGroup>
           <UFormGroup label="Zip" name="zip">
-            <UInput v-model="state.zip" color="blue" :disabled="!state.isEditable" />
+            <UInput v-model="state.zip" color="blue" :disabled="!isEditable" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="City" name="city">
-            <UInput v-model="state.city" color="blue" :disabled="!state.isEditable" />
+            <UInput v-model="state.city" color="blue" :disabled="!isEditable" />
           </UFormGroup>
           <UFormGroup label="Region" name="region">
-            <UInput v-model="state.region" color="blue" :disabled="!state.isEditable" />
+            <UInput v-model="state.region" color="blue" :disabled="!isEditable" />
           </UFormGroup>
         </div>
         <UFormGroup label="Address" name="address">
-          <UInput v-model="state.address" color="blue" :disabled="!state.isEditable" />
+          <UInput v-model="state.address" color="blue" :disabled="!isEditable" />
         </UFormGroup>
          <UFormGroup label="Phone no" name="phone">
-          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" :disabled="!state.isEditable" />
+          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" :disabled="!isEditable" />
         </UFormGroup>
         <UFormGroup label="Email Id" name="email">
           <UInput v-model="state.email" color="blue" :disabled="true" />
         </UFormGroup>
         <div class="flex gap-2 justify-center">
-          <UButton type="submit" color="blue" @click="onCancel">
+          <UButton  color="blue" @click="onCancel">
             Cancel
           </UButton>
-          <UButton v-if="!state.isEditable" color="blue" @click="toggleEdit">
+          <UButton v-if="!isEditable" color="blue" @click="toggleEdit">
             Edit
           </UButton>
           <UButton v-else type="submit" color="blue">
@@ -145,5 +203,6 @@ function onCancel() {
     </UCard>
   </section>
 </template>
+
 
 <style scoped></style>

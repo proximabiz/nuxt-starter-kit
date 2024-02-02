@@ -12,12 +12,11 @@ export interface Address {
 }
 export interface addressPayload {
   country: string
-  state: string
   zipcode: string
   city: string
   region: string
   address: string
-  phone: string
+  phoneNumber: string
 }
 export interface State {
   addressDetails: Address[]
