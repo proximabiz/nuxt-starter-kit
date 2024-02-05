@@ -1,4 +1,4 @@
-import type { State, addressPayload,postPayload } from './types'
+import type { State, addressPayload, postPayload } from './types'
 import { logger } from '~/utility/logger'
 import { useAuthStore } from '~/stores'
 

@@ -1,26 +1,22 @@
 <script setup lang="ts">
-import { usePlanStore } from '~/stores/plan';
+import { usePlanStore } from '~/stores/plan'
 
 const pricingRef: Ref<HTMLElement | any> = ref('')
 
-  const notify = useNotification()
-  const planStore = usePlanStore()
+const notify = useNotification()
+const planStore = usePlanStore()
 
-  async function getActivePlan() {
+async function getActivePlan() {
   try {
     const response = await planStore.fetchActivePlan()
-       
-  
   }
   catch (error) {
     notify.error(error.statusMessage)
   }
- }
+}
 onMounted(async () => {
   await getActivePlan()
 })
-
-
 </script>
 
 <template>

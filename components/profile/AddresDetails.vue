@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
-import { useAddressStore } from '~/stores/address';
+import { useAddressStore } from '~/stores/address'
 
 interface Props {
   addressDetails: any
@@ -52,17 +52,17 @@ const state = reactive<FormState>({ ...initialState })
 async function getAddress() {
   try {
     const response = await addressStore.fetchAddress()
-      isLoading.value = false
-      state.name = response.name 
-      state.orgname = response.organisation_name
-      state.country = response.country
-      state.zip = response.zip_code
-      state.city = response.city
-      state.region = response.region
-      state.address = response.address
-      state.phone = response.phone
-      state.email = response.email
-    
+    isLoading.value = false
+    state.name = response.name
+    state.orgname = response.organisation_name
+    state.country = response.country
+    state.zip = response.zip_code
+    state.city = response.city
+    state.region = response.region
+    state.address = response.address
+    state.phone = response.phone
+    state.email = response.email
+
     if (
       // response.name==""
       // && response.organisation_name==""
@@ -76,11 +76,9 @@ async function getAddress() {
       // isEditable.value=true
     }
     if (response.name == undefined && response.organisation_name == undefined) {
-      isEditable.value=false
+      isEditable.value = false
       isNewUser.value = true
-      
     }
-
   }
 
   catch (error) {
@@ -92,9 +90,7 @@ onMounted(async () => {
   await getAddress()
 })
 
-
 async function onSubmit() {
-
   const payload = {
     country: state.country,
     region: state.region,
@@ -103,31 +99,29 @@ async function onSubmit() {
     address: state.address,
     phoneNumber: state.phone,
   }
-if(isNewUser){
-  const payloadPost={
-    name: state.name,
-    organisation_name:state.orgname,
-    country: state.country,
-    region: state.region,
-    city: state.city,
-    zipcode: state.zip,
-    address: state.address,
-    phoneNumber: state.phone,}
+  if (isNewUser) {
+    const payloadPost = {
+      name: state.name,
+      organisation_name: state.orgname,
+      country: state.country,
+      region: state.region,
+      city: state.city,
+      zipcode: state.zip,
+      address: state.address,
+      phoneNumber: state.phone,
+    }
     try {
-    const response = await addressStore.addAddress(payloadPost)
-    if (response?.status === 200) {
-      notify.success(response.message)
-      await getAddress()
-      isEditable.value = false
+      const response = await addressStore.addAddress(payloadPost)
+      if (response?.status === 200) {
+        notify.success(response.message)
+        await getAddress()
+        isEditable.value = false
+      }
+    }
+    catch (error) {
+      notify.error(error.statusMessage)
     }
   }
-  catch (error) {
-    notify.error(error.statusMessage)
-  }
-
-
-
-}
 
   try {
     const response = await addressStore.editAddress(payload)
@@ -160,8 +154,10 @@ async function onCancel() {
     </UCard>
   </UModal>
 
-  <UBreadcrumb divider=">"
-    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'Address and Contact Details' }]" />
+  <UBreadcrumb
+    divider=">"
+    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'Address and Contact Details' }]"
+  />
   <section class="grid place-items-center mb-8">
     <h1 class="font-semibold mb-4">
       Address and Contact Details
@@ -215,7 +211,6 @@ async function onCancel() {
           <UButton v-else type="submit" color="blue">
             Save
           </UButton>
-
         </div>
       </UForm>
     </UCard>
