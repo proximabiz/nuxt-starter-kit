@@ -3,12 +3,33 @@ const isMonthly = ref(true)
 const currentPlan = ref('')
 const showBillingDetails = ref(false)
 let cardValue = ref()
+const region = ref('asia')
 
 interface PricePlan {
   plan: string
   price: number | any
   month: number
 }
+const regions = [
+  {
+    name: 'Asia',
+    value: 'asia',
+    currencySymbol: '₹', // Rupees
+    conversionRate: 75 // Assuming 1 USD = 75 Rupees
+  }, 
+  {
+    name: 'Europe',
+    value: 'europe',
+    currencySymbol: '€', // Euros
+    conversionRate: 0.9 // Assuming 1 USD = 0.9 Euros
+  }, 
+  {
+    name: 'US',
+    value: 'us',
+    currencySymbol: '$', // Dollars
+    conversionRate: 1 // Base rate
+  }
+];
 
 const monthlyPrices: PricePlan[] = [
   { plan: 'Basic', price: 'Free', month: 1 },
@@ -23,20 +44,26 @@ const annualPrices: PricePlan[] = [
   { plan: 'Pro', price: monthlyPrices[2].price * 11, month: 12 },
   { plan: 'Enterprise', price: 'Custom', month: 12 },
 ]
-const items = [
-  [{
-    label: 'Asia',
 
-  }], [{
-    label: 'Europe',
-
-  }], [{
-    label: 'US',
-  }]
-]
 const prices = computed(() => {
-  return isMonthly.value ? monthlyPrices : annualPrices
-})
+  const selectedRegion = regions.find(r => r.value === region.value);
+  const adjustmentFactor = selectedRegion?.conversionRate;
+  const adjustedPrices = (isMonthly.value ? monthlyPrices : annualPrices).map(plan => {
+    if (plan.price === 'Free' || plan.price === 'Custom') {
+      return { ...plan, currencySymbol: '' }; // No currency symbol for 'Free' or 'Custom' plans
+    }
+    return {
+      ...plan,
+      price: plan.price * adjustmentFactor, // Adjusting the price
+      currencySymbol: selectedRegion?.currencySymbol // Setting the currency symbol
+    };
+  });
+  return adjustedPrices;
+});
+
+// const prices = computed(() => {
+//   return isMonthly.value ? monthlyPrices : annualPrices
+// })
 function providePlanDetails(val: any) {
   cardValue = val
   showBillingDetails.value = true
@@ -62,9 +89,10 @@ function providePlanDetails(val: any) {
 <template>
   <BillingDetailsBillling v-if="showBillingDetails" :plan-details="cardValue" />
   <template v-else>
-    <div class="flex flex-col items-center">
+    <div class="text-center">
       <span class="text-3xl font-medium">Choose Your AI Flow Mapper Plan</span>
-      <div class="flex">
+    </div>
+      <div class="flex items-center justify-center relative">
         <div class="rounded-full border mt-2">
           <label for="Toggle4" class="inline-flex items-center p-1 cursor-pointer dark:bg-gray-300 dark:text-gray-800">
             <input id="Toggle4" type="checkbox" class="hidden peer" @change="isMonthly = !isMonthly">
@@ -74,11 +102,10 @@ function providePlanDetails(val: any) {
               class="px-3 py-1 rounded-full font-medium">Annually</span>
           </label>
         </div>
-        <UDropdown :items="items" :popper="{ placement: 'bottom-start' }">
-          <UButton color="white" label="Regions" trailing-icon="i-heroicons-chevron-down-20-solid" />
-        </UDropdown>
+
+        <USelect v-model="region" :options="regions" option-attribute="name" class="absolute right-20" color="blue" />       
       </div>
-    </div>
+    
 
     <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
       <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-4 md:gap-8">
@@ -93,7 +120,8 @@ function providePlanDetails(val: any) {
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
             </p>
             <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-              {{ value.price }}{{ value.price === 'Custom' ? '' : value.price === 'Free' ? '' : '$' }}
+            {{ value.price }}{{ value.currencySymbol }}
+              <!-- {{ value.price }}{{ value.price === 'Custom' ? '' : value.price === 'Free' ? '' : '$' }} -->
             </strong>
             <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom' || value.price === 'Free' ? '' :
               isMonthly
