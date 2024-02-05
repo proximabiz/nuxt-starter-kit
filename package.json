@@ -34,6 +34,7 @@
     "@nuxtjs/supabase": "^1.1.5",
     "@pinia/nuxt": "^0.5.1",
     "consola": "^3.2.3",
+    "dayjs": "^1.11.10",
     "flowbite": "^2.2.1",
     "joi": "^17.11.0",
     "mind-elixir": "^3.3.2",
