@@ -1,14 +1,16 @@
 <script lang="ts" setup>
+import dayjs from 'dayjs'
+
 const mindmapStore = useMindmapStore()
 const notify = useNotification()
 const diagramStore = useDiagramStore()
+const isLoading = ref(false)
+const isDelete = ref(false)
+const apiResponse = ref()
+const deleteDiagramId = ref('')
 
 const maps = computed(() => mindmapStore.maps)
 const headers = computed(() => [
-  {
-    title: 'Id',
-    value: 'id',
-  },
   {
     title: 'Title',
     value: 'title',
@@ -18,11 +20,7 @@ const headers = computed(() => [
     value: 'keywords',
   },
   {
-    title: 'Created At',
-    value: 'created_at',
-  },
-  {
-    title: 'Modified At',
+    title: 'Last Modified On',
     value: 'modified_at',
   },
   {
@@ -52,6 +50,7 @@ async function fetchMaps() {
 }
 
 async function createMap() {
+  isLoading.value = true
   try {
     const mindmapTypeDiagram = diagramStore.getMindMapTypeDiagram
     if (!mindmapTypeDiagram)
@@ -62,9 +61,11 @@ async function createMap() {
       diagramTypeId: mindmapTypeDiagram.id,
     })
 
-    redirectToPath(response.diagrams[0].id);
+    isLoading.value = false
+    redirectToPath(response?.diagram[0].id)
   }
   catch (error) {
+    isLoading.value = false
     notify.error(error)
   }
 }
@@ -73,13 +74,39 @@ function redirectToPath(diagramId: string) {
   return navigateTo(`/app/maps/${diagramId}`)
 }
 
+async function deleteMindMap(diagramId: string) {
+  console.log(diagramId)
+  try {
+    isDelete.value = true
+    deleteDiagramId.value = diagramId
+  }
+  catch (error) {
+    notify.error(error)
+  }
+}
+
+async function confirmedDeleteDiagram() {
+  try {
+    apiResponse.value = await mindmapStore.delete({
+      diagramId: deleteDiagramId.value,
+    })
+    console.log(apiResponse.value)
+    isDelete.value = false
+    notify.success('Diagram deleted successfully!')
+    fetchMaps()
+  }
+  catch (error) {
+    notify.error(error)
+  }
+}
+
 onMounted(() => {
   fetchMaps()
 })
 </script>
 
 <template>
-  <div>
+  <div class="pl-10">
     <div class="flex justify-end my-4">
       <UButton label="Create New" icon="i-heroicons-plus" @click="createMap()" />
     </div>
@@ -97,20 +124,20 @@ onMounted(() => {
               </thead>
               <tbody>
                 <tr v-for="(item, index) in maps" :key="index" class="border-b dark:border-neutral-500">
-                  <td class="whitespace-nowrap px-6 py-4">
+                  <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.id }}
-                  </td>
+                  </td> -->
                   <td class="whitespace-nowrap px-6 py-4">
                     {{ item.title }}
                   </td>
                   <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.Keywords }}
+                    {{ item.Keywords || 'No keywords specified' }}
                   </td>
-                  <td class="whitespace-nowrap px-6 py-4">
+                  <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.created_at }}
-                  </td>
+                  </td> -->
                   <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.modified_at }}
+                    {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
                   </td>
                   <td class="whitespace-nowrap px-6 py-4">
                     <UButton
@@ -118,6 +145,12 @@ onMounted(() => {
                       size="sm"
                       variant="ghost"
                       @click="redirectToPath(item.id)"
+                    />
+                    <UButton
+                      icon="i-heroicons-trash"
+                      size="sm"
+                      variant="ghost"
+                      @click="deleteMindMap(item.id)"
                     />
                   </td>
                 </tr>
@@ -128,4 +161,19 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <UModal v-model="isLoading">
+    <UProgress animation="carousel" />
+    <UCard>
+      Creating your <span class="font-bold">Default</span> Mindmap...
+    </UCard>
+  </UModal>
+  <UModal v-model="isDelete">
+    <UCard>
+      Are you sure you want to delete this mindmap?
+      <div class="flex justify-end my-4">
+        <UButton label="Cancel" class="mr-2" icon="i-heroicons-x-mark" @click="isDelete = false" />
+        <UButton label="Delete" icon="i-heroicons-archive-box-x-mark" @click="confirmedDeleteDiagram()" />
+      </div>
+    </UCard>
+  </UModal>
 </template>

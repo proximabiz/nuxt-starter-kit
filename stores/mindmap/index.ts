@@ -81,10 +81,25 @@ export const useMindmapStore = defineStore('mindmapStore', {
         body: payload,
       })
 
+      console.log('supabaseResponse', supabaseResponse.value)
+
       if (supabaseError.value)
         throw supabaseError.value
 
       return supabaseResponse.value?.data
+    },
+    async delete(payload: getAPIPayload) {
+      const supabaseClient = useSupabaseClient()
+
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient
+        .from('diagrams')
+        .delete()
+        .eq('id', payload.diagramId)
+
+      if (supabaseError)
+        throw supabaseError
+
+      return supabaseResponse
     },
   },
   persist: {

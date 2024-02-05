@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import nodeMenu from '@mind-elixir/node-menu';
-import '@mind-elixir/node-menu/dist/style.css';
-import type { MindElixirData, Options } from 'mind-elixir';
-import MindElixir from 'mind-elixir';
+import nodeMenu from '@mind-elixir/node-menu'
+import '@mind-elixir/node-menu/dist/style.css'
+import type { MindElixirData, Options } from 'mind-elixir'
+import MindElixir from 'mind-elixir'
+import { useFileExporter } from '@/composables/ExportJsonFile'
 
 interface Props {
   diagramId: string
@@ -11,9 +12,13 @@ interface Props {
 const props = defineProps<Props>()
 const mindmapStore = useMindmapStore()
 const notify = useNotification()
+const diagramStore = useDiagramStore()
+const { exportJSONFile } = useFileExporter()
 
 const apiResponse = ref()
-const isOpen = ref(false)
+const updateApiResponse = ref()
+const isOpen = ref(true)
+const isVersionDrawerOpen = ref(false)
 const mind = ref()
 const isRequirements = ref(false)
 const form = ref({
@@ -26,6 +31,29 @@ const items = [{
 }, {
   key: 'json-driven',
   label: 'From JSON ',
+}]
+
+const versionsItems = [{
+  time: 'January 10, 2:29 PM',
+  user: 'Neha Soni',
+}, {
+  time: 'January 11, 1:30 PM',
+  user: 'Ipsita',
+}, {
+  time: 'January 12, 2:30 PM',
+  user: 'Balakrishna Adasumali',
+}, {
+  time: 'January 13, 3:30 PM',
+  user: 'Raveena Sisodiya',
+}, {
+  time: 'January 14, 4:30 PM',
+  user: 'Supriya Potdar',
+}, {
+  time: 'January 15, 5:30 PM',
+  user: 'Sudhakar Shenoy',
+}, {
+  time: 'January 16, 6:30 PM',
+  user: 'Pushpak Hazare',
 }]
 
 async function fetchMap() {
@@ -69,6 +97,20 @@ function init() {
 async function updateMap() {
   try {
     // Call update API here
+    const mindmapTypeDiagram = diagramStore.getMindMapTypeDiagram
+    if (!mindmapTypeDiagram)
+      return
+
+    updateApiResponse.value = await mindmapStore.update({
+      title: form.value.title,
+      diagramTypeId: mindmapTypeDiagram.id,
+    })
+    console.log(updateApiResponse.value)
+    // if (apiResponse.value[0].response.length) {
+    //   init()
+    //   form.value.title = apiResponse.value[0].title
+    //   form.value.details = apiResponse.value[0].details
+    // }
   }
   catch (error) {
     notify.error(error)
@@ -88,9 +130,21 @@ async function downloadMap() {
 }
 
 async function exportJSON() {
-  // https://github.com/SSShooter/mind-elixir-core?tab=readme-ov-file#data-export-and-import
-  // And download JSON in a file
+  const data = mind.value.getDataString() // stringify object
+  exportJSONFile(toRaw(data), `${form.value.title}_MINDMAP.json`)
 }
+
+// async function compareJSON(obj1, obj2) {
+
+//       for(const i in obj2) {
+//         if(!obj1.hasOwnProperty(i) || obj2[i] !== obj1[i]) {
+//           if(!Array.isArray(obj2[i]) || !(JSON.stringify(obj2[i]) == JSON.stringify(obj1[i]))){
+//           ret[i] = obj2[i];
+//           }
+//         }
+//       }
+//       return ret;
+//     };
 
 onMounted(() => {
   fetchMap()
@@ -103,7 +157,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flex fixed right-0 h-auto w-16 flex-col justify-between bg-white">
+  <div class="flex fixed right-0 w-12 flex-col justify-between bg-white z-20">
     <div>
       <div>
         <div class="px-2">
@@ -136,6 +190,20 @@ onBeforeUnmount(() => {
               </a>
             </li>
 
+            <li @click="isVersionDrawerOpen = true">
+              <a
+                class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+              >
+                <UIcon name="i-heroicons-rectangle-stack" class="size-5" />
+
+                <span
+                  class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+                >
+                  Diagram Versions
+                </span>
+              </a>
+            </li>
+
             <li @click="downloadMap()">
               <a
                 class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -150,7 +218,7 @@ onBeforeUnmount(() => {
               </a>
             </li>
 
-            <li>
+            <li @click="exportJSON()">
               <a
                 class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               >
@@ -221,13 +289,33 @@ onBeforeUnmount(() => {
     </div>
   </USlideover>
 
-  <!-- Map rendering -->
-  <div id="map" class="w-full custom-class" />
-</template>
+  <!-- versions drawer -->
+  <USlideover v-model="isVersionDrawerOpen" class="">
+    <div class="overflow-auto">
+      <h1 id="home" class="text-2xl mb-4 font-extrabold text-center mt-6">
+        Mindmap Versions
+      </h1>
+      <ul class="mt-4 space-y-2 px-2">
+        <li v-for="(item, index) in versionsItems" :key="index">
+          <a href="#" class="block h-full rounded-lg border border-gray-700 p-4 hover:border-gray-300">
+            <div class="grid grid-cols-2">
+              <bold class="font-medium text-gray-900">{{ item.time }}</bold>
+              <p class="mt-1 text-xs font-medium text-gray-500">
+                {{ item.user }}
+              </p>
+            </div>
 
-<style>
-.custom-class {
-  height: 700px !important;
-  width: 100% !important;
-}
-</style>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </USlideover>
+  -
+  <!-- Map rendering -->
+  <!-- <div id="map" class="" /> -->
+  <UContainer>
+    <div class="y-10 ml-5">
+      <div id="map" class="h-[500px] overflow-y-auto z-10" />
+    </div>
+  </UContainer>
+</template>
