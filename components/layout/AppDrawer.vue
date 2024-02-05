@@ -16,11 +16,13 @@ const links = computed(() => [
     <div class="flex h-screen w-16 fixed left-0 flex-col justify-between border-e bg-white">
       <div>
         <div class="inline-flex h-16 w-16 items-center justify-center">
+          <NuxtLink to="/website">
           <span
             class="grid h-10 w-10 place-content-center rounded-lg text-xs text-gray-600"
           >
             <img src="/assets/media/logo.png" class="" alt="Flowbite Logo">
           </span>
+        </NuxtLink>
         </div>
         <div class="border-t border-gray-100">
           <div class="px-2">

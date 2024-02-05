@@ -1,4 +1,4 @@
-import type { State, addressPayload } from './types'
+import type { State, addressPayload,postPayload } from './types'
 import { logger } from '~/utility/logger'
 import { useAuthStore } from '~/stores'
 
@@ -74,10 +74,10 @@ export const useAddressStore = defineStore({
       return data.value
     },
 
-    async addAddress(payload: addressPayload) {
+    async addAddress(payload: postPayload) {
       const authStore = useAuthStore()
       const { data, error } = await useFetch('/api/user/address', {
-        // method: 'POST',
+        method: 'POST',
         headers: {
           Authorization: await authStore.getBearerToken,
         },

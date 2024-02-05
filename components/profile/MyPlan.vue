@@ -1,10 +1,26 @@
 <script setup lang="ts">
+import { usePlanStore } from '~/stores/plan';
+
 const pricingRef: Ref<HTMLElement | any> = ref('')
 
-watchEffect(() => {
-  if (pricingRef.value)
-    localStorage.setItem('currentPlan', pricingRef.value.textContent)
+  const notify = useNotification()
+  const planStore = usePlanStore()
+
+  async function getActivePlan() {
+  try {
+    const response = await planStore.fetchActivePlan()
+       
+  
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
+ }
+onMounted(async () => {
+  await getActivePlan()
 })
+
+
 </script>
 
 <template>

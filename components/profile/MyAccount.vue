@@ -11,7 +11,7 @@ const cards = [
   { id: 1, text: 'Address, Contact Details', iconSrc: address, componentName: 'ProfileAddressDetails' },
   { id: 2, text: 'Tax ID / GST Details', iconSrc: tax, componentName: 'ProfileGstAndTax' },
   { id: 3, text: 'Billing & Payments', iconSrc: card, componentName: '' },
-  { id: 4, text: 'My Plan', iconSrc: plan, componentName: 'ProfileMyPlans' },
+  { id: 4, text: 'My Plan', iconSrc: plan, componentName: 'ProfileMyPlan' },
 ]
 
 async function setComponentName(componentName: string) {
@@ -41,7 +41,7 @@ async function setComponentName(componentName: string) {
 
   <ProfileAddresDetails v-if="selectedComponent === 'ProfileAddressDetails'" />
   <ProfileGstAndTax v-if="selectedComponent === 'ProfileGstAndTax'" />
-  <ProfileMyPlans v-if="selectedComponent === 'ProfileMyPlans'" />
+  <ProfileMyPlan v-if="selectedComponent === 'ProfileMyPlan'" />
 </template>
 
 <style scoped>
