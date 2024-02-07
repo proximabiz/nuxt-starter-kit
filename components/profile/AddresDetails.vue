@@ -82,7 +82,7 @@ async function getAddress() {
   }
 
   catch (error) {
-    notify.error(error.statusMessage)
+    notify.error(error.message)
   }
 }
 

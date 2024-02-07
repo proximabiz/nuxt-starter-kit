@@ -1,78 +1,69 @@
 <script setup lang="ts">
-const people = [{
-  id: 'benjamincanac',
-  label: 'benjamincanac',
-  href: 'https://github.com/benjamincanac',
-  target: '_blank',
-  avatar: { src: 'https://avatars.githubusercontent.com/u/739984?v=4' },
-}, {
-  id: 'Atinux',
-  label: 'Atinux',
-  href: 'https://github.com/Atinux',
-  target: '_blank',
-  avatar: { src: 'https://avatars.githubusercontent.com/u/904724?v=4' },
-}, {
-  id: 'smarroufin',
-  label: 'smarroufin',
-  href: 'https://github.com/smarroufin',
-  target: '_blank',
-  avatar: { src: 'https://avatars.githubusercontent.com/u/7547335?v=4' },
-}, {
-  id: 'nobody',
-  label: 'Nobody',
-  icon: 'i-heroicons-user-circle',
-}]
+import card from "@/assets/media/credit-card.png"
+import visa from "@/assets/media/visa.png"
+import mastercard from "@/assets/media/mastercard.png"
 
-const selected = ref(people[0])
-const links = [{
-  label: 'Your plan',
-  to: '/billing/monthly-billing',
-}, {
-  label: 'Your Address',
-  to: '/billing/billing-address',
-}, {
-  label: 'Card Details',
-  to: '/billing/card-details',
-}]
+
+interface FormState {
+  name: string
+  orgname: string
+  country: string
+  zip: string
+  city: string
+  region: string
+  address: string
+  phone: string
+}
+const initialState = {
+  name: '',
+  orgname: '',
+  country: '',
+  zip: '',
+  city: '',
+  region: '',
+  address: '',
+  phone: '',
+}
+const state = reactive({ ...initialState })
 </script>
 
 <template>
-  <section class="grid place-items-center mt-8 gap-3">
-    <div class="mb-4">
-      <UBreadcrumb :links="links" divider="" :ui="{ ol: 'gap-x-3' }">
-        <template #icon="{ link, index, isActive }">
-          <UAvatar
-            :alt="(index + 1).toString()"
-            :ui="{
-              background: isActive ? 'bg-primary-500 dark:bg-primary-400' : undefined,
-              placeholder: isActive ? 'text-white dark:text-gray-900' : !!link.to ? 'group-hover:text-gray-700 dark:group-hover:text-gray-200' : '',
-            }"
-            size="xs"
-          />
-        </template>
-      </UBreadcrumb>
+   <div class="bg-slate-100 p-4 rounded-md min-width">
+      <p class="font-medium text-xl">AI Flow maper Pro</p>
+      <p class="font-bold text-3xl">77.08$</p>
+      <p>Billed annually. 18% tax included</p>
     </div>
-    <div />
-    <div class="bg-slate-200">
-      <p>Ipsita</p>
-      <p>74569 Bangalore</p>
-      <p>India</p>
-    </div>
-    <div class="font-bold">
-      Enter payment details
-    </div>
-    <USelectMenu v-model="selected" :options="people">
-      <template #leading>
-        <UIcon v-if="selected.icon" :name="selected.icon" class="w-4 h-4 mx-0.5" />
-        <UAvatar v-else-if="selected.avatar" v-bind="selected.avatar" size="3xs" class="mx-0.5" />
-      </template>
-    </USelectMenu>
-    <UButton class="mt-4">
-      Complete payment
-    </UButton>
-  </section>
+    <UCard class="mb-6 mt-6">
+      <div class="flex gap-3 items-center">
+        <img :src="card" alt="" class="w-8">
+        <span class="font-medium">Pay with card</span>
+        <div class="flex gap-3 ml-auto items-center">
+        <img :src="visa" alt="" class="">
+        <img :src="mastercard" alt="" class="w-14">
+      </div >
+      </div>
+      
+      <UForm :state="state" class="space-y-2">
+        <UFormGroup label="Card holder name" name="address">
+          <UInput v-model="state.address" placeholder="Card holder name" />
+        </UFormGroup>
+        <UFormGroup label="Card no" name="address">
+          <UInput v-model="state.address" placeholder="**** **** ****" />
+        </UFormGroup>        
+        <div class="flex gap-2">
+          <UFormGroup label="Expire date" name="name">
+            <UInput v-model="state.name" placeholder="MM/YY" />
+          </UFormGroup>
+          <UFormGroup label="CVV" name="orgname">
+            <UInput v-model="state.orgname" placeholder="****" />
+          </UFormGroup>
+        </div>      
+      </UForm>
+    </UCard>
 </template>
 
 <style scoped>
-
+.min-width{
+  min-width: 25.5rem;
+}
 </style>

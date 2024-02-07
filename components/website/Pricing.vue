@@ -39,51 +39,38 @@ const monthlyPrices: PricePlan[] = [
 ]
 
 const annualPrices: PricePlan[] = [
-  { plan: 'Basic', price: 'Free', month: 12 },
-  { plan: 'Personal', price: monthlyPrices[1].price * 11, month: 12 },
-  { plan: 'Pro', price: monthlyPrices[2].price * 11, month: 12 },
-  { plan: 'Enterprise', price: 'Custom', month: 12 },
+  { plan: 'Basic', price: 'Free', month: 11 },
+  { plan: 'Personal', price: monthlyPrices[1].price * 11, month: 11 },
+  { plan: 'Pro', price: monthlyPrices[2].price * 11, month: 11 },
+  { plan: 'Enterprise', price: 'Custom', month: 11 },
 ]
 
 const prices = computed(() => {
   const selectedRegion = regions.find(r => r.value === region.value)
   const adjustmentFactor = selectedRegion?.conversionRate
   const adjustedPrices = (isMonthly.value ? monthlyPrices : annualPrices).map((plan) => {
-    if (plan.price === 'Free' || plan.price === 'Custom')
-      return { ...plan, currencySymbol: '' } // No currency symbol for 'Free' or 'Custom' plans
+    if (plan.price === 'Free' || plan.price === 'Custom') {
+      return {
+        ...plan,
+        calculatedPrice: plan.price, // Use the string 'Free' or 'Custom' directly
+        currencySymbol: '', // No currency symbol for 'Free' or 'Custom' plans
+      }
+    }
 
     return {
       ...plan,
-      price: plan.price * adjustmentFactor, // Adjusting the price
+      calculatedPrice: plan.price * adjustmentFactor, // Adjusting the price
       currencySymbol: selectedRegion?.currencySymbol, // Setting the currency symbol
     }
   })
   return adjustedPrices
 })
 
-// const prices = computed(() => {
-//   return isMonthly.value ? monthlyPrices : annualPrices
-// })
 function providePlanDetails(val: any) {
   cardValue = val
   showBillingDetails.value = true
   return cardValue
 }
-// onMounted(() => {
-//     const storedPlan = localStorage.getItem('currentPlan');
-//     if (storedPlan) {
-//       currentPlan.value = storedPlan;
-//     }
-
-//   console.log(currentPlan.value);
-// });
-
-// watch(currentPlan, (newValue) => {
-//   const storedPlan = localStorage.getItem('currentPlan');
-//     if (storedPlan) {
-//       currentPlan.value = storedPlan;
-//     }
-// });
 </script>
 
 <template>
@@ -125,8 +112,7 @@ function providePlanDetails(val: any) {
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
             </p>
             <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-              {{ value.price }}{{ value.currencySymbol }}
-              <!-- {{ value.price }}{{ value.price === 'Custom' ? '' : value.price === 'Free' ? '' : '$' }} -->
+              {{ value.calculatedPrice }}{{ value.currencySymbol }}
             </strong>
             <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom' || value.price === 'Free' ? ''
               : isMonthly

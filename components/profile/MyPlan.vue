@@ -9,6 +9,7 @@ const planStore = usePlanStore()
 async function getActivePlan() {
   try {
     const response = await planStore.fetchActivePlan()
+    console.log(response)
   }
   catch (error) {
     notify.error(error.statusMessage)

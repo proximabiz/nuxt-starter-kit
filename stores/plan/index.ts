@@ -21,8 +21,8 @@ export const usePlanStore = defineStore({
           logger.error('Failed to fetch active plan:', error.value)
           return
         }
-        console.log('123 updating', data)
-        return data
+        // console.log('123 updating', data)
+        return data.value.data
       }
       catch (err) {
         logger.error('Error fetching active plan:', err)
