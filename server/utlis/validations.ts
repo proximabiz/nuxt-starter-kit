@@ -27,6 +27,8 @@ export const UserAddressValidation = Joi.object({
   zipcode: Joi.string().required(),
   address: Joi.string().required(),
   phoneNumber: Joi.string().required(),
+  name: Joi.string().optional(),
+  orgnizationName: Joi.string().optional(),
 })
 
 export const UserGSTValidation = Joi.object({
