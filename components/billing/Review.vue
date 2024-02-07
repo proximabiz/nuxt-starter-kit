@@ -29,8 +29,12 @@ const selected = ref(people[0])
 <template>
   <section class="grid place-items-center mt-6 gap-3">
     <div class="bg-slate-100 p-4 min-w-96">
-      <p class="font-medium text-xl">AI Flow maper Pro</p>
-      <p class="font-bold text-3xl">77.08$</p>
+      <p class="font-medium text-xl">
+        AI Flow maper Pro
+      </p>
+      <p class="font-bold text-3xl">
+        77.08$
+      </p>
       <p>Billed annually. 18% tax included</p>
     </div>
     <div class="bg-slate-100 p-4 min-w-96">
