@@ -48,19 +48,19 @@ async function onSubmit() {
 
     <UForm :schema="schema" :state="state" class="grid grid-cols-2 gap-16" @submit="onSubmit">
       <div class="flex flex-col gap-6">
-        <UFormGroup name="name" label="Name">
-          <UInput v-model="state.name" placeholder="Your Name" class="custom-input" />
+        <UFormGroup name="name" label="Name" required>
+          <UInput v-model="state.name" placeholder="Your Name"/>
         </UFormGroup>
-        <UFormGroup name="email" label="Email">
+        <UFormGroup name="email" label="Email" required>
           <UInput v-model="state.email" placeholder="Your Email" />
         </UFormGroup>
-        <UFormGroup name="phone" label="Phone No">
+        <UFormGroup name="phone" label="Phone No" required>
           <!-- <UInput v-model="state.phone" placeholder="Your Phone no"/> -->
           <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" required :maxlength="10" />
         </UFormGroup>
       </div>
       <div class="flex flex-col gap-6">
-        <UFormGroup name="message" label="Message">
+        <UFormGroup name="message" label="Message" required>
           <UTextarea v-model="state.message" color="white" size="xl" variant="outline" placeholder="Write your query/message" />
         </UFormGroup>
         <UButton type="submit" class="w-fit p-3" color="blue">
@@ -75,11 +75,4 @@ async function onSubmit() {
   </div>
 </template>
 
-<style scoped>
-.btn {
-  display: inline-block;
-}
-.custom-input input[type='text'] {
-  border-color: black !important;
-}
-</style>
+

@@ -54,6 +54,7 @@ export const useAddressStore = defineStore({
           ...data.value?.userAddress[0],
         }
         // console.log("123 updating",allAddressDetails)
+        // this.addressDetails=allAddressDetails
         return allAddressDetails
       }
       catch (err) {

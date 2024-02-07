@@ -166,36 +166,36 @@ async function onCancel() {
     <UCard class="mb-8">
       <UForm schema="" :state="state" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
-          <UFormGroup label="Name" name="name">
+          <UFormGroup label="Name" name="name" required>
             <UInput v-model="state.name" color="blue" :disabled="!isNewUser" />
           </UFormGroup>
-          <UFormGroup label="Organisation Name" name="orgname">
+          <UFormGroup label="Organisation Name" name="orgname" required>
             <UInput v-model="state.orgname" color="blue" :disabled="!isNewUser" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
-          <UFormGroup label="Country" name="country">
+          <UFormGroup label="Country" name="country" required>
             <UInput v-model="state.country" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
-          <UFormGroup label="Zip" name="zip">
+          <UFormGroup label="Zip" name="zip" required>
             <UInput v-model="state.zip" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
-          <UFormGroup label="City" name="city">
+          <UFormGroup label="City" name="city" required>
             <UInput v-model="state.city" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
-          <UFormGroup label="Region" name="region">
+          <UFormGroup label="Region" name="region" required>
             <UInput v-model="state.region" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
         </div>
-        <UFormGroup label="Address" name="address">
+        <UFormGroup label="Address" name="address" required>
           <UInput v-model="state.address" color="blue" :disabled="!isEditable && !isNewUser" />
         </UFormGroup>
-        <UFormGroup label="Phone no" name="phone">
+        <UFormGroup label="Phone no" name="phone" required>
           <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" :disabled="!isEditable && !isNewUser" />
         </UFormGroup>
-        <UFormGroup label="Email Id" name="email">
+        <UFormGroup label="Email Id" name="email" required>
           <UInput v-model="state.email" color="blue" :disabled="true" />
         </UFormGroup>
         <div class="flex gap-2 justify-center">
