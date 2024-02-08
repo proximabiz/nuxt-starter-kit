@@ -32,16 +32,16 @@ const regions = [
 ]
 
 const monthlyPrices: PricePlan[] = [
-  { plan: 'Basic', price: 'Free', month: 1 },
-  { plan: 'Personal', price: 2, month: 1 },
-  { plan: 'Pro', price: 5, month: 1 },
+  { plan: 'Free', price: 0, month: 1 },
+  { plan: 'Basic', price: 2, month: 1 },
+  { plan: 'Premium', price: 5, month: 1 },
   { plan: 'Enterprise', price: 'Custom', month: 1 },
 ]
 
 const annualPrices: PricePlan[] = [
-  { plan: 'Basic', price: 'Free', month: 11 },
-  { plan: 'Personal', price: monthlyPrices[1].price * 11, month: 11 },
-  { plan: 'Pro', price: monthlyPrices[2].price * 11, month: 11 },
+  { plan: 'Free', price: 0, month: 11 },
+  { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11 },
+  { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11 },
   { plan: 'Enterprise', price: 'Custom', month: 11 },
 ]
 
@@ -49,7 +49,7 @@ const prices = computed(() => {
   const selectedRegion = regions.find(r => r.value === region.value)
   const adjustmentFactor = selectedRegion?.conversionRate
   const adjustedPrices = (isMonthly.value ? monthlyPrices : annualPrices).map((plan) => {
-    if (plan.price === 'Free' || plan.price === 'Custom') {
+    if (plan.price === 'Custom') {
       return {
         ...plan,
         calculatedPrice: plan.price, // Use the string 'Free' or 'Custom' directly
@@ -114,7 +114,7 @@ function providePlanDetails(val: any) {
             <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
               {{ value.calculatedPrice }}{{ value.currencySymbol }}
             </strong>
-            <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom' || value.price === 'Free' ? ''
+            <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom'? ''
               : isMonthly
                 ? '/month' : '/year' }}</span>
             <UButton

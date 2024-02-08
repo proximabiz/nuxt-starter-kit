@@ -20,11 +20,11 @@ const americanExpCardRegex = /^(?:3[47][0-9]{13})$/;
 
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
-  cardNo: z.string()
+ cardNo: z.string()
     .min(1, 'Card number is required')
     .regex(/^\d+$/, 'Card number must be numeric')
     .refine((val) => masterCardRegex.test(val) || visaCardRegex.test(val) || americanExpCardRegex.test(val), {
-      message: 'Invalid card number. Please enter a valid Visa, MasterCard, or American Express card number.',
+      message: 'Invalid card number. Please enter a valid card number with 15 or 16 digits.',
     }),
  expDate: z.string()
     .regex(basicExpDateRegex, 'Invalid expiration date format')
@@ -37,7 +37,9 @@ const billingSchema = z.object({
         year >= currentYear && (year > currentYear || month >= currentMonth)
       );
     }, 'Expiration date must be in the future'),
-    cvv: z.number().min(1, 'Security code  is required').max(4,"Security code should less than 5 numbers")
+    cvv: z.string()
+  .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
+  .refine((cvv) => /^\d+$/.test(cvv), 'Security code must only contain digits')
 });
 
 </script>
@@ -70,11 +72,11 @@ const billingSchema = z.object({
         <UInput v-model="state.cardNo" placeholder="**** **** ****" />
       </UFormGroup>
       <div class="flex gap-2">
-        <UFormGroup label="Expiration date" name="expDate" required>
+        <UFormGroup label="Expire date" name="expDate" required>
           <UInput v-model="state.expDate" placeholder="MM/YY" />
         </UFormGroup>
         <UFormGroup label="Security code" name="cvv" required>
-          <UInput v-model="state.cvv" placeholder="****" type="number"/>
+          <UInput v-model="state.cvv" placeholder="****" />
         </UFormGroup>
       </div>
     </UForm>

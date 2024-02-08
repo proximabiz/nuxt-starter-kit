@@ -11,38 +11,50 @@ import flowchart from '@/assets/media/flowchart.png'
 
 const features = [
   {
-    title: 'Time Efficiency',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
+    title: 'User Interface (UI)',
+    description: 'An intuitive and user-friendly interface that allows users to create, edit, and navigate through the flow map easily',
     iconSrc: efficiency,
     bgColor: 'bg-pink-200',
   },
   {
-    title: 'Collaboration and Flexibility',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
+    title: 'Graphical Representation',
+    description: 'Visual representation of processes and workflows using graphical elements such as nodes, branches, and connections. This makes it easier for users to comprehend complex structures.',
     iconSrc: direction,
     bgColor: 'bg-yellow-200',
   },
   {
-    title: 'Easy to download',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
+    title: 'Drag-and-Drop Functionality',
+    description: 'Capability to add, rearrange, and connect elements in the flow map using a simple drag-and-drop interface, promoting ease of use.',
     iconSrc: arrow,
     bgColor: 'bg-blue-200',
   },
   {
-    title: 'Skill gap',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
+    title: 'Node Customization',
+    description: 'Ability to customize nodes with relevant information, labels, icons, or colors to convey specific details about each element in the workflow.',
     iconSrc: learning,
     bgColor: 'bg-orange-200',
   },
   {
-    title: 'Save your work',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
+    title: 'Data Input and Output',
+    description: 'Capability to input data into the flow mapper and visualize the output, allowing users to see the impact of changes or analyze the results of a particular workflow.',
     iconSrc: storage,
     bgColor: 'bg-green-200',
   },
   {
-    title: '24/7 support',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
+    title: 'Real-Time Monitoring',
+    description: 'Real-time monitoring capabilities that allow users to observe the progression of workflows and identify potential bottlenecks or inefficiencies.',
+    iconSrc: support,
+    bgColor: 'bg-pink-200',
+  },
+  {
+    title: 'Import/ Export Diagrams',
+    description: 'Capability to input data into the flow mapper and visualize the output, allowing users to see the impact of changes or analyze the results of a particular workflow.',
+    iconSrc: storage,
+    bgColor: 'bg-green-200',
+  },
+  {
+    title: 'Collaboration',
+    description: 'Real-time monitoring capabilities that allow users to observe the progression of workflows and identify potential bottlenecks or inefficiencies.',
     iconSrc: support,
     bgColor: 'bg-pink-200',
   },
@@ -52,11 +64,11 @@ const features = [
 
 <template>
   <section class="flex flex-col gap-2 items-center mb-8 mt-10">
-    <div class="grid grid-cols-4 gap-12">
-      <div class="col-span-1">
+    <div class="grid grid-cols-3 gap-12">
+      <div class="">
         <img :src="logo" class="w-full h-full object-fit" alt="">
       </div>
-      <div class="mt-4 col-span-3">
+      <div class="mt-4 col-span-2">
         <h1
           class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
           What challenges are we solving?</h1>
@@ -74,10 +86,7 @@ const features = [
     </div>
   </section>
   <section class="flex flex-col gap-2 items-center mb-8 mt-10">
-    <div class="grid grid-cols-3 gap-12">
-      <div class="">
-        <img src="" class="w-full h-full object-fit" alt="">
-      </div>
+    <div class="grid grid-cols-3 gap-12">   
       <div class="col-span-2">
         <h1
           class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
@@ -116,6 +125,9 @@ const features = [
             <p class="text-sm">By merely answering the AI's queries, users can generate comprehensive visuals without needing to master the intricacies of a design tool.</p>
           </li>
         </ol>
+      </div>
+      <div class="">
+        <img src="" class="w-full h-full object-fit" alt="">
       </div>
     </div>
   </section>
@@ -175,7 +187,7 @@ const features = [
   </section>
   <section class="flex flex-col gap-2 mt-5 items-center mb-8">
     <p class="text-2xl font-bold text-slate-700">
-      What We're Trying to Solve
+     Our Features...
     </p>
   </section>
   <section>
