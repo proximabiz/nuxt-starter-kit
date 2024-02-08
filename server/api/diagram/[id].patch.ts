@@ -1,5 +1,5 @@
 import { OpenAI } from 'openai'
-import { jsonDiff } from 'json-diff'
+import { diff } from 'json-diff'
 import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
 import { ChartUpdateValidation } from '../../utlis/validations'
@@ -18,39 +18,32 @@ export default defineEventHandler(async (event) => {
       throw new CustomError('Invalid input provided', 401)
     }
     else {
-      const { data, error } = await client.from('diagrams').select(
-              `
-            id,
-            created_at,
-            diagram_type_id(name,id),
-            user_id,
-            title,
-            keywords,
-            details,
-            response
-            `,
-      ).eq('id', diagramId).limit(1)
+      const { data: diagram, error: errorDiagram } = await getDiagram(client, diagramId)
 
-      if (error)
-        throw new CustomError(`Error: ${error.message}`, 400)
+      if (errorDiagram)
+        throw new CustomError(`Error: ${errorDiagram.message}`, 400)
 
-      if (Array.isArray(data) && data.length === 0)
+      if (Array.isArray(diagram) && diagram.length === 0)
         throw new CustomError(`no diagram found for the diagramId:${diagramId}`, 402)
 
       if (chartValidation.existingOpenAIResponse) {
-        const oldChartJson = JSON.parse(data[0].keywords)
+        const oldChartJson = JSON.parse(diagram[0].response)
         const newChartJson = JSON.parse(chartValidation.existingOpenAIResponse)
-        if (jsonDiff(oldChartJson, newChartJson) == null)
-          throw new CustomError(`no diagram update for the diagramId:${diagramId}`, 402)
+        if (diff(oldChartJson, newChartJson) == null)
+          return { message: 'Diagram is up to date. No changes required.', data: chartValidation, status: 200 }
 
         // update tables
+        const { data, error } = await updateDiagramForResponse(client, chartValidation.existingOpenAIResponse, diagramId)
+        await insertDiagramVersion(client, diagramId, event.context.user.id, chartValidation.existingOpenAIResponse)
+
+        return { message: 'Success!', data: { data, response: chartValidation.existingOpenAIResponse, error }, status: 200 }
       }
       else {
-        const userKeyword = chartValidation.userKeyword || data[0].keywords
-        const userRequirement = chartValidation.userRequirement || data[0].details
+        const userKeyword = chartValidation.userKeyword || diagram[0].keywords
+        const userRequirement = chartValidation.userRequirement || diagram[0].details
         let prompt = ''
 
-        switch (data[0].diagram_type_id?.name) {
+        switch (diagram[0].diagram_type_id?.name) {
           case DiagramType.MINDMAP:
             switch (chartValidation.isDetailed) {
               case true:
@@ -106,14 +99,8 @@ export default defineEventHandler(async (event) => {
               chartDetails: chart,
             }
 
-            const { data, error } = await newFunction(client, userKeyword, userRequirement, response, diagramId)
-
-            await client.from('diagram_version').insert([{
-              diagram_id: diagramId,
-              user_id: event.context.user.id,
-              response: chart,
-              versions: new Date().toISOString(),
-            }] as any)
+            const { data, error } = await updateDiagram(client, userKeyword, userRequirement, response, diagramId)
+            await insertDiagramVersion(client, diagramId, event.context.user.id, chart)
 
             return { message: 'Success!', data: { data, response, error }, status: 200 }
           }
@@ -140,11 +127,44 @@ export default defineEventHandler(async (event) => {
     }
   }
 })
-async function newFunction(client, userKeyword: any, userRequirement: any, response: ChartResponseType, diagramId: string): { data: any, error: any } {
+
+async function getDiagram(client: any, diagramId: string): Promise<{ data: any, error: any }> {
+  return await client.from('diagrams').select(
+    `
+            id,
+            created_at,
+            diagram_type_id(name,id),
+            user_id,
+            title,
+            keywords,
+            details,
+            response
+            `,
+  ).eq('id', diagramId).limit(1)
+}
+
+async function insertDiagramVersion(client: any, diagramId: string, userId: string, chart: object) {
+  await client.from('diagram_version').insert([{
+    diagram_id: diagramId,
+    user_id: userId,
+    response: chart,
+    versions: new Date().toISOString(),
+  }] as any)
+}
+
+async function updateDiagram(client: any, userKeyword: any, userRequirement: any, response: ChartResponseType, diagramId: string): Promise<{ data: any, error: any }> {
   return await client.from('diagrams').update(
     {
       keywords: userKeyword,
       details: userRequirement,
+      response,
+    } as never,
+  ).eq('id', diagramId).select()
+}
+
+async function updateDiagramForResponse(client: any, response: ChartResponseType, diagramId: string): Promise<{ data: any, error: any }> {
+  return await client.from('diagrams').update(
+    {
       response,
     } as never,
   ).eq('id', diagramId).select()
