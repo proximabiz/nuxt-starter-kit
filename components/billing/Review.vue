@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useBillingStore } from '~/stores/billing'
+
 interface Props {
   planName: string,
   duePrice:string
 }
 const props = defineProps<Props>()
+  const state = useBillingStore();
 </script>
 
 <template>
@@ -18,9 +21,15 @@ const props = defineProps<Props>()
       <p>Billed annually. 18% tax included</p>
     </div>
     <div class="bg-slate-100 p-4 min-w-96">
-      <p>Ipsita</p>
-      <p>74569 Bangalore</p>
-      <p>India</p>
+      <p>{{ state.name }}</p>
+      <p>{{ state.city }} {{ state.zip }}</p>
+      <p>{{ state.country }}</p>
+    </div>
+    <div class="bg-slate-100 p-4 min-w-96">
+      <p>Card holder name: {{ state.cardHolderName }}</p>
+      <p>Card No: {{ state.cardNo }}</p>
+      <p>Exp date: {{ state.expDate }}</p>
+      <p>CVV no: {{ state.cvv }}</p>
     </div>
     <!-- <div class="font-bold">
       Enter payment details

@@ -2,17 +2,32 @@
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 import { useBillingStore } from '~/stores/billing'
+import { z } from 'zod';
 
 const state = useBillingStore();
+
+const billingSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  orgName: z.string().min(1, 'Organisation Name is required'),
+  country: z.string().min(1, 'Country is required'),
+  zip: z.string().min(1, 'Zip is required').regex(/^\d+$/, 'Zip must be number'),
+  city: z.string().min(1, 'City is required'),
+  region: z.string().min(1, 'Region is required'),
+  address: z.string().min(1, 'Address is required'),
+  phone: z.string().min(1, 'Phone number is required'),
+});
+
+
 </script>
 
 <template>
  
   <UCard class="mb-6 mt-4">
-    <UForm :state="state" class="space-y-2">
+    <UForm  :schema="billingSchema"  :state="state" class="space-y-2">
       <div class="flex gap-2">
         <UFormGroup label="Name" name="name" required>
-          <UInput v-model="state.name" color="blue" />
+          <UInput v-model="state.name" color="blue"/>
+          
         </UFormGroup>
         <UFormGroup label="Organisation Name" name="orgname" required>
           <UInput v-model="state.orgName" color="blue" />
