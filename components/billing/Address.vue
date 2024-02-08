@@ -4,7 +4,6 @@ import 'vue-tel-input/vue-tel-input.css'
 import { useBillingStore } from '~/stores/billing'
 
 const state = useBillingStore();
-
 </script>
 
 <template>

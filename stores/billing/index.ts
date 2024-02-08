@@ -11,6 +11,10 @@ export const useBillingStore = defineStore({
         region: '',
         address: '',
         phone: '',
+        cardHolderName:'',
+    cardNo:'',
+    expDate:'',
+    cvv:''
       }),
     getters: {},
     actions: {

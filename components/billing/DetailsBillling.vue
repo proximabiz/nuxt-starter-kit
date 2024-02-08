@@ -1,12 +1,16 @@
 <script setup lang="ts">
-const props = defineProps<Props>()
-const users = ['1user']
-const user = ref(users[0])
-const activeStep = ref(0)
+import { useBillingStore } from '~/stores/billing'
+
 
 interface Props {
   planDetails: any
 }
+const props = defineProps<Props>()
+const users = ['1user']
+const user = ref(users[0])
+const duePrice=ref("77.8$")
+const billingState = useBillingStore();
+
 const steps = [
   // {label: '', component: 'websitePricing'},
   { label: 'Your plan', component: 'BillingDetailsBillling' },
@@ -15,29 +19,45 @@ const steps = [
   { label: 'Review your details', component: 'BillingReview' },
 ]
 
-function nextStep() {
-  if (activeStep.value < steps.length - 1)
-    activeStep.value++
-}
-function prevStep() {
-  if (activeStep.value > 0)
-    activeStep.value--
-}
 
+const state = reactive({
+  activeStep: 0 
+})
+
+function setActiveStep(index: number) {
+  if (index === 2) {
+    // Check if any of the required billingState fields are empty
+    const isAddressComplete = billingState.name && billingState.orgName && billingState.country && billingState.zip && billingState.city && billingState.region && billingState.address && billingState.phone;    
+    if (!isAddressComplete) {
+      alert('Please fill out all the fields in your billing address.');
+      return; 
+    }
+  }
+  if(index===3){
+   const isCardDetailsComplete= billingState.cardHolderName&& billingState.cardNo&&billingState.expDate&&billingState.cvv
+   if (!isCardDetailsComplete) {
+      alert('Please fill out all the fields in your billing card details.');
+      return; 
+    }
+  }
+
+  if (index >= 0 && index < steps.length) {
+    state.activeStep = index;
+  }
+}
 function isActive(index: number) {
-  return activeStep.value >= index
+  return state.activeStep >= index
 }
 </script>
 
 <template>
   <div class="grid place-items-center mt-4">
-
     <div class="">
     <ol class="flex">
       <li v-for="(step, index) in steps" :key="index" class="flex items-center">
         <span  class="rounded-full  px-2.5 py-1 mr-2 text-sm"
-         :class="isActive(index) ? 'bg-green-500 text-white' : 'bg-slate-300'"
-         @click="prevStep">
+         :class="isActive(index) ? 'bg-green-500 text-white cursor-pointer' : 'bg-slate-300'"
+         @click="() => setActiveStep(index)">
           {{ index + 1 }}
         </span>
         <span  class="mr-4 text-sm" :class="isActive(index) ? 'text-orange-400 font-medium text-lg' : 'text-slate-800'">
@@ -46,8 +66,9 @@ function isActive(index: number) {
         
       </li>
     </ol> 
-</div>
+   </div>
     
+
     <!-- <UBreadcrumb :links="steps" divider="" :ui="{ ol: 'gap-x-3' }" class="mb-4">
       <template #icon="{ link, index }">
         <UAvatar
@@ -59,7 +80,7 @@ function isActive(index: number) {
       </template>
     </UBreadcrumb> -->
 
-    <UCard v-if="activeStep === 0" class="mb-6 mt-4">
+    <UCard v-if="state.activeStep === 0" class="mb-6 mt-4">
       <div class="divide-y divide-solid">
         <header class="flex justify-start">
           AI Flow mapper {{ props.planDetails.plan }}
@@ -84,15 +105,15 @@ function isActive(index: number) {
             Due today
           </div>
           <div class="font-semibold">
-            $77.88
+           {{ duePrice }}
           </div>
         </section>
       </div>
-    </UCard>
-    <BillingAddress v-if="activeStep === 1" />
-    <BillingCardDetails v-if="activeStep === 2" />
-    <BillingReview v-if="activeStep === 3" />
-    <UButton v-if="activeStep !== 3" @click="nextStep">
+    </UCard>  
+    <BillingAddress v-if="state.activeStep === 1" />
+    <BillingCardDetails v-if="state.activeStep === 2" :planName="props.planDetails.plan" :duePrice="duePrice"/>
+    <BillingReview v-if="state.activeStep === 3" :planName="props.planDetails.plan" :duePrice="duePrice"/>
+    <UButton v-if="state.activeStep !== 3" @click="() => setActiveStep(state.activeStep + 1)">
       Continue
     </UButton>
   </div>

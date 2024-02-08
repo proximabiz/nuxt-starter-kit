@@ -1,39 +1,19 @@
 <script setup lang="ts">
-const people = [{
-  id: 'benjamincanac',
-  label: 'benjamincanac',
-  href: 'https://github.com/benjamincanac',
-  target: '_blank',
-  avatar: { src: 'https://avatars.githubusercontent.com/u/739984?v=4' },
-}, {
-  id: 'Atinux',
-  label: 'Atinux',
-  href: 'https://github.com/Atinux',
-  target: '_blank',
-  avatar: { src: 'https://avatars.githubusercontent.com/u/904724?v=4' },
-}, {
-  id: 'smarroufin',
-  label: 'smarroufin',
-  href: 'https://github.com/smarroufin',
-  target: '_blank',
-  avatar: { src: 'https://avatars.githubusercontent.com/u/7547335?v=4' },
-}, {
-  id: 'nobody',
-  label: 'Nobody',
-  icon: 'i-heroicons-user-circle',
-}]
-
-const selected = ref(people[0])
+interface Props {
+  planName: string,
+  duePrice:string
+}
+const props = defineProps<Props>()
 </script>
 
 <template>
   <section class="grid place-items-center mt-6 gap-3">
     <div class="bg-slate-100 p-4 min-w-96">
       <p class="font-medium text-xl">
-        AI Flow maper Pro
+        AI Flow maper {{ props.planName }}
       </p>
       <p class="font-bold text-3xl">
-        77.08$
+        {{ props.duePrice }}
       </p>
       <p>Billed annually. 18% tax included</p>
     </div>
