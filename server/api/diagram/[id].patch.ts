@@ -3,6 +3,7 @@ import { diff } from 'json-diff'
 import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
 import { ChartUpdateValidation } from '../../utlis/validations'
+import { getPrompt } from '../../utlis/prompts'
 import { DiagramType } from '~/server/types/chart'
 import type { ChartResponseType } from '~/server/types/chart'
 import { serverSupabaseClient } from '#supabase/server'
@@ -19,14 +20,13 @@ export default defineEventHandler(async (event) => {
     }
     else {
       const { data: diagram, error: errorDiagram } = await getDiagram(client, diagramId)
-
       if (errorDiagram)
         throw new CustomError(`Error: ${errorDiagram.message}`, 400)
 
       if (Array.isArray(diagram) && diagram.length === 0)
         throw new CustomError(`no diagram found for the diagramId:${diagramId}`, 402)
 
-      if (chartValidation.existingOpenAIResponse) {
+      if (!chartValidation.existingOpenAIResponse) {
         const oldChartJson = JSON.parse(diagram[0].response)
         const newChartJson = JSON.parse(chartValidation.existingOpenAIResponse)
         if (diff(oldChartJson, newChartJson) == null)
@@ -40,43 +40,12 @@ export default defineEventHandler(async (event) => {
       }
       else {
         const userKeyword = chartValidation.userKeyword || diagram[0].keywords
-        const userRequirement = chartValidation.userRequirement || diagram[0].details
-        let prompt = ''
+        if (!userKeyword)
+          throw new CustomError('User keyword is required', 401)
 
-        switch (diagram[0].diagram_type_id?.name) {
-          case DiagramType.MINDMAP:
-            switch (chartValidation.isDetailed) {
-              case true:
-                prompt = `Prepare a mind map JSON structure on topic '${userKeyword}' that may includes ${userRequirement}. The output JSON should be in this format- "[{nodeDataArray": [{ key: 0, text: '<dynamic_keyword>', loc: '0 0', brush: 'lightskyblue' }, { key: 1, parent: 0, text: '', dir: 'right', loc: '100 -40', brush: 'lightgreen' }]}]`
-                break
-              default:
-                prompt = `Prepare a mind map JSON structure on topic '${userKeyword}'. The output JSON should be in this format- [{"nodeDataArray": [{ key: 0, text: '<dynamic_keyword>', loc: '0 0', brush: 'lightskyblue' }, { key: 1, parent: 0, text: '', dir: 'right', loc: '100 -40', brush: 'lightgreen' }]}]`
-                break
-            }
-            break
-          case DiagramType.FLOWCHART:
-            switch (chartValidation.isDetailed) {
-              case true:
-                prompt = `Prepare a flowchart JSON structure on topic '${userKeyword}' that may have '${userRequirement}'. The output JSON should be in this format- [{"nodeDataArray":[{"key":-1,"category":"Start","loc":"175 0","text":"Start"},{"key":0,"loc":"175 100","text":""},...,{"key":-2,"category":"End","loc":"175 600","text":"End"},{"category":"Conditional","text":"","key":,"loc":""}],"linkDataArray":[{"from":-1,"to":0,"fromPort":"B","toPort":"T"},...,{"from":4,"to":-2,"fromPort":"B","toPort":"T"}]}]`
-                break
-              default:
-                prompt = `Prepare a flowchart JSON structure on topic '${userKeyword}'. The output JSON should be in this format-[{"nodeDataArray":[{"key":-1,"category":"Start","loc":"175 0","text":"Start"},{"key":0,"loc":"175 100","text":"<relavant_branch>"},...,{"key":-2,"category":"End","loc":"175 600","text":"End"},{"category":"Conditional","text":"","key":,"loc":""}],"linkDataArray":[{"from":-1,"to":0,"fromPort":"B","toPort":"T"},...,{"from":4,"to":-2,"fromPort":"B","toPort":"T"},{"from":-3,"to":"4","fromPort":"B","toPort":"L","visible":true,"points":[]},{"from":-3,"to":"1","fromPort":"L","toPort":"L","visible":true,"points":[],"text":"No"}]}]`
-                break
-            }
-            break
-          case DiagramType.MINDELIXIR:
-            switch (chartValidation.isDetailed) {
-              case true:
-                prompt = `Prepare a mind map JSON structure on the topic '${userKeyword}'. The output JSON should be in the following format: [{"nodeData": {"topic": "${userKeyword}", "id": "some_uuid", "root": true, "parent": "undefined", "children": [{"topic": "child_topic", "id": "some_uuid", "direction": 0}, {"topic": "child_topic", "id": "some_uuid", "direction": 1}]}}].`
-                break
-              default:
-                prompt = `Prepare a mind map JSON structure on the topic '${userKeyword}'. The output JSON should be in the following format: [{"nodeData": {"topic": "${userKeyword}", "id": "some_uuid", "root": true, "parent": "undefined", "children": [{"topic": "child_topic", "id": "some_uuid", "direction": 0}, {"topic": "child_topic", "id": "some_uuid", "direction": 1}]}}].`
-                break
-            }
-            break
-          default:
-            break
-        }
+        const userRequirement = chartValidation.userRequirement || diagram[0].details
+
+        const prompt = await getPrompt(event, userKeyword, diagram[0].diagram_type_id, chartValidation.isDetailed, userRequirement) // to get prompts
 
         const openai: any = new OpenAI({
           apiKey: process.env.OPENAI_API_KEY,
