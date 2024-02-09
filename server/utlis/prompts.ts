@@ -21,7 +21,7 @@ export async function getPrompt(event: H3Event, title: string, diagramType: stri
         prompt = `Prepare a mind map JSON structure on the topic '${title}'. The output JSON should be in the following format: [{"nodeData": {"topic": "${details}", "id": "some_uuid", "root": true, "parent": "undefined", "children": [{"topic": "child_topic", "id": "some_uuid", "direction": 0}, {"topic": "child_topic", "id": "some_uuid", "direction": 1}]}}].`
 
       else
-        prompt = `Prepare a mind map JSON structure on the topic '${title}'. The output JSON should be in the following format: [{"nodeData": {"topic": "${details}", "id": "some_uuid", "root": true, "parent": "undefined", "children": [{"topic": "child_topic", "id": "some_uuid", "direction": 0}, {"topic": "child_topic", "id": "some_uuid", "direction": 1}]}}].`
+        prompt = `Prepare a mind map JSON structure on the topic '${title}'. The output JSON should be in the following format: [{"nodeData": {"topic": "${title}", "id": "some_uuid", "root": true, "parent": "undefined", "children": [{"topic": "child_topic", "id": "some_uuid", "direction": 0}, {"topic": "child_topic", "id": "some_uuid", "direction": 1}]}}].`
 
       break
     case DiagramType.FLOWCHART:

@@ -1,7 +1,7 @@
 import { OpenAI } from 'openai'
 import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
-import { ChartUpdateValidation } from '../../utlis/validations'
+import { PUTChartUpdateValidation } from '../../utlis/validations'
 import { DiagramType } from '~/server/types/chart'
 import type { ChartResponseType } from '~/server/types/chart'
 import { serverSupabaseClient } from '#supabase/server'
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const params = await readBody(event)
   const diagramId: string = getRouterParam(event, 'id')!
   try {
-    const chartValidation = await ChartUpdateValidation.validateAsync(params)
+    const chartValidation = await PUTChartUpdateValidation.validateAsync(params)
     if (!chartValidation) {
       throw new CustomError('Invalid input provided', 401)
     }
@@ -36,8 +36,8 @@ export default defineEventHandler(async (event) => {
       if (Array.isArray(data) && data.length === 0)
         throw new CustomError(`no diagram found for the diagramId:${diagramId}`, 402)
 
-      const userKeyword = chartValidation.userKeyword || data[0].keywords
-      const userRequirement = chartValidation.userRequirement || data[0].details
+      const userKeyword = chartValidation.title || data[0].keywords
+      const userRequirement = chartValidation.details || data[0].details
       let prompt = ''
 
       switch (data[0].diagram_type_id?.name) {
@@ -89,8 +89,8 @@ export default defineEventHandler(async (event) => {
         const chart: object = JSON.parse(completion.choices[0].text)
         if (chart) {
           const response: ChartResponseType = {
-            userKeyword: chartValidation.userKeyword,
-            userRequirement: chartValidation.userRequirement,
+            userKeyword: chartValidation.title,
+            userRequirement: chartValidation.details,
             diagramType: chartValidation.diagramType,
             isDetailed: chartValidation.isDetailed,
             chartDetails: chart,
