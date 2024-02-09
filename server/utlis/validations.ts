@@ -9,8 +9,9 @@ export const ChartValidation = Joi.object({
 
 export const ChartUpdateValidation = Joi.object({
   userKeyword: Joi.string().optional(),
-  isDetailed: Joi.boolean().optional(),
+  isDetailed: Joi.boolean().optional().default(false),
   userRequirement: Joi.string().optional(),
+  existingOpenAIResponse: Joi.string().optional(),
 })
 
 export const SignupValidation = Joi.object({
