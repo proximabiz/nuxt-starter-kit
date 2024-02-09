@@ -6,6 +6,8 @@ export interface UserAddressContactResponseType {
   state: string
   city: string
   zipcode: string
+  region: string
+  address: string
   phone: string
   addressId: string
   contactId: string
