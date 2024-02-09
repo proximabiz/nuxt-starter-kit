@@ -1,7 +1,7 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
-import { UserAddressValidation } from '~/server/utlis/validations'
+import { UserAddressContactValidation } from '~/server/utlis/validations'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -12,12 +12,12 @@ export default defineEventHandler(async (event) => {
 
   const client = await serverSupabaseClient(event)
   try {
-    const chartValidation = await UserAddressValidation.validateAsync(params)
+    const chartValidation = await UserAddressContactValidation.validateAsync(params)
     if (!chartValidation) {
       throw new CustomError('Invalid input provided', 401)
     }
     else {
-      const { data, error } = await client.from('user_address_details').update(
+      const { error } = await client.from('user_address_details').insert(
         {
           country: chartValidation.country.trim(),
           region: chartValidation.region.trim(),
@@ -25,19 +25,24 @@ export default defineEventHandler(async (event) => {
           zip_code: chartValidation.zipcode.trim(),
           address: chartValidation.address.trim(),
           phone_number: chartValidation.phoneNumber.trim(),
-
+          user_id: userID,
         } as never,
-      ).eq('user_id', userID).select().single()
+      ).single()
 
-      if (error) {
+      if (error)
         return { message: 'Error!', error, status: 400 }
-      }
-      else {
-        await client.auth.updateUser({
-          phone: chartValidation.phoneNumber,
-        })
-      }
-      return { message: 'Success!', data, status: 200 }
+
+      const { error: errorUserDetails } = await client.from('user_details').insert(
+        {
+          name: chartValidation.name.trim(),
+          organisation_name: chartValidation.organisationName.trim(),
+          user_id: userID,
+        } as never,
+      ).single()
+      if (errorUserDetails)
+        return { message: 'Error!', errorUserDetails, status: 400 }
+
+      return { message: 'User address added successfully!', data: chartValidation, status: 200 }
     }
   }
   catch (error: any) {
