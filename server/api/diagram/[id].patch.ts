@@ -4,7 +4,6 @@ import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
 import { ChartUpdateValidation } from '../../utlis/validations'
 import { getPrompt } from '../../utlis/prompts'
-import { DiagramType } from '~/server/types/chart'
 import type { ChartResponseType } from '~/server/types/chart'
 import { serverSupabaseClient } from '#supabase/server'
 
