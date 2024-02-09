@@ -1,49 +1,53 @@
 <script setup lang="ts">
 import logo from '@/assets/media/logo.png'
-import efficiency from '@/assets/media/efficiency.png'
+import AboutProduct from '@/assets/media/AboutProduct.png'
+import illustration from '@/assets/media/illustration.png'
 import direction from '@/assets/media/direction.png'
-import arrow from '@/assets/media/arrow.png'
-import learning from '@/assets/media/learning.png'
+import input from '@/assets/media/input.png'
+import node from '@/assets/media/node.png'
 import storage from '@/assets/media/data-storage.png'
-import support from '@/assets/media/support.png'
+import monitoring from '@/assets/media/monitoring.png'
 import mindmap from '@/assets/media/mindmap.png'
 import flowchart from '@/assets/media/flowchart.png'
+import ui from '@/assets/media/ui.png'
+import drag from '@/assets/media/drag.png'
+
 
 const features = [
   {
     title: 'User Interface (UI)',
     description: 'An intuitive and user-friendly interface that allows users to create, edit, and navigate through the flow map easily',
-    iconSrc: efficiency,
+    iconSrc: ui,
     bgColor: 'bg-pink-200',
   },
   {
     title: 'Graphical Representation',
     description: 'Visual representation of processes and workflows using graphical elements such as nodes, branches, and connections. This makes it easier for users to comprehend complex structures.',
-    iconSrc: direction,
+    iconSrc: illustration,
     bgColor: 'bg-yellow-200',
   },
   {
     title: 'Drag-and-Drop Functionality',
     description: 'Capability to add, rearrange, and connect elements in the flow map using a simple drag-and-drop interface, promoting ease of use.',
-    iconSrc: arrow,
+    iconSrc: drag,
     bgColor: 'bg-blue-200',
   },
   {
     title: 'Node Customization',
     description: 'Ability to customize nodes with relevant information, labels, icons, or colors to convey specific details about each element in the workflow.',
-    iconSrc: learning,
+    iconSrc: node,
     bgColor: 'bg-orange-200',
   },
   {
     title: 'Data Input and Output',
     description: 'Capability to input data into the flow mapper and visualize the output, allowing users to see the impact of changes or analyze the results of a particular workflow.',
-    iconSrc: storage,
+    iconSrc:input,
     bgColor: 'bg-green-200',
   },
   {
     title: 'Real-Time Monitoring',
     description: 'Real-time monitoring capabilities that allow users to observe the progression of workflows and identify potential bottlenecks or inefficiencies.',
-    iconSrc: support,
+    iconSrc: monitoring,
     bgColor: 'bg-pink-200',
   },
   {
@@ -55,7 +59,7 @@ const features = [
   {
     title: 'Collaboration',
     description: 'Real-time monitoring capabilities that allow users to observe the progression of workflows and identify potential bottlenecks or inefficiencies.',
-    iconSrc: support,
+    iconSrc: direction,
     bgColor: 'bg-pink-200',
   },
 
@@ -65,13 +69,13 @@ const features = [
 <template>
   <section class="flex flex-col gap-2 items-center mb-8 mt-10">
     <div class="grid grid-cols-3 gap-12">
-      <div class="">
-        <img :src="logo" class="w-full h-full object-fit" alt="">
+      <div class="p-8">
+        <img :src="logo" class="" alt="">
       </div>
       <div class="mt-4 col-span-2">
-        <h1
+        <p
           class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-          What challenges are we solving?</h1>
+          What challenges are we solving?</p>
         <p class="mt-4 indent-12">Many professionals, especially in the technology, education and enterprises,
           need to create visual representations of their ideas, processes, systems, or structures.
           This could range from developers trying to illustrate the architecture of their software, to managers plotting
@@ -88,11 +92,11 @@ const features = [
   <section class="flex flex-col gap-2 items-center mb-8 mt-10">
     <div class="grid grid-cols-3 gap-12">   
       <div class="col-span-2">
-        <h1
+        <p
           class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-          Why use AI Flow Mapper?</h1>
+          Why use AI Flow Mapper?</p>
         <ol class="relative text-gray-700 border-s-2 border-gray-200 dark:border-gray-700 dark:text-gray-400 mt-4">
-          <li class="mb-10 ms-6">
+          <li class="mb-10 ms-20">
             <span
               class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
               1
@@ -100,7 +104,7 @@ const features = [
             <h3 class="font-medium leading-tight">Time Efficiency:</h3>
             <p class="text-sm">Many people spend undue time manually creating diagrams. This tool reduces that effort significantly.</p>
           </li>
-          <li class="mb-10 ms-6">
+          <li class="mb-10 ms-20">
             <span
               class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
               2
@@ -108,7 +112,7 @@ const features = [
             <h3 class="font-medium leading-tight">Skill Gap</h3>
             <p class="text-sm">Not everyone is skilled in using visual design tools or has an innate ability to layout complex ideas coherently in visual form. The AI assists in bridging this gap.</p>
           </li>
-          <li class="mb-10 ms-6">
+          <li class="mb-10 ms-20">
             <span
               class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
               3
@@ -116,7 +120,7 @@ const features = [
             <h3 class="font-medium leading-tight">Customization & Flexibility:</h3>
             <p class="text-sm">Often, after creating a diagram, one might want to make changes, which can be cumbersome in traditional tools. Your solution allows easy edits and adjustments.</p>
           </li>
-          <li class="ms-6">
+          <li class="ms-20">
             <span
               class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
               4
@@ -127,12 +131,12 @@ const features = [
         </ol>
       </div>
       <div class="">
-        <img src="" class="w-full h-full object-fit" alt="">
+        <img :src="AboutProduct" class="w-full h-full object-fit" alt="">
       </div>
     </div>
   </section>
   <section class="flex flex-col gap-2 items-center mb-8 mt-16">
-    <p class="text-2xl font-bold text-slate-700">
+    <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
       About The Product
     </p>
     <div>
@@ -160,7 +164,7 @@ const features = [
     </div>
   </section>
   <section class="flex flex-col gap-2 items-center mb-8">
-    <p class="text-2xl font-bold text-slate-700">
+    <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
       Lunching Soon...
     </p>
     <div>
@@ -186,7 +190,7 @@ const features = [
     </div>
   </section>
   <section class="flex flex-col gap-2 mt-5 items-center mb-8">
-    <p class="text-2xl font-bold text-slate-700">
+    <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
      Our Features...
     </p>
   </section>
