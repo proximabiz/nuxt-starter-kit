@@ -1,47 +1,45 @@
 <script setup lang="ts">
+import { z } from 'zod'
 import card from '@/assets/media/credit-card.png'
 import visa from '@/assets/media/visa.png'
 import mastercard from '@/assets/media/mastercard.png'
 import { useBillingStore } from '~/stores/billing'
-import { z } from 'zod';
-
 
 interface Props {
-  planName: string,
-  duePrice:string
+  planName: string
+  duePrice: string
 }
-const state = useBillingStore();
 const props = defineProps<Props>()
-const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+const state = useBillingStore()
+const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 
-const masterCardRegex = /^(?:5[1-5][0-9]{14})$/;
-const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/;
-const americanExpCardRegex = /^(?:3[47][0-9]{13})$/;
+const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
+const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
+const americanExpCardRegex = /^(?:3[47][0-9]{13})$/
 
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
- cardNo: z.string()
+  cardNo: z.string()
     .min(1, 'Card number is required')
     .regex(/^\d+$/, 'Card number must be numeric')
-    .refine((val) => masterCardRegex.test(val) || visaCardRegex.test(val) || americanExpCardRegex.test(val), {
+    .refine(val => masterCardRegex.test(val) || visaCardRegex.test(val) || americanExpCardRegex.test(val), {
       message: 'Invalid card number. Please enter a valid card number with 15 or 16 digits.',
     }),
- expDate: z.string()
+  expDate: z.string()
     .regex(basicExpDateRegex, 'Invalid expiration date format')
     .refine((val) => {
-      const [month, year] = val.split('/').map(Number);
-      const currentYear = new Date().getFullYear() % 100; // Get last two digits of the current year
-      const currentMonth = new Date().getMonth() + 1; // Get current month (1-12)
+      const [month, year] = val.split('/').map(Number)
+      const currentYear = new Date().getFullYear() % 100 // Get last two digits of the current year
+      const currentMonth = new Date().getMonth() + 1 // Get current month (1-12)
       // Check if the year is valid (current year or later) and month is within 1-12
       return (
         year >= currentYear && (year > currentYear || month >= currentMonth)
-      );
+      )
     }, 'Expiration date must be in the future'),
-    cvv: z.string()
-  .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
-  .refine((cvv) => /^\d+$/.test(cvv), 'Security code must only contain digits')
-});
-
+  cvv: z.string()
+    .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
+    .refine(cvv => /^\d+$/.test(cvv), 'Security code must only contain digits'),
+})
 </script>
 
 <template>

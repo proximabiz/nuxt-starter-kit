@@ -114,7 +114,7 @@ function providePlanDetails(val: any) {
             <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
               {{ value.calculatedPrice }}{{ value.currencySymbol }}
             </strong>
-            <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom'? ''
+            <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom' ? ''
               : isMonthly
                 ? '/month' : '/year' }}</span>
             <UButton

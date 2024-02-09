@@ -3,11 +3,11 @@ import { z } from 'zod'
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 
-const selectedOption = ref('demo');
+const selectedOption = ref('demo')
 
-const updateSelection = (value:string) => {
-  selectedOption.value = value;
-};
+function updateSelection(value: string) {
+  selectedOption.value = value
+}
 
 const state = reactive({
   name: undefined,
@@ -55,7 +55,7 @@ async function onSubmit() {
     <UForm :schema="schema" :state="state" class="grid grid-cols-2 gap-16" @submit="onSubmit">
       <div class="flex flex-col gap-6">
         <UFormGroup name="name" label="Name" required>
-          <UInput v-model="state.name" placeholder="Your Name"/>
+          <UInput v-model="state.name" placeholder="Your Name" />
         </UFormGroup>
         <UFormGroup name="email" label="Email" required>
           <UInput v-model="state.email" placeholder="Your Email" />
@@ -66,20 +66,20 @@ async function onSubmit() {
       </div>
       <div class="flex flex-col gap-6">
         <div class="flex gap-8 mt-4">
-          <URadio 
-      label="Ask for demo" 
-      color="blue" 
-      :model-value="selectedOption" 
-      @update:modelValue="updateSelection" 
-      value="demo"
-    />
-    <URadio 
-      label="Ask for free trial" 
-      color="blue" 
-      :model-value="selectedOption" 
-      @update:modelValue="updateSelection" 
-      value="trial"
-    />
+          <URadio
+            label="Ask for demo"
+            color="blue"
+            :model-value="selectedOption"
+            value="demo"
+            @update:model-value="updateSelection"
+          />
+          <URadio
+            label="Ask for free trial"
+            color="blue"
+            :model-value="selectedOption"
+            value="trial"
+            @update:model-value="updateSelection"
+          />
         </div>
         <UFormGroup name="message" label="Message" required>
           <UTextarea v-model="state.message" color="white" size="xl" variant="outline" placeholder="Write your query/message" />
@@ -95,5 +95,3 @@ async function onSubmit() {
     <!-- </section> -->
   </div>
 </template>
-
-

@@ -12,7 +12,6 @@ import flowchart from '@/assets/media/flowchart.png'
 import ui from '@/assets/media/ui.png'
 import drag from '@/assets/media/drag.png'
 
-
 const features = [
   {
     title: 'User Interface (UI)',
@@ -41,7 +40,7 @@ const features = [
   {
     title: 'Data Input and Output',
     description: 'Capability to input data into the flow mapper and visualize the output, allowing users to see the impact of changes or analyze the results of a particular workflow.',
-    iconSrc:input,
+    iconSrc: input,
     bgColor: 'bg-green-200',
   },
   {
@@ -74,13 +73,17 @@ const features = [
       </div>
       <div class="mt-4 col-span-2">
         <p
-          class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-          What challenges are we solving?</p>
-        <p class="mt-4 indent-12">Many professionals, especially in the technology, education and enterprises,
+          class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400"
+        >
+          What challenges are we solving?
+        </p>
+        <p class="mt-4 indent-12">
+          Many professionals, especially in the technology, education and enterprises,
           need to create visual representations of their ideas, processes, systems, or structures.
           This could range from developers trying to illustrate the architecture of their software, to managers plotting
           out business processes,
-          to educators crafting lesson plans. Traditional methods of creating these diagrams or flowcharts can be:</p>
+          to educators crafting lesson plans. Traditional methods of creating these diagrams or flowcharts can be:
+        </p>
         <ul class="list-disc flex flex-col gap-2 mt-4">
           <li>Time-consuming.</li>
           <li>Require design or visual skills which not everyone possesses.</li>
@@ -90,43 +93,65 @@ const features = [
     </div>
   </section>
   <section class="flex flex-col gap-2 items-center mb-8 mt-10">
-    <div class="grid grid-cols-3 gap-12">   
+    <div class="grid grid-cols-3 gap-12">
       <div class="col-span-2">
         <p
-          class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-          Why use AI Flow Mapper?</p>
+          class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400"
+        >
+          Why use AI Flow Mapper?
+        </p>
         <ol class="relative text-gray-700 border-s-2 border-gray-200 dark:border-gray-700 dark:text-gray-400 mt-4">
           <li class="mb-10 ms-20">
             <span
-              class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
+              class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900"
+            >
               1
             </span>
-            <h3 class="font-medium leading-tight">Time Efficiency:</h3>
-            <p class="text-sm">Many people spend undue time manually creating diagrams. This tool reduces that effort significantly.</p>
+            <h3 class="font-medium leading-tight">
+              Time Efficiency:
+            </h3>
+            <p class="text-sm">
+              Many people spend undue time manually creating diagrams. This tool reduces that effort significantly.
+            </p>
           </li>
           <li class="mb-10 ms-20">
             <span
-              class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
+              class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700"
+            >
               2
             </span>
-            <h3 class="font-medium leading-tight">Skill Gap</h3>
-            <p class="text-sm">Not everyone is skilled in using visual design tools or has an innate ability to layout complex ideas coherently in visual form. The AI assists in bridging this gap.</p>
+            <h3 class="font-medium leading-tight">
+              Skill Gap
+            </h3>
+            <p class="text-sm">
+              Not everyone is skilled in using visual design tools or has an innate ability to layout complex ideas coherently in visual form. The AI assists in bridging this gap.
+            </p>
           </li>
           <li class="mb-10 ms-20">
             <span
-              class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
+              class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700"
+            >
               3
             </span>
-            <h3 class="font-medium leading-tight">Customization & Flexibility:</h3>
-            <p class="text-sm">Often, after creating a diagram, one might want to make changes, which can be cumbersome in traditional tools. Your solution allows easy edits and adjustments.</p>
+            <h3 class="font-medium leading-tight">
+              Customization & Flexibility:
+            </h3>
+            <p class="text-sm">
+              Often, after creating a diagram, one might want to make changes, which can be cumbersome in traditional tools. Your solution allows easy edits and adjustments.
+            </p>
           </li>
           <li class="ms-20">
             <span
-              class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
+              class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700"
+            >
               4
             </span>
-            <h3 class="font-medium leading-tight">Ease of Use:</h3>
-            <p class="text-sm">By merely answering the AI's queries, users can generate comprehensive visuals without needing to master the intricacies of a design tool.</p>
+            <h3 class="font-medium leading-tight">
+              Ease of Use:
+            </h3>
+            <p class="text-sm">
+              By merely answering the AI's queries, users can generate comprehensive visuals without needing to master the intricacies of a design tool.
+            </p>
           </li>
         </ol>
       </div>
@@ -191,7 +216,7 @@ const features = [
   </section>
   <section class="flex flex-col gap-2 mt-5 items-center mb-8">
     <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-     Our Features...
+      Our Features...
     </p>
   </section>
   <section>
@@ -201,9 +226,10 @@ const features = [
           <img :src="feature.iconSrc" alt="" width="32px" height="32px">
         </div>
         <h2 class="text-2xl font-semibold">
-        {{ feature.title }}
-      </h2>
-      <p>{{ feature.description }}</p>
+          {{ feature.title }}
+        </h2>
+        <p>{{ feature.description }}</p>
+      </div>
     </div>
-  </div>
-</section></template>
+  </section>
+</template>
