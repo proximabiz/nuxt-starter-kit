@@ -15,6 +15,8 @@ export default defineEventHandler(async (event) => {
     title,
     keywords,
     details,
+    access,
+    diagram_identifier,
     response
     `,
   ).eq('user_id', userID)

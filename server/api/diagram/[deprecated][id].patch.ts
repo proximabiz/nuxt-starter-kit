@@ -97,13 +97,18 @@ export default defineEventHandler(async (event) => {
           }
 
           const { data, error } = await client.from('diagrams').update(
-
             {
               keywords: userKeyword,
               details: userRequirement,
               response,
             } as never,
           ).eq('id', diagramId).select()
+          await client.from('diagram_version').insert([{
+            diagram_id: diagramId,
+            user_id: event.context.user.id,
+            response: chart,
+            versions: new Date().toISOString(),
+          }] as any)
 
           return { message: 'Success!', data: { data, response, error }, status: 200 }
         }
