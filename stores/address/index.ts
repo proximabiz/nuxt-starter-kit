@@ -77,7 +77,7 @@ export const useAddressStore = defineStore({
 
     async addAddress(payload: postPayload) {
       const authStore = useAuthStore()
-      const { data, error } = await useFetch('/api/user/address', {
+      const { data, error } = await useFetch('/api/user/address-contact', {
         method: 'POST',
         headers: {
           Authorization: await authStore.getBearerToken,
