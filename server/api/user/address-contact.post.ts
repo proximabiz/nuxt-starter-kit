@@ -39,7 +39,6 @@ export default defineEventHandler(async (event) => {
           user_id: userID,
         } as never,
       ).single()
-
       if (errorUserDetails)
         return { message: 'Error!', errorUserDetails, status: 400 }
 
