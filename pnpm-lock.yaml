@@ -32,12 +32,12 @@ dependencies:
   joi:
     specifier: ^17.11.0
     version: 17.11.0
-  json-diff:
-    specifier: ^1.0.6
-    version: 1.0.6
   mind-elixir:
     specifier: ^3.3.2
     version: 3.3.2
+  json-diff:
+    specifier: ^1.0.6
+    version: 1.0.6
   openai:
     specifier: ^4.24.3
     version: 4.24.3
@@ -85,15 +85,15 @@ devDependencies:
   '@supabase/supabase-js':
     specifier: ^2.39.3
     version: 2.39.3
+  '@types/vue-tel-input':
+    specifier: ^2.1.6
+    version: 2.1.6
   '@types/json-diff':
     specifier: ^1.0.3
     version: 1.0.3
   '@types/uuid':
     specifier: ^9.0.8
     version: 9.0.8
-  '@types/vue-tel-input':
-    specifier: ^2.1.6
-    version: 2.1.6
   cross-env:
     specifier: ^7.0.3
     version: 7.0.3
@@ -2545,14 +2545,12 @@ packages:
     resolution: {integrity: sha512-IfYcSBWE3hLpBg8+X2SEa8LVkJdJEkT2Ese2aaLs3ptGdVtABxndrMaxuFlQ1qdFf9Q5rDvDpxI3WwgvKFAsQA==}
     dev: true
 
-  /@types/uuid@9.0.8:
-    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
-    dev: true
-
   /@types/vue-tel-input@2.1.6:
     resolution: {integrity: sha512-oHbfRAzl6cWIEDlYwSAOAhRYmjtyT1j170pcvm1r0EoxxAA9bvY/zMygdWlpQgDeYBsZds3f07DfSIFtXiYxZg==}
     dependencies:
       vue: 2.7.16
+  /@types/uuid@9.0.8:
+    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
     dev: true
 
   /@types/web-bluetooth@0.0.20:
