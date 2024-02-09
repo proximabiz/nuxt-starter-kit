@@ -3,7 +3,7 @@ const isMonthly = ref(true)
 const currentPlan = ref('')
 const showBillingDetails = ref(false)
 let cardValue = ref()
-const region = ref('asia')
+const region = ref('india')
 
 interface PricePlan {
   plan: string
@@ -12,8 +12,8 @@ interface PricePlan {
 }
 const regions = [
   {
-    name: 'Asia',
-    value: 'asia',
+    name: 'India',
+    value: 'india',
     currencySymbol: '₹', // Rupees
     conversionRate: 75, // Assuming 1 USD = 75 Rupees
   },
@@ -29,6 +29,11 @@ const regions = [
     currencySymbol: '$', // Dollars
     conversionRate: 1, // Base rate
   },
+  {name: 'Other region',
+    value: 'other',
+    currencySymbol: '$', // Dollars
+    conversionRate: 1, 
+  }
 ]
 
 const monthlyPrices: PricePlan[] = [
@@ -112,7 +117,7 @@ function providePlanDetails(val: any) {
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
             </p>
             <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-              {{ value.calculatedPrice }}{{ value.currencySymbol }}
+             {{ value.currencySymbol}}{{value.calculatedPrice}}
             </strong>
             <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom' ? ''
               : isMonthly

@@ -15,15 +15,15 @@ const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
-const americanExpCardRegex = /^(?:3[47][0-9]{13})$/
+
 
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
   cardNo: z.string()
     .min(1, 'Card number is required')
     .regex(/^\d+$/, 'Card number must be numeric')
-    .refine(val => masterCardRegex.test(val) || visaCardRegex.test(val) || americanExpCardRegex.test(val), {
-      message: 'Invalid card number. Please enter a valid card number with 15 or 16 digits.',
+    .refine(val => masterCardRegex.test(val) || visaCardRegex.test(val), {
+      message: 'Invalid card number. Please enter a valid card number with 16 digits.',
     }),
   expDate: z.string()
     .regex(basicExpDateRegex, 'Invalid expiration date format')
