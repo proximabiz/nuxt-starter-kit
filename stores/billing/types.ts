@@ -1,4 +1,4 @@
-export interface AddressState {
+export interface BillingState {
   name: string
   orgName: string
   country: string
@@ -11,4 +11,9 @@ export interface AddressState {
   cardNo: string
   expDate: string
   cvv: string
+}
+export interface subScriptionPayload{
+  userId : string,
+  subscriptionTypeId : string,
+  ammount : number
 }

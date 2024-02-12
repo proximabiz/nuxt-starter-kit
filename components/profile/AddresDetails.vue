@@ -60,7 +60,7 @@ async function getAddress() {
     state.city = response.city
     state.region = response.region
     state.address = response.address
-    state.phone = response.phone
+    state.phone = response.phone_number
     state.email = response.email
 
     if (
@@ -102,7 +102,7 @@ async function onSubmit() {
   if (isNewUser) {
     const payloadPost = {
       name: state.name,
-      organisation_name: state.orgname,
+      organisationName: state.orgname,
       country: state.country,
       region: state.region,
       city: state.city,
@@ -112,6 +112,7 @@ async function onSubmit() {
     }
     try {
       const response = await addressStore.addAddress(payloadPost)
+      console.log(response)
       if (response?.status === 200) {
         notify.success(response.message)
         await getAddress()

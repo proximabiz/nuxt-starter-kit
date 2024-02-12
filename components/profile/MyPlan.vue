@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { usePlanStore } from '~/stores/plan'
-
-const pricingRef: Ref<HTMLElement | any> = ref('')
+import { useBillingStore } from '~/stores/billing'
+import dayjs from 'dayjs';
 
 const notify = useNotification()
-const planStore = usePlanStore()
+const planStore = useBillingStore()
+const planData=ref()
 
 async function getActivePlan() {
   try {
     const response = await planStore.fetchActivePlan()
-    console.log(response)
+  planData.value=response
   }
   catch (error) {
     notify.error(error.statusMessage)
@@ -31,13 +31,13 @@ onMounted(async () => {
     </h1>
     <UCard>
       <div class="sm:pb-0">
-        <h2 ref="pricingRef" class="text-lg font-medium text-gray-900">
-          Pro
+        <h2 class="text-lg font-medium text-gray-900">
+         {{ planData?.name }}
         </h2>
         <p class="text-gray-700">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          {{ planData?.description }}
         </p>
-        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">5$<span class="text-sm font-medium text-gray-700">/month</span>
+        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">${{ planData?.monthly_price }}<span class="text-sm font-medium text-gray-700">/month</span>
         </strong>
         <p class="text-lg font-medium text-gray-900 sm:text-xl">
           What's included:
@@ -105,7 +105,7 @@ onMounted(async () => {
           Cancel Subscription
         </UButton>
         <p class="text-red-500 text-xs">
-          Your plan will be auto renewed on 19 feb 2024
+          Your plan will be auto renewed on {{ dayjs(planData?.plan_end_date).format('MMMM D, YYYY, h:mm:ss A')  }}
         </p>
       </div>
     </UCard>
