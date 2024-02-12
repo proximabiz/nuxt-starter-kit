@@ -60,7 +60,7 @@ async function getAddress() {
     state.city = response.city
     state.region = response.region
     state.address = response.address
-    state.phone = response.phone_number
+    state.phone = response.phoneNumber
     state.email = response.email
 
     if (
@@ -112,10 +112,16 @@ async function onSubmit() {
     }
     try {
       const response = await addressStore.addAddress(payloadPost)
-      console.log(response)
+      console.log(response.data)
       if (response?.status === 200) {
         notify.success(response.message)
-        await getAddress()
+        state.country = response.data?.country
+    state.zip = response.data.zipcode
+    state.city = response.data.city
+    state.region = response.data.region
+    state.address = response.data.address
+    state.phone = response.data.phoneNumber
+        // await getAddress()
         isEditable.value = false
       }
     }
@@ -128,7 +134,7 @@ async function onSubmit() {
     const response = await addressStore.editAddress(payload)
     if (response?.status === 200) {
       notify.success(response.message)
-      await getAddress()
+      // await getAddress()
       isEditable.value = false
     }
   }
@@ -195,7 +201,7 @@ async function onCancel() {
         </UFormGroup>
         <UFormGroup label="Phone no" name="phone" required>
           <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" :disabled="!isEditable && !isNewUser" />
-        </UFormGroup>
+        </UFormGroup>       
         <UFormGroup label="Email Id" name="email" required>
           <UInput v-model="state.email" color="blue" :disabled="true" />
         </UFormGroup>

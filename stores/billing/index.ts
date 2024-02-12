@@ -18,17 +18,29 @@ export const useBillingStore = defineStore({
   }),
   getters: {},
   actions: {
-    async fetchActivePlan():Promise<any>{
+    async fetchActivePlan(){
       const authStore = useAuthStore()
-      const userId=authStore.session?.user.id
+      const userId=authStore.getAuthUser.value?.id
       const supabaseClient = useSupabaseClient()
-      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', { user_id: userId })
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', { userid: userId })
       if (supabaseError)
         throw supabaseError
-    return supabaseResponse[0]
+    return supabaseResponse
   },
+  async addSubscription(payload:subScriptionPayload){
+    const authStore = useAuthStore()
+    const { data, error } = await useFetch('/api/subscriptions', {
+      method: 'POST',
+      headers: {
+        Authorization: await authStore.getBearerToken,
+      },
+      body: payload,
+      
+    })
+    if (error.value)
+        throw error.value
+      return data.value   
+  }
 },
-// async addSubscription(payload:subScriptionPayload):Promise<any>{
 
-// }
 })

@@ -9,7 +9,7 @@ const planData=ref()
 async function getActivePlan() {
   try {
     const response = await planStore.fetchActivePlan()
-  planData.value=response
+  planData.value=response[0]
   }
   catch (error) {
     notify.error(error.statusMessage)
