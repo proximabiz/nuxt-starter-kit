@@ -11,8 +11,12 @@ interface createAPIPayload {
 
 interface updateAPIPayload {
   title: string
-  diagramTypeId: string
+  // diagramTypeId: string
 }
+
+// interface saveAPIPayload {
+//   existingOpenAIResponse: json
+// }
 
 function initialState() {
   return {
@@ -70,18 +74,32 @@ export const useMindmapStore = defineStore('mindmapStore', {
       return supabaseResponse.value?.data
     },
 
-    async update(payload: updateAPIPayload) {
+    async update(payload: updateAPIPayload, diagramId) {
       const authStore = useAuthStore()
 
-      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${payload.diagramId}`, {
-        method: 'PATCH',
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${diagramId}`, {
+        method: 'PUT',
         headers: {
           Authorization: await authStore.getBearerToken,
         },
         body: payload,
       })
 
-      console.log('supabaseResponse', supabaseResponse.value)
+      if (supabaseError.value)
+        throw supabaseError.value
+
+      return supabaseResponse.value?.data
+    },
+    async save(payload, diagramId) {
+      const authStore = useAuthStore()
+
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${diagramId}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: await authStore.getBearerToken,
+        },
+        body: payload,
+      })
 
       if (supabaseError.value)
         throw supabaseError.value

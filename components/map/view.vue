@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import dayjs from 'dayjs'
 import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
 import type { MindElixirData, Options } from 'mind-elixir'
@@ -17,6 +18,7 @@ const { exportJSONFile } = useFileExporter()
 
 const apiResponse = ref()
 const updateApiResponse = ref()
+const saveApiResponse = ref()
 const isOpen = ref(true)
 const isVersionDrawerOpen = ref(false)
 const mind = ref()
@@ -33,39 +35,26 @@ const items = [{
   label: 'From JSON ',
 }]
 
-const versionsItems = [{
-  time: 'January 10, 2:29 PM',
-  user: 'Neha Soni',
-}, {
-  time: 'January 11, 1:30 PM',
-  user: 'Ipsita',
-}, {
-  time: 'January 12, 2:30 PM',
-  user: 'Balakrishna Adasumali',
-}, {
-  time: 'January 13, 3:30 PM',
-  user: 'Raveena Sisodiya',
-}, {
-  time: 'January 14, 4:30 PM',
-  user: 'Supriya Potdar',
-}, {
-  time: 'January 15, 5:30 PM',
-  user: 'Sudhakar Shenoy',
-}, {
-  time: 'January 16, 6:30 PM',
-  user: 'Pushpak Hazare',
-}]
+const versionsItems = ref()
+async function fetchDiagramVersions() {
+  try {
+    isVersionDrawerOpen.value = true
+    versionsItems.value = await diagramStore.getVersionList(props.diagramId)
+  }
+  catch (error) {
+    notify.error(error)
+  }
+}
 
 async function fetchMap() {
   try {
     apiResponse.value = await mindmapStore.get({
       diagramId: props.diagramId,
     })
-    console.log(apiResponse.value[0])
-    if (apiResponse.value[0].response.length) {
+    if (apiResponse.value[0].response.chartDetails) {
       init()
-      form.value.title = apiResponse.value[0].title
-      form.value.details = apiResponse.value[0].details
+      form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
+      // form.value.details = apiResponse.value[0].details
     }
   }
   catch (error) {
@@ -76,7 +65,28 @@ async function fetchMap() {
 function init() {
   const data: MindElixirData = {
     linkData: {},
-    nodeData: apiResponse.value[0].response[0].nodeData,
+    nodeData: apiResponse.value[0].response.chartDetails[0].nodeData,
+  }
+  const options: Options = {
+    el: '#map',
+    direction: 2,
+    locale: 'en',
+    contextMenuOption: {
+      focus: true,
+      link: true,
+      extend: [],
+    },
+  }
+
+  mind.value = new MindElixir(options)
+  mind.value.install(nodeMenu)
+  mind.value.init(data)
+}
+
+function init1() {
+  const data: MindElixirData = {
+    linkData: {},
+    nodeData: updateApiResponse.value.response.chartDetails[0].nodeData,
   }
   const options: Options = {
     el: '#map',
@@ -97,20 +107,34 @@ function init() {
 async function updateMap() {
   try {
     // Call update API here
-    const mindmapTypeDiagram = diagramStore.getMindMapTypeDiagram
-    if (!mindmapTypeDiagram)
-      return
+    // const mindmapTypeDiagram = diagramStore.getMindMapTypeDiagram
+    // if (!mindmapTypeDiagram)
+    //   return
 
     updateApiResponse.value = await mindmapStore.update({
       title: form.value.title,
-      diagramTypeId: mindmapTypeDiagram.id,
-    })
-    console.log(updateApiResponse.value)
-    // if (apiResponse.value[0].response.length) {
-    //   init()
-    //   form.value.title = apiResponse.value[0].title
-    //   form.value.details = apiResponse.value[0].details
-    // }
+      // diagramTypeId: mindmapTypeDiagram.id,
+    }, props.diagramId)
+
+    isOpen.value = false
+    if (updateApiResponse.value.response.chartDetails[0].nodeData) {
+      init1()
+      form.value.title = 'updateApiResponse.value.data[0].keywords' as string
+      // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
+    }
+
+    notify.success('Mindmap generated!')
+  }
+  catch (error) {
+    notify.error(error)
+  }
+}
+
+async function saveMap() {
+  try {
+    saveApiResponse.value = await mindmapStore.save({
+      existingOpenAIResponse: mind.value.getDataString(),
+    }, props.diagramId)
   }
   catch (error) {
     notify.error(error)
@@ -176,7 +200,7 @@ onBeforeUnmount(() => {
               </a>
             </li>
 
-            <li @click="updateMap()">
+            <li @click="saveMap()">
               <a
                 class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               >
@@ -189,8 +213,7 @@ onBeforeUnmount(() => {
                 </span>
               </a>
             </li>
-
-            <li @click="isVersionDrawerOpen = true">
+            <li @click="fetchDiagramVersions()">
               <a
                 class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               >
@@ -299,9 +322,9 @@ onBeforeUnmount(() => {
         <li v-for="(item, index) in versionsItems" :key="index">
           <a href="#" class="block h-full rounded-lg border border-gray-700 p-4 hover:border-gray-300">
             <div class="grid grid-cols-2">
-              <bold class="font-medium text-gray-900">{{ item.time }}</bold>
+              <p class="font-medium text-gray-900">{{ dayjs(item.updated_at).format("dddd, MMMM D YYYY hh:mm:ss") }}</p>
               <p class="mt-1 text-xs font-medium text-gray-500">
-                {{ item.user }}
+                {{ item.user_id }}
               </p>
             </div>
 
@@ -315,7 +338,7 @@ onBeforeUnmount(() => {
   <!-- <div id="map" class="" /> -->
   <UContainer>
     <div class="y-10 ml-5">
-      <div id="map" class="h-[500px] overflow-y-auto z-10" />
+      <div id="map" class="h-[700px] overflow-y-auto z-10" />
     </div>
   </UContainer>
 </template>

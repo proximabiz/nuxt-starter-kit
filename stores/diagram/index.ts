@@ -26,6 +26,20 @@ export const useDiagramStore = defineStore('diagramStore', {
 
       this.types = supabaseResponse
     },
+    async getVersionList(diagramId: string): Promise<void> {
+      const supabaseClient = useSupabaseClient()
+
+      const { data: supabaseResponse, error: diagramError } = await supabaseClient
+        .from('diagram_version')
+        .select()
+        .eq('diagram_id', diagramId as string)
+        .order('updated_at', { ascending: false })
+
+      if (diagramError)
+        throw diagramError
+
+      return supabaseResponse
+    },
   },
   persist: {
     storage: persistedState.localStorage,
