@@ -7,11 +7,14 @@ export const ChartValidation = Joi.object({
   details: Joi.string().optional(),
 })
 
-export const ChartUpdateValidation = Joi.object({
-  userKeyword: Joi.string().optional(),
+export const PATCHChartUpdateValidation = Joi.object({
+  existingOpenAIResponse: Joi.string().required(),
+})
+
+export const PUTChartUpdateValidation = Joi.object({
+  title: Joi.string().required(),
   isDetailed: Joi.boolean().optional().default(false),
-  userRequirement: Joi.string().optional(),
-  existingOpenAIResponse: Joi.string().optional(),
+  details: Joi.string().optional(),
 })
 
 export const SignupValidation = Joi.object({
@@ -22,7 +25,6 @@ export const SignupValidation = Joi.object({
 
 export const UserAddressValidation = Joi.object({
   country: Joi.string().required(),
-  state: Joi.string().optional(),
   region: Joi.string().required(),
   city: Joi.string().required(),
   zipcode: Joi.string().required(),
@@ -32,4 +34,21 @@ export const UserAddressValidation = Joi.object({
 
 export const UserGSTValidation = Joi.object({
   gstNumber: Joi.string().required(),
+})
+
+export const UserAddressContactValidation = Joi.object({
+  name: Joi.string().required(),
+  organisationName: Joi.string().required(),
+  country: Joi.string().required(),
+  region: Joi.string().required(),
+  city: Joi.string().required(),
+  zipcode: Joi.string().required(),
+  address: Joi.string().required(),
+  phoneNumber: Joi.string().required(),
+})
+
+export const UserSubscriptionValidation = Joi.object({
+  userId: Joi.string().required(),
+  subscriptionTypeId: Joi.string().required(),
+  ammount: Joi.number().required(),
 })

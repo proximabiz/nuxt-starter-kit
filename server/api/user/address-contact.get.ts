@@ -12,13 +12,13 @@ export default defineEventHandler(async (event) => {
 
   const client = await serverSupabaseClient(event)
   try {
-    const { data: userDetails, error, status } = await client
+    const { data: userDetails, error: userError, status } = await client
       .from('user_details')
       .select(`*`)
       .eq('user_id', userID)
 
-    if (error)
-      throw new CustomError(`Supabase Error: ${error.message}`, status)
+    if (userError)
+      throw new CustomError(`Supabase Error: ${userError.message}`, status)
 
     const { data: userAddress, error: errorAddress } = await client
       .from('user_address_details')
