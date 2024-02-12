@@ -1,3 +1,8 @@
+<script lang="ts" setup>
+const authStore = useAuthStore()
+const isLoggedIn = computed(() => authStore.isLoggedIn)
+</script>
+
 <template>
   <!-- Top bar -->
   <LayoutWebsiteTopBar />

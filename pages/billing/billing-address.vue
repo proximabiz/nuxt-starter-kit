@@ -1,11 +1,9 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'app',
-})
+
 </script>
 
 <template>
-  <ProfileMyPlans />
+  <BillingAddress />
 </template>
 
 <style scoped>

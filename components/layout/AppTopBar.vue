@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { useGlobalStore } from '~/stores'
+
+const globalStore = useGlobalStore()
 const authStore = useAuthStore()
 const notify = useNotification()
 const supabaseClient = useSupabaseClient()

@@ -7,10 +7,12 @@ const authUser = computed(() => authStore.getAuthUser.value)
 watch(
   () => authUser.value,
   (user) => {
+    // console.log("user data",user)
     if (!user && !route.fullPath.includes('/login'))
       navigateTo('/login')
     if (user && route.fullPath.includes('/login'))
       navigateTo('/')
+    
   },
   { immediate: true },
 )

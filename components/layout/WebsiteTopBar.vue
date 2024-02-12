@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+const notify = useNotification()
 const authStore = useAuthStore()
 
 const authUser = computed(() => authStore.getAuthUser.value)
