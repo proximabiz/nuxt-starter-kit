@@ -33,7 +33,6 @@ export const UserGSTValidation = Joi.object({
   gstNumber: Joi.string().required(),
 })
 
-
 export const UserAddressContactValidation = Joi.object({
   name: Joi.string().required(),
   organisationName: Joi.string().required(),
@@ -49,4 +48,10 @@ export const UserSubscriptionValidation = Joi.object({
   userId: Joi.string().required(),
   subscriptionTypeId: Joi.string().required(),
   ammount: Joi.number().required(),
+})
+
+export const CancelUserSubscriptionValidation = Joi.object({
+  userId: Joi.string().required(),
+  userSubscriptionId: Joi.string().required(),
+  note: Joi.string().max(100).optional(),
 })
