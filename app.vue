@@ -7,32 +7,41 @@ const route = useRoute()
 const authUser = computed(() => authStore.getAuthUser.value)
 const planStore = useBillingStore()
 
+const showUpgradeModal=ref<boolean>(false)
+
 watch(
   () => authUser.value,
   async (user) => {
-    if (!user && !route.fullPath.includes('/login'))
-      navigateTo('/login')
-    if (user && route.fullPath.includes('/login'))
-      navigateTo('/')
-     if (user?.id) {
-      const response = await planStore.fetchActivePlan()
-      if (response.length===0) {
+    if (!user && !route.fullPath.includes('/login')) {
+      navigateTo('/login');
+    }
+    if (user && route.fullPath.includes('/login')) {
+      navigateTo('/');
+    }
+    if (user?.id) {
+      const response = await planStore.fetchActivePlan();
+      if (response?.subscription_status === "PLAN_EXPIRED") {
+        showUpgradeModal.value=true
+       
+      } else if (response.subscription_status === "NO_SUBSCRIPTION") {
         let payload = {
-          userId: user?.id,
+          userId: user.id, 
           subscriptionTypeId: "10dbc647-04ea-4588-b6c8-7c535049f18c",
-          ammount: 0
-        }
-        if(!route.fullPath.includes('/profile/account')){
-        await planStore.addSubscription(payload)
+          amount: 0 
+        };
+        if (!route.fullPath.includes('/profile/account')) {
+          await planStore.addSubscription(payload);
         }
       }
-     }
+    }
   },
-  { immediate: true },
-)
+  { immediate: true }
+);
+
 </script>
 
-<template>
+<template> 
+  <Upgrade :isOpen="showUpgradeModal" @update:is-open="showUpgradeModal"/>
   <NuxtLayout>
     <NuxtPage />
     <UNotifications />
