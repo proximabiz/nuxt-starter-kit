@@ -1,6 +1,6 @@
-import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '../../utlis/custom.error'
 import { CancelUserSubscriptionValidation } from '../../utlis/validations'
+import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
   ).eq('user_id', params.userId).eq('id', params.userSubscriptionId)
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)
-    
+
   //* *** */ Cancel user Subscription in stripe
   // const stripe = require('stripe')('sk_test_tR3PYbcVNZZ796tH88S4VQ2u');
   // const subscription = await stripe.subscriptions.cancel(
