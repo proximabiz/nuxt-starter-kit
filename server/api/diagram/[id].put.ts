@@ -110,6 +110,7 @@ async function insertDiagramVersion(client: any, diagramId: string, userId: stri
 async function updateDiagram(client: any, userKeyword: any, userRequirement: any, response: ChartResponseType, diagramId: string): Promise<{ data: any, error: any }> {
   return await client.from('diagrams').update(
     {
+      title: userKeyword,
       keywords: userKeyword,
       details: userRequirement,
       response,
