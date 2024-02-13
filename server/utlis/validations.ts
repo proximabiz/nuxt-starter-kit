@@ -54,3 +54,9 @@ export const UserSubscriptionValidation = Joi.object({
   subscriptionTypeId: Joi.string().required(),
   ammount: Joi.number().required(),
 })
+
+export const CancelUserSubscriptionValidation = Joi.object({
+  userId: Joi.string().required(),
+  userSubscriptionId: Joi.string().required(),
+  note: Joi.string().max(100).optional(),
+})
