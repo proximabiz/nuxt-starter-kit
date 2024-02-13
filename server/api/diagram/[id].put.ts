@@ -1,11 +1,10 @@
 import { OpenAI } from 'openai'
-import { diff } from 'json-diff'
 import { CustomError } from '../../utlis/custom.error'
-import { protectRoute } from '../../utlis/route.protector'
 import { getPrompt } from '../../utlis/prompts'
+import { protectRoute } from '../../utlis/route.protector'
+import { PUTChartUpdateValidation } from '~/server/utlis/validations'
 import type { ChartResponseType } from '~/server/types/chart'
 import { serverSupabaseClient } from '#supabase/server'
-import { PUTChartUpdateValidation } from '~/server/utlis/validations'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -52,9 +51,6 @@ export default defineEventHandler(async (event) => {
             isDetailed: chartValidation.isDetailed,
             chartDetails: chart,
           }
-
-          console.log(chart)
-
           const { data, error } = await updateDiagram(client, userKeyword, userRequirement, response, diagramId)
           await insertDiagramVersion(client, diagramId, event.context.user.id, chart)
 
@@ -117,10 +113,10 @@ async function updateDiagram(client: any, userKeyword: any, userRequirement: any
   ).eq('id', diagramId).select()
 }
 
-async function updateDiagramForResponse(client: any, response: ChartResponseType, diagramId: string): Promise<{ data: any, error: any }> {
-  return await client.from('diagrams').update(
-    {
-      response,
-    } as never,
-  ).eq('id', diagramId).select()
-}
+// async function updateDiagramForResponse(client: any, response: ChartResponseType, diagramId: string): Promise<{ data: any, error: any }> {
+//   return await client.from('diagrams').update(
+//     {
+//       response,
+//     } as never,
+//   ).eq('id', diagramId).select()
+// }

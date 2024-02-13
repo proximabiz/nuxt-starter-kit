@@ -1,9 +1,7 @@
-import { OpenAI } from 'openai'
 import { diff } from 'json-diff'
 import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
 import { PATCHChartUpdateValidation } from '../../utlis/validations'
-import { getPrompt } from '../../utlis/prompts'
 import type { ChartResponseType } from '~/server/types/chart'
 import { serverSupabaseClient } from '#supabase/server'
 
