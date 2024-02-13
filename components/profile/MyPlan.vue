@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useBillingStore } from '~/stores/billing'
+import { useBillingStore } from '~/stores/subscription'
 import dayjs from 'dayjs';
 
 const notify = useNotification()
@@ -12,6 +12,22 @@ async function getActivePlan() {
   planData.value=response[0]
   }
   catch (error) {
+    notify.error(error.statusMessage)
+  }
+}
+const cancelPlan=async ()=>{
+  let payload={
+  userId : planData.value.user_id,
+  userSubscriptionId :  planData.value.id,
+  note : "Cancel Subscription"
+  }
+  try{
+    const res=await planStore.cancelSubscription(payload)
+    if(res?.status===204){
+     notify.success(res.message)
+    }
+  }
+  catch(error){
     notify.error(error.statusMessage)
   }
 }
@@ -101,10 +117,10 @@ onMounted(async () => {
         <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
           Current Plan
         </UButton>
-        <UButton type="submit" class="w-fit mt-2" color="blue">
+        <UButton type="submit" class="w-fit mt-2" color="blue" @click="cancelPlan">
           Cancel Subscription
         </UButton>
-        <p class="text-red-500 text-xs">
+        <p class="text-red-500 text-xs" v-if="planData?.plan_end_date">
           Your plan will be auto renewed on {{ dayjs(planData?.plan_end_date).format('MMMM D, YYYY, h:mm:ss A')  }}
         </p>
       </div>

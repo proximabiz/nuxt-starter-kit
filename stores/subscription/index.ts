@@ -1,4 +1,4 @@
-import type { BillingState,subScriptionPayload } from './types'
+import type { BillingState,subScriptionPayload,cancelSubPayload } from './types'
 
 export const useBillingStore = defineStore({
   id: 'paymentAddressState',
@@ -34,13 +34,25 @@ export const useBillingStore = defineStore({
       headers: {
         Authorization: await authStore.getBearerToken,
       },
+      body: payload,     
+    })
+    if (error.value)
+        throw error.value
+      return data.value   
+  },
+  async cancelSubscription(payload:cancelSubPayload){  
+    const authStore = useAuthStore()
+    const { data, error } = await useFetch('/api/subscriptions/cancel', {
+      method: 'PATCH',
+      headers: {
+        Authorization: await authStore.getBearerToken,
+      },
       body: payload,
       
     })
     if (error.value)
         throw error.value
-      return data.value   
+      return data.value  
   }
-},
-
+}
 })

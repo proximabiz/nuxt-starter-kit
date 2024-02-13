@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useBillingStore } from '~/stores/billing'
+import { useBillingStore } from '~/stores/subscription'
 
 const authStore = useAuthStore()
 const route = useRoute()
@@ -22,7 +22,9 @@ watch(
           subscriptionTypeId: "10dbc647-04ea-4588-b6c8-7c535049f18c",
           ammount: 0
         }
+        if(!route.fullPath.includes('/profile/account')){
         await planStore.addSubscription(payload)
+        }
       }
      }
   },

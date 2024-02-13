@@ -2,7 +2,7 @@
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
-import { useBillingStore } from '~/stores/billing'
+import { useBillingStore } from '~/stores/subscription'
 
 const state = useBillingStore()
 
