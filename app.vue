@@ -1,18 +1,32 @@
 <script setup lang="ts">
+import { useBillingStore } from '~/stores/subscription'
+
 const authStore = useAuthStore()
 const route = useRoute()
 
 const authUser = computed(() => authStore.getAuthUser.value)
+const planStore = useBillingStore()
 
 watch(
   () => authUser.value,
-  (user) => {
-    // console.log("user data",user)
+  async (user) => {
     if (!user && !route.fullPath.includes('/login'))
       navigateTo('/login')
     if (user && route.fullPath.includes('/login'))
       navigateTo('/')
-    
+     if (user?.id) {
+      const response = await planStore.fetchActivePlan()
+      if (response.length===0) {
+        let payload = {
+          userId: user?.id,
+          subscriptionTypeId: "10dbc647-04ea-4588-b6c8-7c535049f18c",
+          ammount: 0
+        }
+        if(!route.fullPath.includes('/profile/account')){
+        await planStore.addSubscription(payload)
+        }
+      }
+     }
   },
   { immediate: true },
 )
@@ -30,6 +44,7 @@ watch(
 .page-leave-active {
   transition: all 0.4s;
 }
+
 .page-enter-from,
 .page-leave-to {
   opacity: 0;

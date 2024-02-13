@@ -17,3 +17,8 @@ export interface subScriptionPayload{
   subscriptionTypeId : string,
   ammount : number
 }
+export interface cancelSubPayload{
+  userId : string,
+  userSubscriptionId : string,
+  note : string
+}

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useBillingStore } from '~/stores/billing'
+import { useBillingStore } from '~/stores/subscription'
 
 interface Props {
   planDetails: any
