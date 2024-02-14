@@ -5,10 +5,15 @@ import dayjs from 'dayjs';
 const notify = useNotification()
 const planStore = useBillingStore()
 const planData=ref()
+const showUpgradeModal = ref<boolean>(false)
+
 
 async function getActivePlan() {
   try {
     const response = await planStore.fetchActivePlan()
+    if (response?.subscription_status === 'PLAN_EXPIRED') {
+        showUpgradeModal.value = true
+      }
   planData.value=response[0]
   }
   catch (error) {
@@ -23,8 +28,10 @@ const cancelPlan=async ()=>{
   }
   try{
     const res=await planStore.cancelSubscription(payload)
+
     if(res?.status===204){
-     notify.success(res.message)
+      notify.success(res.message)
+      navigateTo("/website/pricing")    
     }
   }
   catch(error){
@@ -34,6 +41,10 @@ const cancelPlan=async ()=>{
 onMounted(async () => {
   await getActivePlan()
 })
+function upgradePlan() {
+  showUpgradeModal.value = false
+  navigateTo('/website/pricing')
+}
 </script>
 
 <template>
@@ -41,6 +52,18 @@ onMounted(async () => {
     divider=">"
     :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'My Plan' }]"
   />
+  <UModal :model-value="showUpgradeModal" :transition="false">
+    <div class="p-8">
+      <div class="mb-8">
+        Your plan has expired!
+      </div>
+      <div class="mt-4 flex justify-end gap-4">
+        <UButton class="" color="gray" @click="upgradePlan">
+          Upgrade
+        </UButton>
+      </div>
+    </div>
+  </UModal>
   <section class="grid place-items-center mb-8">
     <h1 class="font-semibold mb-4">
       My Plan
