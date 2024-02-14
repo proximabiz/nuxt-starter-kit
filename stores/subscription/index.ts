@@ -1,8 +1,10 @@
-import type { BillingState,subScriptionPayload,cancelSubPayload } from './types'
+import type { State,subScriptionPayload,cancelSubPayload,subDetails } from './types'
 
 export const useBillingStore = defineStore({
   id: 'paymentAddressState',
-  state: (): BillingState => ({
+  state: (): State => ({
+    subscriptionStatus:{planName:"",planStatus:""},
+    billingDetails:{
     name: '',
     orgName: '',
     country: '',
@@ -15,8 +17,13 @@ export const useBillingStore = defineStore({
     cardNo: '',
     expDate: '',
     cvv: '',
+    }
   }),
-  getters: {},
+  getters: {
+    GET_SUB_STATUS():subDetails{
+      return this.subscriptionStatus
+    }
+  },
   actions: {
     async fetchActivePlan(){
       const authStore = useAuthStore()
@@ -25,6 +32,7 @@ export const useBillingStore = defineStore({
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', { userid: userId })
       if (supabaseError)
         throw supabaseError
+      this.subscriptionStatus.planStatus=supabaseResponse.subscription_status
     return supabaseResponse
   },
   async addSubscription(payload:subScriptionPayload){
