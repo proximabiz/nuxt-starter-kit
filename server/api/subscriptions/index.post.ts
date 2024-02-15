@@ -18,6 +18,17 @@ export default defineEventHandler(async (event) => {
   if (subError)
     throw new CustomError(`Supabase Error: ${subError.message}`, subStatus)
 
+  const { data: userSubCheck, error: userSubError, status: userSubStatus } = await client
+    .from('user_subscriptions')
+    .select('user_id')
+    .eq('user_id', params.userId)
+    .eq('is_subscription_active', true)
+
+  if (userSubError)
+    throw new CustomError(`Supabase Error: ${userSubError.message}`, userSubStatus)
+  if (userSubCheck.length > 0)
+    throw new CustomError(`User is already there with subscription`, 401)
+
   const currentDate = new Date()
   let endDate = new Date()
   if (params.ammount > 0) {
