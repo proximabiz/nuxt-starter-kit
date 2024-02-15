@@ -22,3 +22,11 @@ export interface cancelSubPayload {
   userSubscriptionId: string
   note: string
 }
+export interface subDetails{
+  planName:string,planStatus:string
+}
+export interface State {
+subscriptionStatus: subDetails
+billingDetails:BillingState
+
+}

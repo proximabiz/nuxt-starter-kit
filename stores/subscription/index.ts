@@ -1,22 +1,29 @@
-import type { BillingState, cancelSubPayload, subScriptionPayload } from './types'
+import type { State, cancelSubPayload, subDetails, subScriptionPayload } from './types'
 
 export const useBillingStore = defineStore({
   id: 'paymentAddressState',
-  state: (): BillingState => ({
-    name: '',
-    orgName: '',
-    country: '',
-    zip: '',
-    city: '',
-    region: '',
-    address: '',
-    phone: '',
-    cardHolderName: '',
-    cardNo: '',
-    expDate: '',
-    cvv: '',
+  state: (): State => ({
+    subscriptionStatus: { planName: '', planStatus: '' },
+    billingDetails: {
+      name: '',
+      orgName: '',
+      country: '',
+      zip: '',
+      city: '',
+      region: '',
+      address: '',
+      phone: '',
+      cardHolderName: '',
+      cardNo: '',
+      expDate: '',
+      cvv: '',
+    },
   }),
-  getters: {},
+  getters: {
+    GET_SUB_STATUS(): subDetails {
+      return this.subscriptionStatus
+    },
+  },
   actions: {
     async fetchActivePlan() {
       const authStore = useAuthStore()
@@ -25,11 +32,12 @@ export const useBillingStore = defineStore({
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', { userid: userId })
       if (supabaseError)
         throw supabaseError
+      this.subscriptionStatus.planStatus = supabaseResponse.subscription_status
       return supabaseResponse
     },
     async addSubscription(payload: subScriptionPayload) {
       const authStore = useAuthStore()
-      const { data, error } = await useFetch('/api/subscriptions/cancel', {
+      const { data, error } = await useFetch('/api/subscriptions', {
         method: 'POST',
         headers: {
           Authorization: await authStore.getBearerToken,

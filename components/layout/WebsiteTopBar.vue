@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const notify = useNotification()
 const authStore = useAuthStore()
+const supabaseClient = useSupabaseClient()
 
 const authUser = computed(() => authStore.getAuthUser.value)
 // Define the structure of your link objects for better TypeScript support
@@ -15,6 +16,35 @@ const links = ref<NavLink[]>([
   { name: 'Pricing', to: '/website/pricing' },
   { name: 'Contact Sales', to: '/website/contact' },
 ])
+
+const items = [
+  [{
+    label: 'ben@example.com',
+    slot: 'account',
+    disabled: true,
+  }],
+  [{
+    label: 'My account',
+    icon: 'i-heroicons-user',
+    to: '/profile/account'
+  }],
+  [{
+    label: 'Sign out',
+    icon: 'i-heroicons-arrow-left-on-rectangle',
+    action: 'singOut',
+    click: () => singOut(),
+  }],
+]
+async function singOut() {
+  try {
+    // Do something with data
+    await supabaseClient.auth.signOut()
+    navigateTo('/')
+  }
+  catch (error) {
+    notify.error(error)
+  }
+}
 </script>
 
 <template>
@@ -48,6 +78,24 @@ const links = ref<NavLink[]>([
     >
       Login
     </UButton>
+    <UDropdown v-else :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-10">
+              <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
+              <template #account>
+                <div class="text-left">
+                  <p>
+                    Signed in as
+                  </p>
+                  <p class="truncate font-medium text-gray-900">
+                    {{ authUser?.email }}
+                  </p>
+                </div>
+              </template>
+
+              <template #item="{ item }">
+                <span class="truncate">{{ item.label }}</span>
+                <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto" />
+              </template>
+            </UDropdown>
   </nav>
 
   <!-- For Mobile Screen -->
