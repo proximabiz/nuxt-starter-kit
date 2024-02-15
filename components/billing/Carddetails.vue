@@ -17,7 +17,6 @@ const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 
-
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
   cardNo: z.string()

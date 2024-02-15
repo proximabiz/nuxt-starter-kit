@@ -1,40 +1,39 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import { useBillingStore } from '~/stores/subscription'
-import dayjs from 'dayjs';
 
 const notify = useNotification()
 const planStore = useBillingStore()
-const planData=ref()
+const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
-
 
 async function getActivePlan() {
   try {
     const response = await planStore.fetchActivePlan()
-    if (response?.subscription_status === 'PLAN_EXPIRED') {
-        showUpgradeModal.value = true
-      }
-  planData.value=response[0]
+    if (response?.subscription_status === 'PLAN_EXPIRED')
+      showUpgradeModal.value = true
+
+    planData.value = response[0]
   }
   catch (error) {
     notify.error(error.statusMessage)
   }
 }
-const cancelPlan=async ()=>{
-  let payload={
-  userId : planData.value.user_id,
-  userSubscriptionId :  planData.value.id,
-  note : "Cancel Subscription"
+async function cancelPlan() {
+  const payload = {
+    userId: planData.value.user_id,
+    userSubscriptionId: planData.value.id,
+    note: 'Cancel Subscription',
   }
-  try{
-    const res=await planStore.cancelSubscription(payload)
+  try {
+    const res = await planStore.cancelSubscription(payload)
 
-    if(res?.status===204){
+    if (res?.status === 204) {
       notify.success(res.message)
-      navigateTo("/website/pricing")    
+      navigateTo('/website/pricing')
     }
   }
-  catch(error){
+  catch (error) {
     notify.error(error.statusMessage)
   }
 }
@@ -58,7 +57,7 @@ function upgradePlan() {
         Your plan has expired! To continue your account please upgrade.
       </div>
       <div class="mt-4 flex justify-center">
-        <UButton class=""  @click="upgradePlan">
+        <UButton class="" @click="upgradePlan">
           Upgrade
         </UButton>
       </div>
@@ -71,7 +70,7 @@ function upgradePlan() {
     <UCard>
       <div class="sm:pb-0">
         <h2 class="text-lg font-medium text-gray-900">
-         {{ planData?.name }}
+          {{ planData?.name }}
         </h2>
         <p class="text-gray-700">
           {{ planData?.description }}
@@ -143,8 +142,8 @@ function upgradePlan() {
         <UButton type="submit" class="w-fit mt-2" color="blue" @click="cancelPlan">
           Cancel Subscription
         </UButton>
-        <p class="text-red-500 text-xs" v-if="planData?.plan_end_date">
-          Your plan will be auto renewed on {{ dayjs(planData?.plan_end_date).format('MMMM D, YYYY, h:mm:ss A')  }}
+        <p v-if="planData?.plan_end_date" class="text-red-500 text-xs">
+          Your plan will be auto renewed on {{ dayjs(planData?.plan_end_date).format('MMMM D, YYYY, h:mm:ss A') }}
         </p>
       </div>
     </UCard>

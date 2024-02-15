@@ -49,7 +49,7 @@ function upgradePlan() {
         Your plan has expired! To continue your account please upgrade.
       </div>
       <div class="mt-4 flex justify-center">
-        <UButton class=""  @click="upgradePlan">
+        <UButton class="" @click="upgradePlan">
           Upgrade
         </UButton>
       </div>

@@ -8,7 +8,8 @@ const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
 const duePrice = ref('77.8$')
-const billingState = useBillingStore()
+const billingStore = useBillingStore()
+const billingAddressCard = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
 
 const steps = [
   // {label: '', component: 'websitePricing'},
@@ -23,16 +24,17 @@ const state = reactive({
 })
 
 function setActiveStep(index: number) {
+  const bac = billingAddressCard.value
   if (index === 2) {
     // Check if any of the required billingState fields are empty
-    const isAddressComplete = billingState.name && billingState.orgName && billingState.country && billingState.zip && billingState.city && billingState.region && billingState.address && billingState.phone
+    const isAddressComplete = bac.name && bac.orgName && bac.country && bac.zip && bac.city && bac.region && bac.address && bac.phone
     if (!isAddressComplete) {
       alert('Please fill out all the fields in your billing address.')
       return
     }
   }
   if (index === 3) {
-    const isCardDetailsComplete = billingState.cardHolderName && billingState.cardNo && billingState.expDate && billingState.cvv
+    const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
     if (!isCardDetailsComplete) {
       alert('Please fill out all the fields in your billing card details.')
       return

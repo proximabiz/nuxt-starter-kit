@@ -116,11 +116,11 @@ async function onSubmit() {
       if (response?.status === 200) {
         notify.success(response.message)
         state.country = response.data?.country
-    state.zip = response.data.zipcode
-    state.city = response.data.city
-    state.region = response.data.region
-    state.address = response.data.address
-    state.phone = response.data.phoneNumber
+        state.zip = response.data.zipcode
+        state.city = response.data.city
+        state.region = response.data.region
+        state.address = response.data.address
+        state.phone = response.data.phoneNumber
         // await getAddress()
         isEditable.value = false
       }
@@ -201,7 +201,7 @@ async function onCancel() {
         </UFormGroup>
         <UFormGroup label="Phone no" name="phone" required>
           <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" :disabled="!isEditable && !isNewUser" />
-        </UFormGroup>       
+        </UFormGroup>
         <UFormGroup label="Email Id" name="email" required>
           <UInput v-model="state.email" color="blue" :disabled="true" />
         </UFormGroup>

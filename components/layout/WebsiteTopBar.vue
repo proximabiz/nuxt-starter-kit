@@ -27,7 +27,7 @@ const items = [
   [{
     label: 'My account',
     icon: 'i-heroicons-user',
-    to: '/profile/account'
+    to: '/profile/account',
   }],
   [{
     label: 'Sign out',
@@ -66,8 +66,7 @@ function isActiveRoute(to: string) {
     </div>
     <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
       <template v-for="(item, index) in links" :key="index">
-
-        <li><a class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer" :class="{ 'active-link': isActiveRoute(item.to) }" @click="navigateTo(item.to)" >{{ item.name }}</a></li>
+        <li><a class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer" :class="{ 'active-link': isActiveRoute(item.to) }" @click="navigateTo(item.to)">{{ item.name }}</a></li>
         <li class="text-gray-300">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
@@ -84,23 +83,23 @@ function isActiveRoute(to: string) {
       Login
     </UButton>
     <UDropdown v-else :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-10">
-              <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
-              <template #account>
-                <div class="text-left">
-                  <p>
-                    Signed in as
-                  </p>
-                  <p class="truncate font-medium text-gray-900">
-                    {{ authUser?.email }}
-                  </p>
-                </div>
-              </template>
+      <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
+      <template #account>
+        <div class="text-left">
+          <p>
+            Signed in as
+          </p>
+          <p class="truncate font-medium text-gray-900">
+            {{ authUser?.email }}
+          </p>
+        </div>
+      </template>
 
-              <template #item="{ item }">
-                <span class="truncate">{{ item.label }}</span>
-                <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto" />
-              </template>
-            </UDropdown>
+      <template #item="{ item }">
+        <span class="truncate">{{ item.label }}</span>
+        <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto" />
+      </template>
+    </UDropdown>
   </nav>
 
   <!-- For Mobile Screen -->
