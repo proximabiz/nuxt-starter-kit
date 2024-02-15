@@ -3,7 +3,7 @@ import { z } from 'zod'
 import card from '@/assets/media/credit-card.png'
 import visa from '@/assets/media/visa.png'
 import mastercard from '@/assets/media/mastercard.png'
-import { useBillingStore } from '~/stores/billing'
+import { useBillingStore } from '~/stores/subscription'
 
 interface Props {
   planName: string
@@ -11,6 +11,7 @@ interface Props {
 }
 const props = defineProps<Props>()
 const state = useBillingStore()
+console.log(state)
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/

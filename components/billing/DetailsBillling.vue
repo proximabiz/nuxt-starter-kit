@@ -65,18 +65,6 @@ function isActive(index: number) {
         </li>
       </ol>
     </div>
-
-    <!-- <UBreadcrumb :links="steps" divider="" :ui="{ ol: 'gap-x-3' }" class="mb-4">
-      <template #icon="{ link, index }">
-        <UAvatar
-          :alt="(index + 1).toString()" :ui="{
-            background: isActive(index) ? 'bg-primary-500 dark:bg-primary-400' : undefined,
-            placeholder: isActive(index) ? 'text-white dark:text-gray-900' : 'group-hover:text-gray-700 dark:group-hover:text-gray-200',
-          }" size="xs" @click="prevStep"
-        />
-      </template>
-    </UBreadcrumb> -->
-
     <UCard v-if="state.activeStep === 0" class="mb-6 mt-4">
       <div class="divide-y divide-solid">
         <header class="flex justify-start">
@@ -108,7 +96,7 @@ function isActive(index: number) {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
+    <BillingCarddetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
     <BillingReview v-if="state.activeStep === 3" :plan-name="props.planDetails.plan" :due-price="duePrice" />
     <UButton v-if="state.activeStep !== 3" @click="() => setActiveStep(state.activeStep + 1)">
       Continue
