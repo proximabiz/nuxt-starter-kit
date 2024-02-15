@@ -10,8 +10,9 @@ interface Props {
   duePrice: string
 }
 const props = defineProps<Props>()
-const state = useBillingStore()
-console.log(state)
+const billingStore = useBillingStore()
+const cardDetails = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
+
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
@@ -62,19 +63,19 @@ const billingSchema = z.object({
       </div>
     </div>
 
-    <UForm :schema="billingSchema" :state="state" class="space-y-2">
+    <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
       <UFormGroup label="Name on the card" name="cardHolderName" required>
-        <UInput v-model="state.cardHolderName" placeholder="Name on the card" />
+        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" />
       </UFormGroup>
       <UFormGroup label="Credit or debit card number" name="cardNo" required>
-        <UInput v-model="state.cardNo" placeholder="**** **** ****" />
+        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" />
       </UFormGroup>
       <div class="flex gap-2">
         <UFormGroup label="Expire date" name="expDate" required>
-          <UInput v-model="state.expDate" placeholder="MM/YY" />
+          <UInput v-model="cardDetails.expDate" placeholder="MM/YY" />
         </UFormGroup>
         <UFormGroup label="Security code" name="cvv" required>
-          <UInput v-model="state.cvv" placeholder="****" />
+          <UInput v-model="cardDetails.cvv" placeholder="****" />
         </UFormGroup>
       </div>
     </UForm>

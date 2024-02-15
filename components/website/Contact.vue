@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 
+const notify = useNotification()
+const contactStore=useGlobalStore()
 const selectedOption = ref('demo')
 
 function updateSelection(value: string) {
@@ -10,10 +12,11 @@ function updateSelection(value: string) {
 }
 
 const state = reactive({
-  name: undefined,
-  email: undefined,
-  phone: undefined,
-  message: undefined,
+  name: '',
+  email: '',
+  phone: '',
+  message: '',
+  request:''
 })
 // const schema = z.object({
 //   name: z.string().min(1,'Name is required'),
@@ -29,14 +32,32 @@ const state = reactive({
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email Id'),
-  phone: z.number().max(10, 'Phone must be a valid number with at least 10 digits'),
+  phone: z.string().max(15, 'Phone must be a valid number with at least 10 digits'),
   message: z.string().min(1, 'Message is required'),
 })
 
 // type Schema = z.output<typeof schema>
 
 async function onSubmit() {
-  // Do something with data
+const payload={
+  name:state.name,
+  email:state.email,
+  phoneNumber:state.phone,
+  requestFor:selectedOption.value,
+  message:state.message
+}
+
+try {
+    const response = await contactStore.contactSales(payload) 
+    console.log("payload",response)
+      
+    if(response?.status === 200) {
+      notify.success(response.message)
+    }
+}
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
 }
 </script>
 
@@ -61,7 +82,7 @@ async function onSubmit() {
           <UInput v-model="state.email" placeholder="Your Email" />
         </UFormGroup>
         <UFormGroup name="phone" label="Phone No" required>
-          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" required :maxlength="10" />
+          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" />
         </UFormGroup>
       </div>
       <div class="flex flex-col gap-6">

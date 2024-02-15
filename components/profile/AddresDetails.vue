@@ -112,7 +112,6 @@ async function onSubmit() {
     }
     try {
       const response = await addressStore.addAddress(payloadPost)
-      console.log(response.data)
       if (response?.status === 200) {
         notify.success(response.message)
         state.country = response.data?.country

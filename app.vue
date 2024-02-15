@@ -45,9 +45,10 @@ function upgradePlan() {
 <template>
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">
-      <div class="mb-8">
-        Your plan has expired! To continue your account please upgrade.
-      </div>
+      <p class="mb-3">
+        Your plan has expired! 
+      </p>
+     <p> To continue this application, please upgrade.</p>
       <div class="mt-4 flex justify-center">
         <UButton class="" @click="upgradePlan">
           Upgrade

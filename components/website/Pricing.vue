@@ -14,7 +14,13 @@ interface PricePlan {
   month: number
   disabled: boolean
 }
-const regions = [
+interface regionTypes{
+  name:string,
+  value:string,
+  currencySymbol: string,
+  conversionRate :number
+}
+const regions:regionTypes[] = [
   {
     name: 'India',
     value: 'india',
@@ -33,7 +39,11 @@ const regions = [
     currencySymbol: '$', // Dollars
     conversionRate: 1, // Base rate
   },
-  { name: 'Other region',    value: 'other',    currencySymbol: '$', // Dollars    conversionRate: 1,   }
+  { name: 'Other region',    
+   value: 'other',    
+   currencySymbol: '$', // Dollars    
+   conversionRate: 1,   
+  }
 ]
 
 const monthlyPrices: PricePlan[] = [

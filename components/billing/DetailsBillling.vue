@@ -8,6 +8,11 @@ const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
 const duePrice = ref('77.8$')
+
+const confirmation=reactive({
+  isModalVisible:false,
+  context:''
+})
 const billingStore = useBillingStore()
 const billingAddressCard = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
 
@@ -29,15 +34,25 @@ function setActiveStep(index: number) {
     // Check if any of the required billingState fields are empty
     const isAddressComplete = bac.name && bac.orgName && bac.country && bac.zip && bac.city && bac.region && bac.address && bac.phone
     if (!isAddressComplete) {
-      alert('Please fill out all the fields in your billing address.')
+      confirmation.isModalVisible=true
+      confirmation.context='Please fill out all the fields in your billing address.'
+      // alert('Please fill out all the fields in your billing address.')
       return
+    }
+    else if(isAddressComplete){
+      confirmation.isModalVisible=false
     }
   }
   if (index === 3) {
     const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
     if (!isCardDetailsComplete) {
-      alert('Please fill out all the fields in your billing card details.')
+      confirmation.isModalVisible=true
+      confirmation.context='Please fill out all the fields in your billing card details.'
+      // alert('Please fill out all the fields in your billing card details.')
       return
+    }
+    else if(isCardDetailsComplete){
+      confirmation.isModalVisible=false
     }
   }
 
@@ -46,6 +61,9 @@ function setActiveStep(index: number) {
 }
 function isActive(index: number) {
   return state.activeStep >= index
+}
+function updateConfirmation() {
+  confirmation.isModalVisible = false; 
 }
 </script>
 
@@ -103,6 +121,8 @@ function isActive(index: number) {
     <UButton v-if="state.activeStep !== 3" @click="() => setActiveStep(state.activeStep + 1)">
       Continue
     </UButton>
+    <ValidationConfirm :confirmation="confirmation"  @closeModal="updateConfirmation"/>
+
   </div>
 </template>
 
