@@ -27,9 +27,12 @@ export default defineEventHandler(async (event) => {
 
       // update tables
       const { data, error } = await updateDiagramForResponse(client, chartValidation.existingOpenAIResponse, diagramId)
+      if (error)
+        throw new CustomError(`Supabase Error: ${error.message}`, 400)
+
       await insertDiagramVersion(client, diagramId, event.context.user.id, chartValidation.existingOpenAIResponse)
 
-      return { message: 'Success!', data: { data, response: chartValidation.existingOpenAIResponse, error }, status: 200 }
+      return { message: 'Success!', data, status: 200 }
     }
   }
   catch (error: any) {
@@ -72,5 +75,5 @@ async function updateDiagramForResponse(client: any, response: ChartResponseType
     {
       response,
     } as never,
-  ).eq('id', diagramId).select()
+  ).eq('id', diagramId).select().single()
 }
