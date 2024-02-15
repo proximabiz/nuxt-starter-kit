@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
         throw new CustomError(`no diagram found for the diagramId:${diagramId}`, 402)
 
       if (!chartValidation.isDiagramChanged)
-        return { message: 'Diagram version is up to date.', data: chartValidation, status: 200 }
+        return { message: 'Diagram version is up to date.', status: 200 }
 
       // update tables
       const { data, error } = await updateDiagramForResponse(client, chartValidation.existingOpenAIResponse, diagramId)
