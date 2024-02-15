@@ -58,3 +58,12 @@ export const CancelUserSubscriptionValidation = Joi.object({
   userSubscriptionId: Joi.string().required(),
   note: Joi.string().max(100).optional(),
 })
+
+export const ContactUsValidation = Joi.object({
+  name: Joi.string().required(),
+  message: Joi.string().required(),
+  industry: Joi.string().optional().default('-'),
+  requestFor: Joi.string().required(),
+  email: Joi.string().email().required(),
+  phoneNumber: Joi.string().required(),
+})
