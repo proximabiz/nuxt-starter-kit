@@ -12,13 +12,13 @@ export interface BillingState {
   expDate: string
   cvv: string
 }
-export interface subScriptionPayload{
-  userId : string,
-  subscriptionTypeId : string,
-  ammount : number
+export interface subScriptionPayload {
+  userId: string
+  subscriptionTypeId: string
+  ammount: number
 }
-export interface cancelSubPayload{
-  userId : string,
-  userSubscriptionId : string,
-  note : string
+export interface cancelSubPayload {
+  userId: string
+  userSubscriptionId: string
+  note: string
 }

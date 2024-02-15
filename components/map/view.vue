@@ -11,6 +11,9 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+const route = useRoute()
+
 const mindmapStore = useMindmapStore()
 const notify = useNotification()
 const diagramStore = useDiagramStore()
@@ -23,6 +26,9 @@ const isOpen = ref(true)
 const isVersionDrawerOpen = ref(false)
 const mind = ref()
 const isRequirements = ref(false)
+const isSavePopupOpen = ref(false)
+const isSave = ref(false)
+const toRoute = ref()
 const form = ref({
   title: '',
   details: '',
@@ -130,14 +136,30 @@ async function updateMap() {
   }
 }
 
-async function saveMap() {
+async function saveMap(isRedirect: boolean) {
   try {
     saveApiResponse.value = await mindmapStore.save({
       existingOpenAIResponse: mind.value.getDataString(),
+      isDiagramChanged: true,
     }, props.diagramId)
+    if (isRedirect) {
+      isSavePopupOpen.value = false
+      isSave.value = true
+    }
   }
   catch (error) {
     notify.error(error)
+    if (isRedirect) {
+      isSavePopupOpen.value = false
+      isSave.value = true
+    }
+  }
+  finally {
+    if (isRedirect) {
+      isSavePopupOpen.value = false
+      isSave.value = true
+      navigateTo(toRoute.value)
+    }
   }
 }
 
@@ -178,6 +200,20 @@ onBeforeUnmount(() => {
   mind.value = null
   apiResponse.value = null
 })
+
+function closePopup() {
+  isSavePopupOpen.value = true
+  isSave.value = true
+  navigateTo(toRoute.value)
+}
+
+onBeforeRouteLeave((to) => {
+  isSavePopupOpen.value = true
+  toRoute.value = to
+
+  if (!isSave.value)
+    return false
+})
 </script>
 
 <template>
@@ -200,7 +236,7 @@ onBeforeUnmount(() => {
               </a>
             </li>
 
-            <li @click="saveMap()">
+            <li @click="saveMap(false)">
               <a
                 class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               >
@@ -316,7 +352,7 @@ onBeforeUnmount(() => {
   <USlideover v-model="isVersionDrawerOpen" class="">
     <div class="overflow-auto">
       <h1 id="home" class="text-2xl mb-4 font-extrabold text-center mt-6">
-        Mindmap Versions
+        Version History
       </h1>
       <ul class="mt-4 space-y-2 px-2">
         <li v-for="(item, index) in versionsItems" :key="index">
@@ -324,7 +360,7 @@ onBeforeUnmount(() => {
             <div class="grid grid-cols-2">
               <p class="font-medium text-gray-900">{{ dayjs(item.updated_at).format("dddd, MMMM D YYYY hh:mm:ss") }}</p>
               <p class="mt-1 text-xs font-medium text-gray-500">
-                {{ item.user_id }}
+                Modified By: {{ item.name }} | {{ items.email }}
               </p>
             </div>
 
@@ -341,4 +377,14 @@ onBeforeUnmount(() => {
       <div id="map" class="h-[700px] overflow-y-auto z-10" />
     </div>
   </UContainer>
+  <UModal v-model="isSavePopupOpen">
+    <UCard>
+      {{ isSave }}opopo
+      Changes are made to Mindmap. Save Changes?
+      <div class="flex justify-end my-4">
+        <UButton label="Disacrd Changes" class="mr-2" icon="i-heroicons-backspace" @click="closePopup()" />
+        <UButton label="Save Changes" icon="i-heroicons-bookmark" @click="saveMap(true)" />
+      </div>
+    </UCard>
+  </UModal>
 </template>
