@@ -1,9 +1,6 @@
-import { OpenAI } from 'openai'
-import { diff } from 'json-diff'
 import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
 import { PATCHChartUpdateValidation } from '../../utlis/validations'
-import { getPrompt } from '../../utlis/prompts'
 import type { ChartResponseType } from '~/server/types/chart'
 import { serverSupabaseClient } from '#supabase/server'
 
@@ -25,10 +22,8 @@ export default defineEventHandler(async (event) => {
       if (Array.isArray(diagram) && diagram.length === 0)
         throw new CustomError(`no diagram found for the diagramId:${diagramId}`, 402)
 
-      const oldChartJson = JSON.parse(diagram[0].response)
-      const newChartJson = JSON.parse(chartValidation.existingOpenAIResponse)
-      if (diff(oldChartJson, newChartJson) == null)
-        return { message: 'Diagram is up to date. No changes required.', data: chartValidation, status: 200 }
+      if (!chartValidation.isDiagramChanged)
+        return { message: 'Diagram version is up to date.', data: chartValidation, status: 200 }
 
       // update tables
       const { data, error } = await updateDiagramForResponse(client, chartValidation.existingOpenAIResponse, diagramId)
