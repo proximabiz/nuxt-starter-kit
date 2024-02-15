@@ -57,9 +57,13 @@ async function fetchMap() {
     apiResponse.value = await mindmapStore.get({
       diagramId: props.diagramId,
     })
-    if (apiResponse.value[0].response.chartDetails) {
+
+    if (apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails) {
       init()
-      form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
+      if (apiResponse.value[0].response.nodeData)
+        form.value.title = apiResponse.value[0].response.nodeData.topic
+      else
+        form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
       // form.value.details = apiResponse.value[0].details
     }
   }
@@ -71,7 +75,7 @@ async function fetchMap() {
 function init() {
   const data: MindElixirData = {
     linkData: {},
-    nodeData: apiResponse.value[0].response.chartDetails[0].nodeData,
+    nodeData: apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails[0].nodeData,
   }
   const options: Options = {
     el: '#map',
@@ -110,6 +114,48 @@ function init1() {
   mind.value.init(data)
 }
 
+function init2() {
+  const data: MindElixirData = {
+    linkData: {},
+    nodeData: updateApiResponse.value.nodeData,
+  }
+  const options: Options = {
+    el: '#map',
+    direction: 2,
+    locale: 'en',
+    contextMenuOption: {
+      focus: true,
+      link: true,
+      extend: [],
+    },
+  }
+
+  mind.value = new MindElixir(options)
+  mind.value.install(nodeMenu)
+  mind.value.init(data)
+}
+
+function init3() {
+  const data: MindElixirData = {
+    linkData: {},
+    nodeData: updateApiResponse.value[0].nodeData,
+  }
+  const options: Options = {
+    el: '#map',
+    direction: 2,
+    locale: 'en',
+    contextMenuOption: {
+      focus: true,
+      link: true,
+      extend: [],
+    },
+  }
+
+  mind.value = new MindElixir(options)
+  mind.value.install(nodeMenu)
+  mind.value.init(data)
+}
+
 async function updateMap() {
   try {
     // Call update API here
@@ -125,7 +171,7 @@ async function updateMap() {
     isOpen.value = false
     if (updateApiResponse.value.response.chartDetails[0].nodeData) {
       init1()
-      form.value.title = 'updateApiResponse.value.data[0].keywords' as string
+      form.value.title = updateApiResponse.value.response.chartDetails[0].nodeData.topic as string
       // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
     }
 
@@ -139,7 +185,7 @@ async function updateMap() {
 async function saveMap(isRedirect: boolean) {
   try {
     saveApiResponse.value = await mindmapStore.save({
-      existingOpenAIResponse: mind.value.getDataString(),
+      existingOpenAIResponse: toRaw(mind.value.getDataString()),
       isDiagramChanged: true,
     }, props.diagramId)
     if (isRedirect) {
@@ -191,6 +237,24 @@ async function exportJSON() {
 //       }
 //       return ret;
 //     };
+
+function loadJSON(jsonData: JSON) {
+  isVersionDrawerOpen.value = false
+  updateApiResponse.value = jsonData
+  console.log('jsonData', jsonData)
+
+  if (updateApiResponse.value.nodeData) {
+    init2()
+    form.value.title = updateApiResponse.value.nodeData.topic
+  }
+  else {
+    init3()
+    form.value.title = updateApiResponse.value[0].nodeData.topic
+  }
+  // form.value.title = updateApiResponse.value[0].nodeData.topic as string
+  // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
+  notify.success('Selected mindmap loaded')
+}
 
 onMounted(() => {
   fetchMap()
@@ -356,11 +420,11 @@ onBeforeRouteLeave((to) => {
       </h1>
       <ul class="mt-4 space-y-2 px-2">
         <li v-for="(item, index) in versionsItems" :key="index">
-          <a href="#" class="block h-full rounded-lg border border-gray-700 p-4 hover:border-gray-300">
+          <a href="#" class="block h-full rounded-lg border border-gray-700 p-4 hover:border-gray-300" @click="loadJSON(item.response)">
             <div class="grid grid-cols-2">
               <p class="font-medium text-gray-900">{{ dayjs(item.updated_at).format("dddd, MMMM D YYYY hh:mm:ss") }}</p>
               <p class="mt-1 text-xs font-medium text-gray-500">
-                Modified By: {{ item.name }} | {{ items.email }}
+                Modified By: {{ item.name }}
               </p>
             </div>
 
