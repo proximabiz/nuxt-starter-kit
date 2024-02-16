@@ -4,7 +4,7 @@ import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 
 const notify = useNotification()
-const contactStore=useGlobalStore()
+const contactStore = useGlobalStore()
 const selectedOption = ref('demo')
 
 function updateSelection(value: string) {
@@ -16,7 +16,7 @@ const state = reactive({
   email: '',
   phone: '',
   message: '',
-  request:''
+  request: ''
 })
 // const schema = z.object({
 //   name: z.string().min(1,'Name is required'),
@@ -32,29 +32,34 @@ const state = reactive({
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email Id'),
-  phone: z.string().max(15, 'Phone must be a valid number with at least 10 digits'),
+  // phone: z.string().max(15, 'Phone must be a valid number with at least 10 digits'),
   message: z.string().min(1, 'Message is required'),
 })
 
 // type Schema = z.output<typeof schema>
 
 async function onSubmit() {
-const payload={
-  name:state.name,
-  email:state.email,
-  phoneNumber:state.phone,
-  requestFor:selectedOption.value,
-  message:state.message
-}
+  const payload = {
+    name: state.name,
+    email: state.email,
+    phoneNumber: state.phone,
+    requestFor: selectedOption.value,
+    message: state.message
+  }
 
-try {
-    const response = await contactStore.contactSales(payload) 
-    console.log("payload",response)
-      
-    if(response?.status === 200) {
+  try {
+    const response = await contactStore.contactSales(payload)
+    console.log("payload", response)
+
+    if (response?.status === 201) {
       notify.success(response.message)
+      state.name = ""
+      state.email = ""
+      state.phone = ""
+      selectedOption.value = "demo"
+      state.message = ""
     }
-}
+  }
   catch (error) {
     notify.error(error.statusMessage)
   }
@@ -87,23 +92,14 @@ try {
       </div>
       <div class="flex flex-col gap-6">
         <div class="flex gap-8 mt-4">
-          <URadio
-            label="Ask for demo"
-            color="blue"
-            :model-value="selectedOption"
-            value="demo"
-            @update:model-value="updateSelection"
-          />
-          <URadio
-            label="Ask for free trial"
-            color="blue"
-            :model-value="selectedOption"
-            value="trial"
-            @update:model-value="updateSelection"
-          />
+          <URadio label="Ask for demo" color="blue" :model-value="selectedOption" value="demo"
+            @update:model-value="updateSelection" />
+          <URadio label="Ask for free trial" color="blue" :model-value="selectedOption" value="trial"
+            @update:model-value="updateSelection" />
         </div>
         <UFormGroup name="message" label="Message" required>
-          <UTextarea v-model="state.message" color="white" size="xl" variant="outline" placeholder="Write your query/message" />
+          <UTextarea v-model="state.message" color="white" size="xl" variant="outline"
+            placeholder="Write your query/message" />
         </UFormGroup>
         <UButton type="submit" class="w-fit p-3" color="blue">
           Submit
