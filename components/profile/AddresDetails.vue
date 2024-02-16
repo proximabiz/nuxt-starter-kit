@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
+import { z } from 'zod'
 import { useAddressStore } from '~/stores/address'
 
 interface Props {
@@ -39,15 +40,28 @@ const initialState: FormState = {
 }
 const state = reactive<FormState>({ ...initialState })
 // #validation
-// const schema = z.object({
-//   country: z.string().min(1, 'Country is required'),
-//   zip: z.string().min(1, 'Zip is required'),
-//   city: z.string().min(1, 'City is required'),
-//   region: z.string().min(1, 'Region is required'),
-//   address: z.string().min(1, 'Address is required'),
-//   phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
-//   message: z.string().min(1, 'Message is required'),
-// })
+
+const nameValidation = z.string().refine((value) => {
+  // Check for two words separated by space
+  const parts = value.trim().split(/\s+/);
+  if (parts.length < 2) return false; // Ensure there are at least two words
+
+  // Check for minimum length and no special characters or numbers
+  return parts.every(part => {
+    return /^[A-Za-z]+$/.test(part) && part.length >= 4;
+  });
+}, {
+  message: "Name must consist of at least two words, each with a minimum of 3 characters, without special characters or numbers."
+});
+const schema = z.object({
+  name:nameValidation,
+  country: z.string().min(1, 'Country is required'),
+  zip: z.string().min(1, 'Zip is required'),
+  city: z.string().min(1, 'City is required'),
+  region: z.string().min(1, 'Region is required'),
+  address: z.string().min(1, 'Address is required'),
+  phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
+})
 
 async function getAddress() {
   try {
@@ -71,7 +85,7 @@ async function getAddress() {
       // && response.city==""
       // && response.region==""
       // && response.address==""
-      response.phone === ''
+      response.phone_number === ''
     ) {
       // isEditable.value=true
     }
@@ -170,7 +184,7 @@ async function onCancel() {
     </h1>
 
     <UCard class="mb-8">
-      <UForm schema="" :state="state" class="space-y-4 " @submit="onSubmit">
+      <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
           <UFormGroup label="Full Name" name="name" required>
             <UInput v-model="state.name" color="blue" :disabled="!isNewUser" />

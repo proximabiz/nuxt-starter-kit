@@ -22,7 +22,7 @@ const billingSchema = z.object({
   <UCard class="mb-6 mt-4">
     <UForm :schema="billingSchema" :state="state" class="space-y-2">
       <div class="flex gap-2">
-        <UFormGroup label="Name" name="name" required>
+        <UFormGroup label="Full Name" name="name" required>
           <UInput v-model="state.name" color="blue" />
         </UFormGroup>
         <UFormGroup label="Organisation Name" name="orgname" required>

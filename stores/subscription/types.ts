@@ -15,7 +15,7 @@ export interface BillingState {
 export interface subScriptionPayload {
   userId: string
   subscriptionTypeId: string
-  ammount: number
+  amount: number
 }
 export interface cancelSubPayload {
   userId: string
