@@ -24,6 +24,25 @@ export const SignupValidation = Joi.object({
   name: Joi.string().optional(),
 })
 
+export const CompleteOrderValidation = Joi.object({
+  country: Joi.string().required(),
+  region: Joi.string().required(),
+  city: Joi.string().required(),
+  zipcode: Joi.string().required(),
+  address: Joi.string().required(),
+  phoneNumber: Joi.string().required(),
+
+  subscriptionTypeId: Joi.string().required(),
+  planType: Joi.string().required(),
+  currencyCode: Joi.string().length(3).required(),
+
+  cardHolderName: Joi.string().required(),
+  cardNumber: Joi.number().required(),
+  expiryDate: Joi.string().required(),
+  securityCode: Joi.number().min(3).max(4).required(),
+
+})
+
 export const UserAddressValidation = Joi.object({
   country: Joi.string().required(),
   region: Joi.string().required(),
