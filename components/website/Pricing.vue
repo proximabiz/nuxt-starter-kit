@@ -47,7 +47,7 @@ const regions:regionTypes[] = [
 ]
 
 const monthlyPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 1, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED' },
+  { plan: 'Free', price: 0, month: 1, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED'||sub_status?.value.planName === 'Free' },
   { plan: 'Basic', price: 2, month: 1, disabled: sub_status?.value.planName === 'Basic' },
   { plan: 'Premium', price: 5, month: 1, disabled: sub_status?.value.planName === 'Premium' },
   { plan: 'Enterprise', price: 'Custom', month: 1, disabled: sub_status?.value.planName === 'Enterprise' },

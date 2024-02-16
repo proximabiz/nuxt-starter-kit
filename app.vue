@@ -9,6 +9,7 @@ const planStore = useBillingStore()
 
 const showUpgradeModal = ref<boolean>(false)
 
+
 watch(
   () => authUser.value,
   async (user) => {
@@ -27,7 +28,7 @@ watch(
         const payload = {
           userId: user.id,
           subscriptionTypeId: '10dbc647-04ea-4588-b6c8-7c535049f18c',
-          amount: 0,
+          ammount: 0,
         }
         if (!route.fullPath.includes('/profile/account'))
           await planStore.addSubscription(payload)

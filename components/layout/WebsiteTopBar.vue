@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import { useBillingStore } from '~/stores/subscription';
+
 const route = useRoute()
 const notify = useNotification()
 const authStore = useAuthStore()
+const planStore = useBillingStore()
 const supabaseClient = useSupabaseClient()
 
 const authUser = computed(() => authStore.getAuthUser.value)
@@ -40,6 +43,7 @@ async function singOut() {
   try {
     // Do something with data
     await supabaseClient.auth.signOut()
+    await planStore.clearSubscription()
     navigateTo('/')
   }
   catch (error) {

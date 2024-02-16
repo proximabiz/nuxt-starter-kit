@@ -172,7 +172,7 @@ async function onCancel() {
     <UCard class="mb-8">
       <UForm schema="" :state="state" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
-          <UFormGroup label="Name" name="name" required>
+          <UFormGroup label="Full Name" name="name" required>
             <UInput v-model="state.name" color="blue" :disabled="!isNewUser" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname" required>
