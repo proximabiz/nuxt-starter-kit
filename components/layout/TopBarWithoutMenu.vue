@@ -4,6 +4,8 @@ import { useBillingStore } from '~/stores/subscription';
 const notify = useNotification()
 const authStore = useAuthStore()
 const planStore = useBillingStore()
+const addressStore= useAddressStore()
+
 const items = [
   [{
     label: 'ben@example.com',
@@ -31,6 +33,8 @@ async function singOut() {
     // Do something with data
    const res= await authStore.signOut() 
     await planStore.clearSubscription()
+    await addressStore.clearAddress()
+
     if (!isLoggedIn.value)
       navigateTo('/')
   }

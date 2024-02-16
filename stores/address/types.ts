@@ -1,16 +1,5 @@
-export interface Address {
-  name: string
-  organisation_name: string
-  country: string
-  state: string
-  zipcode: string
-  city: string
-  region: string
-  address: string
-  phone: string
-  email: string
-}
-export interface addressPayload {
+
+export interface putPayload {
   country: string
   zipcode: string
   city: string
@@ -29,5 +18,5 @@ export interface postPayload {
   phoneNumber: string
 }
 export interface State {
-  addressDetails: Address[]
+  allAddressDetails: {}
 }

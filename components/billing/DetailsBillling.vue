@@ -7,7 +7,7 @@ interface Props {
 const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
-const duePrice = ref('77.8$')
+const duePrice = ref('$77.8')
 
 const confirmation=reactive({
   isModalVisible:false,
@@ -34,26 +34,26 @@ function setActiveStep(index: number) {
     // Check if any of the required billingState fields are empty
     const isAddressComplete = bac.name && bac.orgName && bac.country && bac.zip && bac.city && bac.region && bac.address && bac.phone
     if (!isAddressComplete) {
-      confirmation.isModalVisible=true
-      confirmation.context='Please fill out all the fields in your billing address.'
-      // alert('Please fill out all the fields in your billing address.')
+      // confirmation.isModalVisible=true
+      // confirmation.context='Please fill out all the fields in your billing address.'
+      alert('Please fill out all the fields in your billing address.')
       return
     }
-    else if(isAddressComplete){
-      confirmation.isModalVisible=false
-    }
+    // else if(isAddressComplete){
+    //   confirmation.isModalVisible=false
+    // }
   }
   if (index === 3) {
     const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
     if (!isCardDetailsComplete) {
-      confirmation.isModalVisible=true
-      confirmation.context='Please fill out all the fields in your billing card details.'
-      // alert('Please fill out all the fields in your billing card details.')
+      // confirmation.isModalVisible=true
+      // confirmation.context='Please fill out all the fields in your billing card details.'
+      alert('Please fill out all the fields in your billing card details.')
       return
     }
-    else if(isCardDetailsComplete){
-      confirmation.isModalVisible=false
-    }
+    // else if(isCardDetailsComplete){
+    //   confirmation.isModalVisible=false
+    // }
   }
 
   if (index >= 0 && index < steps.length)
@@ -95,8 +95,7 @@ function updateConfirmation() {
           <div>
             <span>{{ props.planDetails.month }} {{ props.planDetails.month > 1 ? "months" : "month" }} *
               {{ props.planDetails.price }}</span>
-            <span class="font-semibold pl-1">{{ props.planDetails.calculatedPrice }}{{
-              props.planDetails.currencySymbol }}</span>
+            <span class="font-semibold pl-1">{{props.planDetails.currencySymbol }}{{ props.planDetails.calculatedPrice }}</span>
           </div>
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
@@ -121,7 +120,7 @@ function updateConfirmation() {
     <UButton v-if="state.activeStep !== 3" @click="() => setActiveStep(state.activeStep + 1)">
       Continue
     </UButton>
-    <ValidationConfirm :confirmation="confirmation"  @closeModal="updateConfirmation"/>
+    <!-- <ValidationConfirm :confirmation="confirmation"  @closeModal="updateConfirmation"/> -->
 
   </div>
 </template>

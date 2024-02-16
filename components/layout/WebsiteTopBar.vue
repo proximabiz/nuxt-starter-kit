@@ -5,6 +5,7 @@ const route = useRoute()
 const notify = useNotification()
 const authStore = useAuthStore()
 const planStore = useBillingStore()
+const addressStore= useAddressStore()
 const supabaseClient = useSupabaseClient()
 
 const authUser = computed(() => authStore.getAuthUser.value)
@@ -44,6 +45,8 @@ async function singOut() {
     // Do something with data
     await supabaseClient.auth.signOut()
     await planStore.clearSubscription()
+    await addressStore.clearAddress()
+
     navigateTo('/')
   }
   catch (error) {

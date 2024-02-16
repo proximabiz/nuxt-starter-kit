@@ -5,7 +5,8 @@ import 'vue-tel-input/vue-tel-input.css'
 
 const notify = useNotification()
 const contactStore = useGlobalStore()
-const selectedOption = ref('demo')
+const selectedOption = ref('Demo')
+
 
 function updateSelection(value: string) {
   selectedOption.value = value
@@ -13,6 +14,7 @@ function updateSelection(value: string) {
 
 const state = reactive({
   name: '',
+  lastname:'',
   email: '',
   phone: '',
   message: '',
@@ -30,7 +32,8 @@ const state = reactive({
 // })
 
 const schema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().min(1, 'First Name is required'),
+  lastname: z.string().min(1,'Last Name is required'),
   email: z.string().email('Invalid email Id'),
   // phone: z.string().max(15, 'Phone must be a valid number with at least 10 digits'),
   message: z.string().min(1, 'Message is required'),
@@ -40,7 +43,7 @@ const schema = z.object({
 
 async function onSubmit() {
   const payload = {
-    name: state.name,
+    name: state.name + ' ' + state.lastname,
     email: state.email,
     phoneNumber: state.phone,
     requestFor: selectedOption.value,
@@ -54,9 +57,10 @@ async function onSubmit() {
     if (response?.status === 201) {
       notify.success(response.message)
       state.name = ""
+      state.lastname = ""
       state.email = ""
       state.phone = ""
-      selectedOption.value = "demo"
+      selectedOption.value = "Demo"
       state.message = ""
     }
   }
@@ -80,9 +84,15 @@ async function onSubmit() {
 
     <UForm :schema="schema" :state="state" class="grid grid-cols-2 gap-16" @submit="onSubmit">
       <div class="flex flex-col gap-6">
-        <UFormGroup name="name" label="Name" required>
-          <UInput v-model="state.name" placeholder="Your Name" />
+        <div class="grid grid-cols-2 gap-3">
+        <UFormGroup name="name" label="First Name"  required>   
+          <UInput v-model="state.name" placeholder="First Name"/>
         </UFormGroup>
+        <UFormGroup name="lastname" label="Last Name" required> 
+          <UInput v-model="state.lastname" placeholder="Last Name"/>
+        </UFormGroup>
+        </div>
+       
         <UFormGroup name="email" label="Email" required>
           <UInput v-model="state.email" placeholder="Your Email" />
         </UFormGroup>
@@ -92,9 +102,9 @@ async function onSubmit() {
       </div>
       <div class="flex flex-col gap-6">
         <div class="flex gap-8 mt-4">
-          <URadio label="Ask for demo" color="blue" :model-value="selectedOption" value="demo"
+          <URadio label="Ask for demo" color="blue" :model-value="selectedOption" value="Demo"
             @update:model-value="updateSelection" />
-          <URadio label="Ask for free trial" color="blue" :model-value="selectedOption" value="trial"
+          <URadio label="Ask for free trial" color="blue" :model-value="selectedOption" value="Free Trial"
             @update:model-value="updateSelection" />
         </div>
         <UFormGroup name="message" label="Message" required>

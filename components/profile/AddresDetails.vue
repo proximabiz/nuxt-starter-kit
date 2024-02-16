@@ -60,7 +60,7 @@ async function getAddress() {
     state.city = response.city
     state.region = response.region
     state.address = response.address
-    state.phone = response.phoneNumber
+    state.phone = response.phone_number
     state.email = response.email
 
     if (
@@ -75,12 +75,11 @@ async function getAddress() {
     ) {
       // isEditable.value=true
     }
-    if (response.name == undefined && response.organisation_name == undefined) {
+    if (!response.name && !response.organisation_name) {
       isEditable.value = false
       isNewUser.value = true
     }
   }
-
   catch (error) {
     notify.error(error.message)
   }
@@ -91,6 +90,7 @@ onMounted(async () => {
 })
 
 async function onSubmit() {
+  if (!isNewUser.value){
   const payload = {
     country: state.country,
     region: state.region,
@@ -99,7 +99,19 @@ async function onSubmit() {
     address: state.address,
     phoneNumber: state.phone,
   }
-  if (isNewUser) {
+  try {
+    const response = await addressStore.editAddress(payload)
+    if (response?.status === 200) {
+      notify.success(response.message)
+      // await getAddress()
+      isEditable.value = false
+    }
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
+}
+  if (isNewUser.value) {
     const payloadPost = {
       name: state.name,
       organisationName: state.orgname,
@@ -127,18 +139,6 @@ async function onSubmit() {
     catch (error) {
       notify.error(error.statusMessage)
     }
-  }
-
-  try {
-    const response = await addressStore.editAddress(payload)
-    if (response?.status === 200) {
-      notify.success(response.message)
-      // await getAddress()
-      isEditable.value = false
-    }
-  }
-  catch (error) {
-    notify.error(error.statusMessage)
   }
 }
 
