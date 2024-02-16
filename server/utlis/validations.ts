@@ -72,7 +72,7 @@ export const UserAddressContactValidation = Joi.object({
 export const UserSubscriptionValidation = Joi.object({
   userId: Joi.string().required(),
   subscriptionTypeId: Joi.string().required(),
-  ammount: Joi.number().required(),
+  amount: Joi.number().required(),
 })
 
 export const CancelUserSubscriptionValidation = Joi.object({

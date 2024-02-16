@@ -23,5 +23,5 @@ export default defineEventHandler(async (event) => {
   // const subscription = await stripe.subscriptions.cancel(
   //   'sub_1MlPf9LkdIwHu7ixB6VIYRyX'
   // );
-  return { message: 'Success!', status }
+  return { message: 'Your subscriptions is canceled successfully!', status }
 })
