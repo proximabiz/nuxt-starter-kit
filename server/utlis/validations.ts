@@ -9,6 +9,7 @@ export const ChartValidation = Joi.object({
 
 export const PATCHChartUpdateValidation = Joi.object({
   existingOpenAIResponse: Joi.string().required(),
+  isDiagramChanged: Joi.boolean().required(),
 })
 
 export const PUTChartUpdateValidation = Joi.object({

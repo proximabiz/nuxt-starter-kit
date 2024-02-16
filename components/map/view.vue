@@ -11,6 +11,9 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+const route = useRoute()
+
 const mindmapStore = useMindmapStore()
 const notify = useNotification()
 const diagramStore = useDiagramStore()
@@ -23,6 +26,9 @@ const isOpen = ref(true)
 const isVersionDrawerOpen = ref(false)
 const mind = ref()
 const isRequirements = ref(false)
+const isSavePopupOpen = ref(false)
+const isSave = ref(false)
+const toRoute = ref()
 const form = ref({
   title: '',
   details: '',
@@ -51,9 +57,13 @@ async function fetchMap() {
     apiResponse.value = await mindmapStore.get({
       diagramId: props.diagramId,
     })
-    if (apiResponse.value[0].response.chartDetails) {
+
+    if (apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails) {
       init()
-      form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
+      if (apiResponse.value[0].response.nodeData)
+        form.value.title = apiResponse.value[0].response.nodeData.topic
+      else
+        form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
       // form.value.details = apiResponse.value[0].details
     }
   }
@@ -65,7 +75,7 @@ async function fetchMap() {
 function init() {
   const data: MindElixirData = {
     linkData: {},
-    nodeData: apiResponse.value[0].response.chartDetails[0].nodeData,
+    nodeData: apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails[0].nodeData,
   }
   const options: Options = {
     el: '#map',
@@ -104,6 +114,48 @@ function init1() {
   mind.value.init(data)
 }
 
+function init2() {
+  const data: MindElixirData = {
+    linkData: {},
+    nodeData: updateApiResponse.value.nodeData,
+  }
+  const options: Options = {
+    el: '#map',
+    direction: 2,
+    locale: 'en',
+    contextMenuOption: {
+      focus: true,
+      link: true,
+      extend: [],
+    },
+  }
+
+  mind.value = new MindElixir(options)
+  mind.value.install(nodeMenu)
+  mind.value.init(data)
+}
+
+function init3() {
+  const data: MindElixirData = {
+    linkData: {},
+    nodeData: updateApiResponse.value[0].nodeData,
+  }
+  const options: Options = {
+    el: '#map',
+    direction: 2,
+    locale: 'en',
+    contextMenuOption: {
+      focus: true,
+      link: true,
+      extend: [],
+    },
+  }
+
+  mind.value = new MindElixir(options)
+  mind.value.install(nodeMenu)
+  mind.value.init(data)
+}
+
 async function updateMap() {
   try {
     // Call update API here
@@ -119,7 +171,7 @@ async function updateMap() {
     isOpen.value = false
     if (updateApiResponse.value.response.chartDetails[0].nodeData) {
       init1()
-      form.value.title = 'updateApiResponse.value.data[0].keywords' as string
+      form.value.title = updateApiResponse.value.response.chartDetails[0].nodeData.topic as string
       // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
     }
 
@@ -130,14 +182,30 @@ async function updateMap() {
   }
 }
 
-async function saveMap() {
+async function saveMap(isRedirect: boolean) {
   try {
     saveApiResponse.value = await mindmapStore.save({
-      existingOpenAIResponse: mind.value.getDataString(),
+      existingOpenAIResponse: toRaw(mind.value.getDataString()),
+      isDiagramChanged: true,
     }, props.diagramId)
+    if (isRedirect) {
+      isSavePopupOpen.value = false
+      isSave.value = true
+    }
   }
   catch (error) {
     notify.error(error)
+    if (isRedirect) {
+      isSavePopupOpen.value = false
+      isSave.value = true
+    }
+  }
+  finally {
+    if (isRedirect) {
+      isSavePopupOpen.value = false
+      isSave.value = true
+      navigateTo(toRoute.value)
+    }
   }
 }
 
@@ -170,6 +238,24 @@ async function exportJSON() {
 //       return ret;
 //     };
 
+function loadJSON(jsonData: JSON) {
+  isVersionDrawerOpen.value = false
+  updateApiResponse.value = jsonData
+  console.log('jsonData', jsonData)
+
+  if (updateApiResponse.value.nodeData) {
+    init2()
+    form.value.title = updateApiResponse.value.nodeData.topic
+  }
+  else {
+    init3()
+    form.value.title = updateApiResponse.value[0].nodeData.topic
+  }
+  // form.value.title = updateApiResponse.value[0].nodeData.topic as string
+  // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
+  notify.success('Selected mindmap loaded')
+}
+
 onMounted(() => {
   fetchMap()
 })
@@ -177,6 +263,20 @@ onMounted(() => {
 onBeforeUnmount(() => {
   mind.value = null
   apiResponse.value = null
+})
+
+function closePopup() {
+  isSavePopupOpen.value = true
+  isSave.value = true
+  navigateTo(toRoute.value)
+}
+
+onBeforeRouteLeave((to) => {
+  isSavePopupOpen.value = true
+  toRoute.value = to
+
+  if (!isSave.value)
+    return false
 })
 </script>
 
@@ -200,7 +300,7 @@ onBeforeUnmount(() => {
               </a>
             </li>
 
-            <li @click="saveMap()">
+            <li @click="saveMap(false)">
               <a
                 class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               >
@@ -316,15 +416,15 @@ onBeforeUnmount(() => {
   <USlideover v-model="isVersionDrawerOpen" class="">
     <div class="overflow-auto">
       <h1 id="home" class="text-2xl mb-4 font-extrabold text-center mt-6">
-        Mindmap Versions
+        Version History
       </h1>
       <ul class="mt-4 space-y-2 px-2">
         <li v-for="(item, index) in versionsItems" :key="index">
-          <a href="#" class="block h-full rounded-lg border border-gray-700 p-4 hover:border-gray-300">
+          <a href="#" class="block h-full rounded-lg border border-gray-700 p-4 hover:border-gray-300" @click="loadJSON(item.response)">
             <div class="grid grid-cols-2">
               <p class="font-medium text-gray-900">{{ dayjs(item.updated_at).format("dddd, MMMM D YYYY hh:mm:ss") }}</p>
               <p class="mt-1 text-xs font-medium text-gray-500">
-                {{ item.user_id }}
+                Modified By: {{ item.name }}
               </p>
             </div>
 
@@ -341,4 +441,14 @@ onBeforeUnmount(() => {
       <div id="map" class="h-[700px] overflow-y-auto z-10" />
     </div>
   </UContainer>
+  <UModal v-model="isSavePopupOpen">
+    <UCard>
+      {{ isSave }}opopo
+      Changes are made to Mindmap. Save Changes?
+      <div class="flex justify-end my-4">
+        <UButton label="Disacrd Changes" class="mr-2" icon="i-heroicons-backspace" @click="closePopup()" />
+        <UButton label="Save Changes" icon="i-heroicons-bookmark" @click="saveMap(true)" />
+      </div>
+    </UCard>
+  </UModal>
 </template>

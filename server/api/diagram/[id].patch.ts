@@ -1,4 +1,3 @@
-import { diff } from 'json-diff'
 import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
 import { PATCHChartUpdateValidation } from '../../utlis/validations'
@@ -23,16 +22,18 @@ export default defineEventHandler(async (event) => {
       if (Array.isArray(diagram) && diagram.length === 0)
         throw new CustomError(`no diagram found for the diagramId:${diagramId}`, 402)
 
-      const oldChartJson = JSON.parse(diagram[0].response)
-      const newChartJson = JSON.parse(chartValidation.existingOpenAIResponse)
-      if (diff(oldChartJson, newChartJson) == null)
-        return { message: 'Diagram is up to date. No changes required.', data: chartValidation, status: 200 }
+      if (!chartValidation.isDiagramChanged)
+        return { message: 'Diagram version is up to date.', status: 200 }
 
+      const diagramJSON = JSON.parse(chartValidation.existingOpenAIResponse)
       // update tables
-      const { data, error } = await updateDiagramForResponse(client, chartValidation.existingOpenAIResponse, diagramId)
-      await insertDiagramVersion(client, diagramId, event.context.user.id, chartValidation.existingOpenAIResponse)
+      const { data, error } = await updateDiagramForResponse(client, diagramJSON, diagramId)
+      if (error)
+        throw new CustomError(`Supabase Error: ${error.message}`, 400)
 
-      return { message: 'Success!', data: { data, response: chartValidation.existingOpenAIResponse, error }, status: 200 }
+      await insertDiagramVersion(client, diagramId, event.context.user.id, diagramJSON)
+
+      return { message: 'Success!', data, status: 200 }
     }
   }
   catch (error: any) {
@@ -75,5 +76,5 @@ async function updateDiagramForResponse(client: any, response: ChartResponseType
     {
       response,
     } as never,
-  ).eq('id', diagramId).select()
+  ).eq('id', diagramId).select().single()
 }

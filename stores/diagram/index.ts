@@ -29,11 +29,7 @@ export const useDiagramStore = defineStore('diagramStore', {
     async getVersionList(diagramId: string): Promise<void> {
       const supabaseClient = useSupabaseClient()
 
-      const { data: supabaseResponse, error: diagramError } = await supabaseClient
-        .from('diagram_version')
-        .select()
-        .eq('diagram_id', diagramId as string)
-        .order('updated_at', { ascending: false })
+      const { data: supabaseResponse, error: diagramError } = await supabaseClient.rpc('get_diagram_versions', { diagramid: diagramId })
 
       if (diagramError)
         throw diagramError
