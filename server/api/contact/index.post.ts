@@ -5,23 +5,27 @@ import { defineEventHandler } from 'h3'
 import { CustomError } from '../../utlis/custom.error'
 import { ContactUsValidation } from '../../utlis/validations'
 
+const sendgridApiKey = useRuntimeConfig().private.SENDGRID_API_KEY
+const sendgridEmailTempletId = useRuntimeConfig().private.SENDGRID_EMAIL_TEMPLATE_ID
+const sendgridEmailFromId = useRuntimeConfig().private.SENDGRID_FROM_EMAILID
+
 export default defineEventHandler(async (event: H3Event<EventHandlerRequest>) => {
   const params = await readBody(event)
   const validate = await ContactUsValidation.validateAsync(params)
   if (!validate)
     throw new CustomError('Invalid input provided', 401)
 
-  sgMail.setApiKey('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')
+  sgMail.setApiKey(sendgridApiKey)
   const recipients = ['raveenas@proximabiz.com', 'ipsitap@proximabiz.com', 'supriyap@proximabiz.com']
 
   const msg: MailDataRequired = {
     to: recipients,
-    from: 'reshub@proximabiz.com',
-    templateId: 'd-0f96b3e0ad35403aa4f9f205fd3f5809',
+    from: sendgridEmailFromId,
+    templateId: sendgridEmailTempletId,
     dynamicTemplateData: {
       name: params.name,
       email: params.email,
-      industry: params.industry,
+      industry: params.industry ? params.industry : ' - ',
       requestFor: params.requestFor,
       phone: params.phoneNumber,
       message: params.message,
@@ -34,6 +38,6 @@ export default defineEventHandler(async (event: H3Event<EventHandlerRequest>) =>
   }
   catch (error) {
     console.error('Error sending email:', error)
-    throw new CustomError('Failed to send email', 500)
+    throw new CustomError('Bad Request: Failed to send email, Please try again', 400)
   }
 })
