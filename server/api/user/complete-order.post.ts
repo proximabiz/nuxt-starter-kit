@@ -73,6 +73,17 @@ export default defineEventHandler(async (event) => {
         if (errorUserDetails)
           return { message: 'Error!', errorUserDetails, status: 400 }
       }
+
+
+      // cardHolderName
+      // cardNumber
+      // expiryDate
+      // securityCode
+
+      //Save customer card details on Stripe
+      const
+
+
       return { message: 'Order Complete successfully!', data: orderValidation, status: 200 }
     }
   }
@@ -112,3 +123,18 @@ function calculatePlanAmount(currencyCode: string, monthlyPriceInUSD: number, mo
 //   // Get the number of days in the current month
 //   this.daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
 // }
+
+
+function stripeActivities() {
+
+  // Create User on Stripe Platform
+  
+  
+  // Create Payment Method on Stripe Platform
+
+
+  // Attach Payment Method to customer on Stripe Platform
+
+
+  
+}
