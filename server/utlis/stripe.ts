@@ -41,7 +41,6 @@ export async function attachPaymentMethodToUser(stripeCustomerId: string, stripe
       stripePaymentMethodId,
       { customer: stripeCustomerId },
     )
-
     return attachedPaymentMethod
   }
   catch (error) {
