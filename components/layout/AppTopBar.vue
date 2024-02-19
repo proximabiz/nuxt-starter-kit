@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { useGlobalStore } from '~/stores'
-import { useBillingStore } from '~/stores/subscription';
+import { useBillingStore } from '~/stores/subscription'
 
 const authStore = useAuthStore()
 const notify = useNotification()
 const planStore = useBillingStore()
-const addressStore= useAddressStore()
+const addressStore = useAddressStore()
 const supabaseClient = useSupabaseClient()
 
 const items = [

@@ -6,7 +6,7 @@ const notify = useNotification()
 const planStore = useBillingStore()
 const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
-const noplanModal=ref<boolean>(false)
+const noplanModal = ref<boolean>(false)
 
 async function getActivePlan() {
   try {
@@ -30,9 +30,9 @@ async function cancelPlan() {
     console.log(res)
 
     if (res?.status === 204) {
-      noplanModal.value=true
+      noplanModal.value = true
       notify.success(res.message)
-      setTimeout(()=>navigateTo('/website/pricing'),1000)
+      setTimeout(() => navigateTo('/website/pricing'), 1000)
     }
   }
   catch (error) {
@@ -50,7 +50,6 @@ function upgradePlanNO() {
   noplanModal.value = false
   navigateTo('/website/pricing')
 }
-
 </script>
 
 <template>
@@ -61,9 +60,9 @@ function upgradePlanNO() {
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">
-        Your plan has expired! 
+        Your plan has expired!
       </p>
-     <p> To continue this application, please upgrade.</p>
+      <p> To continue this application, please upgrade.</p>
       <div class="mt-4 flex justify-center">
         <UButton class="" @click="upgradePlan">
           Upgrade
@@ -74,9 +73,9 @@ function upgradePlanNO() {
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">
-        You have no active plan.  
+        You have no active plan.
       </p>
-     <p>To continue using the app please subscribe to any plan.</p>
+      <p>To continue using the app please subscribe to any plan.</p>
       <div class="mt-4 flex justify-center">
         <UButton class="" @click="upgradePlanNO">
           Upgrade

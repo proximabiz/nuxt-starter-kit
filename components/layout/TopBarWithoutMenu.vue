@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useBillingStore } from '~/stores/subscription';
+import { useBillingStore } from '~/stores/subscription'
 
 const notify = useNotification()
 const authStore = useAuthStore()
 const planStore = useBillingStore()
-const addressStore= useAddressStore()
+const addressStore = useAddressStore()
 
 const items = [
   [{
@@ -31,7 +31,7 @@ const isLoggedIn = computed(() => authStore.isLoggedIn)
 async function singOut() {
   try {
     // Do something with data
-   const res= await authStore.signOut() 
+    const res = await authStore.signOut()
     await planStore.clearSubscription()
     await addressStore.clearAddress()
 
