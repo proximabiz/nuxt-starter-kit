@@ -74,10 +74,7 @@ async function handleDeleteConfirm(): Promise<void> {
       Fetching your<span class="font-bold">GST / TAX No.</span>
     </UCard>
   </UModal>
-  <UBreadcrumb
-    divider=">"
-    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'GST And TAX details' }]"
-  />
+
   <div class="flex justify-center items-center flex-col py-8">
     <h1 class="font-semibold">
       Tax ID and GST Details

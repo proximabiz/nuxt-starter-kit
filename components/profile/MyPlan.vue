@@ -53,10 +53,6 @@ function upgradePlanNO() {
 </script>
 
 <template>
-  <UBreadcrumb
-    divider=">"
-    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'My Plan' }]"
-  />
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">

@@ -46,7 +46,6 @@ const nameValidation = z.string().refine((value) => {
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
     return false // Ensure there are at least two words
-
   // Check for minimum length and no special characters or numbers
   return parts.every((part) => {
     return /^[A-Za-z]+$/.test(part) && part.length >= 4
@@ -175,10 +174,10 @@ async function onCancel() {
     </UCard>
   </UModal>
 
-  <UBreadcrumb
+  <!-- <UBreadcrumb
     divider=">"
     :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'Address and Contact Details' }]"
-  />
+  /> -->
   <section class="grid place-items-center mb-8">
     <h1 class="font-semibold mb-4">
       Address and Contact Details

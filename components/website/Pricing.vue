@@ -40,7 +40,11 @@ const regions: regionTypes[] = [
     currencySymbol: '$', // Dollars
     conversionRate: 1, // Base rate
   },
-  { name: 'Other region',       value: 'other',       currencySymbol: '$', // Dollars       conversionRate: 1,     }
+  { name: 'Other region',
+    value: 'other',
+    currencySymbol:'$',      
+    conversionRate: 1,     
+  }
 ]
 
 const monthlyPrices: PricePlan[] = [
