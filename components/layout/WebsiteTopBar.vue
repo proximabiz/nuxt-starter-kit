@@ -61,7 +61,7 @@ function isActiveRoute(to: string) {
 <template>
   <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full">
     <a class="text-3xl font-bold leading-none" href="#">
-      <img src="/assets/media/logo.png" class="h-10" alt="Flowbite Logo">
+      <img src="/assets/media/logo.png" class="h-10" alt="Flowbite Logo" @click="navigateTo('/website')">
     </a>
     <div class="lg:hidden">
       <button class="navbar-burger flex items-center text-blue-600 p-3">
@@ -71,7 +71,7 @@ function isActiveRoute(to: string) {
         </svg>
       </button>
     </div>
-    <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
+    <ul v-if="!authUser" class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
       <template v-for="(item, index) in links" :key="index">
         <li><a class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer" :class="{ 'active-link': isActiveRoute(item.to) }" @click="navigateTo(item.to)">{{ item.name }}</a></li>
         <li class="text-gray-300">
