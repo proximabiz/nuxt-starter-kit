@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useBillingStore } from '~/stores/subscription'
+
 const isMonthly = ref(true)
 const showBillingDetails = ref(false)
 let cardValue = ref()
@@ -39,7 +40,12 @@ const regions: regionTypes[] = [
     currencySymbol: '$', // Dollars
     conversionRate: 1, // Base rate
   },
-  { name: 'Other region',       value: 'other',       currencySymbol: '$', // Dollars       conversionRate: 1,     }
+  {
+    name: 'Other region',
+    value: 'other',
+    currencySymbol: '$', // Dollars
+    conversionRate: 1, // Base rate
+  },
 ]
 
 const monthlyPrices: PricePlan[] = [
@@ -131,7 +137,7 @@ function providePlanDetails(val: any) {
             <UButton
               class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white  focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
               :disabled="value.disabled"
-              @click="providePlanDetails(value)" :class="value.disabled ? 'bg-slate-300 border-transparent ' : 'hover:bg-transparent hover:text-indigo-600'"
+              :class="value.disabled ? 'bg-slate-300 border-transparent ' : 'hover:bg-transparent hover:text-indigo-600'" @click="providePlanDetails(value)"
             >
               {{ value.price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
             </UButton>
