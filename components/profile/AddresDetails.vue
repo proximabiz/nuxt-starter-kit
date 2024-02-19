@@ -140,12 +140,15 @@ async function onSubmit() {
       const response = await addressStore.addAddress(payloadPost)
       if (response?.status === 200) {
         notify.success(response.message)
-        state.country = response.data?.country
-        state.zip = response.data.zipcode
-        state.city = response.data.city
-        state.region = response.data.region
-        state.address = response.data.address
-        state.phone = response.data.phoneNumber
+        
+        //require for future reference
+
+        // state.country = response.data?.country
+        // state.zip = response.data.zipcode
+        // state.city = response.data.city
+        // state.region = response.data.region
+        // state.address = response.data.address
+        // state.phone = response.data.phoneNumber
         // await getAddress()
         isEditable.value = false
       }
