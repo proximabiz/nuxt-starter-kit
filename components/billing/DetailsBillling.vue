@@ -9,9 +9,9 @@ const users = ['1user']
 const user = ref(users[0])
 const duePrice = ref('$77.8')
 
-const confirmation=reactive({
-  isModalVisible:false,
-  context:''
+const confirmation = reactive({
+  isModalVisible: false,
+  context: '',
 })
 const billingStore = useBillingStore()
 const billingAddressCard = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
@@ -63,7 +63,7 @@ function isActive(index: number) {
   return state.activeStep >= index
 }
 function updateConfirmation() {
-  confirmation.isModalVisible = false; 
+  confirmation.isModalVisible = false
 }
 </script>
 
@@ -95,7 +95,7 @@ function updateConfirmation() {
           <div>
             <span>{{ props.planDetails.month }} {{ props.planDetails.month > 1 ? "months" : "month" }} *
               {{ props.planDetails.price }}</span>
-            <span class="font-semibold pl-1">{{props.planDetails.currencySymbol }}{{ props.planDetails.calculatedPrice }}</span>
+            <span class="font-semibold pl-1">{{ props.planDetails.currencySymbol }}{{ props.planDetails.calculatedPrice }}</span>
           </div>
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
@@ -121,7 +121,6 @@ function updateConfirmation() {
       Continue
     </UButton>
     <!-- <ValidationConfirm :confirmation="confirmation"  @closeModal="updateConfirmation"/> -->
-
   </div>
 </template>
 

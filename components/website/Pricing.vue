@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useBillingStore } from '~/stores/subscription'
+
 const isMonthly = ref(true)
 const showBillingDetails = ref(false)
 let cardValue = ref()
@@ -14,13 +15,13 @@ interface PricePlan {
   month: number
   disabled: boolean
 }
-interface regionTypes{
-  name:string,
-  value:string,
-  currencySymbol: string,
-  conversionRate :number
+interface regionTypes {
+  name: string
+  value: string
+  currencySymbol: string
+  conversionRate: number
 }
-const regions:regionTypes[] = [
+const regions: regionTypes[] = [
   {
     name: 'India',
     value: 'india',
@@ -39,15 +40,11 @@ const regions:regionTypes[] = [
     currencySymbol: '$', // Dollars
     conversionRate: 1, // Base rate
   },
-  { name: 'Other region',    
-   value: 'other',    
-   currencySymbol: '$', // Dollars    
-   conversionRate: 1,   
-  }
+  { name: 'Other region',       value: 'other',       currencySymbol: '$', // Dollars       conversionRate: 1,     }
 ]
 
 const monthlyPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 1, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED'||sub_status?.value.planName === 'Free' },
+  { plan: 'Free', price: 0, month: 1, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED' || sub_status?.value.planName === 'Free' },
   { plan: 'Basic', price: 2, month: 1, disabled: sub_status?.value.planName === 'Basic' },
   { plan: 'Premium', price: 5, month: 1, disabled: sub_status?.value.planName === 'Premium' },
   { plan: 'Enterprise', price: 'Custom', month: 1, disabled: sub_status?.value.planName === 'Enterprise' },
@@ -134,9 +131,9 @@ function providePlanDetails(val: any) {
                 ? '/month' : '/year' }}</span>
             <UButton
               class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white  focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
-              @click="providePlanDetails(value)"
-              :disabled="value.disabled" :class="value.disabled ? 'bg-slate-300 border-transparent ' : 'hover:bg-transparent hover:text-indigo-600'"
->
+              :disabled="value.disabled"
+              @click="providePlanDetails(value)" :class="value.disabled ? 'bg-slate-300 border-transparent ' : 'hover:bg-transparent hover:text-indigo-600'"
+            >
               {{ value.price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
             </UButton>
           </div>

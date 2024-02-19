@@ -43,18 +43,19 @@ const state = reactive<FormState>({ ...initialState })
 
 const nameValidation = z.string().refine((value) => {
   // Check for two words separated by space
-  const parts = value.trim().split(/\s+/);
-  if (parts.length < 2) return false; // Ensure there are at least two words
+  const parts = value.trim().split(/\s+/)
+  if (parts.length < 2)
+    return false // Ensure there are at least two words
 
   // Check for minimum length and no special characters or numbers
-  return parts.every(part => {
-    return /^[A-Za-z]+$/.test(part) && part.length >= 4;
-  });
+  return parts.every((part) => {
+    return /^[A-Za-z]+$/.test(part) && part.length >= 4
+  })
 }, {
-  message: "Name must consist of at least two words, each with a minimum of 3 characters, without special characters or numbers."
-});
+  message: 'Name must consist of at least two words, each with a minimum of 3 characters, without special characters or numbers.',
+})
 const schema = z.object({
-  name:nameValidation,
+  name: nameValidation,
   country: z.string().min(1, 'Country is required'),
   zip: z.string().min(1, 'Zip is required'),
   city: z.string().min(1, 'City is required'),
@@ -104,27 +105,27 @@ onMounted(async () => {
 })
 
 async function onSubmit() {
-  if (!isNewUser.value){
-  const payload = {
-    country: state.country,
-    region: state.region,
-    city: state.city,
-    zipcode: state.zip,
-    address: state.address,
-    phoneNumber: state.phone,
-  }
-  try {
-    const response = await addressStore.editAddress(payload)
-    if (response?.status === 200) {
-      notify.success(response.message)
-      // await getAddress()
-      isEditable.value = false
+  if (!isNewUser.value) {
+    const payload = {
+      country: state.country,
+      region: state.region,
+      city: state.city,
+      zipcode: state.zip,
+      address: state.address,
+      phoneNumber: state.phone,
+    }
+    try {
+      const response = await addressStore.editAddress(payload)
+      if (response?.status === 200) {
+        notify.success(response.message)
+        // await getAddress()
+        isEditable.value = false
+      }
+    }
+    catch (error) {
+      notify.error(error.statusMessage)
     }
   }
-  catch (error) {
-    notify.error(error.statusMessage)
-  }
-}
   if (isNewUser.value) {
     const payloadPost = {
       name: state.name,

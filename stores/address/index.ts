@@ -1,4 +1,4 @@
-import type { State, putPayload, postPayload } from './types'
+import type { State, postPayload, putPayload } from './types'
 import { logger } from '~/utility/logger'
 import { useAuthStore } from '~/stores'
 
@@ -48,7 +48,7 @@ export const useAddressStore = defineStore({
           return
         }
 
-         this.allAddressDetails = {
+        this.allAddressDetails = {
           ...data.value?.userData,
           ...data.value?.userDetails[0],
           ...data.value?.userAddress[0],
@@ -88,8 +88,8 @@ export const useAddressStore = defineStore({
         throw error.value
       return data.value
     },
-    async clearAddress(){
-      return this.allAddressDetails={}
-    }
+    async clearAddress() {
+      return this.allAddressDetails = {}
+    },
   },
 })

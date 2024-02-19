@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { useBillingStore } from '~/stores/subscription';
+import { useBillingStore } from '~/stores/subscription'
 
 const route = useRoute()
 const notify = useNotification()
 const authStore = useAuthStore()
 const planStore = useBillingStore()
-const addressStore= useAddressStore()
+const addressStore = useAddressStore()
 const supabaseClient = useSupabaseClient()
 
 const authUser = computed(() => authStore.getAuthUser.value)
