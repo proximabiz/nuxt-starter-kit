@@ -20,9 +20,12 @@ const isLoading = ref(true)
 async function getTaxGst() {
   try {
     const response = await taxGstStore.fetchTaxGst()
+    if(response){
     state.gstNumber = response?.gst_number
     isDisabled.value = true
     isLoading.value = false
+    }
+    
   }
   catch (error) {
     notify.error(error.statusMessage)
@@ -71,7 +74,7 @@ async function handleDeleteConfirm(): Promise<void> {
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />
     <UCard>
-      Fetching your<span class="font-bold">GST / TAX No.</span>
+      Fetching your <span class="font-bold">GST No / TAX Id.</span>
     </UCard>
   </UModal>
 
@@ -98,7 +101,12 @@ async function handleDeleteConfirm(): Promise<void> {
         </div>
       </UForm>
       <Icon v-if="isDisabled" name="material-symbols-light:delete-rounded" color="black" class="text-2xl mt-1 cursor-pointer" @click="showModal" />
-      <Confirmation v-model="isModalVisible" :is-open="isModalVisible" @update:is-open="isModalVisible = $event" @delete-confirm="handleDeleteConfirm" />
+      <Confirmation 
+      v-model="isModalVisible" 
+      :is-open="isModalVisible" 
+      @update:is-open="isModalVisible = $event" 
+      @delete-confirm="handleDeleteConfirm" 
+      text="Are you sure you want to delete this Tax ID/GST No?"/>
     </div>
   </div>
 </template>
