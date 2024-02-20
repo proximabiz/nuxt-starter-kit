@@ -69,7 +69,7 @@ function updateConfirmation() {
 </script>
 
 <template>
-  <div class="grid place-items-center mt-4">
+  <div class="grid place-items-center">
     <div class="">
       <ol class="flex">
         <li v-for="(step, index) in steps" :key="index" class="flex items-center">

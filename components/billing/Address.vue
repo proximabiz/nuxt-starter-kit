@@ -19,8 +19,10 @@ const nameValidation = z.string().refine((value) => {
     return /^[A-Za-z]+$/.test(part) && part.length >= 4
   })
 }, {
-  message: 'Name must consist of at least two words, each with a minimum of 3 characters, without special characters or numbers.',
+  message: 'Enter a valid full name',
 })
+
+
 const billingSchema = z.object({
   name: nameValidation,
   country: z.string().min(1, 'Country is required'),
