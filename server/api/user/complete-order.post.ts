@@ -2,7 +2,7 @@ import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
 import { CompleteOrderValidation } from '~/server/utlis/validations'
-import { Stripe } from '~/server/utlis/stripe'
+import { addPaymentMethod } from '~/server/utlis/stripe'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
 
       // Save customer card details on Stripe
       const [expiryMonth, expiryYear] = orderValidation.expiryDate.split('/')
-      const paymentMethodResponse = Stripe.addPaymentMethod(orderValidation.cardNumber, expiryMonth, expiryYear, orderValidation.securityCode)
+      const paymentMethodResponse: any = addPaymentMethod(orderValidation.cardNumber, expiryMonth, expiryYear, orderValidation.securityCode)
       if (paymentMethodResponse.status === 200) {
         const { error: errorPaymentMethod } = await updateStripePaymentMethodId(userID, paymentMethodResponse.paymentMethod.id)
         if (error)
@@ -130,13 +130,3 @@ function calculatePlanAmount(currencyCode: string, monthlyPriceInUSD: number, mo
   }
   return amount
 }
-
-// function calculateEndDate(planType: string) {
-
-//   const currentDate = new Date();
-//   const currentMonth = currentDate.getMonth() + 1;
-//   const currentYear = currentDate.getFullYear();
-
-//   // Get the number of days in the current month
-//   this.daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
-// }

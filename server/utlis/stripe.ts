@@ -3,7 +3,7 @@ import { Stripe } from 'stripe'
 // const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY)
 const stripeInstance = new Stripe('sk_test_51OdqycSA9XKEVEBUvVl6KDV9nW5sNr3bHjRh9htCioXMC9YkQzP6o9xN9OPTVfkqhzhdNE6AQqrF9c0I1OCZcxzY0011diWopS')
 
-export async function createStripeCustomer(email: string, name: string) {
+async function createStripeCustomer(email: string, name: string) {
   try {
     const customer = await stripeInstance.customers.create({
       email,
@@ -21,7 +21,7 @@ export async function createStripeCustomer(email: string, name: string) {
   }
 }
 
-export async function addPaymentMethod(cardNumber: string, expMonth: number, expYear: number, cvc: string) {
+async function addPaymentMethod(cardNumber: string, expMonth: number, expYear: number, cvc: string) {
   try {
     const paymentMethod = await stripeInstance.paymentMethods.create({
       type: 'card',
@@ -43,7 +43,7 @@ export async function addPaymentMethod(cardNumber: string, expMonth: number, exp
   }
 }
 
-export async function attachPaymentMethodToUser(stripeCustomerId: string, stripePaymentMethodId: string) {
+async function attachPaymentMethodToUser(stripeCustomerId: string, stripePaymentMethodId: string) {
   try {
     const attachedPaymentMethod = await stripeInstance.paymentMethods.attach(
       stripePaymentMethodId,
@@ -61,7 +61,7 @@ export async function attachPaymentMethodToUser(stripeCustomerId: string, stripe
 }
 
 // Payment Intent - we are using this instead of Payment Charge.
-export async function createPaymentIntent(amount: number, currency: string, paymentMethodId: string, userEmail: string) {
+async function createPaymentIntent(amount: number, currency: string, paymentMethodId: string, userEmail: string) {
   try {
     const paymentIntent = await stripeInstance.paymentIntents.create({
       amount,
@@ -86,7 +86,7 @@ export async function createPaymentIntent(amount: number, currency: string, paym
 }
 
 // Cancel subscription - here subscriptionId is the id associate with subscription in stripe platfrom.
-export async function cancelSubscription(subscriptionId: string) {
+async function cancelSubscription(subscriptionId: string) {
   try {
     // Retrieve the subscription
     const subscription = await stripeInstance.subscriptions.retrieve(subscriptionId)
@@ -134,3 +134,5 @@ function handleStripeErrors(error: any) {
   }
   return errorMessage
 }
+
+export { createStripeCustomer, addPaymentMethod, attachPaymentMethodToUser, createPaymentIntent, cancelSubscription }
