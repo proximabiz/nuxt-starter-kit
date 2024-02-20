@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
       // update tables
       const { data, error } = await updateDiagramForResponse(client, chartValidation.existingOpenAIResponse, diagramId)
-      await insertDiagramVersion(client, diagramId, event.context.user.id, chartValidation.existingOpenAIResponse)
+      await insertDiagramVersion(client, diagramId, event.context.user.id, chartValidation.existingOpenAIResponse, diagram.versions)
 
       return { message: 'Success!', data: { data, response: chartValidation.existingOpenAIResponse, error }, status: 200 }
     }
@@ -61,12 +61,13 @@ async function getDiagram(client: any, diagramId: string): Promise<{ data: any, 
   ).eq('id', diagramId).limit(1)
 }
 
-async function insertDiagramVersion(client: any, diagramId: string, userId: string, chart: object) {
+async function insertDiagramVersion(client: any, diagramId: string, userId: string, chart: object, details: string) {
   await client.from('diagram_version').insert([{
     diagram_id: diagramId,
     user_id: userId,
     response: chart,
     versions: new Date().toISOString(),
+    details,
   }] as any)
 }
 
