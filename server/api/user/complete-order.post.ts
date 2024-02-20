@@ -2,6 +2,7 @@ import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
 import { CompleteOrderValidation } from '~/server/utlis/validations'
+import { Stripe } from '~/server/utlis/stripe'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -53,15 +54,15 @@ export default defineEventHandler(async (event) => {
           return { message: 'Error!', errorUserDetails, status: 400 }
       }
 
-
-      // cardHolderName
-      // cardNumber
-      // expiryDate
-      // securityCode
-
-      //Save customer card details on Stripe
-      const
-
+      // Save customer card details on Stripe
+      const [expiryMonth, expiryYear] = orderValidation.expiryDate.split('/')
+      const paymentMethodResponse = Stripe.addPaymentMethod(orderValidation.cardNumber, expiryMonth, expiryYear, orderValidation.securityCode)
+      if (paymentMethodResponse.status === 200) {
+        const { error: errorPaymentMethod } = await updateStripePaymentMethodId(userID, paymentMethodResponse.paymentMethod.id)
+        if (error)
+          return { message: 'Error!', errorPaymentMethod, status: 400 }
+      }
+      else { return paymentMethodResponse }
 
       return { message: 'Order Complete successfully!', data: orderValidation, status: 200 }
     }
@@ -83,7 +84,7 @@ export default defineEventHandler(async (event) => {
         address: orderValidation.address.trim(),
         phone_number: orderValidation.phoneNumber.trim(),
         user_id: userID,
-      } as never
+      } as never,
     ).single()
   }
 
@@ -97,8 +98,17 @@ export default defineEventHandler(async (event) => {
         plan_end_date: endDate,
         currency: orderValidation.currencyCode,
         plan_type: orderValidation.planType,
-      } as never
+      } as never,
     ).single()
+  }
+
+  async function updateStripePaymentMethodId(userId: string, paymentMethodId: string): Promise<{ error: any }> {
+    return await client.from('user_stripe_details').update(
+      {
+        stripe_payment_method_id: paymentMethodId.trim(),
+        has_payment_method_active: true,
+      } as never,
+    ).eq('user_id', userID).select().single()
   }
 })
 
@@ -130,18 +140,3 @@ function calculatePlanAmount(currencyCode: string, monthlyPriceInUSD: number, mo
 //   // Get the number of days in the current month
 //   this.daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
 // }
-
-
-function stripeActivities() {
-
-  // Create User on Stripe Platform
-  
-  
-  // Create Payment Method on Stripe Platform
-
-
-  // Attach Payment Method to customer on Stripe Platform
-
-
-
-}
