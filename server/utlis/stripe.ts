@@ -3,6 +3,7 @@ import { Stripe } from 'stripe'
 // const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY)
 const stripeInstance = new Stripe('sk_test_51OdqycSA9XKEVEBUvVl6KDV9nW5sNr3bHjRh9htCioXMC9YkQzP6o9xN9OPTVfkqhzhdNE6AQqrF9c0I1OCZcxzY0011diWopS')
 
+// Add create customer to the stripe platform
 async function createStripeCustomer(email: string, name: string) {
   try {
     const customer = await stripeInstance.customers.create({
@@ -21,6 +22,7 @@ async function createStripeCustomer(email: string, name: string) {
   }
 }
 
+// Add payment method to the customers
 async function addPaymentMethod(cardNumber: string, expMonth: number, expYear: number, cvc: string) {
   try {
     const paymentMethod = await stripeInstance.paymentMethods.create({
@@ -43,6 +45,7 @@ async function addPaymentMethod(cardNumber: string, expMonth: number, expYear: n
   }
 }
 
+// Attach payment method to the customers
 async function attachPaymentMethodToUser(stripeCustomerId: string, stripePaymentMethodId: string) {
   try {
     const attachedPaymentMethod = await stripeInstance.paymentMethods.attach(
