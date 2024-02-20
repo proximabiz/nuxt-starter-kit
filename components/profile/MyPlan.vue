@@ -6,14 +6,15 @@ const notify = useNotification()
 const planStore = useBillingStore()
 const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
+const noplanModal = ref<boolean>(false)
+const isModalVisible =ref(false)
 
 async function getActivePlan() {
   try {
     const response = await planStore.fetchActivePlan()
     if (response?.subscription_status === 'PLAN_EXPIRED')
       showUpgradeModal.value = true
-
-    planData.value = response[0]
+    planData.value = response
   }
   catch (error) {
     notify.error(error.statusMessage)
@@ -27,10 +28,10 @@ async function cancelPlan() {
   }
   try {
     const res = await planStore.cancelSubscription(payload)
-
     if (res?.status === 204) {
+      noplanModal.value = true
       notify.success(res.message)
-      navigateTo('/website/pricing')
+      setTimeout(() => navigateTo('/website/pricing'), 1000)
     }
   }
   catch (error) {
@@ -44,21 +45,35 @@ function upgradePlan() {
   showUpgradeModal.value = false
   navigateTo('/website/pricing')
 }
+function upgradePlanNO() {
+  noplanModal.value = false
+  navigateTo('/website/pricing')
+}
 </script>
 
+
 <template>
-  <UBreadcrumb
-    divider=">"
-    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'My Plan' }]"
-  />
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">
-        Your plan has expired! 
+        Your plan has expired!
       </p>
-     <p> To continue this application, please upgrade.</p>
+      <p> To continue this application, please upgrade.</p>
       <div class="mt-4 flex justify-center">
         <UButton class="" @click="upgradePlan">
+          Upgrade
+        </UButton>
+      </div>
+    </div>
+  </UModal>
+  <UModal :model-value="showUpgradeModal" :transition="false">
+    <div class="p-8">
+      <p class="mb-3">
+        You have no active plan.
+      </p>
+      <p>To continue using the app please subscribe to any plan.</p>
+      <div class="mt-4 flex justify-center">
+        <UButton class="" @click="upgradePlanNO">
           Upgrade
         </UButton>
       </div>
@@ -140,7 +155,7 @@ function upgradePlan() {
         <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
           Current Plan
         </UButton>
-        <UButton type="submit" class="w-fit mt-2" color="blue" @click="cancelPlan">
+        <UButton type="submit" class="w-fit mt-2" color="blue" @click="()=>{isModalVisible=true}">
           Cancel Subscription
         </UButton>
         <p v-if="planData?.plan_end_date" class="text-red-500 text-xs">
@@ -154,6 +169,12 @@ function upgradePlan() {
           Other Plans</i>
       </h1>
     </NuxtLink>
+    <Confirmation 
+      v-model="isModalVisible" 
+      :is-open="isModalVisible" 
+      @update:is-open="isModalVisible = $event" 
+      @delete-confirm="cancelPlan" 
+      text="Are you sure you want to cancel your subscription?"/>
   </section>
 </template>
 

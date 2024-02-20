@@ -17,9 +17,24 @@ const cards = [
 async function setComponentName(componentName: string) {
   selectedComponent.value = componentName
 }
+// Computed property for breadcrumb text
+const breadcrumbText = computed(() => {
+  const card = cards.find(c => c.componentName === selectedComponent.value);
+  return card ? card.text : 'Select a category';
+});
+function resetComponent() {
+  selectedComponent.value = ''
+}
 </script>
 
 <template>
+  <nav v-if="selectedComponent" aria-label="Breadcrumb" class="ml-4">
+  <ol class="flex font-semibold">
+    <li class="cursor-pointer" @click="resetComponent()">My Account </li>
+    <li class="mx-1"> > </li>
+    <li class="text-custom4-600"> {{ breadcrumbText }} </li>
+  </ol>
+</nav>
   <section v-if="!selectedComponent" class="grid place-items-center">
     <div class="grid grid-cols-2 gap-10 mt-20">
       <UCard

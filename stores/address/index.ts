@@ -1,11 +1,11 @@
-import type { State, addressPayload, postPayload } from './types'
+import type { State, postPayload, putPayload } from './types'
 import { logger } from '~/utility/logger'
 import { useAuthStore } from '~/stores'
 
 export const useAddressStore = defineStore({
   id: 'address',
   state: (): State => ({
-    addressDetails: [],
+    allAddressDetails: {},
   }),
   getters: {},
   actions: {
@@ -48,20 +48,20 @@ export const useAddressStore = defineStore({
           return
         }
 
-        const allAddressDetails = {
+        this.allAddressDetails = {
           ...data.value?.userData,
           ...data.value?.userDetails[0],
           ...data.value?.userAddress[0],
         }
         // console.log("123 updating",allAddressDetails)
         // this.addressDetails=allAddressDetails
-        return allAddressDetails
+        return this.allAddressDetails
       }
       catch (err) {
         logger.error('Error fetching address:', err)
       }
     },
-    async editAddress(payload: addressPayload) {
+    async editAddress(payload: putPayload) {
       const authStore = useAuthStore()
       const { data, error } = await useFetch('/api/user/address', {
         method: 'PUT',
@@ -88,6 +88,8 @@ export const useAddressStore = defineStore({
         throw error.value
       return data.value
     },
-
+    async clearAddress() {
+      return this.allAddressDetails = {}
+    },
   },
 })
