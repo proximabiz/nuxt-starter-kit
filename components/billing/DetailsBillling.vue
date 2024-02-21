@@ -33,7 +33,6 @@ function setActiveStep(index: number) {
   if (index === 2) {
     // Check if any of the required billingState fields are empty
     const isAddressComplete = bac.name && bac.orgName && bac.country && bac.zip && bac.city && bac.region && bac.address && bac.phone
-    console.log("checking",isAddressComplete)
     if (!isAddressComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing address.'
@@ -46,6 +45,7 @@ function setActiveStep(index: number) {
   }
   if (index === 3) {
     const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
+    console.log("checking",isCardDetailsComplete)
     if (!isCardDetailsComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing card details.'
