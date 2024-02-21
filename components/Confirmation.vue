@@ -2,6 +2,7 @@
 interface Props {
   isOpen: boolean
   onDeleteConfirm: () => void
+  text:string
 }
 interface Emit {
   (e: 'update:isOpen', value: boolean): void
@@ -24,14 +25,15 @@ function cancel() {
   <UModal :model-value="isOpen" :transition="false">
     <div class="p-8">
       <div class="mb-8">
-        Are you sure you want to delete this Tax ID/GST No?
+        {{ props.text}}
+        <!-- Are you sure you want to delete this Tax ID/GST No? -->
       </div>
       <div class="mt-4 flex justify-end gap-4">
         <UButton class="" color="blue" @click="cancel">
           Cancel
         </UButton>
         <UButton class="" color="gray" @click="confirmDeletion">
-          Delete
+         {{ props.text.includes("delete")?"Delete" :"Confirm"}}
         </UButton>
       </div>
     </div>

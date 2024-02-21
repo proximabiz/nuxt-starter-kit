@@ -33,27 +33,26 @@ function upgradePlan() {
 </template> -->
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { defineEmits, defineProps, ref } from 'vue'
 
 const props = defineProps({
   modelValue: Boolean,
-});
+})
 
-const emits = defineEmits(['update:modelValue', 'upgrade']);
+const emits = defineEmits(['update:modelValue', 'upgrade'])
 
-const upgradePlan = () => {
-  emits('upgrade');
-};
+function upgradePlan() {
+  emits('upgrade')
+}
 
-const showUpgradeModal = ref(props.modelValue);
+const showUpgradeModal = ref(props.modelValue)
 
 watch(
   () => props.modelValue,
   (newValue) => {
-    showUpgradeModal.value = newValue;
+    showUpgradeModal.value = newValue
   },
-);
-
+)
 </script>
 
 <template>
@@ -70,5 +69,3 @@ watch(
     </div>
   </UModal>
 </template>
-
-

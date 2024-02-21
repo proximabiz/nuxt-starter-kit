@@ -7,8 +7,14 @@ interface Props {
 const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
-const duePrice = ref('77.8$')
-const billingState = useBillingStore()
+const duePrice = ref('$77.8')
+
+const confirmation = reactive({
+  isModalVisible: false,
+  context: '',
+})
+const billingStore = useBillingStore()
+const billingAddressCard = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
 
 const steps = [
   // {label: '', component: 'websitePricing'},
@@ -23,20 +29,32 @@ const state = reactive({
 })
 
 function setActiveStep(index: number) {
+  const bac = billingAddressCard.value
   if (index === 2) {
     // Check if any of the required billingState fields are empty
-    const isAddressComplete = billingState.name && billingState.orgName && billingState.country && billingState.zip && billingState.city && billingState.region && billingState.address && billingState.phone
+    const isAddressComplete = bac.name && bac.orgName && bac.country && bac.zip && bac.city && bac.region && bac.address && bac.phone
     if (!isAddressComplete) {
+      // confirmation.isModalVisible=true
+      // confirmation.context='Please fill out all the fields in your billing address.'
       alert('Please fill out all the fields in your billing address.')
       return
     }
+    // else if(isAddressComplete){
+    //   confirmation.isModalVisible=false
+    // }
   }
   if (index === 3) {
-    const isCardDetailsComplete = billingState.cardHolderName && billingState.cardNo && billingState.expDate && billingState.cvv
+    const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
+    console.log("checking",isCardDetailsComplete)
     if (!isCardDetailsComplete) {
+      // confirmation.isModalVisible=true
+      // confirmation.context='Please fill out all the fields in your billing card details.'
       alert('Please fill out all the fields in your billing card details.')
       return
     }
+    // else if(isCardDetailsComplete){
+    //   confirmation.isModalVisible=false
+    // }
   }
 
   if (index >= 0 && index < steps.length)
@@ -45,10 +63,13 @@ function setActiveStep(index: number) {
 function isActive(index: number) {
   return state.activeStep >= index
 }
+function updateConfirmation() {
+  confirmation.isModalVisible = false
+}
 </script>
 
 <template>
-  <div class="grid place-items-center mt-4">
+  <div class="grid place-items-center">
     <div class="">
       <ol class="flex">
         <li v-for="(step, index) in steps" :key="index" class="flex items-center">
@@ -65,18 +86,6 @@ function isActive(index: number) {
         </li>
       </ol>
     </div>
-
-    <!-- <UBreadcrumb :links="steps" divider="" :ui="{ ol: 'gap-x-3' }" class="mb-4">
-      <template #icon="{ link, index }">
-        <UAvatar
-          :alt="(index + 1).toString()" :ui="{
-            background: isActive(index) ? 'bg-primary-500 dark:bg-primary-400' : undefined,
-            placeholder: isActive(index) ? 'text-white dark:text-gray-900' : 'group-hover:text-gray-700 dark:group-hover:text-gray-200',
-          }" size="xs" @click="prevStep"
-        />
-      </template>
-    </UBreadcrumb> -->
-
     <UCard v-if="state.activeStep === 0" class="mb-6 mt-4">
       <div class="divide-y divide-solid">
         <header class="flex justify-start">
@@ -87,8 +96,7 @@ function isActive(index: number) {
           <div>
             <span>{{ props.planDetails.month }} {{ props.planDetails.month > 1 ? "months" : "month" }} *
               {{ props.planDetails.price }}</span>
-            <span class="font-semibold pl-1">{{ props.planDetails.calculatedPrice }}{{
-              props.planDetails.currencySymbol }}</span>
+            <span class="font-semibold pl-1">{{ props.planDetails.currencySymbol }}{{ props.planDetails.calculatedPrice }}</span>
           </div>
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
@@ -108,11 +116,12 @@ function isActive(index: number) {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
+    <BillingCarddetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
     <BillingReview v-if="state.activeStep === 3" :plan-name="props.planDetails.plan" :due-price="duePrice" />
     <UButton v-if="state.activeStep !== 3" @click="() => setActiveStep(state.activeStep + 1)">
       Continue
     </UButton>
+    <!-- <ValidationConfirm :confirmation="confirmation"  @closeModal="updateConfirmation"/> -->
   </div>
 </template>
 

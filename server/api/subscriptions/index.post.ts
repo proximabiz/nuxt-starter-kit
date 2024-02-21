@@ -18,27 +18,44 @@ export default defineEventHandler(async (event) => {
   if (subError)
     throw new CustomError(`Supabase Error: ${subError.message}`, subStatus)
 
+  const { data: userSubCheck, error: userSubError, status: userSubStatus } = await client
+    .from('user_subscriptions')
+    .select('user_id')
+    .eq('user_id', params.userId)
+    .eq('is_subscription_active', true)
+
+  if (userSubError)
+    throw new CustomError(`Supabase Error: ${userSubError.message}`, userSubStatus)
+  if (userSubCheck.length > 0)
+    throw new CustomError(`User is already there with subscription`, 401)
+
   const currentDate = new Date()
   let endDate = new Date()
-  if (params.ammount > 0) {
-    if (subData.monthly_price === params.ammount) {
+  if (params.amount > 0) {
+    if (subData.monthly_price === params.amount) {
       // End date for a month (30 days)
-      endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate())
+      const monthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate())
+      monthDate.setUTCHours(23, 59, 0, 0) // Set time to 24:00:00.000Z
+      endDate = monthDate
     }
-    else if (subData.yearly_price === params.ammount) {
+    else if (subData.yearly_price === params.amount) {
       // End date for a year (365 days)
-      endDate = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate())
+      const yearDate = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate())
+      yearDate.setUTCHours(23, 59, 0, 0) // Set time to 24:00:00.000Z
+      endDate = yearDate
     }
   }
   else {
     // End date for a week (7 days)
-    endDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000))
+    const weekDate = endDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000))
+    weekDate.setUTCHours(23, 59, 0, 0) // Set time to 24:00:00.000Z
+    endDate = weekDate
   }
   const { data: userSub, error, status } = await client.from('user_subscriptions').insert([
     {
       user_id: params.userId,
       sub_type_id: params.subscriptionTypeId,
-      amount: params.ammount,
+      amount: params.amount,
       plan_start_date: currentDate,
       plan_end_date: endDate,
     },
@@ -46,5 +63,5 @@ export default defineEventHandler(async (event) => {
 
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)
-  return { message: 'Success!', data: { userSub }, status }
+  return { message: 'You have successfully subscribed!', data: { userSub }, status }
 })

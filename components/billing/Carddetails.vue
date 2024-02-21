@@ -3,19 +3,19 @@ import { z } from 'zod'
 import card from '@/assets/media/credit-card.png'
 import visa from '@/assets/media/visa.png'
 import mastercard from '@/assets/media/mastercard.png'
-import { useBillingStore } from '~/stores/billing'
+import { useBillingStore } from '~/stores/subscription'
 
 interface Props {
   planName: string
   duePrice: string
 }
 const props = defineProps<Props>()
-const state = useBillingStore()
-const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
+const billingStore = useBillingStore()
+const cardDetails = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
 
+const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
-
 
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
@@ -23,7 +23,7 @@ const billingSchema = z.object({
     .min(1, 'Card number is required')
     .regex(/^\d+$/, 'Card number must be numeric')
     .refine(val => masterCardRegex.test(val) || visaCardRegex.test(val), {
-      message: 'Invalid card number. Please enter a valid card number with 16 digits.',
+      message: 'Invalid card number.Please enter a valid card number with 16 digits.',
     }),
   expDate: z.string()
     .regex(basicExpDateRegex, 'Invalid expiration date format')
@@ -62,19 +62,19 @@ const billingSchema = z.object({
       </div>
     </div>
 
-    <UForm :schema="billingSchema" :state="state" class="space-y-2">
+    <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
       <UFormGroup label="Name on the card" name="cardHolderName" required>
-        <UInput v-model="state.cardHolderName" placeholder="Name on the card" />
+        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" />
       </UFormGroup>
       <UFormGroup label="Credit or debit card number" name="cardNo" required>
-        <UInput v-model="state.cardNo" placeholder="**** **** ****" />
+        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" />
       </UFormGroup>
       <div class="flex gap-2">
         <UFormGroup label="Expire date" name="expDate" required>
-          <UInput v-model="state.expDate" placeholder="MM/YY" />
+          <UInput v-model="cardDetails.expDate" placeholder="MM/YY" />
         </UFormGroup>
         <UFormGroup label="Security code" name="cvv" required>
-          <UInput v-model="state.cvv" placeholder="****" />
+          <UInput v-model="cardDetails.cvv" placeholder="****" />
         </UFormGroup>
       </div>
     </UForm>

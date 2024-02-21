@@ -1,6 +1,11 @@
 <script lang="ts" setup>
+import { useBillingStore } from '~/stores/subscription'
+
+const route = useRoute()
 const notify = useNotification()
 const authStore = useAuthStore()
+const planStore = useBillingStore()
+const addressStore = useAddressStore()
 const supabaseClient = useSupabaseClient()
 
 const authUser = computed(() => authStore.getAuthUser.value)
@@ -26,7 +31,7 @@ const items = [
   [{
     label: 'My account',
     icon: 'i-heroicons-user',
-    to: '/profile/account'
+    to: '/profile/account',
   }],
   [{
     label: 'Sign out',
@@ -39,18 +44,24 @@ async function singOut() {
   try {
     // Do something with data
     await supabaseClient.auth.signOut()
+    await planStore.clearSubscription()
+    await addressStore.clearAddress()
+
     navigateTo('/')
   }
   catch (error) {
     notify.error(error)
   }
 }
+function isActiveRoute(to: string) {
+  return route.path === to
+}
 </script>
 
 <template>
   <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full">
     <a class="text-3xl font-bold leading-none" href="#">
-      <img src="/assets/media/logo.png" class="h-10" alt="Flowbite Logo">
+      <img src="/assets/media/logo.png" class="h-10" alt="Flowbite Logo" @click="navigateTo('/website')">
     </a>
     <div class="lg:hidden">
       <button class="navbar-burger flex items-center text-blue-600 p-3">
@@ -60,9 +71,9 @@ async function singOut() {
         </svg>
       </button>
     </div>
-    <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6">
+    <ul v-if="!authUser" class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
       <template v-for="(item, index) in links" :key="index">
-        <li><a class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer" @click="navigateTo(item.to)">{{ item.name }}</a></li>
+        <li><a class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer" :class="{ 'active-link': isActiveRoute(item.to) }" @click="navigateTo(item.to)">{{ item.name }}</a></li>
         <li class="text-gray-300">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
@@ -79,23 +90,23 @@ async function singOut() {
       Login
     </UButton>
     <UDropdown v-else :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-10">
-              <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
-              <template #account>
-                <div class="text-left">
-                  <p>
-                    Signed in as
-                  </p>
-                  <p class="truncate font-medium text-gray-900">
-                    {{ authUser?.email }}
-                  </p>
-                </div>
-              </template>
+      <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
+      <template #account>
+        <div class="text-left">
+          <p>
+            Signed in as
+          </p>
+          <p class="truncate font-medium text-gray-900">
+            {{ authUser?.email }}
+          </p>
+        </div>
+      </template>
 
-              <template #item="{ item }">
-                <span class="truncate">{{ item.label }}</span>
-                <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto" />
-              </template>
-            </UDropdown>
+      <template #item="{ item }">
+        <span class="truncate">{{ item.label }}</span>
+        <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto" />
+      </template>
+    </UDropdown>
   </nav>
 
   <!-- For Mobile Screen -->
@@ -135,7 +146,7 @@ async function singOut() {
       </div>
       <div class="mt-auto">
         <div class="pt-6">
-          <a class="block px-4 py-3 mb-3 leading-loose text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl" href="#">Sign in</a>
+          <a class="block px-4 py-3 mb-3 leading-loose text-xs text-center font-semibold bg-gray-50 hover:bg-gray-100 rounded-xl" href="#">Sign in</a>
           <a class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl" href="#">Sign Up</a>
         </div>
         <p class="my-4 text-xs text-center text-gray-400">

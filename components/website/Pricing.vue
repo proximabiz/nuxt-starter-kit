@@ -1,20 +1,27 @@
 <script lang="ts" setup>
-import { useBillingStore } from '~/stores/subscription';
+import { useBillingStore } from '~/stores/subscription'
+
 const isMonthly = ref(true)
 const showBillingDetails = ref(false)
 let cardValue = ref()
 const region = ref('india')
-const subStatusStore=useBillingStore()
+const subStatusStore = useBillingStore()
 
 const sub_status = computed(() => subStatusStore.GET_SUB_STATUS)
 
 interface PricePlan {
   plan: string
   price: number | any
-  month: number,
-  disabled:boolean
+  month: number
+  disabled: boolean
 }
-const regions = [
+interface regionTypes {
+  name: string
+  value: string
+  currencySymbol: string
+  conversionRate: number
+}
+const regions: regionTypes[] = [
   {
     name: 'India',
     value: 'india',
@@ -33,25 +40,25 @@ const regions = [
     currencySymbol: '$', // Dollars
     conversionRate: 1, // Base rate
   },
-  {name: 'Other region',
+  { name: 'Other region',
     value: 'other',
-    currencySymbol: '$', // Dollars
-    conversionRate: 1, 
+    currencySymbol:'$',      
+    conversionRate: 1,     
   }
 ]
 
 const monthlyPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 1 ,disabled:sub_status?.value.planStatus==='PLAN_EXPIRED'},
-  { plan: 'Basic', price: 2, month: 1,disabled:sub_status?.value.planName==='Basic' },
-  { plan: 'Premium', price: 5, month: 1,disabled:sub_status?.value.planName==='Premium' },
-  { plan: 'Enterprise', price: 'Custom', month: 1,disabled:sub_status?.value.planName==='Enterprise' },
+  { plan: 'Free', price: 0, month: 1, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED' || sub_status?.value.planName === 'Free' },
+  { plan: 'Basic', price: 2, month: 1, disabled: sub_status?.value.planName === 'Basic' },
+  { plan: 'Premium', price: 5, month: 1, disabled: sub_status?.value.planName === 'Premium' },
+  { plan: 'Enterprise', price: 'Custom', month: 1, disabled: sub_status?.value.planName === 'Enterprise' },
 ]
 
 const annualPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 11 ,disabled:sub_status?.value.planStatus==='PLAN_EXPIRED'},
-  { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11 ,disabled:sub_status?.value.planName==='Basic'},
-  { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11 ,disabled:sub_status?.value.planName==='Premium'},
-  { plan: 'Enterprise', price: 'Custom', month: 11,disabled:sub_status?.value.planName==='Enterprise' },
+  { plan: 'Free', price: 0, month: 11, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED' },
+  { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: sub_status?.value.planName === 'Basic' },
+  { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: sub_status?.value.planName === 'Premium' },
+  { plan: 'Enterprise', price: 'Custom', month: 11, disabled: sub_status?.value.planName === 'Enterprise' },
 ]
 
 const prices = computed(() => {
@@ -111,7 +118,7 @@ function providePlanDetails(val: any) {
         <div
           v-for="(value, index) in prices" :key="index"
           class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm"
-          >
+        >
           <div class="p-4 sm:pt-4 sm:pb-0">
             <h2 class="text-lg font-medium text-gray-900">
               {{ value.plan }}
@@ -121,15 +128,16 @@ function providePlanDetails(val: any) {
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
             </p>
             <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-             {{ value.currencySymbol}}{{value.calculatedPrice}}
+              {{ value.currencySymbol }}{{ value.calculatedPrice }}
             </strong>
             <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom' ? ''
               : isMonthly
                 ? '/month' : '/year' }}</span>
             <UButton
               class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white  focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
-               @click="providePlanDetails(value)"
-               :disabled="value.disabled" :class="value.disabled?'bg-slate-300 border-transparent ':'hover:bg-transparent hover:text-indigo-600'">
+              :disabled="value.disabled"
+              @click="providePlanDetails(value)" :class="value.disabled ? 'bg-slate-300 border-transparent ' : 'hover:bg-transparent hover:text-indigo-600'"
+            >
               {{ value.price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
             </UButton>
           </div>

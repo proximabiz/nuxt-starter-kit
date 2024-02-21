@@ -15,18 +15,19 @@ export interface BillingState {
 export interface subScriptionPayload {
   userId: string
   subscriptionTypeId: string
-  ammount: number
+  amount: number
 }
 export interface cancelSubPayload {
   userId: string
   userSubscriptionId: string
   note: string
 }
-export interface subDetails{
-  planName:string,planStatus:string
+export interface subDetails {
+  planName: string
+  planStatus: string
 }
 export interface State {
-subscriptionStatus: subDetails
-billingDetails:BillingState
+  subscriptionStatus: subDetails
+  billingDetails: BillingState
 
 }

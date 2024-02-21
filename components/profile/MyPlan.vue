@@ -1,40 +1,40 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import { useBillingStore } from '~/stores/subscription'
-import dayjs from 'dayjs';
 
 const notify = useNotification()
 const planStore = useBillingStore()
-const planData=ref()
+const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
-
+const noplanModal = ref<boolean>(false)
+const isModalVisible =ref(false)
 
 async function getActivePlan() {
   try {
     const response = await planStore.fetchActivePlan()
-    if (response?.subscription_status === 'PLAN_EXPIRED') {
-        showUpgradeModal.value = true
-      }
-  planData.value=response[0]
+    if (response?.subscription_status === 'PLAN_EXPIRED')
+      showUpgradeModal.value = true
+    planData.value = response
   }
   catch (error) {
     notify.error(error.statusMessage)
   }
 }
-const cancelPlan=async ()=>{
-  let payload={
-  userId : planData.value.user_id,
-  userSubscriptionId :  planData.value.id,
-  note : "Cancel Subscription"
+async function cancelPlan() {
+  const payload = {
+    userId: planData.value.user_id,
+    userSubscriptionId: planData.value.id,
+    note: 'Cancel Subscription',
   }
-  try{
-    const res=await planStore.cancelSubscription(payload)
-
-    if(res?.status===204){
+  try {
+    const res = await planStore.cancelSubscription(payload)
+    if (res?.status === 204) {
+      noplanModal.value = true
       notify.success(res.message)
-      navigateTo("/website/pricing")    
+      setTimeout(() => navigateTo('/website/pricing'), 1000)
     }
   }
-  catch(error){
+  catch (error) {
     notify.error(error.statusMessage)
   }
 }
@@ -45,20 +45,35 @@ function upgradePlan() {
   showUpgradeModal.value = false
   navigateTo('/website/pricing')
 }
+function upgradePlanNO() {
+  noplanModal.value = false
+  navigateTo('/website/pricing')
+}
 </script>
 
+
 <template>
-  <UBreadcrumb
-    divider=">"
-    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'My Plan' }]"
-  />
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">
-      <div class="mb-8">
-        Your plan has expired! To continue your account please upgrade.
-      </div>
+      <p class="mb-3">
+        Your plan has expired!
+      </p>
+      <p> To continue this application, please upgrade.</p>
       <div class="mt-4 flex justify-center">
-        <UButton class=""  @click="upgradePlan">
+        <UButton class="" @click="upgradePlan">
+          Upgrade
+        </UButton>
+      </div>
+    </div>
+  </UModal>
+  <UModal :model-value="showUpgradeModal" :transition="false">
+    <div class="p-8">
+      <p class="mb-3">
+        You have no active plan.
+      </p>
+      <p>To continue using the app please subscribe to any plan.</p>
+      <div class="mt-4 flex justify-center">
+        <UButton class="" @click="upgradePlanNO">
           Upgrade
         </UButton>
       </div>
@@ -71,7 +86,7 @@ function upgradePlan() {
     <UCard>
       <div class="sm:pb-0">
         <h2 class="text-lg font-medium text-gray-900">
-         {{ planData?.name }}
+          {{ planData?.name }}
         </h2>
         <p class="text-gray-700">
           {{ planData?.description }}
@@ -140,11 +155,11 @@ function upgradePlan() {
         <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
           Current Plan
         </UButton>
-        <UButton type="submit" class="w-fit mt-2" color="blue" @click="cancelPlan">
+        <UButton type="submit" class="w-fit mt-2" color="blue" @click="()=>{isModalVisible=true}">
           Cancel Subscription
         </UButton>
-        <p class="text-red-500 text-xs" v-if="planData?.plan_end_date">
-          Your plan will be auto renewed on {{ dayjs(planData?.plan_end_date).format('MMMM D, YYYY, h:mm:ss A')  }}
+        <p v-if="planData?.plan_end_date" class="text-red-500 text-xs">
+          Your plan will be auto renewed on {{ dayjs(planData?.plan_end_date).format('MMMM D, YYYY, h:mm:ss A') }}
         </p>
       </div>
     </UCard>
@@ -154,6 +169,12 @@ function upgradePlan() {
           Other Plans</i>
       </h1>
     </NuxtLink>
+    <Confirmation 
+      v-model="isModalVisible" 
+      :is-open="isModalVisible" 
+      @update:is-open="isModalVisible = $event" 
+      @delete-confirm="cancelPlan" 
+      text="Are you sure you want to cancel your subscription?"/>
   </section>
 </template>
 
