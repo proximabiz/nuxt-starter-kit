@@ -46,13 +46,13 @@ export default defineEventHandler(async (event) => {
         if (chart) {
           const response: ChartResponseType = {
             userKeyword: chartValidation.userKeyword,
-            userRequirement: chartValidation.userRequirement,
+            userRequirement,
             diagramType: chartValidation.diagramType,
             isDetailed: chartValidation.isDetailed,
             chartDetails: chart,
           }
           const { data, error } = await updateDiagram(client, userKeyword, userRequirement, response, diagramId)
-          await insertDiagramVersion(client, diagramId, event.context.user.id, chart)
+          await insertDiagramVersion(client, diagramId, event.context.user.id, chart, userRequirement)
 
           return { message: 'Success!', data: { data, response, error }, status: 200 }
         }
@@ -94,12 +94,13 @@ async function getDiagram(client: any, diagramId: string): Promise<{ data: any, 
   ).eq('id', diagramId).limit(1)
 }
 
-async function insertDiagramVersion(client: any, diagramId: string, userId: string, chart: object) {
+async function insertDiagramVersion(client: any, diagramId: string, userId: string, chart: object, details: string) {
   await client.from('diagram_version').insert([{
     diagram_id: diagramId,
     user_id: userId,
     response: chart,
     versions: new Date().toISOString(),
+    details,
   }] as any)
 }
 
