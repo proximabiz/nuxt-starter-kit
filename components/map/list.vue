@@ -29,6 +29,9 @@ const headers = computed(() => [
   },
 ])
 
+const globalStore = useGlobalStore()
+globalStore.pageHeading.title = 'My Mindmaps'
+
 async function fetchDiagramTypes() {
   try {
     const diagramStore = useDiagramStore()
@@ -81,6 +84,7 @@ async function deleteMindMap(diagramId: string) {
     deleteDiagramId.value = diagramId
   }
   catch (error) {
+    isDelete.value = true
     notify.error(error)
   }
 }
