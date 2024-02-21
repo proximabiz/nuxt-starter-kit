@@ -15,7 +15,7 @@ console.log(sub_status.value.planName)
 const cards = [
   { id: 1, text: 'Address, Contact Details', iconSrc: address, componentName: 'ProfileAddressDetails',isDisabled:false },
   { id: 2, text: 'Tax ID / GST Details', iconSrc: tax, componentName: 'ProfileGstAndTax' ,isDisabled:false},
-  { id: 3, text: 'Billing & Payments', iconSrc: card, componentName: '',isDisabled: sub_status.value.planName==='Free'},
+  { id: 3, text: 'Billing & Payments', iconSrc: card, componentName: 'BillingPayments',isDisabled: sub_status.value.planName==='Free'},
   { id: 4, text: 'My Plan', iconSrc: plan, componentName: 'ProfileMyPlan',isDisabled:false },
 ]
 
@@ -62,6 +62,7 @@ function resetComponent() {
 
   <ProfileAddresDetails v-if="selectedComponent === 'ProfileAddressDetails'" />
   <ProfileGstAndTax v-if="selectedComponent === 'ProfileGstAndTax'" />
+  <ProfileBillingPayments v-if="selectedComponent==='BillingPayments'"/>
   <ProfileMyPlan v-if="selectedComponent === 'ProfileMyPlan'" />
 </template>
 

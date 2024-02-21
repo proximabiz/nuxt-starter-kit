@@ -3,9 +3,8 @@
 </script>
 
 <template>
-  <BillingAddress />
+    
 </template>
 
-<style scoped>
 
-</style>
+
