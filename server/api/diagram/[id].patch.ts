@@ -27,11 +27,10 @@ export default defineEventHandler(async (event) => {
 
       const diagramJSON = JSON.parse(chartValidation.existingOpenAIResponse)
       // update tables
-      const { data, error } = await updateDiagramForResponse(client, diagramJSON, diagramId)
+      const { data, error } = await updateDiagramForResponse(client, chartValidation.existingOpenAIResponse, diagramId)
       if (error)
         throw new CustomError(`Supabase Error: ${error.message}`, 400)
-
-      await insertDiagramVersion(client, diagramId, event.context.user.id, diagramJSON)
+      await insertDiagramVersion(client, diagramId, event.context.user.id, chartValidation.existingOpenAIResponse, diagram.versions)
 
       return { message: 'Success!', data, status: 200 }
     }
@@ -62,12 +61,13 @@ async function getDiagram(client: any, diagramId: string): Promise<{ data: any, 
   ).eq('id', diagramId).limit(1)
 }
 
-async function insertDiagramVersion(client: any, diagramId: string, userId: string, chart: object) {
+async function insertDiagramVersion(client: any, diagramId: string, userId: string, chart: object, details: string) {
   await client.from('diagram_version').insert([{
     diagram_id: diagramId,
     user_id: userId,
     response: chart,
     versions: new Date().toISOString(),
+    details,
   }] as any)
 }
 
