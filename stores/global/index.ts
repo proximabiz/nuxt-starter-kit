@@ -3,6 +3,9 @@ import type { State, contactTypes } from './types'
 export const useGlobalStore = defineStore('globalStore', {
   state: (): State => ({
     drawer: false,
+    pageHeading: {
+      title: 'My Heading',
+    },
 
   }),
   getters: {

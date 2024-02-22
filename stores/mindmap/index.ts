@@ -11,7 +11,8 @@ interface createAPIPayload {
 
 interface updateAPIPayload {
   title: string
-  // diagramTypeId: string
+  isDetailed: boolean
+  details: string
 }
 
 // interface saveAPIPayload {
