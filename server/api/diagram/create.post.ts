@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
         details: params.details,
         response: chart,
       },
-    ] as any).select()
+    ] as any).select('id,user_id,diagram_type_id,title,keywords,details,response,access,diagram_identifier')
     if (error)
       throw new CustomError(`Supabase Error: ${error.message}`, status)
 
