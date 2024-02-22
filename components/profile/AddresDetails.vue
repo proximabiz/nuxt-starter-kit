@@ -42,13 +42,12 @@ const nameValidation = z.string().refine((value) => {
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
     return false // Ensure there are at least two words
-
   // Check for minimum length and no special characters or numbers
   return parts.every((part) => {
     return /^[A-Za-z]+$/.test(part) && part.length >= 4
   })
 }, {
-  message: 'Name must consist of at least two words, each with a minimum of 3 characters, without special characters or numbers.',
+  message: 'Enter a valid full name',
 })
 const schema = z.object({
   name: nameValidation,
@@ -137,12 +136,15 @@ async function onSubmit() {
       const response = await addressStore.addAddress(payloadPost)
       if (response?.status === 200) {
         notify.success(response.message)
-        state.country = response.data?.country
-        state.zip = response.data.zipcode
-        state.city = response.data.city
-        state.region = response.data.region
-        state.address = response.data.address
-        state.phone = response.data.phoneNumber
+        
+        //require for future reference
+
+        // state.country = response.data?.country
+        // state.zip = response.data.zipcode
+        // state.city = response.data.city
+        // state.region = response.data.region
+        // state.address = response.data.address
+        // state.phone = response.data.phoneNumber
         // await getAddress()
         isEditable.value = false
       }
@@ -171,10 +173,10 @@ async function onCancel() {
     </UCard>
   </UModal>
 
-  <UBreadcrumb
+  <!-- <UBreadcrumb
     divider=">"
     :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'Address and Contact Details' }]"
-  />
+  /> -->
   <section class="grid place-items-center mb-8">
     <h1 class="font-semibold mb-4">
       Address and Contact Details

@@ -2,6 +2,7 @@ import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
 import { CompleteOrderValidation } from '~/server/utlis/validations'
+import { addPaymentMethod } from '~/server/utlis/stripe'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -17,18 +18,7 @@ export default defineEventHandler(async (event) => {
       throw new CustomError('Invalid input provided', 401)
     }
     else {
-      const { error } = await client.from('user_address_details').insert(
-        {
-          country: orderValidation.country.trim(),
-          region: orderValidation.region.trim(),
-          city: orderValidation.city.trim(),
-          zip_code: orderValidation.zipcode.trim(),
-          address: orderValidation.address.trim(),
-          phone_number: orderValidation.phoneNumber.trim(),
-          user_id: userID,
-        } as never,
-      ).single()
-
+      const { error } = await addUserDetails(orderValidation)
       if (error)
         return { message: 'Error!', error, status: 400 }
 
@@ -59,20 +49,21 @@ export default defineEventHandler(async (event) => {
           endDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000))
         }
 
-        const { error: errorUserDetails } = await client.from('user_subscriptions').insert(
-          {
-            user_id: userID,
-            sub_type_id: orderValidation.subscriptionTypeId.trim(),
-            amount,
-            plan_start_date: currentDate,
-            plan_end_date: endDate,
-            currency: orderValidation.currencyCode,
-            plan_type: orderValidation.planType,
-          } as never,
-        ).single()
+        const { error: errorUserDetails } = await addUserSubscription(orderValidation, amount, currentDate, endDate)
         if (errorUserDetails)
           return { message: 'Error!', errorUserDetails, status: 400 }
       }
+
+      // Save customer card details on Stripe
+      const [expiryMonth, expiryYear] = orderValidation.expiryDate.split('/')
+      const paymentMethodResponse: any = addPaymentMethod(orderValidation.cardNumber, expiryMonth, expiryYear, orderValidation.securityCode)
+      if (paymentMethodResponse.status === 200) {
+        const { error: errorPaymentMethod } = await updateStripePaymentMethodId(userID, paymentMethodResponse.paymentMethod.id)
+        if (error)
+          return { message: 'Error!', errorPaymentMethod, status: 400 }
+      }
+      else { return paymentMethodResponse }
+
       return { message: 'Order Complete successfully!', data: orderValidation, status: 200 }
     }
   }
@@ -81,6 +72,43 @@ export default defineEventHandler(async (event) => {
       message: error.message,
       status: 501,
     }
+  }
+
+  async function addUserDetails(orderValidation: any): Promise<{ error: any }> {
+    return await client.from('user_address_details').insert(
+      {
+        country: orderValidation.country.trim(),
+        region: orderValidation.region.trim(),
+        city: orderValidation.city.trim(),
+        zip_code: orderValidation.zipcode.trim(),
+        address: orderValidation.address.trim(),
+        phone_number: orderValidation.phoneNumber.trim(),
+        user_id: userID,
+      } as never,
+    ).single()
+  }
+
+  async function addUserSubscription(orderValidation: any, amount: number, currentDate: Date, endDate: Date): Promise<{ error: any }> {
+    return await client.from('user_subscriptions').insert(
+      {
+        user_id: userID,
+        sub_type_id: orderValidation.subscriptionTypeId.trim(),
+        amount,
+        plan_start_date: currentDate,
+        plan_end_date: endDate,
+        currency: orderValidation.currencyCode,
+        plan_type: orderValidation.planType,
+      } as never,
+    ).single()
+  }
+
+  async function updateStripePaymentMethodId(userId: string, paymentMethodId: string): Promise<{ error: any }> {
+    return await client.from('user_stripe_details').update(
+      {
+        stripe_payment_method_id: paymentMethodId.trim(),
+        has_payment_method_active: true,
+      } as never,
+    ).eq('user_id', userID).select().single()
   }
 })
 
@@ -102,13 +130,3 @@ function calculatePlanAmount(currencyCode: string, monthlyPriceInUSD: number, mo
   }
   return amount
 }
-
-// function calculateEndDate(planType: string) {
-
-//   const currentDate = new Date();
-//   const currentMonth = currentDate.getMonth() + 1;
-//   const currentYear = currentDate.getFullYear();
-
-//   // Get the number of days in the current month
-//   this.daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
-// }

@@ -3,6 +3,9 @@ definePageMeta({
   layout: 'app',
   middleware: ['redirect'],
 })
+
+const globalStore = useGlobalStore()
+globalStore.pageHeading.title = 'My Accounts'
 </script>
 
 <template>

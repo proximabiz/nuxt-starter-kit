@@ -7,15 +7,30 @@ import { useBillingStore } from '~/stores/subscription'
 const state = useBillingStore()
 const addressStore = useAddressStore()
 
+// #validation
+
+const nameValidation = z.string().refine((value) => {
+  // Check for two words separated by space
+  const parts = value.trim().split(/\s+/)
+  if (parts.length < 2)
+    return false // Ensure there are at least two words
+  // Check for minimum length and no special characters or numbers
+  return parts.every((part) => {
+    return /^[A-Za-z]+$/.test(part) && part.length >= 4
+  })
+}, {
+  message: 'Enter a valid full name',
+})
+
+
 const billingSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  orgName: z.string().min(1, 'Organisation Name is required'),
+  name: nameValidation,
   country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip is required').regex(/^\d+$/, 'Zip must be number'),
+  zip: z.string().min(1, 'Zip is required'),
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
   address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(1, 'Phone number is required'),
+  phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
 })
 
 onMounted(async () => {

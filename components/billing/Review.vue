@@ -6,7 +6,9 @@ interface Props {
   duePrice: string
 }
 const props = defineProps<Props>()
-const state = useBillingStore()
+// const state = useBillingStore()
+const billingStore = useBillingStore()
+const allDetails = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
 </script>
 
 <template>
@@ -30,9 +32,9 @@ const state = useBillingStore()
         Address Details:
       </div>
       <div>
-        <p>{{ state.billingDetails.name }}</p>
-        <p>{{ state.billingDetails.city }} {{ state.billingDetails.zip }}</p>
-        <p>{{ state.billingDetails.country }}</p>
+        <p>{{ allDetails.name }}</p>
+        <p>{{ allDetails.city }} {{ allDetails.zip }}</p>
+        <p>{{ allDetails.country }}</p>
       </div>
     </div>
     <div class="grid grid-cols-2 bg-slate-100 p-4 min-width">
@@ -40,10 +42,10 @@ const state = useBillingStore()
         Card Details:
       </div>
       <div>
-        <p>Name on the card: {{ state.billingDetails.cardHolderName }}</p>
-        <p>Credit or debit card number: {{ state.billingDetails.cardNo }}</p>
-        <p>Expire date: {{ state.billingDetails.expDate }}</p>
-        <p>Security code: {{ state.billingDetails.cvv }}</p>
+        <p>Name on the card: {{ allDetails.cardHolderName }}</p>
+        <p>Credit or debit card number: {{ allDetails.cardNo }}</p>
+        <p>Expire date: {{ allDetails.expDate }}</p>
+        <p>Security code: {{ allDetails.cvv }}</p>
       </div>
     </div>
     <!-- <div class="font-bold">
