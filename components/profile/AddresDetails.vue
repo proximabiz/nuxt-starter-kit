@@ -4,10 +4,6 @@ import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
 import { useAddressStore } from '~/stores/address'
 
-interface Props {
-  addressDetails: any
-}
-
 const notify = useNotification()
 const addressStore = useAddressStore()
 
@@ -140,8 +136,8 @@ async function onSubmit() {
       const response = await addressStore.addAddress(payloadPost)
       if (response?.status === 200) {
         notify.success(response.message)
-        
-        //require for future reference
+
+        // require for future reference
 
         // state.country = response.data?.country
         // state.zip = response.data.zipcode

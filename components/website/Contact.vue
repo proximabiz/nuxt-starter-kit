@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { z } from 'zod'
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
+import { z } from 'zod'
 
 const notify = useNotification()
 const contactStore = useGlobalStore()
@@ -51,7 +51,6 @@ async function onSubmit() {
 
   try {
     const response = await contactStore.contactSales(payload)
-    console.log('payload', response)
 
     if (response?.status === 201) {
       notify.success(response.message)

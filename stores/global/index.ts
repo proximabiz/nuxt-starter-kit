@@ -6,7 +6,6 @@ export const useGlobalStore = defineStore('globalStore', {
     pageHeading: {
       title: 'My Heading',
     },
-
   }),
   getters: {
     GET_DRAWER_STATUS(): boolean {

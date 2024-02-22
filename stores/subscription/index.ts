@@ -37,6 +37,7 @@ export const useBillingStore = defineStore({
         throw supabaseError
       this.subscriptionStatus.planStatus = supabaseResponse.subscription_status
       this.subscriptionStatus.planName = supabaseResponse.name
+      console.log()
       return supabaseResponse
     },
     async addSubscription(payload: subScriptionPayload) {
@@ -67,7 +68,8 @@ export const useBillingStore = defineStore({
       return data.value
     },
     async clearSubscription() {
-      return this.subscriptionStatus.planName = '', this.subscriptionStatus.planStatus = ''
+      this.subscriptionStatus.planName = ''
+      this.subscriptionStatus.planStatus = ''
     },
   },
 })

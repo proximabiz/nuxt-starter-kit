@@ -27,8 +27,8 @@ function initialState() {
 export const useAuthStore = defineStore('authStore', {
   state: (): State => initialState(),
   getters: {
-    isLoggedIn(): string {
-      return this.session.access_token
+    isLoggedIn() {
+      return this.getAuthUser
     },
 
     getAuthUser() {

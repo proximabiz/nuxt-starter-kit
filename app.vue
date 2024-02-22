@@ -6,6 +6,7 @@ const route = useRoute()
 
 const authUser = computed(() => authStore.getAuthUser.value)
 const planStore = useBillingStore()
+const addressStore = useAddressStore()
 
 const showUpgradeModal = ref<boolean>(false)
 
@@ -16,7 +17,7 @@ watch(
       navigateTo('/login')
 
     if (user && route.fullPath.includes('/login'))
-      navigateTo('/')
+      return handlePostAuthentication()
 
     if (user?.id) {
       const response = await planStore.fetchActivePlan()
@@ -36,9 +37,18 @@ watch(
   },
   { immediate: true },
 )
+
 function upgradePlan() {
   showUpgradeModal.value = false
   navigateTo('/website/pricing')
+}
+
+async function handlePostAuthentication() {
+  // Check if user has filled the personal details already
+  const response = await addressStore.fetchAddress()
+  if (!response.name || !response.organisation_name)
+    return navigateTo('/user/personal-details')
+  return navigateTo('/app/maps')
 }
 </script>
 

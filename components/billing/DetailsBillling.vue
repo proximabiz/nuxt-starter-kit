@@ -9,10 +9,10 @@ const users = ['1user']
 const user = ref(users[0])
 const duePrice = ref('$77.8')
 
-const confirmation = reactive({
-  isModalVisible: false,
-  context: '',
-})
+// const confirmation = reactive({
+//   isModalVisible: false,
+//   context: '',
+// })
 const billingStore = useBillingStore()
 const billingAddressCard = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
 
@@ -45,7 +45,6 @@ function setActiveStep(index: number) {
   }
   if (index === 3) {
     const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
-    console.log("checking",isCardDetailsComplete)
     if (!isCardDetailsComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing card details.'
@@ -62,9 +61,6 @@ function setActiveStep(index: number) {
 }
 function isActive(index: number) {
   return state.activeStep >= index
-}
-function updateConfirmation() {
-  confirmation.isModalVisible = false
 }
 </script>
 
@@ -121,7 +117,6 @@ function updateConfirmation() {
     <UButton v-if="state.activeStep !== 3" @click="() => setActiveStep(state.activeStep + 1)">
       Continue
     </UButton>
-    <!-- <ValidationConfirm :confirmation="confirmation"  @closeModal="updateConfirmation"/> -->
   </div>
 </template>
 
