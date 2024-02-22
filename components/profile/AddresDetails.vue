@@ -136,8 +136,8 @@ async function onSubmit() {
       const response = await addressStore.addAddress(payloadPost)
       if (response?.status === 200) {
         notify.success(response.message)
-        
-        //require for future reference
+
+        // require for future reference
 
         // state.country = response.data?.country
         // state.zip = response.data.zipcode

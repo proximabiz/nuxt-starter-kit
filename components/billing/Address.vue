@@ -22,7 +22,6 @@ const nameValidation = z.string().refine((value) => {
   message: 'Enter a valid full name',
 })
 
-
 const billingSchema = z.object({
   name: nameValidation,
   country: z.string().min(1, 'Country is required'),

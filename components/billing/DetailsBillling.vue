@@ -45,7 +45,6 @@ function setActiveStep(index: number) {
   }
   if (index === 3) {
     const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
-    console.log("checking",isCardDetailsComplete)
     if (!isCardDetailsComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing card details.'

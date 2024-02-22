@@ -7,7 +7,7 @@ const planStore = useBillingStore()
 const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
 const noplanModal = ref<boolean>(false)
-const isModalVisible =ref(false)
+const isModalVisible = ref(false)
 
 async function getActivePlan() {
   try {
@@ -50,7 +50,6 @@ function upgradePlanNO() {
   navigateTo('/website/pricing')
 }
 </script>
-
 
 <template>
   <UModal :model-value="showUpgradeModal" :transition="false">
@@ -155,7 +154,7 @@ function upgradePlanNO() {
         <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
           Current Plan
         </UButton>
-        <UButton type="submit" class="w-fit mt-2" color="blue" @click="()=>{isModalVisible=true}">
+        <UButton type="submit" class="w-fit mt-2" color="blue" @click="() => { isModalVisible = true }">
           Cancel Subscription
         </UButton>
         <p v-if="planData?.plan_end_date" class="text-red-500 text-xs">
@@ -169,12 +168,13 @@ function upgradePlanNO() {
           Other Plans</i>
       </h1>
     </NuxtLink>
-    <Confirmation 
-      v-model="isModalVisible" 
-      :is-open="isModalVisible" 
-      @update:is-open="isModalVisible = $event" 
-      @delete-confirm="cancelPlan" 
-      text="Are you sure you want to cancel your subscription?"/>
+    <Confirmation
+      v-model="isModalVisible"
+      :is-open="isModalVisible"
+      text="Are you sure you want to cancel your subscription?"
+      @update:is-open="isModalVisible = $event"
+      @delete-confirm="cancelPlan"
+    />
   </section>
 </template>
 

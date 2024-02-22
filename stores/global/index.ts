@@ -5,7 +5,7 @@ export const useGlobalStore = defineStore('globalStore', {
     drawer: false,
     pageHeading: {
       title: 'My Heading',
-    }
+    },
   }),
   getters: {
     GET_DRAWER_STATUS(): boolean {
