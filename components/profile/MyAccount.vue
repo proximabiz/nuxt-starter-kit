@@ -68,7 +68,7 @@ function resetComponent() {
 
   <ProfileAddresDetails v-if="selectedComponent === 'ProfileAddressDetails'" />
   <ProfileGstAndTax v-if="selectedComponent === 'ProfileGstAndTax'" />
-  <ProfileBillingPayments v-if="selectedComponent==='BillingPayments'"/>
+  <ProfileBillingPayments v-if="selectedComponent === 'BillingPayments'" />
   <ProfileMyPlan v-if="selectedComponent === 'ProfileMyPlan'" />
 </template>
 
