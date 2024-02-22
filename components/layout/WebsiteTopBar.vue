@@ -15,6 +15,8 @@ interface NavLink {
   to: string
 }
 
+const isLoginRoute = computed(() => route.fullPath === '/login')
+
 const links = ref<NavLink[]>([
   { name: 'Home', to: '/website' },
   { name: 'About Product', to: '/website/about' },
@@ -82,14 +84,14 @@ function isActiveRoute(to: string) {
       </template>
     </ul>
     <UButton
-      v-if="!authUser" class="hidden lg:inline-block py-2 px-6"
+      v-if="!authUser && !isLoginRoute" class="hidden lg:inline-block py-2 px-6"
       @click="navigateTo({
         path: '/login',
       })"
     >
       Login
     </UButton>
-    <UDropdown v-else :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-10">
+    <UDropdown v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-10">
       <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
       <template #account>
         <div class="text-left">

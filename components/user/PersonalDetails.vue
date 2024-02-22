@@ -1,0 +1,164 @@
+import type { logger } from '~/utility/logger';
+<script setup lang="ts">
+import { VueTelInput } from 'vue-tel-input'
+import 'vue-tel-input/vue-tel-input.css'
+import { z } from 'zod'
+import { useAddressStore } from '~/stores/address'
+
+const notify = useNotification()
+const addressStore = useAddressStore()
+
+interface FormState {
+  name: string
+  orgname: string
+  country: string
+  zip: string
+  city: string
+  region: string
+  address: string
+  phone: string
+  email?: string
+}
+
+const initialState: FormState = {
+  name: '',
+  orgname: '',
+  country: '',
+  zip: '',
+  city: '',
+  region: '',
+  address: '',
+  phone: '',
+  email: '',
+}
+
+const state = reactive<FormState>({ ...initialState })
+// #validation
+
+const nameValidation = z.string().refine((value) => {
+  // Check for two words separated by space
+  const parts = value.trim().split(/\s+/)
+  if (parts.length < 2)
+    return false // Ensure there are at least two words
+
+  // Check for minimum length and no special characters or numbers
+  return parts.every((part) => {
+    return /^[A-Za-z]+$/.test(part) && part.length >= 4
+  })
+}, {
+  message: 'Name must consist of at least two words, each with a minimum of 3 characters, without special characters or numbers.',
+})
+
+const schema = z.object({
+  name: nameValidation,
+  country: z.string().min(1, 'Country is required'),
+  zip: z.string().min(1, 'Zip is required'),
+  city: z.string().min(1, 'City is required'),
+  region: z.string().min(1, 'Region is required'),
+  address: z.string().min(1, 'Address is required'),
+  phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
+})
+
+async function getAddress() {
+  try {
+    const response = await addressStore.fetchAddress()
+    state.name = response.name
+    state.orgname = response.organisation_name
+    state.country = response.country
+    state.zip = response.zip_code
+    state.city = response.city
+    state.region = response.region
+    state.address = response.address
+    state.phone = response.phone_number
+    state.email = response.email
+  }
+  catch (error) {
+    notify.error(error.message)
+  }
+}
+
+onMounted(async () => {
+  await getAddress()
+})
+
+async function onSubmit() {
+  const payloadPost = {
+    name: state.name,
+    organisationName: state.orgname,
+    country: state.country,
+    region: state.region,
+    city: state.city,
+    zipcode: state.zip,
+    address: state.address,
+    phoneNumber: state.phone,
+  }
+  try {
+    const response = await addressStore.addAddress(payloadPost)
+    if (response?.status === 200) {
+      notify.success(response.message)
+      state.country = response.data?.country
+      state.zip = response.data.zipcode
+      state.city = response.data.city
+      state.region = response.data.region
+      state.address = response.data.address
+      state.phone = response.data.phoneNumber
+    }
+  }
+  catch (error) {
+    notify.error(error.statusMessage)
+  }
+}
+</script>
+
+<template>
+  <section class="grid place-items-center mb-8">
+    <h1 class="font-semibold mb-4">
+      Address and Contact Details
+    </h1>
+
+    <UCard class="mb-8">
+      <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
+        <div class="flex gap-2">
+          <UFormGroup label="Full Name" name="name" required>
+            <UInput v-model="state.name" color="blue" />
+          </UFormGroup>
+          <UFormGroup label="Organisation Name" name="orgname" required>
+            <UInput v-model="state.orgname" color="blue" />
+          </UFormGroup>
+        </div>
+        <div class="flex gap-2">
+          <UFormGroup label="Country" name="country" required>
+            <UInput v-model="state.country" color="blue" />
+          </UFormGroup>
+          <UFormGroup label="Zip" name="zip" required>
+            <UInput v-model="state.zip" color="blue" />
+          </UFormGroup>
+        </div>
+        <div class="flex gap-2">
+          <UFormGroup label="City" name="city" required>
+            <UInput v-model="state.city" color="blue" />
+          </UFormGroup>
+          <UFormGroup label="Region" name="region" required>
+            <UInput v-model="state.region" color="blue" />
+          </UFormGroup>
+        </div>
+        <UFormGroup label="Address" name="address" required>
+          <UInput v-model="state.address" color="blue" />
+        </UFormGroup>
+        <UFormGroup label="Phone no" name="phone" required>
+          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" />
+        </UFormGroup>
+        <UFormGroup label="Email Id" name="email" required>
+          <UInput v-model="state.email" color="blue" :disabled="true" />
+        </UFormGroup>
+        <div class="flex gap-2 justify-center">
+          <UButton type="submit" color="blue">
+            Save
+          </UButton>
+        </div>
+      </UForm>
+    </UCard>
+  </section>
+</template>
+
+<style scoped></style>

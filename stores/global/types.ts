@@ -1,3 +1,7 @@
+interface pageHeadingType {
+  title: string
+}
+
 export interface contactTypes {
   name: string
   email: string
@@ -7,6 +11,6 @@ export interface contactTypes {
 }
 
 export interface State {
-  contactUs: contactTypes
   drawer: boolean
+  pageHeading: pageHeadingType
 }

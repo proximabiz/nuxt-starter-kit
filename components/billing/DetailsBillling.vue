@@ -9,10 +9,10 @@ const users = ['1user']
 const user = ref(users[0])
 const duePrice = ref('$77.8')
 
-const confirmation = reactive({
-  isModalVisible: false,
-  context: '',
-})
+// const confirmation = reactive({
+//   isModalVisible: false,
+//   context: '',
+// })
 const billingStore = useBillingStore()
 const billingAddressCard = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
 
@@ -33,7 +33,6 @@ function setActiveStep(index: number) {
   if (index === 2) {
     // Check if any of the required billingState fields are empty
     const isAddressComplete = bac.name && bac.orgName && bac.country && bac.zip && bac.city && bac.region && bac.address && bac.phone
-    console.log("checking",isAddressComplete)
     if (!isAddressComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing address.'
@@ -62,9 +61,6 @@ function setActiveStep(index: number) {
 }
 function isActive(index: number) {
   return state.activeStep >= index
-}
-function updateConfirmation() {
-  confirmation.isModalVisible = false
 }
 </script>
 
@@ -116,12 +112,11 @@ function updateConfirmation() {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCarddetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
+    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
     <BillingReview v-if="state.activeStep === 3" :plan-name="props.planDetails.plan" :due-price="duePrice" />
     <UButton v-if="state.activeStep !== 3" @click="() => setActiveStep(state.activeStep + 1)">
       Continue
     </UButton>
-    <!-- <ValidationConfirm :confirmation="confirmation"  @closeModal="updateConfirmation"/> -->
   </div>
 </template>
 

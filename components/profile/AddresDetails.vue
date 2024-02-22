@@ -4,10 +4,6 @@ import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
 import { useAddressStore } from '~/stores/address'
 
-interface Props {
-  addressDetails: any
-}
-
 const notify = useNotification()
 const addressStore = useAddressStore()
 
@@ -51,7 +47,7 @@ const nameValidation = z.string().refine((value) => {
     return /^[A-Za-z]+$/.test(part) && part.length >= 4
   })
 }, {
-  message: 'Name must consist of at least two words, each with a minimum of 3 characters, without special characters or numbers.',
+  message: 'Enter a valid full name',
 })
 const schema = z.object({
   name: nameValidation,
@@ -140,8 +136,8 @@ async function onSubmit() {
       const response = await addressStore.addAddress(payloadPost)
       if (response?.status === 200) {
         notify.success(response.message)
-        
-        //require for future reference
+
+        // require for future reference
 
         // state.country = response.data?.country
         // state.zip = response.data.zipcode

@@ -29,6 +29,9 @@ const headers = computed(() => [
   },
 ])
 
+const globalStore = useGlobalStore()
+globalStore.pageHeading.title = 'My Mindmaps'
+
 async function fetchDiagramTypes() {
   try {
     const diagramStore = useDiagramStore()
@@ -75,12 +78,12 @@ function redirectToPath(diagramId: string) {
 }
 
 async function deleteMindMap(diagramId: string) {
-  console.log(diagramId)
   try {
     isDelete.value = true
     deleteDiagramId.value = diagramId
   }
   catch (error) {
+    isDelete.value = true
     notify.error(error)
   }
 }
@@ -90,7 +93,6 @@ async function confirmedDeleteDiagram() {
     apiResponse.value = await mindmapStore.delete({
       diagramId: deleteDiagramId.value,
     })
-    console.log(apiResponse.value)
     isDelete.value = false
     notify.success('Diagram deleted successfully!')
     fetchMaps()
@@ -131,7 +133,7 @@ onMounted(() => {
                     {{ item.title }}
                   </td>
                   <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.Keywords || 'No keywords specified' }}
+                    {{ item.keywords || 'No keywords specified' }}
                   </td>
                   <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.created_at }}

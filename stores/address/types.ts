@@ -17,5 +17,5 @@ export interface postPayload {
   phoneNumber: string
 }
 export interface State {
-  allAddressDetails: {}
+  allAddressDetails: postPayload
 }

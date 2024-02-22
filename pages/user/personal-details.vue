@@ -1,9 +1,11 @@
 <script setup lang="ts">
-
+definePageMeta({
+  middleware: ['redirect'],
+})
 </script>
 
 <template>
-  <BillingAddress />
+  <UserPersonalDetails />
 </template>
 
 <style scoped>
