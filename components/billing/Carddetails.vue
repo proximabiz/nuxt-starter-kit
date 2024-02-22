@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import card from '@/assets/media/credit-card.png'
-import visa from '@/assets/media/visa.png'
 import mastercard from '@/assets/media/mastercard.png'
+import visa from '@/assets/media/visa.png'
 import { useBillingStore } from '~/stores/subscription'
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 const props = defineProps<Props>()
 const billingStore = useBillingStore()
-const cardDetails = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
+const cardDetails = computed(() => billingStore.billingDetails)
 
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 

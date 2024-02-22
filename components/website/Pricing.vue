@@ -6,6 +6,7 @@ const showBillingDetails = ref(false)
 let cardValue = ref()
 const region = ref('india')
 const subStatusStore = useBillingStore()
+const authStore = useAuthStore()
 
 const sub_status = computed(() => subStatusStore.GET_SUB_STATUS)
 
@@ -49,7 +50,7 @@ const regions: regionTypes[] = [
 ]
 
 const monthlyPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 1, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED' || sub_status?.value.planName === 'Free' },
+  { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value && sub_status?.value.planStatus === '') || sub_status?.value.planName === 'Free' },
   { plan: 'Basic', price: 2, month: 1, disabled: sub_status?.value.planName === 'Basic' },
   { plan: 'Premium', price: 5, month: 1, disabled: sub_status?.value.planName === 'Premium' },
   { plan: 'Enterprise', price: 'Custom', month: 1, disabled: sub_status?.value.planName === 'Enterprise' },
@@ -84,6 +85,9 @@ const prices = computed(() => {
 })
 
 function providePlanDetails(val: any) {
+  if (!authStore.getAuthUser.value)
+    return navigateTo('/login')
+
   cardValue = val
   showBillingDetails.value = true
   return cardValue

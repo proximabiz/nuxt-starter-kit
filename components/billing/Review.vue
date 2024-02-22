@@ -30,9 +30,9 @@ const state = useBillingStore()
         Address Details:
       </div>
       <div>
-        <p>{{ state.name }}</p>
-        <p>{{ state.city }} {{ state.zip }}</p>
-        <p>{{ state.country }}</p>
+        <p>{{ state.billingDetails.name }}</p>
+        <p>{{ state.billingDetails.city }} {{ state.billingDetails.zip }}</p>
+        <p>{{ state.billingDetails.country }}</p>
       </div>
     </div>
     <div class="grid grid-cols-2 bg-slate-100 p-4 min-width">
@@ -40,10 +40,10 @@ const state = useBillingStore()
         Card Details:
       </div>
       <div>
-        <p>Name on the card: {{ state.cardHolderName }}</p>
-        <p>Credit or debit card number: {{ state.cardNo }}</p>
-        <p>Expire date: {{ state.expDate }}</p>
-        <p>Security code: {{ state.cvv }}</p>
+        <p>Name on the card: {{ state.billingDetails.cardHolderName }}</p>
+        <p>Credit or debit card number: {{ state.billingDetails.cardNo }}</p>
+        <p>Expire date: {{ state.billingDetails.expDate }}</p>
+        <p>Security code: {{ state.billingDetails.cvv }}</p>
       </div>
     </div>
     <!-- <div class="font-bold">

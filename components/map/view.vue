@@ -12,8 +12,6 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const route = useRoute()
-
 const mindmapStore = useMindmapStore()
 const notify = useNotification()
 const diagramStore = useDiagramStore()
@@ -241,7 +239,6 @@ async function exportJSON() {
 function loadJSON(jsonData: JSON) {
   isVersionDrawerOpen.value = false
   updateApiResponse.value = jsonData
-  console.log('jsonData', jsonData)
 
   if (updateApiResponse.value.nodeData) {
     init2()

@@ -67,7 +67,8 @@ export const useBillingStore = defineStore({
       return data.value
     },
     async clearSubscription() {
-      return this.subscriptionStatus.planName = '', this.subscriptionStatus.planStatus = ''
+      this.subscriptionStatus.planName = ''
+      this.subscriptionStatus.planStatus = ''
     },
   },
 })

@@ -27,7 +27,6 @@ async function cancelPlan() {
   }
   try {
     const res = await planStore.cancelSubscription(payload)
-    console.log(res)
 
     if (res?.status === 204) {
       noplanModal.value = true

@@ -4,10 +4,6 @@ import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
 import { useAddressStore } from '~/stores/address'
 
-interface Props {
-  addressDetails: any
-}
-
 const notify = useNotification()
 const addressStore = useAddressStore()
 

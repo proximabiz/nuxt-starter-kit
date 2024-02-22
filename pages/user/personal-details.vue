@@ -5,7 +5,7 @@ definePageMeta({
 </script>
 
 <template>
-  <BillingAddress />
+  <UserPersonalDetails />
 </template>
 
 <style scoped>

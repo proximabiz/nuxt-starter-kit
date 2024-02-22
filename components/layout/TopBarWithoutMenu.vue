@@ -31,7 +31,7 @@ const isLoggedIn = computed(() => authStore.isLoggedIn)
 async function singOut() {
   try {
     // Do something with data
-    const res = await authStore.signOut()
+    await authStore.signOut()
     await planStore.clearSubscription()
     await addressStore.clearAddress()
 
