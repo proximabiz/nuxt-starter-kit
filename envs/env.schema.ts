@@ -5,15 +5,10 @@ export const BaseSchema = z.object({
   NUXT_PORT: z.string().optional(),
 })
 
-const PublicSchema = z.object({
-  EXAMPLE_PUBLIC: z.string(),
-})
-
 const PrivateSchema = z.object({
-  EXAMPLE_SECRET: z.string(),
   OPENAI_API_KEY: z.string(),
   SUPABASE_URL: z.string(),
   SUPABASE_KEY: z.string(),
 })
 
-export const Env = BaseSchema.merge(PublicSchema).merge(PrivateSchema)
+export const Env = BaseSchema.merge(PrivateSchema)

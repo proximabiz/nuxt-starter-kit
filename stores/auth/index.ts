@@ -1,4 +1,4 @@
-import type { State, User, signInViaEmailPasswordPayload, signupViaEmailPasswordPayload } from './types'
+import type { State, signInViaEmailPasswordPayload, signupViaEmailPasswordPayload } from './types'
 
 function initialState() {
   return {
@@ -27,12 +27,18 @@ function initialState() {
 export const useAuthStore = defineStore('authStore', {
   state: (): State => initialState(),
   getters: {
-    isLoggedIn(): string {
-      return this.session.access_token
+    isLoggedIn() {
+      return this.getAuthUser
     },
 
-    getAuthUser(): User {
-      return this.authUser
+    getAuthUser() {
+      return useSupabaseUser()
+    },
+
+    async getBearerToken() {
+      const supabaseClient = useSupabaseClient()
+      const session = await supabaseClient.auth.getSession()
+      return `Bearer ${session.data.session?.access_token}`
     },
   },
   actions: {

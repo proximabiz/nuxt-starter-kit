@@ -1,10 +1,10 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'app',
-  middleware: ['auth'],
+  middleware: ['redirect'],
 })
 </script>
 
 <template>
-  <MapsList />
+  <MapList />
 </template>

@@ -1,3 +1,4 @@
+import { CustomError } from '../../utlis/custom.error'
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
@@ -8,15 +9,13 @@ export default defineEventHandler(async (event) => {
     password: params.password,
   })
 
-  if (error) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: error.message,
-    })
-  }
+  if (error)
+    throw new CustomError(`Error: ${error.message}`, 400)
+
+  if (Array.isArray(data) && data.length === 0)
+    throw new CustomError('Error: no user found!', 404)
 
   return {
     data,
-    error,
   }
 })

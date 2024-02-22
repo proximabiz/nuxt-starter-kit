@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const authStore = useAuthStore()
 
-const isLoggedIn = computed(() => authStore.isLoggedIn)
+const authUser = computed(() => authStore.getAuthUser.value)
 </script>
 
 <template>
@@ -11,16 +11,16 @@ const isLoggedIn = computed(() => authStore.isLoggedIn)
         <img class="h-20 max-w-20" src="/assets/media/mind.gif" alt="image description">
       </div>
       <a href="#">
-        <h5 class="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Let AI Shape Your Ideas With</h5>
+        <h5 class="mt-5 text-xl font-bold tracking-tight text-gray-900">Let AI Shape Your Ideas With</h5>
       </a>
-      <p class="font-bold text-gray-700 dark:text-gray-400 mt-5">
+      <p class="text-3xl font-bold text-custom1-500 mt-5">
         AI FLOW MAPPER
       </p>
-      <p class="mt-5 font-normal text-gray-700 dark:text-gray-400">
+      <p class="mt-5 font-normal text-gray-700">
         This tool is built to Enhance Productivity and Visualize Ideas with AI Flow Mapper.<br>
         It Simplifies the Complex Concepts into Elegant Diagrams.
       </p>
-      <UButton v-if="isLoggedIn" class="mt-10" color="blue" @click="navigateTo('/app/maps')">
+      <UButton v-if="authUser" class="mt-10" @click="navigateTo('/app/maps')">
         Get Started
       </UButton>
     </div>

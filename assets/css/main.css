@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-.app-view {
+/* .app-view {
   height: 100vh;
+} */
+.text-primary-500 {
+  color: orange !important;
 }
