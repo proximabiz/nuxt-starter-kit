@@ -112,7 +112,7 @@ function isActive(index: number) {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCarddetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
+    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
     <BillingReview v-if="state.activeStep === 3" :plan-name="props.planDetails.plan" :due-price="duePrice" />
     <UButton v-if="state.activeStep !== 3" @click="() => setActiveStep(state.activeStep + 1)">
       Continue

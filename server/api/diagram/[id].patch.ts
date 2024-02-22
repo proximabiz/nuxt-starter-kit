@@ -27,10 +27,10 @@ export default defineEventHandler(async (event) => {
 
       const diagramJSON = JSON.parse(chartValidation.existingOpenAIResponse)
       // update tables
-      const { data, error } = await updateDiagramForResponse(client, chartValidation.existingOpenAIResponse, diagramId)
+      const { data, error } = await updateDiagramForResponse(client, diagramJSON, diagramId)
       if (error)
         throw new CustomError(`Supabase Error: ${error.message}`, 400)
-      await insertDiagramVersion(client, diagramId, event.context.user.id, chartValidation.existingOpenAIResponse, diagram.versions)
+      await insertDiagramVersion(client, diagramId, event.context.user.id, diagramJSON, diagram.versions)
 
       return { message: 'Success!', data, status: 200 }
     }

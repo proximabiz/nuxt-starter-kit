@@ -133,7 +133,7 @@ onMounted(() => {
                     {{ item.title }}
                   </td>
                   <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.Keywords || 'No keywords specified' }}
+                    {{ item.keywords || 'No keywords specified' }}
                   </td>
                   <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.created_at }}
