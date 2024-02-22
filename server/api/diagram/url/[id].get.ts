@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   await protectRoute(event)
   const client = await serverSupabaseClient(event)
   const diagramIdentifier = await getRouterParam(event, 'id')
-  const { data: diagram, error } = await client.from('diagrams').select('*').eq('diagram_identifier', diagramIdentifier!).limit(1)
+  const { data: diagram, error } = await client.from('diagrams').select('id,user_id,diagram_type_id,title,keywords,details,response,access,diagram_identifier').eq('diagram_identifier', diagramIdentifier!).limit(1)
 
   if (error)
     throw createError(error)
