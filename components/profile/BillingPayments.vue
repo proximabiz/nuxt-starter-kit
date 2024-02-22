@@ -18,7 +18,7 @@ const columns = [{
   label: 'Invoice'
 },]
 
-const people = [
+const payments = [
     {
     payment:"21/2/2024" ,
     plan: 'Basic',
@@ -57,6 +57,13 @@ cardDetails.value.cardNo="5267437907533201"
 cardDetails.value.expDate="05/28"
 cardDetails.value.cvv="6635"
 
+const page = ref(1)
+const pageCount = 5
+
+const rows = computed(() => {
+  return payments.slice((page.value - 1) * pageCount, (page.value) * pageCount)
+})
+
 </script>
 
 <template>
@@ -85,11 +92,14 @@ cardDetails.value.cvv="6635"
 <p class="font-bold text-2xl ml-4" >Your billing history</p>
     <hr class="ml-4 mt-2">
     <section  class="grid place-items-center">
-    <UTable :columns="columns" :rows="people">
+    <UTable :columns="columns" :rows="rows">
     <template v-slot:invoice="{ row }">
         <a :href="row.invoice" target="_blank">View Invoice</a>
       </template>
     </UTable>
+    <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+      <UPagination v-model="page" :page-count="pageCount" :total="payments.length"/>
+    </div>
 </section>
 </template>
 
