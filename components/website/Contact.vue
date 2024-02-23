@@ -19,26 +19,18 @@ const state = reactive({
   message: '',
   request: '',
 })
-// const schema = z.object({
-//   name: z.string().min(1,'Name is required'),
-//   email: z.string().email('Invalid email'),
-//   phone: z
-//     .string()
-//     .refine((value) => /^[0-9]+$/.test(value) && value.length >= 10, {
-//       message: 'Phone must be a valid number with at least 10 digits',
-//     }),
-//     message: z.string().min(1,'Name is required'),
-// })
 
 const schema = z.object({
-  name: z.string().min(1, 'First Name is required'),
-  lastname: z.string().min(1, 'Last Name is required'),
+  name: z.string()
+    .min(1, 'First Name is required')
+    .regex(/^[A-Za-z]{3,}$/, 'Enter a valid name 0f 3 letters and without numbers and symbols'),
+  lastname: z.string()
+    .min(1, 'Last Name is required')
+    .regex(/^[A-Za-z]{3,}$/, 'Enter a valid name 0f 3 letters and without numbers and symbols'),
   email: z.string().email('Invalid email Id'),
   // phone: z.string().max(15, 'Phone must be a valid number with at least 10 digits'),
   message: z.string().min(1, 'Message is required'),
 })
-
-// type Schema = z.output<typeof schema>
 
 async function onSubmit() {
   const payload = {

@@ -27,7 +27,7 @@ const payments = [
     invoice: 'View Invoice',
   },
   {
-    payment: '21/2/2023',
+    payment: '21/2/2024',
     plan: 'Basic',
     amount: '$8',
     status: 'Success',
@@ -41,7 +41,7 @@ const payments = [
     invoice: 'View Invoice',
   },
   {
-    payment: '21/2/2023',
+    payment: '21/2/2024',
     plan: 'Basic',
     amount: '$8',
     status: 'Success',
@@ -65,7 +65,6 @@ const rows = computed(() => {
 })
 
 const years=[
-  2023,
   2024
 ]
 </script>
