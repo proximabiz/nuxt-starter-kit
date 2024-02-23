@@ -62,7 +62,7 @@ async function getAddress() {
     const response = await userStore.fetchAddress()
     if(!response) return;
 
-    state.name = response.nam
+    state.name = response.name
     state.orgname = response.organisation_name
     state.country = response.country
     state.zip = response.zip_code
@@ -95,7 +95,7 @@ async function onSubmit() {
   try {
     const response = await userStore.addAddress(payloadPost)
     if (response && response.status === 200) {
-      notify.success(response.)
+      notify.success(response.message)
       state.country = response.data?.country
       state.zip = response.data.zipcode
       state.city = response.data.city
