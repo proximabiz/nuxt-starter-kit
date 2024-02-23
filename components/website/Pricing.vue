@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { useBillingStore } from '~/stores/subscription'
-
 const isMonthly = ref(true)
 const showBillingDetails = ref(false)
 let cardValue = ref()
 const region = ref('india')
-const subStatusStore = useBillingStore()
+const subscriptionStore = useSubscriptionStore()
 const authStore = useAuthStore()
 
-const sub_status = computed(() => subStatusStore.GET_SUB_STATUS)
+const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
 interface PricePlan {
   plan: string

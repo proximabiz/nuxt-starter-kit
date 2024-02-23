@@ -1,33 +1,28 @@
-interface Geo {
-  lat: string
-  lng: string
+export interface TaxPostAPIPayload {
+  gstNumber: string
 }
 
-interface Address {
-  street: string
-  suite: string
-  city: string
+export interface AddressPutAPIPayload {
+  country: string
   zipcode: string
-  geo: Geo
+  city: string
+  region: string
+  address: string
+  phoneNumber: string
 }
 
-interface Company {
+export interface AddressPostAPIPayload {
   name: string
-  catchPhrase: string
-  bs: string
-}
-
-export interface User {
-  id: number
-  name: string
-  username: string
-  email: string
-  address: Address
-  phone: string
-  website: string
-  company: Company
+  organisationName: string
+  country: string
+  zipcode: string
+  city: string
+  region: string
+  address: string
+  phoneNumber: string
 }
 
 export interface State {
-  userList: User[]
+  GstDetails: TaxPostAPIPayload[]
+  allAddressDetails: AddressPostAPIPayload
 }

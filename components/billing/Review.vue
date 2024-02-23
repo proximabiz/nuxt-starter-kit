@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { useBillingStore } from '~/stores/subscription'
-
 interface Props {
   planName: string
   duePrice: string
 }
 const props = defineProps<Props>()
-// const state = useBillingStore()
-const billingStore = useBillingStore()
-const allDetails = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
+const subscriptionStore = useSubscriptionStore()
+const allDetails = computed(() => subscriptionStore.billingDetails)
 </script>
 
 <template>

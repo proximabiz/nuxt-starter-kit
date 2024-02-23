@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useBillingStore } from '~/stores/subscription'
-
 interface Props {
   planDetails: any
 }
@@ -13,8 +11,8 @@ const duePrice = ref('$77.8')
 //   isModalVisible: false,
 //   context: '',
 // })
-const billingStore = useBillingStore()
-const billingAddressCard = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
+const subscriptionStore = useSubscriptionStore()
+const billingAddressCard = computed(() => subscriptionStore.billingDetails)
 
 const steps = [
   // {label: '', component: 'websitePricing'},
