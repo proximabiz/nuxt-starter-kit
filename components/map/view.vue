@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
+import MindElixir from 'mind-elixir'
+import type { MindElixirData, Options } from 'mind-elixir'
 import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
-import type { MindElixirData, Options } from 'mind-elixir'
-import MindElixir from 'mind-elixir'
+import dayjs from 'dayjs'
 import { useFileExporter } from '@/composables/ExportJsonFile'
 
 const props = defineProps<Props>()
@@ -12,9 +12,8 @@ interface Props {
   diagramId: string
 }
 
-const mindmapStore = useMindmapStore()
-const notify = useNotification()
 const diagramStore = useDiagramStore()
+const notify = useNotification()
 const globalStore = useGlobalStore()
 const { exportJSONFile } = useFileExporter()
 
@@ -54,7 +53,7 @@ async function fetchDiagramVersions() {
 
 async function fetchMap() {
   try {
-    apiResponse.value = await mindmapStore.get({
+    apiResponse.value = await diagramStore.get({
       diagramId: props.diagramId,
     })
 
@@ -161,11 +160,11 @@ function init3() {
 async function updateMap() {
   try {
     // Call update API here
-    // const mindmapTypeDiagram = diagramStore.getMindMapTypeDiagram
+    // const mindmapTypeDiagram = diagramTypeStore.getMindMapTypeDiagram
     // if (!mindmapTypeDiagram)
     //   return
 
-    updateApiResponse.value = await mindmapStore.update({
+    updateApiResponse.value = await diagramStore.update({
       title: form.value.title,
       isDetailed: true,
       details: form.value.details,
@@ -188,7 +187,7 @@ async function updateMap() {
 
 async function saveMap(isRedirect: boolean) {
   try {
-    saveApiResponse.value = await mindmapStore.save({
+    saveApiResponse.value = await diagramStore.save({
       existingOpenAIResponse: toRaw(mind.value.getDataString()),
       isDiagramChanged: true,
     }, props.diagramId)

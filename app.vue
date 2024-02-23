@@ -48,7 +48,7 @@ async function handlePostAuthentication() {
   const response = await addressStore.fetchAddress()
   if (!response.name || !response.organisation_name)
     return navigateTo('/user/personal-details')
-  return navigateTo('/app/maps')
+  return navigateTo('/app/diagram/list')
 }
 </script>
 

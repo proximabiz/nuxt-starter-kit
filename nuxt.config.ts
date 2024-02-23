@@ -61,7 +61,7 @@ export default defineNuxtConfig({
     key: process.env.SUPABASE_KEY,
     redirectOptions: {
       login: '/login',
-      callback: '/app/maps',
+      callback: '/app/diagram/list',
       exclude: ['/website', '/website/*'],
     },
   },

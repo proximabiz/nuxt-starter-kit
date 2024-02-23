@@ -16,6 +16,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (to.fullPath === '/user/personal-details') {
     const response = await addressStore.fetchAddress()
     if (response && response.phone_number)
-      return navigateTo('/app/maps')
+      return navigateTo('/app/diagram/list')
   }
 })
