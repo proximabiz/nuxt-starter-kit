@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useBillingStore } from '~/stores/subscription'
 
+const year=ref(2024)
+
 const columns = [{
   key: 'payment',
   label: 'Payment Date',
@@ -25,7 +27,7 @@ const payments = [
     invoice: 'View Invoice',
   },
   {
-    payment: '21/2/2024',
+    payment: '21/2/2023',
     plan: 'Basic',
     amount: '$8',
     status: 'Success',
@@ -39,7 +41,7 @@ const payments = [
     invoice: 'View Invoice',
   },
   {
-    payment: '21/2/2024',
+    payment: '21/2/2023',
     plan: 'Basic',
     amount: '$8',
     status: 'Success',
@@ -61,6 +63,11 @@ const pageCount = 5
 const rows = computed(() => {
   return payments.slice((page.value - 1) * pageCount, (page.value) * pageCount)
 })
+
+const years=[
+  2023,
+  2024
+]
 </script>
 
 <template>
@@ -93,6 +100,7 @@ const rows = computed(() => {
   </p>
   <hr class="ml-4 mt-2">
   <section class="grid place-items-center">
+    <USelect v-model="year" :options="years" option-attribute="name" class="mt-4" color="blue" />
     <UTable :columns="columns" :rows="rows">
       <template #invoice="{ row }">
         <a :href="row.invoice" target="_blank">View Invoice</a>
