@@ -1,19 +1,4 @@
-import type { State } from './types'
-
-interface getAPIPayload {
-  diagramId: string
-}
-
-interface createAPIPayload {
-  title: string
-  diagramTypeId: string
-}
-
-interface updateAPIPayload {
-  title: string
-  isDetailed: boolean
-  details: string
-}
+import type { State, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
 
 function initialState() {
   return {
@@ -71,10 +56,10 @@ export const useDiagramStore = defineStore('diagramStore', {
       return supabaseResponse.value?.data
     },
 
-    async update(payload: updateAPIPayload, diagramId) {
+    async update(payload: updateAPIPayload) {
       const authStore = useAuthStore()
 
-      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${diagramId}`, {
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${payload.diagramId}`, {
         method: 'PUT',
         headers: {
           Authorization: await authStore.getBearerToken,
@@ -88,10 +73,10 @@ export const useDiagramStore = defineStore('diagramStore', {
       return supabaseResponse.value?.data
     },
 
-    async save(payload, diagramId) {
+    async save(payload: saveAPIPayload) {
       const authStore = useAuthStore()
 
-      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${diagramId}`, {
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${payload.diagramId}`, {
         method: 'PATCH',
         headers: {
           Authorization: await authStore.getBearerToken,
@@ -119,10 +104,13 @@ export const useDiagramStore = defineStore('diagramStore', {
       return supabaseResponse
     },
 
-    async getVersionList(diagramId: string): Promise<void> {
+    async getVersionList(payload: getAPIPayload) {
       const supabaseClient = useSupabaseClient()
 
-      const { data: supabaseResponse, error: diagramError } = await supabaseClient.rpc('get_diagram_versions', { diagramid: diagramId })
+      const { data: supabaseResponse, error: diagramError } = await supabaseClient
+        .rpc('get_diagram_versions', { 
+          diagramId: payload.diagramId 
+      })
 
       if (diagramError)
         throw diagramError

@@ -18,6 +18,28 @@ export interface Diagram {
   user_id: string | null
 }
 
+export interface getAPIPayload {
+  diagramId: string
+}
+
+export interface createAPIPayload {
+  title: string
+  diagramTypeId: string
+}
+
+export interface updateAPIPayload {
+  diagramId: string
+  title: string
+  isDetailed: boolean
+  details: string
+}
+
+export interface saveAPIPayload {
+  diagramId: string
+  existingOpenAIResponse: any
+  isDiagramChanged: boolean
+}
+
 export interface State {
   diagramsList: Diagram[] | null
 }

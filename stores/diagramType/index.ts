@@ -1,14 +1,14 @@
 import type { DiagramType, State } from './types'
 
-export const useDiagramTypeStore = defineStore('diagramTypeStore', {
-  state: (): State => ({
+function initialState() {
+  return {
     types: [],
-  }),
-  getters: {
-    getTypes(): Array<any> {
-      return this.types
-    },
+  }
+}
 
+export const useDiagramTypeStore = defineStore('diagramTypeStore', {
+  state: (): State => initialState(),
+  getters: {
     getMindMapTypeDiagram(): DiagramType | undefined {
       return this.types.find(item => item.name === 'Mind Elixir')
     },
