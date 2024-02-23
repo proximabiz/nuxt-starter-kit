@@ -1,12 +1,10 @@
-import type { logger } from '~/utility/logger';
 <script setup lang="ts">
-import { VueTelInput } from 'vue-tel-input'
-import 'vue-tel-input/vue-tel-input.css'
-import { z } from 'zod'
-import { useAddressStore } from '~/stores/address'
+import { VueTelInput } from 'vue-tel-input';
+import 'vue-tel-input/vue-tel-input.css';
+import { z } from 'zod';
 
 const notify = useNotification()
-const addressStore = useAddressStore()
+const userStore = useUserStore()
 
 interface FormState {
   name: string
@@ -61,8 +59,10 @@ const schema = z.object({
 
 async function getAddress() {
   try {
-    const response = await addressStore.fetchAddress()
-    state.name = response.name
+    const response = await userStore.fetchAddress()
+    if(!response) return;
+
+    state.name = response.nam
     state.orgname = response.organisation_name
     state.country = response.country
     state.zip = response.zip_code
@@ -93,9 +93,9 @@ async function onSubmit() {
     phoneNumber: state.phone,
   }
   try {
-    const response = await addressStore.addAddress(payloadPost)
-    if (response?.status === 200) {
-      notify.success(response.message)
+    const response = await userStore.addAddress(payloadPost)
+    if (response && response.status === 200) {
+      notify.success(response.)
       state.country = response.data?.country
       state.zip = response.data.zipcode
       state.city = response.data.city

@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import { useBillingStore } from '~/stores/subscription'
-
 const authStore = useAuthStore()
 const notify = useNotification()
-const planStore = useBillingStore()
-const addressStore = useAddressStore()
+const subscriptionStore = useSubscriptionStore()
+const userStore = useUserStore()
 const supabaseClient = useSupabaseClient()
 
 const items = [
@@ -27,8 +25,8 @@ async function singOut() {
   try {
     // Do something with data
     await supabaseClient.auth.signOut()
-    await planStore.clearSubscription()
-    await addressStore.clearAddress()
+    await subscriptionStore.clearSubscription()
+    await userStore.clearAddress()
     navigateTo('/')
   }
   catch (error) {

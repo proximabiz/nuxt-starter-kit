@@ -1,4 +1,8 @@
-export interface putPayload {
+export interface TaxPostAPIPayload {
+  gstNumber: string
+}
+
+export interface AddressPutAPIPayload {
   country: string
   zipcode: string
   city: string
@@ -6,7 +10,8 @@ export interface putPayload {
   address: string
   phoneNumber: string
 }
-export interface postPayload {
+
+export interface AddressPostAPIPayload {
   name: string
   organisationName: string
   country: string
@@ -16,6 +21,8 @@ export interface postPayload {
   address: string
   phoneNumber: string
 }
+
 export interface State {
-  allAddressDetails: postPayload
+  GstDetails: TaxPostAPIPayload[]
+  allAddressDetails: AddressPostAPIPayload
 }

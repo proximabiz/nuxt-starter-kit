@@ -2,10 +2,9 @@
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
-import { useAddressStore } from '~/stores/address'
 
 const notify = useNotification()
-const addressStore = useAddressStore()
+const userStore = useUserStore()
 
 const isDisabled = ref(false)
 const isEditable = ref(false)
@@ -61,7 +60,7 @@ const schema = z.object({
 
 async function getAddress() {
   try {
-    const response = await addressStore.fetchAddress()
+    const response = await userStore.fetchAddress()
     isLoading.value = false
     state.name = response.name
     state.orgname = response.organisation_name
@@ -110,7 +109,7 @@ async function onSubmit() {
       phoneNumber: state.phone,
     }
     try {
-      const response = await addressStore.editAddress(payload)
+      const response = await userStore.editAddress(payload)
       if (response?.status === 200) {
         notify.success(response.message)
         // await getAddress()
@@ -133,7 +132,7 @@ async function onSubmit() {
       phoneNumber: state.phone,
     }
     try {
-      const response = await addressStore.addAddress(payloadPost)
+      const response = await userStore.addAddress(payloadPost)
       if (response?.status === 200) {
         notify.success(response.message)
 

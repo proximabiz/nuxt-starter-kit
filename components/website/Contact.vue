@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { VueTelInput } from 'vue-tel-input';
-import 'vue-tel-input/vue-tel-input.css';
-import { z } from 'zod';
+import { VueTelInput } from 'vue-tel-input'
+import 'vue-tel-input/vue-tel-input.css'
+import { z } from 'zod'
 
 const notify = useNotification()
 const contactStore = useContactStore()

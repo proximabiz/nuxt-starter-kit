@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { useBillingStore } from '~/stores/subscription'
-
 const notify = useNotification()
 const authStore = useAuthStore()
-const planStore = useBillingStore()
-const addressStore = useAddressStore()
+const subscriptionStore = useSubscriptionStore()
+const userStore = useUserStore()
 
 const items = [
   [{
@@ -32,8 +30,8 @@ async function singOut() {
   try {
     // Do something with data
     await authStore.signOut()
-    await planStore.clearSubscription()
-    await addressStore.clearAddress()
+    await subscriptionStore.clearSubscription()
+    await userStore.clearAddress()
 
     if (!isLoggedIn.value)
       navigateTo('/')
