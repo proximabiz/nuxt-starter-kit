@@ -24,5 +24,4 @@ export interface AddressPostAPIPayload {
 
 export interface State {
   GstDetails: TaxPostAPIPayload[]
-  allAddressDetails: AddressPostAPIPayload
 }

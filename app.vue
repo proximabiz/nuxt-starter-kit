@@ -44,7 +44,10 @@ function upgradePlan() {
 async function handlePostAuthentication() {
   // Check if user has filled the personal details already
   const response = await userStore.fetchAddress()
-  if (!response.name || !response.organisation_name)
+  if (!response)
+    return
+
+  if (!response?.data?.userDetails[0]?.name || !response?.data?.userDetails[0]?.organisation_name)
     return navigateTo('/user/personal-details')
   return navigateTo('/app/diagram/list')
 }
