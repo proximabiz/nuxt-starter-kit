@@ -62,7 +62,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/app/diagram/list',
-      exclude: ['/website', '/website/*'],
+      exclude: ['/website', '/website/*', '/privacy'],
     },
   },
   // routeRules: {

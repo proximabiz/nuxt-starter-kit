@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useBillingStore } from '~/stores/subscription'
+import { useSubscriptionStore } from '~/stores/subscription'
 
-const year=ref(2024)
+const year = ref(2024)
 
 const columns = [{
   key: 'payment',
@@ -49,8 +49,8 @@ const payments = [
   },
 ]
 
-const billingStore = useBillingStore()
-const cardDetails = computed(() => billingStore.GET_ADDRESS_AND_CARD_DETAILS)
+const subscriptionStore = useSubscriptionStore()
+const cardDetails = computed(() => subscriptionStore.billingDetails)
 
 cardDetails.value.cardHolderName = 'Ipsita'
 cardDetails.value.cardNo = '5267437907533201'
@@ -64,8 +64,8 @@ const rows = computed(() => {
   return payments.slice((page.value - 1) * pageCount, (page.value) * pageCount)
 })
 
-const years=[
-  2024
+const years = [
+  2024,
 ]
 </script>
 

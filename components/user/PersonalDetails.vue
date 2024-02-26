@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { VueTelInput } from 'vue-tel-input';
-import 'vue-tel-input/vue-tel-input.css';
-import { z } from 'zod';
+import { VueTelInput } from 'vue-tel-input'
+import 'vue-tel-input/vue-tel-input.css'
+import { z } from 'zod'
 
 const notify = useNotification()
 const userStore = useUserStore()
@@ -60,7 +60,8 @@ const schema = z.object({
 async function getAddress() {
   try {
     const response = await userStore.fetchAddress()
-    if(!response) return;
+    if (!response)
+      return
 
     state.name = response.name
     state.orgname = response.organisation_name
