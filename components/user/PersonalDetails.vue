@@ -60,20 +60,21 @@ const schema = z.object({
 async function getAddress() {
   try {
     const response = await userStore.fetchAddress()
-    if (!response)
+    if (!response?.data)
       return
 
-    state.name = response.name
-    state.orgname = response.organisation_name
-    state.country = response.country
-    state.zip = response.zip_code
-    state.city = response.city
-    state.region = response.region
-    state.address = response.address
-    state.phone = response.phone_number
-    state.email = response.email
+    state.name = response.data?.userDetails[0]?.name
+    state.orgname = response.data?.userDetails[0]?.organisation_name
+    state.country = response.data?.userAddress[0]?.country
+    state.zip = response.data?.userAddress[0]?.zip_code
+    state.city = response.data?.userAddress[0]?.city
+    state.region = response.data?.userAddress[0]?.region
+    state.address = response.data?.userAddress[0]?.address
+    state.phone = response.data?.userAddress[0]?.phone_number
+    state.email = response.data?.userData?.email
   }
   catch (error) {
+    console.error(error)
     notify.error(error.message)
   }
 }
@@ -103,6 +104,7 @@ async function onSubmit() {
       state.region = response.data.region
       state.address = response.data.address
       state.phone = response.data.phoneNumber
+      navigateTo('/app/diagram/list')
     }
   }
   catch (error) {

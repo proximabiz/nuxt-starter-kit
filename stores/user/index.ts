@@ -3,16 +3,6 @@ import type { AddressPostAPIPayload, AddressPutAPIPayload, State, TaxPostAPIPayl
 function initialState() {
   return {
     GstDetails: [],
-    allAddressDetails: {
-      name: '',
-      organisationName: '',
-      country: '',
-      zipcode: '',
-      city: '',
-      region: '',
-      address: '',
-      phoneNumber: '',
-    },
   }
 }
 
@@ -84,12 +74,6 @@ export const useUserStore = defineStore('userStore', {
       if (supabaseError.value)
         throw supabaseError.value
 
-      this.allAddressDetails = {
-        ...supabaseResponse.value?.userData,
-        ...supabaseResponse.value?.userDetails[0],
-        ...supabaseResponse.value?.userAddress[0],
-      }
-
       return supabaseResponse.value
     },
 
@@ -128,7 +112,6 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async clearAddress() {
-      this.allAddressDetails = initialState().allAddressDetails
     },
   },
   persist: {
