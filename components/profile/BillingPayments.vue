@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useSubscriptionStore } from '~/stores/subscription'
 
 const year = ref(2024)
 
@@ -15,7 +14,9 @@ const columns = [{
 }, {
   key: 'status',
   label: 'Status',
-}, { key: 'invoice', label: 'Invoice',
+}, 
+{ key: 'invoice', 
+  label: 'Invoice',
 }]
 
 const payments = [
@@ -24,28 +25,28 @@ const payments = [
     plan: 'Basic',
     amount: '$8',
     status: 'Success',
-    invoice: 'View Invoice',
+    invoice: 'https://www.proximabiz.com/',
   },
   {
     payment: '21/2/2024',
     plan: 'Basic',
     amount: '$8',
     status: 'Success',
-    invoice: 'View Invoice',
+    invoice: 'https://www.proximabiz.com/',
   },
   {
     payment: '21/2/2024',
     plan: 'Basic',
     amount: '$8',
     status: 'Success',
-    invoice: 'View Invoice',
+    invoice: 'https://www.proximabiz.com/',
   },
   {
     payment: '21/2/2024',
     plan: 'Basic',
     amount: '$8',
     status: 'Success',
-    invoice: 'View Invoice',
+    invoice: 'https://www.proximabiz.com/',
   },
 ]
 
@@ -94,19 +95,41 @@ const years = [
       </UForm>
     </UCard>
   </section>
-  <p class="font-bold text-2xl ml-4">
+  <div class="ml-4">
+  <p class="font-bold text-2xl">
     Your billing history
   </p>
-  <hr class="ml-4 mt-2">
+  <hr class="mt-2">
   <section class="grid place-items-center">
     <USelect v-model="year" :options="years" option-attribute="name" class="mt-4" color="blue" />
-    <UTable :columns="columns" :rows="rows">
+    <!-- <UTable :columns="columns" :rows="rows">
       <template #invoice="{ row }">
         <a :href="row.invoice" target="_blank">View Invoice</a>
       </template>
-    </UTable>
+    </UTable> -->
+    <table class="min-w-full divide-y divide-gray-200 mt-4 border border-gray-200 rounded-sm">
+  <thead class="bg-gray-50">
+    <tr>
+      <th v-for="column in columns" :key="column.key" class="px-6 py-3 text-left text-xs font-medium  text-gray-900 uppercase tracking-wider">
+        {{ column.label }}
+      </th>
+    </tr>
+  </thead>
+  <tbody class="bg-white divide-y divide-gray-200 ">
+    <tr v-for="payment in rows" :key="payment.payment" class="hover:bg-gray-100">
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">{{ payment.payment }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ payment.plan }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ payment.amount }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ payment.status }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+        <NuxtLink :src="payment.invoice" target="_blank" class="text-custom1-500 hover:text-custom1-900 underline">View Invoice</NuxtLink>
+      </td>
+    </tr>
+  </tbody>
+</table>
     <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
       <UPagination v-model="page" :page-count="pageCount" :total="payments.length" />
     </div>
   </section>
+</div>
 </template>
