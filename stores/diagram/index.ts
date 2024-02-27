@@ -109,7 +109,7 @@ export const useDiagramStore = defineStore('diagramStore', {
 
       const { data: supabaseResponse, error: diagramError } = await supabaseClient
         .rpc('get_diagram_versions', {
-          diagramId: payload.diagramId,
+          diagramid: payload.diagramId,
         })
 
       if (diagramError)
