@@ -198,6 +198,7 @@ async function saveMap(isRedirect: boolean) {
       existingOpenAIResponse: toRaw(mind.value.getDataString()),
       isDiagramChanged: true,
     })
+    notify.success('Mindmap saved!')
     if (isRedirect) {
       isSavePopupOpen.value = false
       isSave.value = true
