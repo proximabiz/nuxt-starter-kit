@@ -26,9 +26,9 @@ const mind = ref()
 const isRequirements = ref(false)
 const isSavePopupOpen = ref(false)
 const isSave = ref(false)
-const isSharePopUpOpen=ref(false)
-const emailId=ref('')
-const textMessage=ref('')
+const isSharePopUpOpen = ref(false)
+const emailId = ref('')
+const textMessage = ref('')
 const toRoute = ref()
 const form = ref({
   title: '',
@@ -300,49 +300,49 @@ onBeforeRouteLeave((to) => {
     return false
 })
 
-const peopleArray=[
+const peopleArray = [
   {
-  avatar:"https://lh3.googleusercontent.com/a-/ALV-UjXi8jOjn28qB5Fk4mXgBYnO213sIPF2Vgv7KEjDlUQp=s64-c",
-  name:"Supriya Potdar",
-  email:'supriyap@proximabiz.com',
-  access:'Owner'
-},
-{
-  avatar:"https://lh3.googleusercontent.com/a/ACg8ocIqjvy5IGuE40dy2Mgr9fnh3o0nSNBCEm2w_4QZOyy_zw=s64-c",
-  name:"Ipsita Priyadarsini (You)",
-  email:'ipsitap@proximabiz.com',
-  access:'Editor'
-},
-{
-  avatar:"https://lh3.googleusercontent.com/a-/ALV-UjUUVGCykb54qA7yZSjZ1IwHMDQ6YNofJ6UbzASq38O2Fw=s64-c",
-  name:"Neha Soni",
-  email:'nehas@proximabiz.com',
-  access:'Editor'
-},
-{
-  avatar:"https://lh3.googleusercontent.com/a-/ALV-UjW10JjdhmhMyP_m0o5J5rk67NcYaQ8Ymb002DKgecPVCX8=s64-p-k-rw-no",
-  name:"Pushpak Hazare",
-  email:'pushpakh@proximabiz.com',
-  access:'Editor'
-}
+    avatar: 'https://lh3.googleusercontent.com/a-/ALV-UjXi8jOjn28qB5Fk4mXgBYnO213sIPF2Vgv7KEjDlUQp=s64-c',
+    name: 'Supriya Potdar',
+    email: 'supriyap@proximabiz.com',
+    access: 'Owner',
+  },
+  {
+    avatar: 'https://lh3.googleusercontent.com/a/ACg8ocIqjvy5IGuE40dy2Mgr9fnh3o0nSNBCEm2w_4QZOyy_zw=s64-c',
+    name: 'Ipsita Priyadarsini (You)',
+    email: 'ipsitap@proximabiz.com',
+    access: 'Editor',
+  },
+  {
+    avatar: 'https://lh3.googleusercontent.com/a-/ALV-UjUUVGCykb54qA7yZSjZ1IwHMDQ6YNofJ6UbzASq38O2Fw=s64-c',
+    name: 'Neha Soni',
+    email: 'nehas@proximabiz.com',
+    access: 'Editor',
+  },
+  {
+    avatar: 'https://lh3.googleusercontent.com/a-/ALV-UjW10JjdhmhMyP_m0o5J5rk67NcYaQ8Ymb002DKgecPVCX8=s64-p-k-rw-no',
+    name: 'Pushpak Hazare',
+    email: 'pushpakh@proximabiz.com',
+    access: 'Editor',
+  },
 ]
 
-const isDropdownVisible = ref(false);
+const isDropdownVisible = ref(false)
 
-const toggleDropdown = () => {
-  isDropdownVisible.value = !isDropdownVisible.value;
-};
+function toggleDropdown() {
+  isDropdownVisible.value = !isDropdownVisible.value
+}
 
-const hideDropdown = () => {
+function hideDropdown() {
   setTimeout(() => {
-    isDropdownVisible.value = false;
-  }, 200);
-};
-const openSharePopup=()=> {
-      isSharePopUpOpen.value = true;
-      emailId.value = '';
-    }
-const selectPeople=(item:any)=>{
+    isDropdownVisible.value = false
+  }, 200)
+}
+function openSharePopup() {
+  isSharePopUpOpen.value = true
+  emailId.value = ''
+}
+function selectPeople(item: any) {
   emailId.value = item.email
 }
 </script>
@@ -421,7 +421,7 @@ const selectPeople=(item:any)=>{
                 </span>
               </a>
             </li>
-            <li @click="isSharePopUpOpen= true">
+            <li @click="isSharePopUpOpen = true">
               <a
                 class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               >
@@ -429,7 +429,7 @@ const selectPeople=(item:any)=>{
                 <span
                   class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
                 >
-                Share
+                  Share
                 </span>
               </a>
             </li>
@@ -513,105 +513,118 @@ const selectPeople=(item:any)=>{
       </ul>
     </div>
   </USlideover>
-<!-- Map sharing modal -->
-<!-- <ModalsSharePopUP /> -->
-<UModal :model-value="isSharePopUpOpen && emailId==''">
+  <!-- Map sharing modal -->
+  <!-- <ModalsSharePopUP /> -->
+  <UModal :model-value="isSharePopUpOpen && emailId === ''">
     <section class="p-4">
       <div class="flex justify-between items-center">
-      <h2 class="text-2xl">Share "AI Flow Mapper Mindmap Diagram"</h2>
-      <span>
-        <UIcon name="i-heroicons-question-mark-circle" class="size-5" />   
-      </span>
-    </div>
-    
-    <!-- <UInput v-model="emailId" class="mt-4" placeholder="Add people" /> -->
-    <div class="dropdown-input relative">
-    <input
-      v-model="emailId"
-      type="text"
-      class="mt-4 w-full rounded-md border-zinc-500"
-      placeholder="Add people"
-      @click="toggleDropdown"
-      @blur="hideDropdown"
-    />
-    <div v-if="isDropdownVisible" class="bg-slate-100 rounded-md absolute z-10 mt-1 w-full shadow-lg"> 
-      <div class="px-4 pb-4">     
-      <ul class="mt-4" v-for="(item,i) in peopleArray" :key="i">
-        <li class="flex items-center" @click="selectPeople(item)">
-          <div>
-            <UAvatar :src="item.avatar" />
+        <h2 class="text-2xl">
+          Share "AI Flow Mapper Mindmap Diagram"
+        </h2>
+        <span>
+          <UIcon name="i-heroicons-question-mark-circle" class="size-5" />
+        </span>
+      </div>
+
+      <!-- <UInput v-model="emailId" class="mt-4" placeholder="Add people" /> -->
+      <div class="dropdown-input relative">
+        <input
+          v-model="emailId"
+          type="text"
+          class="mt-4 w-full rounded-md border-zinc-500"
+          placeholder="Add people"
+          @click="toggleDropdown"
+          @blur="hideDropdown"
+        >
+        <div v-if="isDropdownVisible" class="bg-slate-100 rounded-md absolute z-10 mt-1 w-full shadow-lg">
+          <div class="px-4 pb-4">
+            <ul v-for="(item, i) in peopleArray" :key="i" class="mt-4">
+              <li class="flex items-center" @click="selectPeople(item)">
+                <div>
+                  <UAvatar :src="item.avatar" />
+                </div>
+                <div class="ml-4">
+                  <p>{{ item.name }}</p>
+                  <p class="text-sm">
+                    {{ item.email }}
+                  </p>
+                </div>
+              </li>
+            </ul>
           </div>
-        <div class="ml-4">
-          <p>{{ item.name }}</p>
-          <p class="text-sm">{{ item.email }}</p>
         </div>
-      </li>
-      </ul>
-    </div>
-    </div>
-  </div>
-    <section class="mt-4">
-      <p class="font-medium">People with access</p>
-      <ul class="mt-4 space-y-4" v-for="(item,i) in peopleArray" :key="i">
-        <li class="flex justify-center items-center">
-          <div>
-            <UAvatar :src="item.avatar" />
-          </div>
-        <div class="ml-4">
-          <p>{{ item.name }}</p>
-          <p class="text-sm">{{ item.email }}</p>
-        </div>
-        <div class="ml-auto pr-8 text-custom3-400">{{ item.access }}</div>
-      </li>
-      </ul>
-      
-    </section>
-     
-      <div class="mt-4 flex justify-end pr-6">     
-        <UButton class="rounded-full" @click="isSharePopUpOpen=false">
+      </div>
+      <section class="mt-4">
+        <p class="font-medium">
+          People with access
+        </p>
+        <ul v-for="(item, i) in peopleArray" :key="i" class="mt-4 space-y-4">
+          <li class="flex justify-center items-center">
+            <div>
+              <UAvatar :src="item.avatar" />
+            </div>
+            <div class="ml-4">
+              <p>{{ item.name }}</p>
+              <p class="text-sm">
+                {{ item.email }}
+              </p>
+            </div>
+            <div class="ml-auto pr-8 text-custom3-400">
+              {{ item.access }}
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <div class="mt-4 flex justify-end pr-6">
+        <UButton class="rounded-full" @click="isSharePopUpOpen = false">
           Done
         </UButton>
       </div>
     </section>
   </UModal>
 
-  <UModal :model-value="emailId !==''">
+  <UModal :model-value="emailId !== ''">
     <section class="p-4">
       <div class="flex justify-between items-center">
-        <UIcon name="i-heroicons-arrow-left" class="size-5"
-         @click="openSharePopup"/> 
-      <h2 class="text-2xl ml-4">Share "AI Flow Mapper Mindmap Diagram"</h2>
-      <span>
-        <UIcon name="i-heroicons-question-mark-circle" class="size-5" />   
-      </span>
-    </div>
-    
-    <!-- <UInput v-model="emailId" class="mt-4" placeholder="Add people" /> -->
-    <div class="dropdown-input">
-    <input
-      v-model="emailId"
-      type="text"
-      class="mt-4 w-full rounded-md border-zinc-500"
-      placeholder="Add people"
-    />
-    </div>
-    <UFormGroup name="message" label="Message" class="mt-4" >
-      <UTextarea
-            v-model="textMessage" color="white" size="xl" variant="outline"
-            placeholder="Write your message"
-          />
-    </UFormGroup>
-      <div class="mt-4 flex justify-end gap-4 pr-6">  
-        <UButton class="rounded-full bg-white text-custom1-700 hover:bg-custom1-200" >
+        <UIcon
+          name="i-heroicons-arrow-left" class="size-5"
+          @click="openSharePopup"
+        />
+        <h2 class="text-2xl ml-4">
+          Share "AI Flow Mapper Mindmap Diagram"
+        </h2>
+        <span>
+          <UIcon name="i-heroicons-question-mark-circle" class="size-5" />
+        </span>
+      </div>
+
+      <!-- <UInput v-model="emailId" class="mt-4" placeholder="Add people" /> -->
+      <div class="dropdown-input">
+        <input
+          v-model="emailId"
+          type="text"
+          class="mt-4 w-full rounded-md border-zinc-500"
+          placeholder="Add people"
+        >
+      </div>
+      <UFormGroup name="message" label="Message" class="mt-4">
+        <UTextarea
+          v-model="textMessage" color="white" size="xl" variant="outline"
+          placeholder="Write your message"
+        />
+      </UFormGroup>
+      <div class="mt-4 flex justify-end gap-4 pr-6">
+        <UButton class="rounded-full bg-white text-custom1-700 hover:bg-custom1-200">
           Cancel
-        </UButton>   
-        <UButton class="rounded-full px-3" @click="emailId=''">
+        </UButton>
+        <UButton class="rounded-full px-3" @click="emailId = ''">
           Send
         </UButton>
       </div>
     </section>
   </UModal>
-  
+
   <!-- Map rendering -->
   <!-- <div id="map" class="" /> -->
   <UContainer>
