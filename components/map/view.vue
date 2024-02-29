@@ -31,6 +31,7 @@ const form = ref({
   title: '',
   details: '',
   json: '',
+  isDetailed: false,
 })
 const items = [{
   key: 'data-driven',
@@ -169,7 +170,7 @@ async function updateMap() {
     updateApiResponse.value = await diagramStore.update({
       diagramId: props.diagramId,
       title: form.value.title,
-      isDetailed: true,
+      isDetailed: form.value.isDetailed,
       details: form.value.details,
       // diagramTypeId: mindmapTypeDiagram.id,
     })
@@ -402,18 +403,18 @@ onBeforeRouteLeave((to) => {
               </div>
               <div class="flex items-start mb-5">
                 <div class="flex items-center h-5">
-                  <input id="remember" v-model="isRequirements" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" required>
+                  <input id="remember" v-model="form.isDetailed" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" required>
                 </div>
                 <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I have more details</label>
               </div>
-              <div v-if="isRequirements" class="mb-5">
+              <div v-if="form.isDetailed" class="mb-5">
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Explain your idea in everyday terms</label>
                 <textarea v-model="form.details" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                 <div class="text-gray-500 text-xs mt-3">
                   For example- I want to visualize the key concepts of blockchain. Start with a central node labeled 'Blockchain Technology' and branch out to 'Decentralization,' 'Immutable Ledger,' and 'Cryptographic Security.
                 </div>
               </div>
-              <UButton label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
+              <UButton :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
             </form>
           </div>
           <!-- Json Tab -->

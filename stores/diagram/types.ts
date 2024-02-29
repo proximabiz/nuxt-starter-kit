@@ -30,8 +30,8 @@ export interface createAPIPayload {
 export interface updateAPIPayload {
   diagramId: string
   title: string
-  isDetailed: boolean
-  details: string
+  isDetailed?: boolean
+  details?: string
 }
 
 export interface saveAPIPayload {
