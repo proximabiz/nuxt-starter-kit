@@ -1,21 +1,15 @@
 <script lang="ts" setup>
-import { useGlobalStore } from '~/stores'
-
-const globalStore = useGlobalStore()
 const authStore = useAuthStore()
 const notify = useNotification()
+const subscriptionStore = useSubscriptionStore()
+const userStore = useUserStore()
+const supabaseClient = useSupabaseClient()
 
 const items = [
   [{
     label: 'ben@example.com',
     slot: 'account',
     disabled: true,
-  }],
-  [{
-    label: 'Settings',
-    icon: 'i-heroicons-cog-8-tooth',
-    action: 'navigateToSettings',
-    click: () => navigateTo('/settings'),
   }],
   [{
     label: 'Sign out',
@@ -25,39 +19,27 @@ const items = [
   }],
 ]
 
-const authUser = computed(() => authStore.authUser)
-const isLoggedIn = computed(() => authStore.isLoggedIn)
+const authUser = computed(() => authStore.getAuthUser.value)
 
 async function singOut() {
   try {
     // Do something with data
-    await authStore.signOut()
-
-    if (!isLoggedIn.value)
-      navigateTo('/')
+    await supabaseClient.auth.signOut()
+    await subscriptionStore.clearSubscription()
+    await userStore.clearAddress()
+    navigateTo('/')
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    notify.error(error)
   }
 }
 </script>
 
 <template>
-  <nav class="border-gray-200">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-      <div>
-        <UButton
-          :padded="false"
-          variant="link"
-          size="xl"
-          icon="i-heroicons-bars-3" @click="globalStore.toggleDrawer()"
-        />
-        <UButton
-          variant="link"
-          size="xl"
-          class="ms-5"
-          icon="i-heroicons-home" @click="navigateTo('/')"
-        />
+  <nav class="border-b h-16 fixed top-0 w-full bg-white ms-16">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between p-4">
+      <div class="ms-5">
+        <LayoutAppHeading />
       </div>
       <div id="navbar-default" class="hidden w-full md:block md:w-auto">
         <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
@@ -70,7 +52,7 @@ async function singOut() {
                     Signed in as
                   </p>
                   <p class="truncate font-medium text-gray-900">
-                    {{ authUser.email }}
+                    {{ authUser?.email }}
                   </p>
                 </div>
               </template>

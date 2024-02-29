@@ -1,19 +1,17 @@
 import type { State } from './types'
 
+function initialState() {
+  return {
+    pageHeading: {
+      title: 'My Heading',
+    },
+  }
+}
+
 export const useGlobalStore = defineStore('globalStore', {
-  state: (): State => ({
-    drawer: false,
-  }),
-  getters: {
-    GET_DRAWER_STATUS(): boolean {
-      return this.drawer
-    },
-  },
-  actions: {
-    toggleDrawer() {
-      this.drawer = !this.drawer
-    },
-  },
+  state: (): State => initialState(),
+  getters: {},
+  actions: {},
   persist: {
     storage: persistedState.localStorage,
   },

@@ -1,12 +1,13 @@
 import validateEnvs from './envs/env.validator'
 
 export default defineNuxtConfig({
-  devtools: { enabled: false },
+  devtools: { enabled: process.env.NODE_ENV === 'dev' },
   runtimeConfig: {
-    // EXAMPLE_SECRET: process.env.EXAMPLE_SECRET,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    public: {
-      // EXAMPLE_PUBLIC: process.env.EXAMPLE_PUBLIC,
+    private: {
+      SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+      SENDGRID_EMAIL_TEMPLATE_ID: process.env.SENDGRID_EMAIL_TEMPLATE_ID,
+      SENDGRID_FROM_EMAILID: process.env.SENDGRID_FROM_EMAILID,
     },
   },
   modules: [
@@ -55,10 +56,22 @@ export default defineNuxtConfig({
   },
   experimental: { typedPages: true },
   css: ['~/assets/css/main.css'],
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
+    redirectOptions: {
+      login: '/login',
+      callback: '/app/diagram/list',
+      exclude: ['/website', '/website/*'],
+    },
+  },
+  // routeRules: {
+  //   '/profile/address': { ssr: false },
+  // },
   // app: {
   //   head: {
   //     link: [
-  //       { rel: 'icon', type: 'image/png', href: '@/assets/media/logo.png' }
+  //       { rel: 'icon', type: 'image/png', href: logo }
   //     ]
   //   }
   // }
