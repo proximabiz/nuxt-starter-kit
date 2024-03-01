@@ -4,7 +4,7 @@ import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
 
 const notify = useNotification()
-const contactStore = useGlobalStore()
+const contactStore = useContactStore()
 const selectedOption = ref('Demo')
 
 function updateSelection(value: string) {
@@ -50,7 +50,7 @@ async function onSubmit() {
   }
 
   try {
-    const response = await contactStore.contactSales(payload)
+    const response = await contactStore.create(payload)
 
     if (response?.status === 201) {
       notify.success(response.message)

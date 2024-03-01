@@ -2,10 +2,9 @@
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
-import { useBillingStore } from '~/stores/subscription'
 
-const state = useBillingStore()
-const addressStore = useAddressStore()
+const subscriptionStore = useSubscriptionStore()
+const userStore = useUserStore()
 
 // #validation
 
@@ -33,50 +32,53 @@ const billingSchema = z.object({
 })
 
 onMounted(async () => {
-  const response = await addressStore.fetchAddress()
-  state.billingDetails.name = response.name
-  state.billingDetails.orgName = response.organisation_name
-  state.billingDetails.country = response.country
-  state.billingDetails.zip = response.zip_code
-  state.billingDetails.city = response.city
-  state.billingDetails.region = response.region
-  state.billingDetails.address = response.address
-  state.billingDetails.phone = response.phone_number
+  const response = await userStore.fetchAddress()
+  if (!response?.data)
+    return
+
+  subscriptionStore.billingDetails.name = response?.data?.userDetails[0]?.name
+  subscriptionStore.billingDetails.orgName = response?.data?.userDetails[0]?.organisation_name
+  subscriptionStore.billingDetails.country = response.data?.userAddress[0]?.country
+  subscriptionStore.billingDetails.zip = response.data?.userAddress[0]?.zip_code
+  subscriptionStore.billingDetails.city = response.data?.userAddress[0]?.city
+  subscriptionStore.billingDetails.region = response.data?.userAddress[0]?.region
+  subscriptionStore.billingDetails.address = response.data?.userAddress[0]?.address
+  subscriptionStore.billingDetails.phone = response.data?.userAddress[0]?.phone_number
 })
 </script>
 
 <template>
   <UCard class="mb-6 mt-4">
-    <UForm :schema="billingSchema" :state="state.billingDetails" class="space-y-2">
+    <UForm :schema="billingSchema" :state="subscriptionStore.billingDetails" class="space-y-2">
       <div class="flex gap-2">
         <UFormGroup label="Full Name" name="name" required>
-          <UInput v-model="state.billingDetails.name" color="blue" />
+          <UInput v-model="subscriptionStore.billingDetails.name" color="blue" />
         </UFormGroup>
         <UFormGroup label="Organisation Name" name="orgname" required>
-          <UInput v-model="state.billingDetails.orgName" color="blue" />
+          <UInput v-model="subscriptionStore.billingDetails.orgName" color="blue" />
         </UFormGroup>
       </div>
       <div class="flex gap-2">
         <UFormGroup label="Country" name="country" required>
-          <UInput v-model="state.billingDetails.country" color="blue" />
+          <UInput v-model="subscriptionStore.billingDetails.country" color="blue" />
         </UFormGroup>
         <UFormGroup label="Zip" name="zip" required>
-          <UInput v-model="state.billingDetails.zip" color="blue" />
+          <UInput v-model="subscriptionStore.billingDetails.zip" color="blue" />
         </UFormGroup>
       </div>
       <div class="flex gap-2">
         <UFormGroup label="City" name="city" required>
-          <UInput v-model="state.billingDetails.city" color="blue" />
+          <UInput v-model="subscriptionStore.billingDetails.city" color="blue" />
         </UFormGroup>
         <UFormGroup label="Region" name="region" required>
-          <UInput v-model="state.billingDetails.region" color="blue" />
+          <UInput v-model="subscriptionStore.billingDetails.region" color="blue" />
         </UFormGroup>
       </div>
       <UFormGroup label="Address" name="address" required>
-        <UInput v-model="state.billingDetails.address" color="blue" />
+        <UInput v-model="subscriptionStore.billingDetails.address" color="blue" />
       </UFormGroup>
       <UFormGroup label="Phone no" name="phone" required>
-        <VueTelInput v-model="state.billingDetails.phone" placeholder="Your Phone no" mode="international" />
+        <VueTelInput v-model="subscriptionStore.billingDetails.phone" placeholder="Your Phone no" mode="international" />
       </UFormGroup>
     </UForm>
   </UCard>

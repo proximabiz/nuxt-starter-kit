@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
 import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
+import dayjs from 'dayjs'
 import type { MindElixirData, Options } from 'mind-elixir'
 import MindElixir from 'mind-elixir'
 import { useFileExporter } from '@/composables/ExportJsonFile'
@@ -12,9 +12,8 @@ interface Props {
   diagramId: string
 }
 
-const mindmapStore = useMindmapStore()
-const notify = useNotification()
 const diagramStore = useDiagramStore()
+const notify = useNotification()
 const globalStore = useGlobalStore()
 const { exportJSONFile } = useFileExporter()
 
@@ -45,7 +44,9 @@ const versionsItems = ref()
 async function fetchDiagramVersions() {
   try {
     isVersionDrawerOpen.value = true
-    versionsItems.value = await diagramStore.getVersionList(props.diagramId)
+    versionsItems.value = await diagramStore.getVersionList({
+      diagramId: props.diagramId,
+    })
   }
   catch (error) {
     notify.error(error)
@@ -54,7 +55,7 @@ async function fetchDiagramVersions() {
 
 async function fetchMap() {
   try {
-    apiResponse.value = await mindmapStore.get({
+    apiResponse.value = await diagramStore.get({
       diagramId: props.diagramId,
     })
 
@@ -161,16 +162,17 @@ function init3() {
 async function updateMap() {
   try {
     // Call update API here
-    // const mindmapTypeDiagram = diagramStore.getMindMapTypeDiagram
+    // const mindmapTypeDiagram = diagramTypeStore.getMindMapTypeDiagram
     // if (!mindmapTypeDiagram)
     //   return
 
-    updateApiResponse.value = await mindmapStore.update({
+    updateApiResponse.value = await diagramStore.update({
+      diagramId: props.diagramId,
       title: form.value.title,
       isDetailed: true,
       details: form.value.details,
       // diagramTypeId: mindmapTypeDiagram.id,
-    }, props.diagramId)
+    })
 
     isOpen.value = false
     if (updateApiResponse.value.response.chartDetails[0].nodeData) {
@@ -188,10 +190,12 @@ async function updateMap() {
 
 async function saveMap(isRedirect: boolean) {
   try {
-    saveApiResponse.value = await mindmapStore.save({
+    saveApiResponse.value = await diagramStore.save({
+      diagramId: props.diagramId,
       existingOpenAIResponse: toRaw(mind.value.getDataString()),
       isDiagramChanged: true,
-    }, props.diagramId)
+    })
+    notify.success('Mindmap saved!')
     if (isRedirect) {
       isSavePopupOpen.value = false
       isSave.value = true

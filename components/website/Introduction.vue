@@ -20,7 +20,7 @@ const authUser = computed(() => authStore.getAuthUser.value)
         This tool is built to Enhance Productivity and Visualize Ideas with AI Flow Mapper.<br>
         It Simplifies the Complex Concepts into Elegant Diagrams.
       </p>
-      <UButton v-if="authUser" class="mt-10" @click="navigateTo('/app/maps')">
+      <UButton v-if="authUser" class="mt-10" @click="navigateTo('/app/diagram/list')">
         Get Started
       </UButton>
     </div>

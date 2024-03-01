@@ -3,13 +3,12 @@ import address from '@/assets/media/address.png'
 import card from '@/assets/media/card.png'
 import tax from '@/assets/media/gst.png'
 import plan from '@/assets/media/plan.png'
-import { useBillingStore } from '~/stores/subscription'
 
 // Refs
 const selectedComponent = ref()
-const subStatusStore = useBillingStore()
+const subscriptionStore = useSubscriptionStore()
 
-const sub_status = computed(() => subStatusStore.GET_SUB_STATUS)
+const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
 const cards = [
   { id: 1, text: 'Address, Contact Details', iconSrc: address, componentName: 'ProfileAddressDetails', isDisabled: false },

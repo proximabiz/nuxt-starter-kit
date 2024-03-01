@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { useBillingStore } from '~/stores/subscription'
 
 const notify = useNotification()
-const planStore = useBillingStore()
+const subscriptionStore = useSubscriptionStore()
 const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
 const noplanModal = ref<boolean>(false)
@@ -11,7 +10,7 @@ const isModalVisible = ref(false)
 
 async function getActivePlan() {
   try {
-    const response = await planStore.fetchActivePlan()
+    const response = await subscriptionStore.fetchActivePlan()
     if (response?.subscription_status === 'PLAN_EXPIRED')
       showUpgradeModal.value = true
     planData.value = response
@@ -27,7 +26,7 @@ async function cancelPlan() {
     note: 'Cancel Subscription',
   }
   try {
-    const res = await planStore.cancelSubscription(payload)
+    const res = await subscriptionStore.cancelSubscription(payload)
     if (res?.status === 204) {
       noplanModal.value = true
       notify.success(res.message)

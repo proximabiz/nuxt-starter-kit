@@ -1,9 +1,9 @@
 import { useAuthStore } from './auth'
+import { useContactStore } from './contact'
 import { useDiagramStore } from './diagram'
-import { useTaskStore } from './example'
+import { useDiagramTypeStore } from './diagramType'
 import { useGlobalStore } from './global'
-import { useMindmapStore } from './mindmap'
+import { useSubscriptionStore } from './subscription'
 import { useUserStore } from './user'
-import { useAddressStore } from './address'
 
-export { useAuthStore, useDiagramStore, useGlobalStore, useMindmapStore, useTaskStore, useUserStore, useAddressStore }
+export { useAuthStore, useContactStore, useDiagramStore, useDiagramTypeStore, useGlobalStore, useSubscriptionStore, useUserStore }
