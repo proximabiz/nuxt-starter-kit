@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   // ).eq('id', addressId).eq('user_id', userID)
 
   const { data, error, status } = await client.from('user_address_details').select(
-    `*`,
+    'id, country, zip_code, city, region, address, is_active, user_id, phone_number',
   ).eq('user_id', userID)
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)

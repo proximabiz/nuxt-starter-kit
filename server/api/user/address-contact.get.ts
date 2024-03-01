@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 
   const { data: userDetails, error: userError, status } = await client
     .from('user_details')
-    .select(`*`)
+    .select('id, user_id, name, organisation_name, gst_number, is_active')
     .eq('user_id', userID)
 
   if (userError)
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
 
   const { data: userAddress, error: errorAddress } = await client
     .from('user_address_details')
-    .select(`*`)
+    .select('id, country, zip_code, city, region, address, is_active, user_id, phone_number')
     .eq('user_id', userID)
 
   if (errorAddress)
