@@ -26,9 +26,6 @@ const mind = ref()
 const isRequirements = ref(false)
 const isSavePopupOpen = ref(false)
 const isSave = ref(false)
-const isSharePopUpOpen = ref(false)
-const emailId = ref('')
-const textMessage = ref('')
 const toRoute = ref()
 const form = ref({
   title: '',
@@ -42,7 +39,6 @@ const items = [{
   key: 'json-driven',
   label: 'From JSON ',
 }]
-
 const versionsItems = ref()
 async function fetchDiagramVersions() {
   try {
@@ -299,6 +295,22 @@ onBeforeRouteLeave((to) => {
   if (!isSave.value)
     return false
 })
+// share modal state and logic
+
+interface PersonSelectedType{
+  name:string,
+   email: string,
+   avatar:string, 
+   access:string
+}
+const isSharePopUpOpen = ref(false)
+
+const emailId = ref('')
+const isFirstDropdownVisible = ref(false)
+const isSecondDropdownVisible = ref(false)
+const selectedPerson = reactive<PersonSelectedType[]>([])
+const textMessage = ref('')
+
 
 const peopleArray = [
   {
@@ -327,23 +339,44 @@ const peopleArray = [
   },
 ]
 
-const isDropdownVisible = ref(false)
-
-function toggleDropdown() {
-  isDropdownVisible.value = !isDropdownVisible.value
+function toggleFirstDropdown() {
+  isFirstDropdownVisible.value = !isFirstDropdownVisible.value
 }
 
-function hideDropdown() {
+function hideFirstDropdown() {
   setTimeout(() => {
-    isDropdownVisible.value = false
+    isFirstDropdownVisible.value = false
   }, 200)
 }
+function toggleSecondDropdown() {
+  isSecondDropdownVisible.value = !isSecondDropdownVisible.value
+}
+
+function hideSecondDropdown() {
+  setTimeout(() => {
+    isSecondDropdownVisible.value = false
+  }, 200)
+}
+
 function openSharePopup() {
   isSharePopUpOpen.value = true
   emailId.value = ''
+  selectedPerson.length=0
+  console.log("After clearing:", selectedPerson.length);
 }
-function selectPeople(item: any) {
-  emailId.value = item.email
+function select(item:PersonSelectedType) {
+  // console.log("Selecting item:", item, selectedPerson ); 
+ selectedPerson?.push(item) 
+  emailId.value = item.email;
+  // console.log("Selected person after update:", selectedPerson);
+}
+
+function selectPeople(item: PersonSelectedType) {
+  if (!selectedPerson.some(selectedItem => selectedItem.email === item.email))
+    selectedPerson.push(item)
+}
+function removeTag(itemToRemove: PersonSelectedType) {
+  // selectedPerson = selectedPerson.filter(item => item.email !== itemToRemove.email)
 }
 </script>
 
@@ -515,7 +548,7 @@ function selectPeople(item: any) {
   </USlideover>
   <!-- Map sharing modal -->
   <!-- <ModalsSharePopUP /> -->
-  <UModal :model-value="isSharePopUpOpen && emailId === ''">
+  <UModal :model-value="isSharePopUpOpen && emailId===''">
     <section class="p-4">
       <div class="flex justify-between items-center">
         <h2 class="text-2xl">
@@ -533,13 +566,13 @@ function selectPeople(item: any) {
           type="text"
           class="mt-4 w-full rounded-md border-zinc-500"
           placeholder="Add people"
-          @click="toggleDropdown"
-          @blur="hideDropdown"
+          @click="toggleFirstDropdown"
+          @blur="hideFirstDropdown"
         >
-        <div v-if="isDropdownVisible" class="bg-slate-100 rounded-md absolute z-10 mt-1 w-full shadow-lg">
+        <div v-if="isFirstDropdownVisible" class="bg-slate-100 rounded-md absolute z-10 mt-1 w-full shadow-lg">
           <div class="px-4 pb-4">
-            <ul v-for="(item, i) in peopleArray" :key="i" class="mt-4">
-              <li class="flex items-center" @click="selectPeople(item)">
+            <ul v-for="(item, i) in peopleArray" :key="i" class="mt-4 cursor-pointer">
+              <li class="flex items-center" @click="select(item)">
                 <div>
                   <UAvatar :src="item.avatar" />
                 </div>
@@ -584,11 +617,11 @@ function selectPeople(item: any) {
     </section>
   </UModal>
 
-  <UModal :model-value="emailId !== ''">
+  <UModal :model-value="emailId !==''">
     <section class="p-4">
       <div class="flex justify-between items-center">
         <UIcon
-          name="i-heroicons-arrow-left" class="size-5"
+          name="i-heroicons-arrow-left" class="size-5 cursor-pointer"
           @click="openSharePopup"
         />
         <h2 class="text-2xl ml-4">
@@ -598,16 +631,41 @@ function selectPeople(item: any) {
           <UIcon name="i-heroicons-question-mark-circle" class="size-5" />
         </span>
       </div>
-
-      <!-- <UInput v-model="emailId" class="mt-4" placeholder="Add people" /> -->
-      <div class="dropdown-input">
-        <input
-          v-model="emailId"
-          type="text"
-          class="mt-4 w-full rounded-md border-zinc-500"
-          placeholder="Add people"
-        >
+      <div class="flex border-2 rounded-md border-custom1-600 px-4 mt-4 relative">
+        <div v-for="(person, index) in selectedPerson" :key="index" class="flex items-center border border-zinc-600 rounded-full px-1 my-2 w-fit">
+          <UAvatar :src="person.avatar" class="custom-size" />
+          <span class="text-sm font-normal mx-2">{{ person.name }}</span>
+          <UIcon name="i-heroicons-x-mark" class="size-4" @click="removeTag(person)" />
+        </div>
+        <!-- <div class="dropdown-input"> -->
+          <input
+            type="text"
+            class="border-none"
+            @click="toggleSecondDropdown"
+            @blur="hideSecondDropdown"
+          >
+          <div v-if="isSecondDropdownVisible" class="bg-lime-600">helooooo</div>
+          <!-- <div v-if="isSecondDropdownVisible" class="bg-slate-100 rounded-md absolute z-10 mt-1 w-full shadow-lg">
+            <div class="px-4 pb-4">
+              <ul v-for="(item, i) in peopleArray" :key="i" class="mt-4 cursor-pointer">
+                <li class="flex items-center" @click="selectPeople(item)">
+                  <div>
+                    <UAvatar :src="item.avatar" />
+                  </div>
+                  <div class="ml-4">
+                    <p>{{ item.name }}</p>
+                    <p class="text-sm">
+                      {{ item.email }}
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div> -->
+        <!-- </div> -->
+        <!-- <input type="text" class="border-none"> -->
       </div>
+
       <UFormGroup name="message" label="Message" class="mt-4">
         <UTextarea
           v-model="textMessage" color="white" size="xl" variant="outline"
@@ -642,3 +700,10 @@ function selectPeople(item: any) {
     </UCard>
   </UModal>
 </template>
+
+<style scoped>
+:deep(.custom-size img) {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+</style>
