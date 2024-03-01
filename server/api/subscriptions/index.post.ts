@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
   }
   else {
     // End date for a week (7 days)
-    const weekDate = endDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000))
+    const weekDate = endDate = new Date(currentDate.getTime() + (14 * 24 * 60 * 60 * 1000))
     weekDate.setUTCHours(23, 59, 0, 0) // Set time to 24:00:00.000Z
     endDate = weekDate
   }
