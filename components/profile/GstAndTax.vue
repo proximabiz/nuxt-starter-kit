@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useGstTaxStore } from '~/stores/gst'
-
 interface State {
   gstNumber: string
 }
@@ -9,7 +7,7 @@ interface State {
 //   message: string
 // }
 const notify = useNotification()
-const taxGstStore = useGstTaxStore()
+const userStore = useUserStore()
 const state = reactive<State>({
   gstNumber: '',
 })
@@ -19,15 +17,13 @@ const isLoading = ref(true)
 
 async function getTaxGst() {
   try {
-    const response = await taxGstStore.fetchTaxGst()
-    if(response){
-    state.gstNumber = response?.gst_number
-    isLoading.value = false
-    if(response?.gst_number){
-    isDisabled.value = true  }
-    
+    const response = await userStore.fetchTaxGst()
+    if (response) {
+      state.gstNumber = response?.gst_number
+      isLoading.value = false
+      if (response?.gst_number)
+        isDisabled.value = true
     }
-    
   }
   catch (error) {
     notify.error(error.statusMessage)
@@ -44,7 +40,7 @@ function showModal() {
 
 async function onSubmit(): Promise<void> {
   try {
-    const response = await taxGstStore.addTaxGst(state)
+    const response = await userStore.addTaxGst(state)
     if (response?.status === 200) {
       isDisabled.value = true
       isModalVisible.value = false
@@ -57,7 +53,7 @@ async function onSubmit(): Promise<void> {
 }
 async function handleDeleteConfirm(): Promise<void> {
   try {
-    const response = await taxGstStore.deleteTaxGst()
+    const response = await userStore.deleteTaxGst()
     if (response?.status === 200) {
       // Clear the GST number from state
       state.gstNumber = ''
@@ -103,12 +99,13 @@ async function handleDeleteConfirm(): Promise<void> {
         </div>
       </UForm>
       <Icon v-if="isDisabled" name="material-symbols-light:delete-rounded" color="black" class="text-2xl mt-1 cursor-pointer" @click="showModal" />
-      <Confirmation 
-      v-model="isModalVisible" 
-      :is-open="isModalVisible" 
-      @update:is-open="isModalVisible = $event" 
-      @delete-confirm="handleDeleteConfirm" 
-      text="Are you sure you want to delete this Tax ID/GST No?"/>
+      <Confirmation
+        v-model="isModalVisible"
+        :is-open="isModalVisible"
+        text="Are you sure you want to delete this Tax ID/GST No?"
+        @update:is-open="isModalVisible = $event"
+        @delete-confirm="handleDeleteConfirm"
+      />
     </div>
   </div>
 </template>

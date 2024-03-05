@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { useBillingStore } from '~/stores/subscription'
-
 const isMonthly = ref(true)
 const showBillingDetails = ref(false)
 let cardValue = ref()
 const region = ref('india')
-const subStatusStore = useBillingStore()
+const subscriptionStore = useSubscriptionStore()
+const authStore = useAuthStore()
 
-const sub_status = computed(() => subStatusStore.GET_SUB_STATUS)
+const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
 interface PricePlan {
   plan: string
@@ -40,15 +39,16 @@ const regions: regionTypes[] = [
     currencySymbol: '$', // Dollars
     conversionRate: 1, // Base rate
   },
-  { name: 'Other region',
+  {
+    name: 'Other region',
     value: 'other',
-    currencySymbol:'$',      
-    conversionRate: 1,     
-  }
+    currencySymbol: '$', // Dollars
+    conversionRate: 1, // Base rate
+  },
 ]
 
 const monthlyPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 1, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED' || sub_status?.value.planName === 'Free' },
+  { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value && sub_status?.value.planStatus === '') || sub_status?.value.planName === 'Free' },
   { plan: 'Basic', price: 2, month: 1, disabled: sub_status?.value.planName === 'Basic' },
   { plan: 'Premium', price: 5, month: 1, disabled: sub_status?.value.planName === 'Premium' },
   { plan: 'Enterprise', price: 'Custom', month: 1, disabled: sub_status?.value.planName === 'Enterprise' },
@@ -63,7 +63,10 @@ const annualPrices: PricePlan[] = [
 
 const prices = computed(() => {
   const selectedRegion = regions.find(r => r.value === region.value)
-  const adjustmentFactor = selectedRegion?.conversionRate
+  if (!selectedRegion)
+    return
+
+  const adjustmentFactor = selectedRegion.conversionRate
   const adjustedPrices = (isMonthly.value ? monthlyPrices : annualPrices).map((plan) => {
     if (plan.price === 'Custom') {
       return {
@@ -83,6 +86,9 @@ const prices = computed(() => {
 })
 
 function providePlanDetails(val: any) {
+  if (!authStore.getAuthUser.value)
+    return navigateTo('/login')
+
   cardValue = val
   showBillingDetails.value = true
   return cardValue
@@ -115,94 +121,97 @@ function providePlanDetails(val: any) {
 
     <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
       <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-4 md:gap-8">
-        <div
-          v-for="(value, index) in prices" :key="index"
-          class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm"
-        >
-          <div class="p-4 sm:pt-4 sm:pb-0">
-            <h2 class="text-lg font-medium text-gray-900">
-              {{ value.plan }}
-              <span class="sr-only">Plan</span>
-            </h2>
-            <p class="text-gray-700">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            </p>
-            <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-              {{ value.currencySymbol }}{{ value.calculatedPrice }}
-            </strong>
-            <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom' ? ''
-              : isMonthly
-                ? '/month' : '/year' }}</span>
-            <UButton
-              class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white  focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
-              :disabled="value.disabled"
-              @click="providePlanDetails(value)" :class="value.disabled ? 'bg-slate-300 border-transparent ' : 'hover:bg-transparent hover:text-indigo-600'"
-            >
-              {{ value.price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
-            </UButton>
+        <template v-if="prices && prices.length">
+          <div
+            v-for="(value, index) in prices" :key="index"
+            class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm"
+          >
+            <div class="p-4 sm:pt-4 sm:pb-0">
+              <h2 class="text-lg font-medium text-gray-900">
+                {{ value.plan }}
+                <span class="sr-only">Plan</span>
+              </h2>
+              <p class="text-gray-700">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </p>
+              <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
+                {{ value.currencySymbol }}{{ value.calculatedPrice }}
+              </strong>
+              <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom' ? ''
+                : isMonthly
+                  ? '/month' : '/year' }}</span>
+              <UButton
+                class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white  focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
+                :disabled="value.disabled"
+                :class="value.disabled ? 'bg-slate-300 border-transparent ' : 'hover:bg-transparent hover:text-indigo-600'"
+                @click="providePlanDetails(value)"
+              >
+                {{ value.price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
+              </UButton>
+            </div>
+            <div class="p-2 sm:px-4">
+              <p class="text-lg font-medium text-gray-900 sm:text-xl">
+                What's included:
+              </p>
+              <ul class="mt-2 space-y-2 sm:mt-2">
+                <li class="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="h-5 w-5 text-indigo-700"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                  <span class="text-gray-700"> 10 users </span>
+                </li>
+                <li class="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="h-5 w-5 text-indigo-700"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                  <span class="text-gray-700"> 2GB of storage </span>
+                </li>
+                <li class="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="h-5 w-5 text-indigo-700"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                  <span class="text-gray-700"> Email support </span>
+                </li>
+                <li class="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="h-5 w-5 text-red-700"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span class="text-gray-700"> Help center access </span>
+                </li>
+                <li class="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="h-5 w-5 text-red-700"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span class="text-gray-700"> Phone support </span>
+                </li>
+                <li class="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="h-5 w-5 text-red-700"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span class="text-gray-700"> Community access </span>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div class="p-2 sm:px-4">
-            <p class="text-lg font-medium text-gray-900 sm:text-xl">
-              What's included:
-            </p>
-            <ul class="mt-2 space-y-2 sm:mt-2">
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <span class="text-gray-700"> 10 users </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <span class="text-gray-700"> 2GB of storage </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <span class="text-gray-700"> Email support </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-red-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                <span class="text-gray-700"> Help center access </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-red-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                <span class="text-gray-700"> Phone support </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-red-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                <span class="text-gray-700"> Community access </span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        </template>
       </div>
     </div>
   </template>

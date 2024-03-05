@@ -1,22 +1,20 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
 import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
+import dayjs from 'dayjs'
 import type { MindElixirData, Options } from 'mind-elixir'
 import MindElixir from 'mind-elixir'
 import { useFileExporter } from '@/composables/ExportJsonFile'
+
+const props = defineProps<Props>()
 
 interface Props {
   diagramId: string
 }
 
-const props = defineProps<Props>()
-
-const route = useRoute()
-
-const mindmapStore = useMindmapStore()
-const notify = useNotification()
 const diagramStore = useDiagramStore()
+const notify = useNotification()
+const globalStore = useGlobalStore()
 const { exportJSONFile } = useFileExporter()
 
 const apiResponse = ref()
@@ -32,6 +30,8 @@ const toRoute = ref()
 const form = ref({
   title: '',
   details: '',
+  json: '',
+  isDetailed: false,
 })
 const items = [{
   key: 'data-driven',
@@ -45,7 +45,9 @@ const versionsItems = ref()
 async function fetchDiagramVersions() {
   try {
     isVersionDrawerOpen.value = true
-    versionsItems.value = await diagramStore.getVersionList(props.diagramId)
+    versionsItems.value = await diagramStore.getVersionList({
+      diagramId: props.diagramId,
+    })
   }
   catch (error) {
     notify.error(error)
@@ -54,7 +56,7 @@ async function fetchDiagramVersions() {
 
 async function fetchMap() {
   try {
-    apiResponse.value = await mindmapStore.get({
+    apiResponse.value = await diagramStore.get({
       diagramId: props.diagramId,
     })
 
@@ -65,6 +67,8 @@ async function fetchMap() {
       else
         form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
       // form.value.details = apiResponse.value[0].details
+
+      globalStore.pageHeading.title = form.value.title
     }
   }
   catch (error) {
@@ -159,14 +163,17 @@ function init3() {
 async function updateMap() {
   try {
     // Call update API here
-    // const mindmapTypeDiagram = diagramStore.getMindMapTypeDiagram
+    // const mindmapTypeDiagram = diagramTypeStore.getMindMapTypeDiagram
     // if (!mindmapTypeDiagram)
     //   return
 
-    updateApiResponse.value = await mindmapStore.update({
+    updateApiResponse.value = await diagramStore.update({
+      diagramId: props.diagramId,
       title: form.value.title,
+      isDetailed: form.value.isDetailed,
+      details: form.value.details,
       // diagramTypeId: mindmapTypeDiagram.id,
-    }, props.diagramId)
+    })
 
     isOpen.value = false
     if (updateApiResponse.value.response.chartDetails[0].nodeData) {
@@ -184,10 +191,12 @@ async function updateMap() {
 
 async function saveMap(isRedirect: boolean) {
   try {
-    saveApiResponse.value = await mindmapStore.save({
+    saveApiResponse.value = await diagramStore.save({
+      diagramId: props.diagramId,
       existingOpenAIResponse: toRaw(mind.value.getDataString()),
       isDiagramChanged: true,
-    }, props.diagramId)
+    })
+    notify.success('Mindmap saved!')
     if (isRedirect) {
       isSavePopupOpen.value = false
       isSave.value = true
@@ -241,7 +250,6 @@ async function exportJSON() {
 function loadJSON(jsonData: JSON) {
   isVersionDrawerOpen.value = false
   updateApiResponse.value = jsonData
-  console.log('jsonData', jsonData)
 
   if (updateApiResponse.value.nodeData) {
     init2()
@@ -254,6 +262,17 @@ function loadJSON(jsonData: JSON) {
   // form.value.title = updateApiResponse.value[0].nodeData.topic as string
   // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
   notify.success('Selected mindmap loaded')
+}
+
+function createMapFromJSON() {
+  updateApiResponse.value = JSON.parse(form.value.json)
+  if (updateApiResponse.value.nodeData) {
+    init2()
+    form.value.title = updateApiResponse.value.topic
+
+    isOpen.value = false
+    notify.success('Mindmap created from JSON')
+  }
 }
 
 onMounted(() => {
@@ -384,18 +403,18 @@ onBeforeRouteLeave((to) => {
               </div>
               <div class="flex items-start mb-5">
                 <div class="flex items-center h-5">
-                  <input id="remember" v-model="isRequirements" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" required>
+                  <input id="remember" v-model="form.isDetailed" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" required>
                 </div>
                 <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I have more details</label>
               </div>
-              <div v-if="isRequirements" class="mb-5">
+              <div v-if="form.isDetailed" class="mb-5">
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Explain your idea in everyday terms</label>
-                <textarea class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                <textarea v-model="form.details" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                 <div class="text-gray-500 text-xs mt-3">
                   For example- I want to visualize the key concepts of blockchain. Start with a central node labeled 'Blockchain Technology' and branch out to 'Decentralization,' 'Immutable Ledger,' and 'Cryptographic Security.
                 </div>
               </div>
-              <UButton label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
+              <UButton :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
             </form>
           </div>
           <!-- Json Tab -->
@@ -403,7 +422,8 @@ onBeforeRouteLeave((to) => {
             <form class="max-w-sm mx-auto px-4 py-6">
               <div class="mb-5">
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter your JSON Data</label>
-                <textarea class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                <textarea v-model="form.json" size="xl" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                <UButton label="Submit" class="mt-5 px-5 py-2.5 text-center" @click="createMapFromJSON()" />
               </div>
             </form>
           </div>
@@ -443,7 +463,6 @@ onBeforeRouteLeave((to) => {
   </UContainer>
   <UModal v-model="isSavePopupOpen">
     <UCard>
-      {{ isSave }}opopo
       Changes are made to Mindmap. Save Changes?
       <div class="flex justify-end my-4">
         <UButton label="Disacrd Changes" class="mr-2" icon="i-heroicons-backspace" @click="closePopup()" />

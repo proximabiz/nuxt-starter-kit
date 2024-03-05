@@ -1,35 +1,17 @@
-import type { State, contactTypes } from './types'
+import type { State } from './types'
+
+function initialState() {
+  return {
+    pageHeading: {
+      title: 'My Heading',
+    },
+  }
+}
 
 export const useGlobalStore = defineStore('globalStore', {
-  state: (): State => ({
-    drawer: false,
-
-  }),
-  getters: {
-    GET_DRAWER_STATUS(): boolean {
-      return this.drawer
-    },
-
-  },
-  actions: {
-    toggleDrawer() {
-      this.drawer = !this.drawer
-    },
-    async contactSales(payload: contactTypes) {
-      const authStore = useAuthStore()
-      const { data, error } = await useFetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          Authorization: await authStore.getBearerToken,
-        },
-        body: payload,
-      })
-      if (error.value)
-        throw error.value
-      return data.value
-    },
-  },
-
+  state: (): State => initialState(),
+  getters: {},
+  actions: {},
   persist: {
     storage: persistedState.localStorage,
   },

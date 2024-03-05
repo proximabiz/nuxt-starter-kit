@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { useBillingStore } from '~/stores/subscription'
-
 const authStore = useAuthStore()
 const route = useRoute()
 
 const authUser = computed(() => authStore.getAuthUser.value)
-const planStore = useBillingStore()
+const subscriptionStore = useSubscriptionStore()
+const userStore = useUserStore()
 
 const showUpgradeModal = ref<boolean>(false)
 
@@ -16,10 +15,10 @@ watch(
       navigateTo('/login')
 
     if (user && route.fullPath.includes('/login'))
-      navigateTo('/')
+      return handlePostAuthentication()
 
     if (user?.id) {
-      const response = await planStore.fetchActivePlan()
+      const response = await subscriptionStore.fetchActivePlan()
       if (response?.subscription_status === 'PLAN_EXPIRED') {
         showUpgradeModal.value = true
       }
@@ -30,15 +29,27 @@ watch(
           amount: 0,
         }
         if (!route.fullPath.includes('/profile/account'))
-          await planStore.addSubscription(payload)
+          await subscriptionStore.addSubscription(payload)
       }
     }
   },
   { immediate: true },
 )
+
 function upgradePlan() {
   showUpgradeModal.value = false
   navigateTo('/website/pricing')
+}
+
+async function handlePostAuthentication() {
+  // Check if user has filled the personal details already
+  const response = await userStore.fetchAddress()
+  if (!response)
+    return
+
+  if (!response?.data?.userDetails[0]?.name || !response?.data?.userDetails[0]?.organisation_name)
+    return navigateTo('/user/personal-details')
+  return navigateTo('/app/diagram/list')
 }
 </script>
 

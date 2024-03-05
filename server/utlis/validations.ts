@@ -5,17 +5,20 @@ export const ChartValidation = Joi.object({
   diagramTypeId: Joi.string().required(),
   isDetailed: Joi.boolean().optional().default(false),
   details: Joi.string().optional(),
+  diagramId: Joi.string().optional(),
 })
 
 export const PATCHChartUpdateValidation = Joi.object({
   existingOpenAIResponse: Joi.string().required(),
   isDiagramChanged: Joi.boolean().required(),
+  diagramId: Joi.string().optional(),
 })
 
 export const PUTChartUpdateValidation = Joi.object({
   title: Joi.string().required(),
   isDetailed: Joi.boolean().optional().default(false),
   details: Joi.string().optional(),
+  diagramId: Joi.string().optional(),
 })
 
 export const SignupValidation = Joi.object({

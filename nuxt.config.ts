@@ -1,7 +1,7 @@
 import validateEnvs from './envs/env.validator'
 
 export default defineNuxtConfig({
-  devtools: { enabled: false },
+  devtools: { enabled: process.env.NODE_ENV === 'dev' },
   runtimeConfig: {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     private: {
@@ -61,7 +61,7 @@ export default defineNuxtConfig({
     key: process.env.SUPABASE_KEY,
     redirectOptions: {
       login: '/login',
-      callback: '/app/maps',
+      callback: '/app/diagram/list',
       exclude: ['/website', '/website/*'],
     },
   },

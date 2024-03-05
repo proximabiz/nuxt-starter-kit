@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 
-const mindmapStore = useMindmapStore()
-const notify = useNotification()
 const diagramStore = useDiagramStore()
+const notify = useNotification()
+const diagramTypeStore = useDiagramTypeStore()
 const isLoading = ref(false)
 const isDelete = ref(false)
 const apiResponse = ref()
 const deleteDiagramId = ref('')
 
-const maps = computed(() => mindmapStore.maps)
+const diagramsList = computed(() => diagramStore.diagramsList)
 const headers = computed(() => [
   {
     title: 'Title',
@@ -29,19 +29,22 @@ const headers = computed(() => [
   },
 ])
 
+const globalStore = useGlobalStore()
+globalStore.pageHeading.title = 'My Diagrams'
+
 async function fetchDiagramTypes() {
   try {
-    const diagramStore = useDiagramStore()
-    await diagramStore.list()
+    const diagramTypeStore = useDiagramTypeStore()
+    await diagramTypeStore.list()
   }
   catch (error) {
     notify.error(error)
   }
 }
 
-async function fetchMaps() {
+async function fetchDiagrams() {
   try {
-    await mindmapStore.list()
+    await diagramStore.list()
     await fetchDiagramTypes()
   }
   catch (error) {
@@ -49,16 +52,17 @@ async function fetchMaps() {
   }
 }
 
-async function createMap() {
+async function createDiagram() {
   isLoading.value = true
   try {
-    const mindmapTypeDiagram = diagramStore.getMindMapTypeDiagram
-    if (!mindmapTypeDiagram)
+    // Right now we have only one type of diagram - mindmap
+    const diagramType = diagramTypeStore.getMindMapTypeDiagram
+    if (!diagramType)
       return
 
-    const response = await mindmapStore.create({
+    const response = await diagramStore.create({
       title: 'default',
-      diagramTypeId: mindmapTypeDiagram.id,
+      diagramTypeId: diagramType.id,
     })
 
     isLoading.value = false
@@ -71,29 +75,28 @@ async function createMap() {
 }
 
 function redirectToPath(diagramId: string) {
-  return navigateTo(`/app/maps/${diagramId}`)
+  return navigateTo(`/app/diagram/${diagramId}`)
 }
 
-async function deleteMindMap(diagramId: string) {
-  console.log(diagramId)
+async function deleteDiagram(diagramId: string) {
   try {
     isDelete.value = true
     deleteDiagramId.value = diagramId
   }
   catch (error) {
+    isDelete.value = true
     notify.error(error)
   }
 }
 
 async function confirmedDeleteDiagram() {
   try {
-    apiResponse.value = await mindmapStore.delete({
+    apiResponse.value = await diagramStore.delete({
       diagramId: deleteDiagramId.value,
     })
-    console.log(apiResponse.value)
     isDelete.value = false
     notify.success('Diagram deleted successfully!')
-    fetchMaps()
+    fetchDiagrams()
   }
   catch (error) {
     notify.error(error)
@@ -101,14 +104,14 @@ async function confirmedDeleteDiagram() {
 }
 
 onMounted(() => {
-  fetchMaps()
+  fetchDiagrams()
 })
 </script>
 
 <template>
   <div class="pl-10">
     <div class="flex justify-end my-4">
-      <UButton label="Create New" icon="i-heroicons-plus" @click="createMap()" />
+      <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
     </div>
     <div class="overflow-x-auto">
       <div class="sm:-mx-6 lg:-mx-8">
@@ -123,7 +126,7 @@ onMounted(() => {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in maps" :key="index" class="border-b dark:border-neutral-500">
+                <tr v-for="(item, index) in diagramsList" :key="index" class="border-b dark:border-neutral-500">
                   <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.id }}
                   </td> -->
@@ -131,7 +134,7 @@ onMounted(() => {
                     {{ item.title }}
                   </td>
                   <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.Keywords || 'No keywords specified' }}
+                    {{ item.keywords || 'No keywords specified' }}
                   </td>
                   <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.created_at }}
@@ -150,7 +153,7 @@ onMounted(() => {
                       icon="i-heroicons-trash"
                       size="sm"
                       variant="ghost"
-                      @click="deleteMindMap(item.id)"
+                      @click="deleteDiagram(item.id)"
                     />
                   </td>
                 </tr>
@@ -164,12 +167,12 @@ onMounted(() => {
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />
     <UCard>
-      Creating your <span class="font-bold">Default</span> Mindmap...
+      Creating your <span class="font-bold">Default</span> Diagram...
     </UCard>
   </UModal>
   <UModal v-model="isDelete">
     <UCard>
-      Are you sure you want to delete this mindmap?
+      Are you sure you want to delete this diagram?
       <div class="flex justify-end my-4">
         <UButton label="Cancel" class="mr-2" icon="i-heroicons-x-mark" @click="isDelete = false" />
         <UButton label="Delete" icon="i-heroicons-archive-box-x-mark" @click="confirmedDeleteDiagram()" />

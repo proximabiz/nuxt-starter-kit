@@ -2,14 +2,9 @@
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
-import { useAddressStore } from '~/stores/address'
-
-interface Props {
-  addressDetails: any
-}
 
 const notify = useNotification()
-const addressStore = useAddressStore()
+const userStore = useUserStore()
 
 const isDisabled = ref(false)
 const isEditable = ref(false)
@@ -65,31 +60,23 @@ const schema = z.object({
 
 async function getAddress() {
   try {
-    const response = await addressStore.fetchAddress()
-    isLoading.value = false
-    state.name = response.name
-    state.orgname = response.organisation_name
-    state.country = response.country
-    state.zip = response.zip_code
-    state.city = response.city
-    state.region = response.region
-    state.address = response.address
-    state.phone = response.phone_number
-    state.email = response.email
+    const response = await userStore.fetchAddress()
+    if (!response)
+      return
 
-    if (
-      // response.name==""
-      // && response.organisation_name==""
-      // && response.country==""
-      // && response.zip_code==""
-      // && response.city==""
-      // && response.region==""
-      // && response.address==""
-      response.phone_number === ''
-    ) {
-      // isEditable.value=true
-    }
-    if (!response.name && !response.organisation_name) {
+    isLoading.value = false
+
+    state.name = response?.data?.userDetails[0]?.name
+    state.orgname = response?.data?.userDetails[0]?.organisation_name
+    state.country = response?.data?.userAddress[0]?.country
+    state.zip = response?.data?.userAddress[0]?.zip_code
+    state.city = response?.data?.userAddress[0]?.city
+    state.region = response?.data?.userAddress[0]?.region
+    state.address = response?.data?.userAddress[0]?.address
+    state.phone = response?.data?.userAddress[0]?.phone_number
+    state.email = response.data.userData?.email
+
+    if (!response?.data?.userDetails[0]?.name && !response?.data?.userDetails[0]?.organisation_name) {
       isEditable.value = false
       isNewUser.value = true
     }
@@ -98,10 +85,6 @@ async function getAddress() {
     notify.error(error.message)
   }
 }
-
-onMounted(async () => {
-  await getAddress()
-})
 
 async function onSubmit() {
   if (!isNewUser.value) {
@@ -114,7 +97,7 @@ async function onSubmit() {
       phoneNumber: state.phone,
     }
     try {
-      const response = await addressStore.editAddress(payload)
+      const response = await userStore.editAddress(payload)
       if (response?.status === 200) {
         notify.success(response.message)
         // await getAddress()
@@ -137,11 +120,11 @@ async function onSubmit() {
       phoneNumber: state.phone,
     }
     try {
-      const response = await addressStore.addAddress(payloadPost)
+      const response = await userStore.addAddress(payloadPost)
       if (response?.status === 200) {
         notify.success(response.message)
-        
-        //require for future reference
+
+        // require for future reference
 
         // state.country = response.data?.country
         // state.zip = response.data.zipcode
@@ -167,6 +150,10 @@ function toggleEdit() {
 async function onCancel() {
   await getAddress()
 }
+
+onMounted(() => {
+  getAddress()
+})
 </script>
 
 <template>
