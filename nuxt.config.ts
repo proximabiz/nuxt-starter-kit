@@ -3,12 +3,14 @@ import validateEnvs from './envs/env.validator'
 export default defineNuxtConfig({
   devtools: { enabled: process.env.NODE_ENV === 'dev' },
   runtimeConfig: {
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    SITE_KEY:process.env.SITE_KEY,
+    public: {
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+      SITE_KEY: process.env.SITE_KEY,
+    },
     private: {
       SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
       SENDGRID_EMAIL_TEMPLATE_ID: process.env.SENDGRID_EMAIL_TEMPLATE_ID,
-      SENDGRID_FROM_EMAILID: process.env.SENDGRID_FROM_EMAILID,    
+      SENDGRID_FROM_EMAILID: process.env.SENDGRID_FROM_EMAILID,
     },
   },
   modules: [
@@ -66,9 +68,6 @@ export default defineNuxtConfig({
       exclude: ['/website', '/website/*', '/privacy'],
     },
   },
-  plugins: [
-    { src: '~/plugins/recaptcha.client.ts'} 
-  ],
   // routeRules: {
   //   '/profile/address': { ssr: false },
   // },

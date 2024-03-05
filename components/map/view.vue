@@ -298,11 +298,11 @@ onBeforeRouteLeave((to) => {
 })
 // share modal state and logic
 
-interface PersonSelectedType{
-  name:string,
-   email: string,
-   avatar:string, 
-   access:string
+interface PersonSelectedType {
+  name: string
+  email: string
+  avatar: string
+  access: string
 }
 const isSharePopUpOpen = ref(false)
 
@@ -311,7 +311,6 @@ const isFirstDropdownVisible = ref(false)
 const isSecondDropdownVisible = ref(false)
 const selectedPerson = reactive<PersonSelectedType[]>([])
 const textMessage = ref('')
-
 
 const peopleArray = [
   {
@@ -362,13 +361,12 @@ function hideSecondDropdown() {
 function openSharePopup() {
   isSharePopUpOpen.value = true
   emailId.value = ''
-  selectedPerson.length=0
-  console.log("After clearing:", selectedPerson.length);
+  selectedPerson.length = 0
 }
-function select(item:PersonSelectedType) {
-  // console.log("Selecting item:", item, selectedPerson ); 
- selectedPerson?.push(item) 
-  emailId.value = item.email;
+function select(item: PersonSelectedType) {
+  // console.log("Selecting item:", item, selectedPerson );
+  selectedPerson?.push(item)
+  emailId.value = item.email
   // console.log("Selected person after update:", selectedPerson);
 }
 
@@ -549,7 +547,7 @@ function removeTag(itemToRemove: PersonSelectedType) {
   </USlideover>
   <!-- Map sharing modal -->
   <!-- <ModalsSharePopUP /> -->
-  <UModal :model-value="isSharePopUpOpen && emailId===''">
+  <UModal :model-value="isSharePopUpOpen && emailId === ''">
     <section class="p-4">
       <div class="flex justify-between items-center">
         <h2 class="text-2xl">
@@ -618,7 +616,7 @@ function removeTag(itemToRemove: PersonSelectedType) {
     </section>
   </UModal>
 
-  <UModal :model-value="emailId !==''">
+  <UModal :model-value="emailId !== ''">
     <section class="p-4">
       <div class="flex justify-between items-center">
         <UIcon
@@ -639,14 +637,16 @@ function removeTag(itemToRemove: PersonSelectedType) {
           <UIcon name="i-heroicons-x-mark" class="size-4" @click="removeTag(person)" />
         </div>
         <!-- <div class="dropdown-input"> -->
-          <input
-            type="text"
-            class="border-none"
-            @click="toggleSecondDropdown"
-            @blur="hideSecondDropdown"
-          >
-          <div v-if="isSecondDropdownVisible" class="bg-lime-600">helooooo</div>
-          <!-- <div v-if="isSecondDropdownVisible" class="bg-slate-100 rounded-md absolute z-10 mt-1 w-full shadow-lg">
+        <input
+          type="text"
+          class="border-none"
+          @click="toggleSecondDropdown"
+          @blur="hideSecondDropdown"
+        >
+        <div v-if="isSecondDropdownVisible" class="bg-lime-600">
+          helooooo
+        </div>
+        <!-- <div v-if="isSecondDropdownVisible" class="bg-slate-100 rounded-md absolute z-10 mt-1 w-full shadow-lg">
             <div class="px-4 pb-4">
               <ul v-for="(item, i) in peopleArray" :key="i" class="mt-4 cursor-pointer">
                 <li class="flex items-center" @click="selectPeople(item)">
