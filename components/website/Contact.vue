@@ -2,6 +2,7 @@
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+import { VueReCaptcha } from 'vue-recaptcha-v3';
 
 const notify = useNotification()
 const contactStore = useContactStore()
@@ -107,6 +108,7 @@ async function onSubmit() {
             placeholder="Write your query/message"
           />
         </UFormGroup>
+        
         <UButton type="submit" class="w-fit p-3" color="blue">
           Submit
         </UButton>
