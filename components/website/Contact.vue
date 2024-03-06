@@ -2,10 +2,12 @@
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+import { useReCaptcha } from 'vue-recaptcha-v3';
 
 const notify = useNotification()
 const contactStore = useContactStore()
 const selectedOption = ref('Demo')
+const route = useRoute();
 
 function updateSelection(value: string) {
   selectedOption.value = value
@@ -32,6 +34,19 @@ const schema = z.object({
   message: z.string().min(1, 'Message is required'),
 })
 
+const recaptchaInstance:ReCaptchaInstance = useReCaptcha();
+
+const executeRecaptcha = async () => {
+  try {
+    await recaptchaInstance.recaptchaLoaded();
+    const token = await recaptchaInstance.executeRecaptcha('contact_form_submit');
+    return token;
+  } catch (error) {
+    console.error('Error executing reCAPTCHA:', error);
+    return null;
+  }
+};
+
 async function onSubmit() {
   const payload = {
     name: `${state.name} ${state.lastname}`,
@@ -40,6 +55,8 @@ async function onSubmit() {
     requestFor: selectedOption.value,
     message: state.message,
   }
+  const token = await executeRecaptcha();
+  console.log(token)
 
   try {
     const response = await contactStore.create(payload)
