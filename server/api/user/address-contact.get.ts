@@ -30,6 +30,7 @@ export default defineEventHandler(async (event) => {
 
   return {
     status,
+    message: 'Success',
     data: {
       userData,
       userDetails,

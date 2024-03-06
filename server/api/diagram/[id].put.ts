@@ -11,70 +11,51 @@ export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const params = await readBody(event)
   const diagramId: string = getRouterParam(event, 'id')!
-  try {
-    const chartValidation = await PUTChartUpdateValidation.validateAsync(params)
+  const chartValidation = await PUTChartUpdateValidation.validateAsync(params)
 
-    if (!chartValidation) {
-      throw new CustomError('Invalid input provided', 401)
+  if (!chartValidation) {
+    throw new CustomError('Invalid input provided', 401)
+  }
+  else {
+    const { data: diagram, error: errorDiagram } = await getDiagram(client, diagramId)
+    if (errorDiagram)
+      throw new CustomError(`Error: ${errorDiagram.message}`, 400)
+
+    if (Array.isArray(diagram) && diagram.length === 0)
+      throw new CustomError(`no diagram found for the diagramId:${diagramId}`, 402)
+
+    const userKeyword = chartValidation.title
+    if (!userKeyword)
+      throw new CustomError('User keyword is required', 401)
+
+    const userRequirement = chartValidation.details || diagram[0].details
+    const prompt = await getPrompt(event, userKeyword, diagram[0].diagram_type_id.id, chartValidation.isDetailed, userRequirement) // to get prompts
+    const openai: any = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+
+    const completion: any = await openai.completions.create({
+      model: 'gpt-3.5-turbo-instruct',
+      prompt,
+      max_tokens: 2000,
+      temperature: 0.7,
+    })
+    const chart: object = JSON.parse(completion.choices[0].text)
+    if (chart) {
+      const response: ChartResponseType = {
+        userKeyword: chartValidation.userKeyword,
+        userRequirement,
+        diagramType: chartValidation.diagramType,
+        isDetailed: chartValidation.isDetailed,
+        chartDetails: chart,
+      }
+      const { data, error } = await updateDiagram(client, userKeyword, userRequirement, response, diagramId)
+      await insertDiagramVersion(client, diagramId, event.context.user.id, chart, userRequirement)
+
+      return { message: 'Success!', data: { data, response, error }, status: 200 }
     }
     else {
-      const { data: diagram, error: errorDiagram } = await getDiagram(client, diagramId)
-      if (errorDiagram)
-        throw new CustomError(`Error: ${errorDiagram.message}`, 400)
-
-      if (Array.isArray(diagram) && diagram.length === 0)
-        throw new CustomError(`no diagram found for the diagramId:${diagramId}`, 402)
-
-      const userKeyword = chartValidation.title
-      if (!userKeyword)
-        throw new CustomError('User keyword is required', 401)
-
-      const userRequirement = chartValidation.details || diagram[0].details
-      const prompt = await getPrompt(event, userKeyword, diagram[0].diagram_type_id.id, chartValidation.isDetailed, userRequirement) // to get prompts
-      const openai: any = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-      })
-
-      try {
-        const completion: any = await openai.completions.create({
-          model: 'gpt-3.5-turbo-instruct',
-          prompt,
-          max_tokens: 2000,
-          temperature: 0.7,
-        })
-        const chart: object = JSON.parse(completion.choices[0].text)
-        if (chart) {
-          const response: ChartResponseType = {
-            userKeyword: chartValidation.userKeyword,
-            userRequirement,
-            diagramType: chartValidation.diagramType,
-            isDetailed: chartValidation.isDetailed,
-            chartDetails: chart,
-          }
-          const { data, error } = await updateDiagram(client, userKeyword, userRequirement, response, diagramId)
-          await insertDiagramVersion(client, diagramId, event.context.user.id, chart, userRequirement)
-
-          return { message: 'Success!', data: { data, response, error }, status: 200 }
-        }
-        else {
-          return { message: 'server is busy please, try again!', status: 400 }
-        }
-      }
-      catch (error: any) {
-        return {
-          message: error.message,
-          status: 501,
-        }
-      }
-    }
-  }
-  catch (error: any) {
-    if (error.isJoi === true) {
-      // implement
-      return {
-        message: 'Invalid chart details provided',
-        status: 401,
-      }
+      return { message: 'server is busy please, try again!', status: 400 }
     }
   }
 })

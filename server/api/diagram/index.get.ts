@@ -29,5 +29,6 @@ export default defineEventHandler(async (event) => {
   return {
     data,
     status,
+    message: 'Success',
   }
 })
