@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
       ).single()
 
       if (error)
-        return { message: 'Error!', error, status: 400 }
+        throw new CustomError('Error!', 400)
 
       const { error: errorUserDetails } = await client.from('user_details').insert(
         {

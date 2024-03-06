@@ -1,8 +1,8 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
-import { CompleteOrderValidation } from '~/server/utlis/validations'
 import { addPaymentMethod } from '~/server/utlis/stripe'
+import { CompleteOrderValidation } from '~/server/utlis/validations'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -12,66 +12,60 @@ export default defineEventHandler(async (event) => {
     throw new CustomError('Error: no user found!', 404)
 
   const client = await serverSupabaseClient(event)
-  try {
-    const orderValidation = await CompleteOrderValidation.validateAsync(params)
-    if (!orderValidation) {
-      throw new CustomError('Invalid input provided', 401)
-    }
-    else {
-      const { error } = await addUserDetails(orderValidation)
-      if (error)
-        return { message: 'Error!', error, status: 400 }
 
-      if (orderValidation.subscriptionTypeId) {
-        const { data: subData, error: subError, status: subStatus } = await client
-          .from('subscription_type')
-          .select('monthly_price')
-          .eq('id', orderValidation.subscriptionTypeId)
-          .single()
-
-        if (subError)
-          throw new CustomError(`Supabase Error: ${subError.message}`, subStatus)
-
-        let amount = 0
-        const currentDate = new Date()
-        let endDate = new Date()
-        if (orderValidation.ammount > 0) {
-          if (orderValidation.planType.toLowerCase().trim() === 'monthly') {
-            endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate())
-            amount = calculatePlanAmount(orderValidation.currencyCode, subData.monthly_price, 1)
-          }
-          else if (orderValidation.planType.toLowerCase().trim() === 'yearly') {
-            endDate = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate())
-            amount = calculatePlanAmount(orderValidation.currencyCode, subData.monthly_price, 11)
-          }
-        }
-        else {
-          endDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000))
-        }
-
-        const { error: errorUserDetails } = await addUserSubscription(orderValidation, amount, currentDate, endDate)
-        if (errorUserDetails)
-          return { message: 'Error!', errorUserDetails, status: 400 }
-      }
-
-      // Save customer card details on Stripe
-      const [expiryMonth, expiryYear] = orderValidation.expiryDate.split('/')
-      const paymentMethodResponse: any = addPaymentMethod(orderValidation.cardNumber, expiryMonth, expiryYear, orderValidation.securityCode)
-      if (paymentMethodResponse.status === 200) {
-        const { error: errorPaymentMethod } = await updateStripePaymentMethodId(userID, paymentMethodResponse.paymentMethod.id)
-        if (error)
-          return { message: 'Error!', errorPaymentMethod, status: 400 }
-      }
-      else { return paymentMethodResponse }
-
-      return { message: 'Order Complete successfully!', data: orderValidation, status: 200 }
-    }
+  const orderValidation = await CompleteOrderValidation.validateAsync(params)
+  if (!orderValidation) {
+    throw new CustomError('Invalid input provided', 401)
   }
-  catch (error: any) {
-    return {
-      message: error.message,
-      status: 501,
+  else {
+    const { error } = await addUserDetails(orderValidation)
+    if (error)
+      throw new CustomError('Error!', 400)
+
+    if (orderValidation.subscriptionTypeId) {
+      const { data: subData, error: subError, status: subStatus } = await client
+        .from('subscription_type')
+        .select('monthly_price')
+        .eq('id', orderValidation.subscriptionTypeId)
+        .single()
+
+      if (subError)
+        throw new CustomError(`Supabase Error: ${subError.message}`, subStatus)
+
+      let amount = 0
+      const currentDate = new Date()
+      let endDate = new Date()
+      if (orderValidation.ammount > 0) {
+        if (orderValidation.planType.toLowerCase().trim() === 'monthly') {
+          endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate())
+          amount = calculatePlanAmount(orderValidation.currencyCode, subData.monthly_price, 1)
+        }
+        else if (orderValidation.planType.toLowerCase().trim() === 'yearly') {
+          endDate = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate())
+          amount = calculatePlanAmount(orderValidation.currencyCode, subData.monthly_price, 11)
+        }
+      }
+      else {
+        endDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000))
+      }
+
+      const { error: errorUserDetails } = await addUserSubscription(orderValidation, amount, currentDate, endDate)
+      if (errorUserDetails)
+        return { message: 'Error!', errorUserDetails, status: 400 }
     }
+
+    // Save customer card details on Stripe
+    const [expiryMonth, expiryYear] = orderValidation.expiryDate.split('/')
+    const paymentMethodResponse: any = addPaymentMethod(orderValidation.cardNumber, expiryMonth, expiryYear, orderValidation.securityCode)
+    if (paymentMethodResponse.status === 200) {
+      const { error: errorPaymentMethod } = await updateStripePaymentMethodId(userID, paymentMethodResponse.paymentMethod.id)
+      if (error)
+        // return { message: 'Error!', errorPaymentMethod, status: 400 }
+        throw new CustomError(`Error: ${errorPaymentMethod}`, 400)
+    }
+    else { return paymentMethodResponse }
+
+    return { message: 'Order Complete successfully!', data: orderValidation, status: 200 }
   }
 
   async function addUserDetails(orderValidation: any): Promise<{ error: any }> {
