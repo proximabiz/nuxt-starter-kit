@@ -5,8 +5,10 @@ import { UserAddressValidation } from '~/server/utlis/validations'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
+
   const userID = event.context.user.id
   const params = await readBody(event)
+
   if (!userID)
     throw new CustomError('Error: no user found!', 404)
 
@@ -37,6 +39,6 @@ export default defineEventHandler(async (event) => {
         phone: chartValidation.phoneNumber,
       })
     }
-    return { message: 'Success!', data, status: 200 }
+    return { data, message: 'Success!', status: 200 }
   }
 })

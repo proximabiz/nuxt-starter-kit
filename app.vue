@@ -47,7 +47,7 @@ async function handlePostAuthentication() {
   if (!response)
     return
 
-  if (!response?.data?.userDetails[0]?.name || !response?.data?.userDetails[0]?.organisation_name)
+  if (!response?.userDetails[0]?.name || !response?.userDetails[0]?.organisation_name)
     return navigateTo('/user/personal-details')
   return navigateTo('/app/diagram/list')
 }

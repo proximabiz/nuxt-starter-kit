@@ -1,5 +1,4 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
 import { UserAddressValidation } from '~/server/utlis/validations'
 
@@ -10,7 +9,11 @@ export default defineEventHandler(async (event) => {
 
   const addressValidation = await UserAddressValidation.validateAsync(params)
   if (!addressValidation) {
-    throw new CustomError('Invalid input provided', 401)
+    return createError({
+      statusCode: 400,
+      message: 'Invalid input provided',
+      data: null,
+    })
   }
   else {
     const { data: address, error, status } = await client.from('user_address_details').insert([
@@ -23,8 +26,13 @@ export default defineEventHandler(async (event) => {
         address: addressValidation.address,
       },
     ] as any).select()
-    if (error)
-      throw new CustomError(`Supabase Error: ${error.message}`, status)
+    if (error) {
+      return createError({
+        statusCode: 400,
+        message: error.message,
+        data: null,
+      })
+    }
 
     return { message: 'Success!', data: { address }, status }
   }

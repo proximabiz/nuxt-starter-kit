@@ -43,3 +43,16 @@ export interface saveAPIPayload {
 export interface State {
   diagramsList: Diagram[] | null
 }
+
+export interface CreateDiagramResponseType {
+  diagram: Array<Diagram>
+}
+
+export interface UpdateDiagramResponseType {
+  data: Array<Diagram>
+  response: {
+    chartDetails: Array<any>
+    isDetailed: boolean
+    userRequirement: string
+  }
+}

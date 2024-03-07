@@ -23,13 +23,12 @@ const saveApiResponse = ref()
 const isOpen = ref(true)
 const isVersionDrawerOpen = ref(false)
 const mind = ref()
-const isRequirements = ref(false)
 const isSavePopupOpen = ref(false)
 const isSave = ref(false)
 const toRoute = ref()
 const form = ref({
   title: '',
-  details: '',
+  details: 'Dummy',
   json: '',
   isDetailed: false,
 })

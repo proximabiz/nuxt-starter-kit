@@ -1,4 +1,4 @@
-import type { State, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
+import type { CreateDiagramResponseType, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
 
 function initialState() {
   return {
@@ -39,7 +39,7 @@ export const useDiagramStore = defineStore('diagramStore', {
       return supabaseResponse
     },
 
-    async create(payload: createAPIPayload) {
+    async create(payload: createAPIPayload): Promise<CreateDiagramResponseType | undefined> {
       const authStore = useAuthStore()
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/diagram/create', {
@@ -53,10 +53,11 @@ export const useDiagramStore = defineStore('diagramStore', {
       if (supabaseError.value)
         throw supabaseError.value
 
+      /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
     },
 
-    async update(payload: updateAPIPayload) {
+    async update(payload: updateAPIPayload): Promise<UpdateDiagramResponseType> {
       const authStore = useAuthStore()
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${payload.diagramId}`, {
@@ -70,6 +71,7 @@ export const useDiagramStore = defineStore('diagramStore', {
       if (supabaseError.value)
         throw supabaseError.value
 
+      /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
     },
 
@@ -87,6 +89,7 @@ export const useDiagramStore = defineStore('diagramStore', {
       if (supabaseError.value)
         throw supabaseError.value
 
+      /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
     },
 
@@ -107,10 +110,10 @@ export const useDiagramStore = defineStore('diagramStore', {
     async getVersionList(payload: getAPIPayload) {
       const supabaseClient = useSupabaseClient()
 
-      const { data: supabaseResponse, error: diagramError } = await supabaseClient
-        .rpc('get_diagram_versions', {
-          diagramid: payload.diagramId,
-        })
+      /* @ts-expect-error need to be fixed */
+      const { data: supabaseResponse, error: diagramError } = await supabaseClient.rpc('get_diagram_versions', {
+        diagramid: payload.diagramId,
+      })
 
       if (diagramError)
         throw diagramError

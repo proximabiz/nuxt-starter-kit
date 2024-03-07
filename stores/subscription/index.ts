@@ -1,4 +1,4 @@
-import type { AddAPIPayload, CancelAPIPayload, State } from './types'
+import type { ActivePlanType, AddAPIPayload, CancelAPIPayload, State } from './types'
 
 function initialState() {
   return {
@@ -24,21 +24,25 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
   state: (): State => initialState(),
   getters: {},
   actions: {
-    async fetchActivePlan() {
+    async fetchActivePlan(): Promise<ActivePlanType> {
       const authStore = useAuthStore()
 
       const userId = authStore.getAuthUser.value?.id
       const supabaseClient = useSupabaseClient()
 
-      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', { userid: userId })
+      /* @ts-expect-error need to be fixed */
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', {
+        userid: userId,
+      })
 
       if (supabaseError)
         throw supabaseError
 
-      this.subscriptionStatus.planStatus = supabaseResponse.subscription_status
-      this.subscriptionStatus.planName = supabaseResponse.name
+      const response = supabaseResponse as ActivePlanType
+      this.subscriptionStatus.planStatus = response?.subscription_status
+      this.subscriptionStatus.planName = response?.name
 
-      return supabaseResponse
+      return response
     },
 
     async addSubscription(payload: AddAPIPayload) {

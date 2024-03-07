@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
   const { data, error, status } = await client.from('user_details').select(
     'id, user_id, name, organisation_name, gst_number, is_active',
   ).eq('user_id', userID).select('gst_number').single()
+
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)
 

@@ -6,6 +6,7 @@ const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
 const duePrice = ref('$77.8')
+const notify = useNotification()
 
 // const confirmation = reactive({
 //   isModalVisible: false,
@@ -34,7 +35,8 @@ function setActiveStep(index: number) {
     if (!isAddressComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing address.'
-      alert('Please fill out all the fields in your billing address.')
+
+      notify.error('Please fill out all the fields in your billing address.')
       return
     }
     // else if(isAddressComplete){
@@ -46,7 +48,7 @@ function setActiveStep(index: number) {
     if (!isCardDetailsComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing card details.'
-      alert('Please fill out all the fields in your billing card details.')
+      notify.error('Please fill out all the fields in your billing card address.')
       return
     }
     // else if(isCardDetailsComplete){

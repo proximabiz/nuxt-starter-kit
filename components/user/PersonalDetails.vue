@@ -60,18 +60,18 @@ const schema = z.object({
 async function getAddress() {
   try {
     const response = await userStore.fetchAddress()
-    if (!response?.data)
+    if (!response)
       return
 
-    state.name = response.data?.userDetails[0]?.name
-    state.orgname = response.data?.userDetails[0]?.organisation_name
-    state.country = response.data?.userAddress[0]?.country
-    state.zip = response.data?.userAddress[0]?.zip_code
-    state.city = response.data?.userAddress[0]?.city
-    state.region = response.data?.userAddress[0]?.region
-    state.address = response.data?.userAddress[0]?.address
-    state.phone = response.data?.userAddress[0]?.phone_number
-    state.email = response.data?.userData?.email
+    state.name = response.userDetails[0]?.name
+    state.orgname = response.userDetails[0]?.organisation_name
+    state.country = response.userAddress[0]?.country
+    state.zip = response.userAddress[0]?.zip_code
+    state.city = response.userAddress[0]?.city
+    state.region = response.userAddress[0]?.region
+    state.address = response.userAddress[0]?.address
+    state.phone = response.userAddress[0]?.phone_number
+    state.email = response.userData?.email
   }
   catch (error) {
     console.error(error)
@@ -96,16 +96,17 @@ async function onSubmit() {
   }
   try {
     const response = await userStore.addAddress(payloadPost)
-    if (response && response.status === 200) {
-      notify.success(response.message)
-      state.country = response.data?.country
-      state.zip = response.data.zipcode
-      state.city = response.data.city
-      state.region = response.data.region
-      state.address = response.data.address
-      state.phone = response.data.phoneNumber
-      navigateTo('/app/diagram/list')
-    }
+
+    state.country = response.country
+    state.zip = response.zip_code
+    state.city = response.city
+    state.region = response.region
+    state.address = response.address
+    state.phone = response.phone_number
+
+    notify.success('Address added successfully!')
+
+    navigateTo('/app/diagram/list')
   }
   catch (error) {
     notify.error(error.statusMessage)

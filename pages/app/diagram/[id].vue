@@ -4,8 +4,12 @@ definePageMeta({
   middleware: ['redirect'],
 })
 
+interface RouteParams {
+  id: string
+}
+
 const route = useRoute()
-const diagramId = computed(() => route.params.id)
+const diagramId = computed(() => (route.params as RouteParams).id)
 </script>
 
 <template>

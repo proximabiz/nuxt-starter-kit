@@ -33,17 +33,17 @@ const billingSchema = z.object({
 
 onMounted(async () => {
   const response = await userStore.fetchAddress()
-  if (!response?.data)
+  if (!response)
     return
 
-  subscriptionStore.billingDetails.name = response?.data?.userDetails[0]?.name
-  subscriptionStore.billingDetails.orgName = response?.data?.userDetails[0]?.organisation_name
-  subscriptionStore.billingDetails.country = response.data?.userAddress[0]?.country
-  subscriptionStore.billingDetails.zip = response.data?.userAddress[0]?.zip_code
-  subscriptionStore.billingDetails.city = response.data?.userAddress[0]?.city
-  subscriptionStore.billingDetails.region = response.data?.userAddress[0]?.region
-  subscriptionStore.billingDetails.address = response.data?.userAddress[0]?.address
-  subscriptionStore.billingDetails.phone = response.data?.userAddress[0]?.phone_number
+  subscriptionStore.billingDetails.name = response?.userDetails[0]?.name
+  subscriptionStore.billingDetails.orgName = response?.userDetails[0]?.organisation_name
+  subscriptionStore.billingDetails.country = response.userAddress[0]?.country
+  subscriptionStore.billingDetails.zip = response.userAddress[0]?.zip_code
+  subscriptionStore.billingDetails.city = response.userAddress[0]?.city
+  subscriptionStore.billingDetails.region = response.userAddress[0]?.region
+  subscriptionStore.billingDetails.address = response.userAddress[0]?.address
+  subscriptionStore.billingDetails.phone = response.userAddress[0]?.phone_number
 })
 </script>
 

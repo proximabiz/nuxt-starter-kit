@@ -1,8 +1,6 @@
 <script setup lang="ts">
 const notify = useNotification()
 const authStore = useAuthStore()
-const subscriptionStore = useSubscriptionStore()
-const userStore = useUserStore()
 
 const items = [
   [{
@@ -23,15 +21,14 @@ const items = [
     click: () => singOut(),
   }],
 ]
-const authUser = computed(() => authStore.authUser)
+const authUser = computed(() => authStore.getAuthUser.value)
 const isLoggedIn = computed(() => authStore.isLoggedIn)
 
 async function singOut() {
   try {
     // Do something with data
-    await authStore.signOut()
-    await subscriptionStore.clearSubscription()
-    await userStore.clearAddress()
+    const supabaseClient = useSupabaseClient()
+    await supabaseClient.auth.signOut()
 
     if (!isLoggedIn.value)
       navigateTo('/')
@@ -60,7 +57,7 @@ async function singOut() {
             Signed in as
           </p>
           <p class="truncate font-medium text-gray-900">
-            {{ authUser.email }}
+            {{ authUser?.email }}
           </p>
         </div>
       </template>
