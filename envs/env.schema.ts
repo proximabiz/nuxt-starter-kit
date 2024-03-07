@@ -7,8 +7,6 @@ export const BaseSchema = z.object({
 
 const PrivateSchema = z.object({
   OPENAI_API_KEY: z.string(),
-  SUPABASE_URL: z.string(),
-  SUPABASE_KEY: z.string(),
 })
 
 export const Env = BaseSchema.merge(PrivateSchema)
