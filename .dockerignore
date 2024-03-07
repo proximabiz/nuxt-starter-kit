@@ -1,6 +1,5 @@
 /.nuxt
 /.output
-/.netlify
 /node_modules
 
 .gitignore

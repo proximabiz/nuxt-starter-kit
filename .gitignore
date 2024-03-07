@@ -5,7 +5,6 @@
 .nitro
 .cache
 .unlighthouse
-.netlify
 dist
 
 # Node dependencies
