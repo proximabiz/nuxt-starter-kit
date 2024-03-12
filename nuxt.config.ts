@@ -57,8 +57,6 @@ export default defineNuxtConfig({
   experimental: { typedPages: true },
   css: ['~/assets/css/main.css'],
   supabase: {
-    url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_KEY,
     redirectOptions: {
       login: '/login',
       callback: '/app/diagram/list',
