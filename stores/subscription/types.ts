@@ -29,5 +29,22 @@ export interface SubscriptionStatus {
 export interface State {
   subscriptionStatus: SubscriptionStatus
   billingDetails: BillingState
+}
 
+export interface ActivePlanType {
+  id: string
+  user_id: string
+  amount: number
+  plan_start_date: string
+  plan_end_date: string
+  auto_renew: boolean
+  is_subscription_active: boolean
+  sub_key: null | string
+  name: string
+  description: string
+  monthly_price: number
+  status: boolean
+  features: null | string
+  yearly_price: number
+  subscription_status: string
 }

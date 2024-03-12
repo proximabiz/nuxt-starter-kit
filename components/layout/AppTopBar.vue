@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 const authStore = useAuthStore()
 const notify = useNotification()
-const subscriptionStore = useSubscriptionStore()
-const userStore = useUserStore()
 const supabaseClient = useSupabaseClient()
 
 const items = [
@@ -25,8 +23,6 @@ async function singOut() {
   try {
     // Do something with data
     await supabaseClient.auth.signOut()
-    await subscriptionStore.clearSubscription()
-    await userStore.clearAddress()
     navigateTo('/')
   }
   catch (error) {

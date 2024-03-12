@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware((to) => {
   // If user tries to navigate to '/user/personal-details', check if info is already filled
   if (to.fullPath === '/user/personal-details') {
     userStore.fetchAddress().then((response) => {
-      if (response?.data?.userAddress[0]?.phone_number)
+      if (response?.userAddress[0]?.phone_number)
         return navigateTo('/app/diagram/list')
       return navigateTo('/user/personal-details')
     })
@@ -17,7 +17,7 @@ export default defineNuxtRouteMiddleware((to) => {
   // If user tries to navigate to other than '/user/personal-details', check if info is not filled already
   else {
     userStore.fetchAddress().then((response) => {
-      if (!response?.data?.userAddress[0]?.phone_number)
+      if (!response?.userAddress[0]?.phone_number)
         return navigateTo('/user/personal-details')
     })
   }

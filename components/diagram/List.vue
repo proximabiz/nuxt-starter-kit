@@ -15,10 +15,10 @@ const headers = computed(() => [
     title: 'Title',
     value: 'title',
   },
-  {
-    title: 'Keywords',
-    value: 'keywords',
-  },
+  // {
+  //   title: 'Keywords',
+  //   value: 'keywords',
+  // },
   {
     title: 'Last Modified On',
     value: 'modified_at',
@@ -66,6 +66,8 @@ async function createDiagram() {
     })
 
     isLoading.value = false
+
+    /* @ts-expect-error need to be fixed */
     redirectToPath(response?.diagram[0].id)
   }
   catch (error) {
@@ -133,9 +135,9 @@ onMounted(() => {
                   <td class="whitespace-nowrap px-6 py-4">
                     {{ item.title }}
                   </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.keywords || 'No keywords specified' }}
-                  </td>
+                  <!-- <td class="whitespace-nowrap px-6 py-4">
+                    {{ item.keywords ? item.keywords : 'No keywords specified' }}
+                  </td> -->
                   <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.created_at }}
                   </td> -->

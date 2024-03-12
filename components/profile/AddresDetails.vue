@@ -66,17 +66,17 @@ async function getAddress() {
 
     isLoading.value = false
 
-    state.name = response?.data?.userDetails[0]?.name
-    state.orgname = response?.data?.userDetails[0]?.organisation_name
-    state.country = response?.data?.userAddress[0]?.country
-    state.zip = response?.data?.userAddress[0]?.zip_code
-    state.city = response?.data?.userAddress[0]?.city
-    state.region = response?.data?.userAddress[0]?.region
-    state.address = response?.data?.userAddress[0]?.address
-    state.phone = response?.data?.userAddress[0]?.phone_number
-    state.email = response.data.userData?.email
+    state.name = response?.userDetails[0]?.name
+    state.orgname = response?.userDetails[0]?.organisation_name
+    state.country = response?.userAddress[0]?.country
+    state.zip = response?.userAddress[0]?.zip_code
+    state.city = response?.userAddress[0]?.city
+    state.region = response?.userAddress[0]?.region
+    state.address = response?.userAddress[0]?.address
+    state.phone = response?.userAddress[0]?.phone_number
+    state.email = response?.userData?.email
 
-    if (!response?.data?.userDetails[0]?.name && !response?.data?.userDetails[0]?.organisation_name) {
+    if (!response?.userDetails[0]?.name && !response?.userDetails[0]?.organisation_name) {
       isEditable.value = false
       isNewUser.value = true
     }
@@ -97,12 +97,11 @@ async function onSubmit() {
       phoneNumber: state.phone,
     }
     try {
-      const response = await userStore.editAddress(payload)
-      if (response?.status === 200) {
-        notify.success(response.message)
-        // await getAddress()
-        isEditable.value = false
-      }
+      await userStore.editAddress(payload)
+
+      notify.success('Address edited successfully')
+
+      isEditable.value = false
     }
     catch (error) {
       notify.error(error.statusMessage)
@@ -110,8 +109,8 @@ async function onSubmit() {
   }
   if (isNewUser.value) {
     const payloadPost = {
-      name: state.name,
-      organisationName: state.orgname,
+      name: state.name || '',
+      organisationName: state.orgname || '',
       country: state.country,
       region: state.region,
       city: state.city,
@@ -120,21 +119,9 @@ async function onSubmit() {
       phoneNumber: state.phone,
     }
     try {
-      const response = await userStore.addAddress(payloadPost)
-      if (response?.status === 200) {
-        notify.success(response.message)
-
-        // require for future reference
-
-        // state.country = response.data?.country
-        // state.zip = response.data.zipcode
-        // state.city = response.data.city
-        // state.region = response.data.region
-        // state.address = response.data.address
-        // state.phone = response.data.phoneNumber
-        // await getAddress()
-        isEditable.value = false
-      }
+      await userStore.addAddress(payloadPost)
+      notify.success('Address added successfully')
+      isEditable.value = false
     }
     catch (error) {
       notify.error(error.statusMessage)
@@ -203,7 +190,10 @@ onMounted(() => {
           <UInput v-model="state.address" color="blue" :disabled="!isEditable && !isNewUser" />
         </UFormGroup>
         <UFormGroup label="Phone no" name="phone" required>
-          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" :disabled="!isEditable && !isNewUser" />
+          <VueTelInput
+            v-model="state.phone" placeholder="Your Phone no" mode="international"
+            :disabled="!isEditable && !isNewUser"
+          />
         </UFormGroup>
         <UFormGroup label="Email Id" name="email" required>
           <UInput v-model="state.email" color="blue" :disabled="true" />

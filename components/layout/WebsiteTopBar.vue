@@ -2,8 +2,6 @@
 const route = useRoute()
 const notify = useNotification()
 const authStore = useAuthStore()
-const subscriptionStore = useSubscriptionStore()
-const userStore = useUserStore()
 const supabaseClient = useSupabaseClient()
 
 const authUser = computed(() => authStore.getAuthUser.value)
@@ -44,8 +42,6 @@ async function singOut() {
   try {
     // Do something with data
     await supabaseClient.auth.signOut()
-    await subscriptionStore.clearSubscription()
-    await userStore.clearAddress()
 
     navigateTo('/')
   }

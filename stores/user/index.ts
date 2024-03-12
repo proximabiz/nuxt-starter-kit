@@ -1,8 +1,7 @@
-import type { AddressPostAPIPayload, AddressPutAPIPayload, State, TaxPostAPIPayload } from './types'
+import type { AddAddressResponseType, AddressPostAPIPayload, AddressPutAPIPayload, GetTaxGSTResponseType, State, TaxPostAPIPayload, UserAddressType } from './types'
 
 function initialState() {
   return {
-    GstDetails: [],
   }
 }
 
@@ -10,7 +9,7 @@ export const useUserStore = defineStore('userStore', {
   state: (): State => initialState(),
   getters: {},
   actions: {
-    async fetchTaxGst() {
+    async fetchTaxGst(): Promise<GetTaxGSTResponseType> {
       const authStore = useAuthStore()
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/gst', {
@@ -23,9 +22,8 @@ export const useUserStore = defineStore('userStore', {
       if (supabaseError.value)
         throw supabaseError.value
 
-      this.GstDetails = supabaseResponse.value ? supabaseResponse?.value?.data as TaxPostAPIPayload[] : []
-
-      return supabaseResponse.value
+      /* @ts-expect-error need to be fixed */
+      return supabaseResponse.value?.data
     },
 
     async addTaxGst(payload: TaxPostAPIPayload) {
@@ -61,7 +59,7 @@ export const useUserStore = defineStore('userStore', {
       return supabaseResponse.value
     },
 
-    async fetchAddress() {
+    async fetchAddress(): Promise<UserAddressType> {
       const authStore = useAuthStore()
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/address-contact', {
@@ -74,13 +72,14 @@ export const useUserStore = defineStore('userStore', {
       if (supabaseError.value)
         throw supabaseError.value
 
-      return supabaseResponse.value
+      /* @ts-expect-error need to be fixed */
+      return supabaseResponse.value?.data
     },
 
-    async editAddress(payload: AddressPutAPIPayload) {
+    async editAddress(payload: AddressPutAPIPayload): Promise<void> {
       const authStore = useAuthStore()
 
-      const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/address', {
+      const { error: supabaseError } = await useFetch('/api/user/address', {
         method: 'PUT',
         headers: {
           Authorization: await authStore.getBearerToken,
@@ -90,11 +89,9 @@ export const useUserStore = defineStore('userStore', {
 
       if (supabaseError.value)
         throw supabaseError.value
-
-      return supabaseResponse.value
     },
 
-    async addAddress(payload: AddressPostAPIPayload) {
+    async addAddress(payload: AddressPostAPIPayload): Promise<AddAddressResponseType> {
       const authStore = useAuthStore()
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/address-contact', {
@@ -108,10 +105,8 @@ export const useUserStore = defineStore('userStore', {
       if (supabaseError.value)
         throw supabaseError.value
 
-      return supabaseResponse.value
-    },
-
-    async clearAddress() {
+      /* @ts-expect-error need to be fixed */
+      return supabaseResponse.value?.data
     },
   },
   persist: {

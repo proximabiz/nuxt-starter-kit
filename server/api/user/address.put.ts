@@ -5,45 +5,40 @@ import { UserAddressValidation } from '~/server/utlis/validations'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
+
   const userID = event.context.user.id
   const params = await readBody(event)
+
   if (!userID)
     throw new CustomError('Error: no user found!', 404)
 
   const client = await serverSupabaseClient(event)
-  try {
-    const chartValidation = await UserAddressValidation.validateAsync(params)
-    if (!chartValidation) {
-      throw new CustomError('Invalid input provided', 401)
+
+  const chartValidation = await UserAddressValidation.validateAsync(params)
+  if (!chartValidation) {
+    throw new CustomError('Invalid input provided', 401)
+  }
+  else {
+    const { data, error } = await client.from('user_address_details').update(
+      {
+        country: chartValidation.country.trim(),
+        region: chartValidation.region.trim(),
+        city: chartValidation.city.trim(),
+        zip_code: chartValidation.zipcode.trim(),
+        address: chartValidation.address.trim(),
+        phone_number: chartValidation.phoneNumber.trim(),
+
+      } as never,
+    ).eq('user_id', userID).select().single()
+
+    if (error) {
+      throw new CustomError('Error!', 400)
     }
     else {
-      const { data, error } = await client.from('user_address_details').update(
-        {
-          country: chartValidation.country.trim(),
-          region: chartValidation.region.trim(),
-          city: chartValidation.city.trim(),
-          zip_code: chartValidation.zipcode.trim(),
-          address: chartValidation.address.trim(),
-          phone_number: chartValidation.phoneNumber.trim(),
-
-        } as never,
-      ).eq('user_id', userID).select().single()
-
-      if (error) {
-        return { message: 'Error!', error, status: 400 }
-      }
-      else {
-        await client.auth.updateUser({
-          phone: chartValidation.phoneNumber,
-        })
-      }
-      return { message: 'Success!', data, status: 200 }
+      await client.auth.updateUser({
+        phone: chartValidation.phoneNumber,
+      })
     }
-  }
-  catch (error: any) {
-    return {
-      message: error.message,
-      status: 501,
-    }
+    return { data, message: 'Success!', status: 200 }
   }
 })
