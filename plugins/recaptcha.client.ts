@@ -11,7 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     loaderOptions: {
       autoHideBadge: false,
       explicitRenderParameters: {
-        badge: 'bottomleft',
+        badge: 'bottomright',
       },
     },
   })

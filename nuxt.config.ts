@@ -11,6 +11,7 @@ export default defineNuxtConfig({
       SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
       SENDGRID_EMAIL_TEMPLATE_ID: process.env.SENDGRID_EMAIL_TEMPLATE_ID,
       SENDGRID_FROM_EMAILID: process.env.SENDGRID_FROM_EMAILID,
+      GOOGLE_CAPTCHA_SECRET_KEY: process.env.GOOGLE_CAPTCHA_SECRET_KEY,
     },
   },
   modules: [
