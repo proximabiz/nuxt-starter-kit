@@ -1,4 +1,4 @@
-import type { ActivePlanType, AddAPIPayload, CancelAPIPayload, State } from './types'
+import type { ActivePlanType, AddAPIPayload, CancelAPIPayload, State,CompleteOrderPostAPIPayload } from './types'
 
 function initialState() {
   return {
@@ -13,9 +13,9 @@ function initialState() {
       address: '',
       phone: '',
       cardHolderName: '',
-      cardNo: '',
+      cardNo: 0,
       expDate: '',
-      cvv: '',
+      cvv: 0,
     },
   }
 }
@@ -82,6 +82,22 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
 
     async clearSubscription() {
       this.subscriptionStatus = initialState().subscriptionStatus
+    },
+    async completeOrder(payload: CompleteOrderPostAPIPayload){
+      const authStore = useAuthStore()
+
+      const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/complete-order', {
+        method: 'POST',
+        headers: {
+          Authorization: await authStore.getBearerToken,
+        },
+        body: payload,
+      })
+
+      if (supabaseError.value)
+        throw supabaseError.value
+
+      return supabaseResponse.value?.data
     },
   },
   persist: {

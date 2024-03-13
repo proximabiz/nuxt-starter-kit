@@ -11,7 +11,7 @@ const isModalVisible = ref(false)
 async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
-    if (response?.subscription_status === 'PLAN_EXPIRED')
+    if (response?.subscription_status === 'PLAN_EXPIRED' || response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION')
       showUpgradeModal.value = true
     planData.value = response
   }
