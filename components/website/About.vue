@@ -2,7 +2,7 @@
 import logo from '@/assets/media/logo.png'
 import AboutProduct from '@/assets/media/AboutProduct.png'
 import illustration from '@/assets/media/illustration.png'
-import direction from '@/assets/media/direction.png'
+import partner from '@/assets/media/partners.png'
 import input from '@/assets/media/input.png'
 import node from '@/assets/media/node.png'
 import storage from '@/assets/media/data-storage.png'
@@ -11,7 +11,7 @@ import mindmap from '@/assets/media/mindmap.png'
 import flowchart from '@/assets/media/flowchart.png'
 import ui from '@/assets/media/ui.png'
 import drag from '@/assets/media/drag.png'
-
+import version from '@/assets/media/clock.png'
 const features = [
   {
     title: 'User Interface (UI)',
@@ -21,13 +21,13 @@ const features = [
   },
   {
     title: 'Graphical Representation',
-    description: 'Visual representation of processes and workflows using graphical elements such as nodes, branches, and connections. This makes it easier for users to comprehend complex structures.',
+    description: 'Visual representation of processes and workflows using graphical elements such as nodes, branches, and connections, making it easier to comprehend complex structures.',
     iconSrc: illustration,
     bgColor: 'bg-yellow-200',
   },
   {
     title: 'Drag-and-Drop Functionality',
-    description: 'Capability to add, rearrange, and connect elements in the flow map using a simple drag-and-drop interface, promoting ease of use.',
+    description: 'Ability to add, rearrange, and connect elements in the flow map using a simple drag-and-drop interface, promoting ease of use.',
     iconSrc: drag,
     bgColor: 'bg-blue-200',
   },
@@ -39,7 +39,7 @@ const features = [
   },
   {
     title: 'Data Input and Output',
-    description: 'Capability to input data into the flow mapper and visualize the output, allowing users to see the impact of changes or analyze the results of a particular workflow.',
+    description: 'Ability to input data in natural language into the flow mapper and let AI visualize the output, allowing users to see the impact of changes or analyze the results of a particular workflow.',
     iconSrc: input,
     bgColor: 'bg-green-200',
   },
@@ -47,24 +47,28 @@ const features = [
     title: 'Real-Time Monitoring',
     description: 'Real-time monitoring capabilities that allow users to observe the progression of workflows and identify potential bottlenecks or inefficiencies.',
     iconSrc: monitoring,
-    bgColor: 'bg-pink-200',
+    bgColor: 'bg-orange-200',
   },
   {
     title: 'Import/ Export Diagrams',
-    description: 'Capability to input data into the flow mapper and visualize the output, allowing users to see the impact of changes or analyze the results of a particular workflow.',
+    description: 'Generate diagrams using AI and export in the form of .png or JSON. Facility to import JSON for generating mind map.',
     iconSrc: storage,
     bgColor: 'bg-green-200',
   },
   {
     title: 'Collaboration',
-    description: 'Real-time monitoring capabilities that allow users to observe the progression of workflows and identify potential bottlenecks or inefficiencies.',
-    iconSrc: direction,
+    description: 'Bring team together,Diagram can be shared with team members for review or modifications.',
+    iconSrc: partner,
     bgColor: 'bg-pink-200',
   },
-
+  {
+    title: 'Version Control',
+    description: 'View previous versions of mind maps, who modified it and when. Allows to restore any previous version of mind map',
+    iconSrc: version,
+    bgColor: 'bg-yellow-200',
+  },
 ]
 </script>
-
 <template>
   <section class="flex flex-col gap-2 items-center mb-8 mt-10">
     <div class="grid grid-cols-3 gap-12">
@@ -98,7 +102,7 @@ const features = [
         <p
           class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400"
         >
-          Why use AI Flow Mapper?
+          Why use AI Flowmapper?
         </p>
         <ol class="relative text-gray-700 border-s-2 border-gray-200 dark:border-gray-700 dark:text-gray-400 mt-4">
           <li class="mb-10 ms-20">
@@ -111,7 +115,7 @@ const features = [
               Time Efficiency:
             </h3>
             <p class="text-sm">
-              Many people spend undue time manually creating diagrams. This tool reduces that effort significantly.
+              Many people spend unnecessary long time manually creating diagrams. This tool reduces that effort significantly.
             </p>
           </li>
           <li class="mb-10 ms-20">
@@ -137,7 +141,7 @@ const features = [
               Customization & Flexibility:
             </h3>
             <p class="text-sm">
-              Often, after creating a diagram, one might want to make changes, which can be cumbersome in traditional tools. Your solution allows easy edits and adjustments.
+              Often, after creating a diagram, one might want to make changes, which can be cumbersome in traditional tools. Our solution allows easy edits and adjustments.
             </p>
           </li>
           <li class="ms-20">
@@ -150,7 +154,7 @@ const features = [
               Ease of Use:
             </h3>
             <p class="text-sm">
-              By merely answering the AI's queries, users can generate comprehensive visuals without needing to master the intricacies of a design tool.
+              By merely utilising GenAI capabilities, users can generate comprehensive visuals without requiring to master the intricacies of a design tool.
             </p>
           </li>
         </ol>
@@ -162,7 +166,7 @@ const features = [
   </section>
   <section class="flex flex-col gap-2 items-center mb-8 mt-16">
     <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-      About The Product
+      About AI Flowmapper
     </p>
     <div>
       Unlock the power of visualization with our AI-driven platform, transforming text seamlessly into interactive
@@ -188,9 +192,27 @@ const features = [
       </div>
     </div>
   </section>
-  <section class="flex flex-col gap-2 items-center mb-8">
+  <section class="flex flex-col gap-2 mt-5 items-center mb-8">
     <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-      Lunching Soon...
+      Key Features
+    </p>
+  </section>
+  <section>
+    <div class="grid grid-cols-3 gap-16">
+      <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col">
+        <div class="rounded-xl p-6" :class="feature.bgColor">
+          <img :src="feature.iconSrc" alt="" width="32px" height="32px">
+        </div>
+        <h2 class="text-2xl font-semibold">
+          {{ feature.title }}
+        </h2>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+  </section>
+  <section class="flex flex-col gap-2 items-center mt-8">
+    <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
+      Launching Soon...
     </p>
     <div>
       Unlock the power of visualization with our AI-driven platform, transforming text seamlessly into interactive
@@ -212,24 +234,6 @@ const features = [
         </ul>
       </div>
       <div><img :src="flowchart" class="" alt=""></div>
-    </div>
-  </section>
-  <section class="flex flex-col gap-2 mt-5 items-center mb-8">
-    <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-      Our Features...
-    </p>
-  </section>
-  <section>
-    <div class="grid grid-cols-3 gap-16">
-      <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col">
-        <div class="rounded-xl p-6" :class="feature.bgColor">
-          <img :src="feature.iconSrc" alt="" width="32px" height="32px">
-        </div>
-        <h2 class="text-2xl font-semibold">
-          {{ feature.title }}
-        </h2>
-        <p>{{ feature.description }}</p>
-      </div>
     </div>
   </section>
 </template>

@@ -69,7 +69,7 @@ function upgradePlanNO() {
       <p class="mb-3">
         You have no active plan.
       </p>
-      <p>To continue using the app please subscribe to any plan.</p>
+      <p>To continue using this app please subscribe to any plan.</p>
       <div class="mt-4 flex justify-center">
         <UButton class="" @click="upgradePlanNO">
           Upgrade

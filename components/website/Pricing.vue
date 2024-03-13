@@ -13,6 +13,7 @@ interface PricePlan {
   price: number | any
   month: number
   disabled: boolean
+  comingSoon: boolean
 }
 interface regionTypes {
   name: string
@@ -48,17 +49,17 @@ const regions: regionTypes[] = [
 ]
 
 const monthlyPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value && sub_status?.value.planStatus === '') || sub_status?.value.planName === 'Free' },
-  { plan: 'Basic', price: 2, month: 1, disabled: sub_status?.value.planName === 'Basic' },
-  { plan: 'Premium', price: 5, month: 1, disabled: sub_status?.value.planName === 'Premium' },
-  { plan: 'Enterprise', price: 'Custom', month: 1, disabled: sub_status?.value.planName === 'Enterprise' },
+  { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value && sub_status?.value.planStatus === '') || sub_status?.value.planName === 'Free', comingSoon: false },
+  { plan: 'Basic', price: 0, month: 1, disabled: sub_status?.value.planName === 'Basic', comingSoon: true },
+  { plan: 'Premium', price: 0, month: 1, disabled: sub_status?.value.planName === 'Premium', comingSoon: true },
+  { plan: 'Enterprise', price: 0, month: 1, disabled: sub_status?.value.planName === 'Enterprise', comingSoon: true },
 ]
 
 const annualPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 11, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED' },
-  { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: sub_status?.value.planName === 'Basic' },
-  { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: sub_status?.value.planName === 'Premium' },
-  { plan: 'Enterprise', price: 'Custom', month: 11, disabled: sub_status?.value.planName === 'Enterprise' },
+  { plan: 'Free', price: 0, month: 11, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED', comingSoon: false },
+  { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: sub_status?.value.planName === 'Basic', comingSoon: true },
+  { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: sub_status?.value.planName === 'Premium', comingSoon: true },
+  { plan: 'Enterprise', price: 0, month: 11, disabled: sub_status?.value.planName === 'Enterprise', comingSoon: true },
 ]
 
 const prices = computed(() => {
@@ -131,29 +132,32 @@ function providePlanDetails(val: any) {
                 {{ value.plan }}
                 <span class="sr-only">Plan</span>
               </h2>
-              <p class="text-gray-700">
+              <p class="text-gray-700" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
               </p>
-              <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-                {{ value.currencySymbol }}{{ value.calculatedPrice }}
+              <strong class="text-3xl font-bold text-gray-900 sm:text-3xl" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
+                {{ value.currencySymbol }}{{ value.plan === "Free" ? value.calculatedPrice : "" }}
               </strong>
-              <span class="text-sm font-medium text-gray-700">{{ value.price === 'Custom' ? ''
+              <span class="text-sm font-medium text-gray-700" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">{{ value.price === 'Custom' ? ''
                 : isMonthly
                   ? '/month' : '/year' }}</span>
               <UButton
-                class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white  focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
+                class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
                 :disabled="value.disabled"
-                :class="value.disabled ? 'bg-slate-300 border-transparent ' : 'hover:bg-transparent hover:text-indigo-600'"
+                :class="[
+                  value.disabled ? 'bg-slate-200 border-transparent' : 'hover:bg-transparent hover:text-indigo-600',
+                  { 'bg-slate-200 border-transparent pointer-events-none text-custom1-700': value.comingSoon },
+                ]"
                 @click="providePlanDetails(value)"
               >
-                {{ value.price === 'Custom' ? 'Contact Sales' : 'Get Started' }}
+                {{ value.plan === 'Free' ? 'Get started' : 'Coming soon...' }}
               </UButton>
             </div>
             <div class="p-2 sm:px-4">
-              <p class="text-lg font-medium text-gray-900 sm:text-xl">
+              <p class="text-lg font-medium text-gray-900 sm:text-xl" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
                 What's included:
               </p>
-              <ul class="mt-2 space-y-2 sm:mt-2">
+              <ul class="mt-2 space-y-2 sm:mt-2" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
                 <li class="flex items-center gap-1">
                   <svg
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

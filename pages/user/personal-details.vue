@@ -8,5 +8,6 @@ definePageMeta({
   <UserPersonalDetails />
 </template>
 
+<style scoped>
 
-
+</style>

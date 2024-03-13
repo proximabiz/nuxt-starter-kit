@@ -18,10 +18,11 @@ const isLoading = ref(true)
 async function getTaxGst() {
   try {
     const response = await userStore.fetchTaxGst()
+
     if (response) {
-      state.gstNumber = response?.gst_number
+      state.gstNumber = response.data?.gst_number
       isLoading.value = false
-      if (response?.gst_number)
+      if (response.data?.gst_number)
         isDisabled.value = true
     }
   }
