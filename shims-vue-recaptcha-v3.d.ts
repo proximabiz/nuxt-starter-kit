@@ -1,4 +1,4 @@
-import { ReCaptchaInstance } from 'recaptcha-v3'
+import type { ReCaptchaInstance } from 'recaptcha-v3'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {

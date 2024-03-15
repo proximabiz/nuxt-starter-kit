@@ -8,9 +8,9 @@ export interface BillingState {
   address: string
   phone: string
   cardHolderName: string
-  cardNo: Number
+  cardNo: number
   expDate: string
-  cvv: Number
+  cvv: number
 }
 export interface AddAPIPayload {
   userId: string
@@ -49,7 +49,7 @@ export interface ActivePlanType {
   subscription_status: string
 }
 
-export interface CompleteOrderPostAPIPayload{
+export interface CompleteOrderPostAPIPayload {
   country: string
   region: string
   city: string

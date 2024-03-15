@@ -5,6 +5,7 @@ import type { EventHandlerRequest, H3Event } from 'h3'
 import { defineEventHandler } from 'h3'
 import { CustomError } from '../../utlis/custom.error'
 import { ContactUsValidation } from '../../utlis/validations'
+
 const sendgridApiKey = useRuntimeConfig().private.SENDGRID_API_KEY
 const sendgridEmailTempletId = useRuntimeConfig().private.SENDGRID_EMAIL_TEMPLATE_ID
 const sendgridEmailFromId = useRuntimeConfig().private.SENDGRID_FROM_EMAILID
@@ -49,12 +50,3 @@ export default defineEventHandler(async (event: H3Event<EventHandlerRequest>) =>
     throw new CustomError('reCAPTCHA verification failed', 404)
   }
 })
-
-
-
-
-
-
-
-
-

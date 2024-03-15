@@ -3,6 +3,7 @@ import { type IReCaptchaComposition, useReCaptcha } from 'vue-recaptcha-v3'
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+
 const notify = useNotification()
 const contactStore = useContactStore()
 const selectedOption = ref('Demo')
@@ -68,6 +69,7 @@ async function onSubmit() {
   }
 }
 </script>
+
 <template>
   <div class="mt-4 p-4">
     <section class="flex flex-col gap-2 items-center mb-8">

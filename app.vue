@@ -13,7 +13,7 @@ watch(
   async (user) => {
     if (!user && !route.fullPath.includes('/login'))
       navigateTo('/login')
-      if (user?.id) {
+    if (user?.id) {
       const response = await subscriptionStore.fetchActivePlan()
       if (response?.subscription_status === 'PLAN_EXPIRED') {
         showUpgradeModal.value = true

@@ -7,23 +7,22 @@ const props = defineProps<Props>()
 const subscriptionStore = useSubscriptionStore()
 const allDetails = computed(() => subscriptionStore.billingDetails)
 
-const completeOrder=()=>{
-  const payload={
-  country: allDetails.value.country,
-  region: allDetails.value.region,
-  city: allDetails.value.city,
-  zipcode: allDetails.value.zip,
-  address: allDetails.value.address,
-  phoneNumber: allDetails.value.phone,
-  subscriptionTypeId: '10dbc647-04ea-4588-b6c8-7c535049f18c',
-  planType: allDetails.value,
-  currencyCode: allDetails.value,
-  cardHolderName: allDetails.value.cardHolderName,
-  cardNumber: allDetails.value.cardNo,
-  expiryDate: allDetails.value.expDate,
-  securityCode: allDetails.value.cvv
+function completeOrder() {
+  const payload = {
+    country: allDetails.value.country,
+    region: allDetails.value.region,
+    city: allDetails.value.city,
+    zipcode: allDetails.value.zip,
+    address: allDetails.value.address,
+    phoneNumber: allDetails.value.phone,
+    subscriptionTypeId: '10dbc647-04ea-4588-b6c8-7c535049f18c',
+    planType: allDetails.value,
+    currencyCode: allDetails.value,
+    cardHolderName: allDetails.value.cardHolderName,
+    cardNumber: allDetails.value.cardNo,
+    expiryDate: allDetails.value.expDate,
+    securityCode: allDetails.value.cvv,
   }
-  
 }
 </script>
 

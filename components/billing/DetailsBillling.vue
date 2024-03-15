@@ -5,7 +5,7 @@ interface Props {
 const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
-const duePrice = ref(props.planDetails.currencySymbol + props.planDetails.calculatedPrice )
+const duePrice = ref(props.planDetails.currencySymbol + props.planDetails.calculatedPrice)
 const notify = useNotification()
 
 // const confirmation = reactive({
@@ -91,7 +91,7 @@ function isActive(index: number) {
           <USelect v-model="user" :options="users" color="blue" />
           <div>
             <span>1 month *
-              {{ props.planDetails.month>1?props.planDetails.month :''}}</span>
+              {{ props.planDetails.month > 1 ? props.planDetails.month : '' }}</span>
             <span class="font-semibold pl-1">{{ props.planDetails.currencySymbol }}{{ props.planDetails.calculatedPrice }}</span>
           </div>
         </section>

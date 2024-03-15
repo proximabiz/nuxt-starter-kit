@@ -369,12 +369,12 @@ function select(item: PersonSelectedType) {
   // console.log("Selected person after update:", selectedPerson);
 }
 
-function selectPeople(item: PersonSelectedType) {
-  if (!selectedPerson.some(selectedItem => selectedItem.email === item.email))
-    selectedPerson.push(item)
-}
-function removeTag(itemToRemove: PersonSelectedType) {
-  // selectedPerson = selectedPerson.filter(item => item.email !== itemToRemove.email)
+// function selectPeople(item: PersonSelectedType) {
+//   if (!selectedPerson.some(selectedItem => selectedItem.email === item.email))
+//     selectedPerson.push(item)
+// }
+ function removeTag(itemToRemove: PersonSelectedType) {
+ //selectedPerson = selectedPerson.filter(item => item.email !== itemToRemove.email)
 }
 </script>
 
