@@ -30,8 +30,8 @@
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
     "@mind-elixir/node-menu": "^1.0.3",
-    "@nuxt/ui": "^2.11.1",
-    "@nuxtjs/supabase": "^1.1.5",
+    "@nuxt/ui": "2.11.1",
+    "@nuxtjs/supabase": "1.1.5",
     "@pinia/nuxt": "^0.5.1",
     "@sendgrid/mail": "^8.1.1",
     "consola": "^3.2.3",
@@ -71,7 +71,7 @@
     "vue": "^3.3.13",
     "vue-router": "^4.2.5"
   },
-  "packageManager": "^pnpm@8.6.5",
+  "packageManager": "pnpm@8.7.6",
   "engines": {
     "node": ">= 18"
   }
