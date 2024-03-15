@@ -26,7 +26,7 @@ export default defineEventHandler(async (event: H3Event<EventHandlerRequest>) =>
     'sriharim@proximabiz.com',
     'tejeswarik@proximabiz.com',
     'bijalb@proximabiz.com',
-    'rajashree.batwar1@gmail.com',
+    'rajashreeb@proximabiz.com',
     'priyatham@proximabiz.com',
     'Supriyap@proximabiz.com']
     const msg: MailDataRequired = {
