@@ -165,7 +165,7 @@ function providePlanDetails(val: any) {
                   >
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                   </svg>
-                  <span class="text-gray-700"> Unlimited mind maps in validity period </span>
+                  <span class="text-gray-700"> Unlimited mind maps </span>
                 </li>
                 <li class="flex items-center gap-1">
                   <svg
@@ -174,7 +174,7 @@ function providePlanDetails(val: any) {
                   >
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                   </svg>
-                  <span class="text-gray-700"> File and image attachments </span>
+                  <span class="text-gray-700"> File,image attachments </span>
                 </li>
                 <li class="flex items-center gap-1">
                   <svg
