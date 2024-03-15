@@ -7,6 +7,3 @@ definePageMeta({
 <template>
   <UserPersonalDetails />
 </template>
-
-
-

@@ -12,6 +12,7 @@ import flowchart from '@/assets/media/flowchart.png'
 import ui from '@/assets/media/ui.png'
 import drag from '@/assets/media/drag.png'
 import version from '@/assets/media/clock.png'
+
 const features = [
   {
     title: 'User Interface (UI)',
@@ -69,6 +70,7 @@ const features = [
   },
 ]
 </script>
+
 <template>
   <section class="flex flex-col gap-2 items-center mb-8 mt-10">
     <div class="grid grid-cols-3 gap-12">
