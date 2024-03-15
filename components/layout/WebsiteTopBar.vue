@@ -15,9 +15,9 @@ const isLoginRoute = computed(() => route.fullPath === '/login')
 
 const links = ref<NavLink[]>([
   { name: 'Home', to: '/website' },
-  { name: 'About Product', to: '/website/about' },
+  { name: 'About', to: '/website/about' },
   { name: 'Pricing', to: '/website/pricing' },
-  { name: 'Contact Sales', to: '/website/contact' },
+  { name: 'Contact', to: '/website/contact' },
 ])
 
 const items = [

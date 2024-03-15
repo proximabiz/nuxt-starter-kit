@@ -14,10 +14,7 @@ watch(
     if (!user && !route.fullPath.includes('/login'))
       navigateTo('/login')
 
-    if (user && route.fullPath.includes('/login'))
-      return handlePostAuthentication()
-
-    if (user?.id) {
+      if (user?.id) {
       const response = await subscriptionStore.fetchActivePlan()
       if (response?.subscription_status === 'PLAN_EXPIRED') {
         showUpgradeModal.value = true
@@ -32,6 +29,9 @@ watch(
           await subscriptionStore.addSubscription(payload)
       }
     }
+
+    if (user && route.fullPath.includes('/login'))
+      return handlePostAuthentication()
   },
   { immediate: true },
 )
