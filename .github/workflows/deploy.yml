@@ -6,7 +6,7 @@ on:
       - stage
 
 jobs:
-  Build:
+  Test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -36,9 +36,9 @@ jobs:
           channel: ${{ secrets.SLACK_CHANNEL }}
           config: .github/slack.yml
 
-  Push:
+  Build:
     runs-on: ubuntu-latest
-    needs: Build
+    needs: Test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,9 +78,34 @@ jobs:
           channel: ${{ secrets.SLACK_CHANNEL }}
           config: .github/config/slack.yml
 
-  Deploy:
+  Deploy-Stage:
     runs-on: ubuntu-latest
-    needs: Push
+    needs: Build
+    steps:
+      - name: Deploying to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Deploying aiflowmapper stack"
+            sh deploy.aiflowmapper.sh
+
+      - name: 🔔 ➜ Slack Notification
+        if: always()
+        uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          channel: ${{ secrets.SLACK_CHANNEL }}
+          config: .github/config/slack.yml
+
+  Deploy-Production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: Build
     steps:
       - name: Deploying to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
