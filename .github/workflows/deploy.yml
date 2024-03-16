@@ -56,27 +56,34 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Retrieve secret from AWS Secrets Manager
-        id: get-secrets
+      # Retrieve secrets from AWS Secrets Manager
+      - name: Get secrets by name and by ARN
         uses: aws-actions/aws-secretsmanager-get-secrets@v1
         with:
-          secret-ids: arn:aws:secretsmanager:ap-south-1:678161666670:secret:ai-flowmapper-QeG9o6
+          secret-ids: |
+            ai-flowmapper
           parse-json-secrets: true
 
-      # Dynamically create .env file from retrieved secrets
-      - name: Create .env file from secrets
+      - name: Print all secrets
         run: |
-          echo "NUXT_PUBLIC_SUPABASE_URL=${{ env.NUXT_PUBLIC_SUPABASE_URL }}" >> .env
-          echo "NUXT_PUBLIC_SUPABASE_KEY=${{ env.NUXT_PUBLIC_SUPABASE_KEY }}" >> .env
-          echo "OPENAI_API_KEY=${{ env.OPENAI_API_KEY }}" >> .env
-          echo "SENDGRID_API_KEY=${{ env.SENDGRID_API_KEY }}" >> .env
-          echo "SENDGRID_EMAIL_TEMPLATE_ID=${{ env.SENDGRID_EMAIL_TEMPLATE_ID }}" >> .env
-          echo "SENDGRID_FROM_EMAILID=${{ env.SENDGRID_FROM_EMAILID }}" >> .env
-          echo "SITE_KEY=${{ env.SITE_KEY }}" >> .env
-          echo "GOOGLE_CAPTCHA_SECRET_KEY=${{ env.GOOGLE_CAPTCHA_SECRET_KEY }}" >> .env
-          echo "NUXT_PUBLIC_UMAMI_HOST=${{ env.NUXT_PUBLIC_UMAMI_HOST }}" >> .env
-          echo "NUXT_PUBLIC_UMAMI_ID=${{ env.NUXT_PUBLIC_UMAMI_ID }}" >> .env
-          cat .env # Optional: For debugging. Remove or comment out in production!
+          echo "Example Public: ${{ steps.secrets.outputs.NUXT_PUBLIC_SUPABASE_URL }}"
+          echo "Example Public 2: ${{ env.NUXT_PUBLIC_SUPABASE_URL }}"
+          echo "Example Public: ${{ env.AI_FLOWMAPPER_NUXT_PUBLIC_SUPABASE_URL }}"
+          echo "Example Public 3: $NUXT_PUBLIC_SUPABASE_URL"
+
+      # Create .env file and list all files in the current directory
+      - name: Create .env file and list files
+        run: |
+          echo "Creating .env with secrets..."
+          echo NUXT_PUBLIC_SUPABASE_URL=${{ env.NUXT_PUBLIC_SUPABASE_URL }} >> .env
+          echo AI_FLOWMAPPER_NUXT_PUBLIC_SUPABASE_URL=${{ env.AI_FLOWMAPPER_NUXT_PUBLIC_SUPABASE_URL }} >> .env
+          # Add other secrets as needed, for example:
+          echo ANOTHER_SECRET=$ANOTHER_SECRET >> .env
+
+          echo "Listing all files in the current directory..."
+          ls -al
+          cat .env
+      # #
 
       - name: Login to Amazon ECR
         id: login-ecr
