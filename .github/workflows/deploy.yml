@@ -39,8 +39,9 @@ jobs:
           config: .github/slack.yml
 
   ECR:
-    name: Registry
+    name: AWS ECR
     runs-on: ubuntu-latest
+    needs: [Build]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -99,7 +100,15 @@ jobs:
   E2E:
     name: End-to-End Test
     runs-on: ubuntu-latest
-    needs: [Build, ECR]
+    needs: [Build]
+    steps:
+      - name: E2E Test
+        run: echo "Skipped running E2E tests"
+
+  ACM:
+    name: AWS Secret Manager
+    runs-on: ubuntu-latest
+    needs: [ECR, E2E]
     steps:
       - name: E2E Test
         run: echo "Skipped running E2E tests"
@@ -107,7 +116,7 @@ jobs:
   Stage:
     name: Deploy Staging
     runs-on: ubuntu-latest
-    needs: [E2E]
+    needs: ACM
     if: github.ref == 'refs/heads/stage'
     steps:
       - name: Deploying [Stage]
@@ -133,7 +142,7 @@ jobs:
   Production:
     name: Deploy Production
     runs-on: ubuntu-latest
-    needs: [Stage]
+    needs: ACM
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Deploying [Production]
