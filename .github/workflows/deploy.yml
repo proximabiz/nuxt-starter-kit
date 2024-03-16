@@ -62,6 +62,7 @@ jobs:
         with:
           secret-ids: |
             ai-flowmapper*
+          parse-json-secrets: true
 
       - name: Print all secrets
         run: |
