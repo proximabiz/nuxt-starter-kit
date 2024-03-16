@@ -36,7 +36,7 @@ const initialState: FormState = {
 const state = reactive<FormState>({ ...initialState })
 // #validation
 
-const nameValidation = z.string().min(1, "Full name is required").refine((value) => {
+const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
   // Check for two words separated by space
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
@@ -167,7 +167,7 @@ onMounted(() => {
             <UInput v-model="state.name" color="blue" :disabled="!isNewUser" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
-            <UInput v-model="state.orgname" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name"/>
+            <UInput v-model="state.orgname" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">

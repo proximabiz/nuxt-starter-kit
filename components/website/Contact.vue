@@ -30,7 +30,7 @@ const schema = z.object({
   // phone: z.string().max(15, 'Phone must be a valid number with at least 10 digits'),
   message: z.string()
     .min(1, 'Message is required')
-    .refine((value) => value.trim().split(/\s+/).filter(Boolean).length >= 10, {
+    .refine(value => value.trim().split(/\s+/).filter(Boolean).length >= 10, {
       message: 'Message must be at least 10 words',
     }),
 })

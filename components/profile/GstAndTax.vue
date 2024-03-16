@@ -66,8 +66,8 @@ async function handleDeleteConfirm(): Promise<void> {
     notify.error(error.statusMessage)
   }
 }
-const cancelGst=()=>{
-  state.gstNumber = '' 
+function cancelGst() {
+  state.gstNumber = ''
 }
 </script>
 
