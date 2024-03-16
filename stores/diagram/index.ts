@@ -40,12 +40,13 @@ export const useDiagramStore = defineStore('diagramStore', {
     },
 
     async create(payload: createAPIPayload): Promise<CreateDiagramResponseType | undefined> {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/diagram/create', {
         method: 'POST',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
@@ -58,12 +59,13 @@ export const useDiagramStore = defineStore('diagramStore', {
     },
 
     async update(payload: updateAPIPayload): Promise<UpdateDiagramResponseType> {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${payload.diagramId}`, {
         method: 'PUT',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
@@ -76,12 +78,13 @@ export const useDiagramStore = defineStore('diagramStore', {
     },
 
     async save(payload: saveAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${payload.diagramId}`, {
         method: 'PATCH',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })

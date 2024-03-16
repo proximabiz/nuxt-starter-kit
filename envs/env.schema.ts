@@ -9,6 +9,11 @@ const PrivateSchema = z.object({
   OPENAI_API_KEY: z.string(),
   SUPABASE_URL: z.string(),
   SUPABASE_KEY: z.string(),
+  SENDGRID_API_KEY: z.string(),
+  SENDGRID_EMAIL_TEMPLATE_ID: z.string(),
+  SENDGRID_FROM_EMAILID: z.string(),
+  SITE_KEY: z.string(),
+  GOOGLE_CAPTCHA_SECRET_KEY: z.string(),
 })
 
 export const Env = BaseSchema.merge(PrivateSchema)

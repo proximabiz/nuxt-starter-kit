@@ -10,12 +10,13 @@ export const useUserStore = defineStore('userStore', {
   getters: {},
   actions: {
     async fetchTaxGst(): Promise<GetTaxGSTResponseType> {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/gst', {
         method: 'GET',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
       })
 
@@ -27,12 +28,13 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async addTaxGst(payload: TaxPostAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/gst', {
         method: 'POST',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
@@ -44,12 +46,13 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async deleteTaxGst() {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/gst', {
         method: 'DELETE',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
       })
 
@@ -60,12 +63,13 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async fetchAddress(): Promise<UserAddressType> {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/address-contact', {
         method: 'GET',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
       })
 
@@ -77,12 +81,13 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async editAddress(payload: AddressPutAPIPayload): Promise<void> {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { error: supabaseError } = await useFetch('/api/user/address', {
         method: 'PUT',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
@@ -92,12 +97,13 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async addAddress(payload: AddressPostAPIPayload): Promise<AddAddressResponseType> {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/address-contact', {
         method: 'POST',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
