@@ -61,7 +61,7 @@ jobs:
         uses: aws-actions/aws-secretsmanager-get-secrets@v1
         with:
           secret-ids: |
-            *
+            ai-flowmapper*
 
       - name: Print all secrets
         run: |
