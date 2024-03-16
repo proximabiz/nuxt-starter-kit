@@ -78,7 +78,7 @@ jobs:
           channel: ${{ secrets.SLACK_CHANNEL }}
           config: .github/config/slack.yml
 
-  Deploy-Stage:
+  Deploy:
     runs-on: ubuntu-latest
     needs: Build
     steps:
@@ -90,32 +90,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Deploying aiflowmapper stack"
-            sh ~/ai-flow-mapper/deploy.stage.sh
+            if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+              sh ~/ai-flow-mapper/deploy.sh
+            else
+              sh ~/ai-flow-mapper/deploy.stage.sh
+            fi
 
-      - name: 🔔 ➜ Slack Notification
-        if: always()
-        uses: act10ns/slack@v2
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          channel: ${{ secrets.SLACK_CHANNEL }}
-          config: .github/config/slack.yml
-
-  Deploy-Production:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    needs: Build
-    steps:
-      - name: Deploying to EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "Deploying aiflowmapper stack"
-            sh ~/ai-flow-mapper/deploy.sh
       - name: 🔔 ➜ Slack Notification
         if: always()
         uses: act10ns/slack@v2
