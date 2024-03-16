@@ -82,8 +82,6 @@ jobs:
           REPOSITORY: aiflowmapper
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          ls -a
-          cat .env
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
