@@ -7,35 +7,35 @@ on:
       - stage
 
 jobs:
-  # Test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  Test:
+  # runs-on: ubuntu-latest
+  # steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-  #     - name: Use Node 20+
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20.11.1
+  #   - name: Use Node 20+
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 20.11.1
 
-  #     - name: Install pnpm
-  #       run: npm install -g pnpm
+  #   - name: Install pnpm
+  #     run: npm install -g pnpm
 
-  #     - name: Install project dependencies with pnpm
-  #       run: pnpm install
+  #   - name: Install project dependencies with pnpm
+  #     run: pnpm install
 
-  #     - name: Build check
-  #       run: pnpm check
+  #   - name: Build check
+  #     run: pnpm check
 
-  #     - name: 🔔 ➜ Slack Notification
-  #       if: failure()
-  #       uses: act10ns/slack@v2
-  #       with:
-  #         status: ${{ job.status }}
-  #         steps: ${{ toJson(steps) }}
-  #         webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-  #         channel: ${{ secrets.SLACK_CHANNEL }}
-  #         config: .github/slack.yml
+  #   - name: 🔔 ➜ Slack Notification
+  #     if: failure()
+  #     uses: act10ns/slack@v2
+  #     with:
+  #       status: ${{ job.status }}
+  #       steps: ${{ toJson(steps) }}
+  #       webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #       channel: ${{ secrets.SLACK_CHANNEL }}
+  #       config: .github/slack.yml
 
   Build:
     runs-on: ubuntu-latest
