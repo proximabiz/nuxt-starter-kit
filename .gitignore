@@ -25,4 +25,5 @@ logs
 .env
 .env.*
 !.env.example
+docker-compose.stage.yml
 docker-compose.production.yml
