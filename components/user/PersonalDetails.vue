@@ -44,7 +44,7 @@ const nameValidation = z.string().refine((value) => {
     return /^[A-Za-z]+$/.test(part) && part.length >= 4
   })
 }, {
-  message: 'Name must consist of at least two words, each with a minimum of 3 characters, without special characters or numbers.',
+  message: 'Enter a valid name of 3 letters and without numbers and symbols',
 })
 
 const schema = z.object({
@@ -149,7 +149,7 @@ async function onSubmit() {
         <UFormGroup label="Address" name="address" required>
           <UInput v-model="state.address" color="blue" />
         </UFormGroup>
-        <UFormGroup label="Phone no" name="phone" required>
+        <UFormGroup label="Phone No" name="phone" required>
           <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" />
         </UFormGroup>
         <UFormGroup label="Email Id" name="email" required>

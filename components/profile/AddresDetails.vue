@@ -189,7 +189,7 @@ onMounted(() => {
         <UFormGroup label="Address" name="address" required>
           <UInput v-model="state.address" color="blue" :disabled="!isEditable && !isNewUser" />
         </UFormGroup>
-        <UFormGroup label="Phone no" name="phone" required>
+        <UFormGroup label="Phone No" name="phone" required>
           <VueTelInput
             v-model="state.phone" placeholder="Your Phone no" mode="international"
             :disabled="!isEditable && !isNewUser"

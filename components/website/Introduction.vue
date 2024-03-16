@@ -14,10 +14,10 @@ const authUser = computed(() => authStore.getAuthUser.value)
         <h5 class="mt-5 text-xl font-bold tracking-tight text-gray-900">Let AI Shape Your Ideas With</h5>
       </a>
       <p class="text-3xl font-bold text-custom1-500 mt-5">
-        AI FLOW MAPPER
+        AI FLOWMAPPER
       </p>
       <p class="mt-5 font-normal text-gray-700">
-        This tool is built to Enhance Productivity and Visualize Ideas with AI Flow Mapper.<br>
+        This tool is built to Enhance Productivity and Visualize Ideas with AI FlowMapper.<br>
         It Simplifies the Complex Concepts into Elegant Diagrams.
       </p>
       <UButton v-if="authUser" class="mt-10" @click="navigateTo('/app/diagram/list')">
