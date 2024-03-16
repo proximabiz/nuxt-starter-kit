@@ -78,6 +78,7 @@ jobs:
 
           echo "Listing all files in the current directory..."
           ls -al
+          cat .env
       # #
 
       - name: Login to Amazon ECR
