@@ -61,7 +61,6 @@ jobs:
         uses: aws-actions/aws-secretsmanager-get-secrets@v1
         with:
           secret-ids: |
-            ai-flowmapper*,
             NUXT_PUBLIC_SUPABASE_URL,NUXT_PUBLIC_SUPABASE_KEY
           parse-json-secrets: true
 
