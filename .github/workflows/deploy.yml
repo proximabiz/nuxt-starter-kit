@@ -107,8 +107,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Build, E2E]
     steps:
-      - name: E2E Test
-        run: echo "Skipped running E2E tests"
+      - name: AWS Secrets
+        run: echo "ai-flowmapper"
 
   Stage:
     name: Deploy Staging
