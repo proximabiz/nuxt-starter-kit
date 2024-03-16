@@ -6,6 +6,7 @@
 .cache
 .unlighthouse
 .netlify
+.vercel
 dist
 
 # Node dependencies
@@ -24,3 +25,4 @@ logs
 .env
 .env.*
 !.env.example
+docker-compose.production.yml

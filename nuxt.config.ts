@@ -61,8 +61,6 @@ export default defineNuxtConfig({
   experimental: { typedPages: true },
   css: ['~/assets/css/main.css'],
   supabase: {
-    url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_KEY,
     redirectOptions: {
       login: '/login',
       callback: '/app/diagram/list',
@@ -79,4 +77,22 @@ export default defineNuxtConfig({
   //     ]
   //   }
   // }
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+      cssnano: process.env.NODE_ENV === 'production'
+        ? {
+            preset: ['default', {
+              discardComments: {
+                removeAll: true,
+              },
+            }],
+          }
+        : false,
+    },
+  },
+  nitro: {
+    preset: 'vercel',
+  },
 })
