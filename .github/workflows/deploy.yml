@@ -3,6 +3,7 @@ name: AWS CI/CD Workflow
 on:
   push:
     branches:
+      - main
       - stage
 
 jobs:
