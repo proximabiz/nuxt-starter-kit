@@ -60,8 +60,9 @@ jobs:
       - name: Get secrets by name and by ARN
         uses: aws-actions/aws-secretsmanager-get-secrets@v1
         with:
-          secret-ids: ai-flowmapper
-          parse-json-secrets: true
+          secret-ids: |
+            ai-flowmapper/*
+        parse-json-secrets: true
 
       - name: Print all secrets
         run: |
