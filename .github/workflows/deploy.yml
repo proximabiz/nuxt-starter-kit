@@ -94,6 +94,8 @@ jobs:
 
             echo "Deploying aiflowmapper stack"
 
+            ls -a
+
             # For example, pulling the latest Docker image and restarting the service
             # docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
             # Assuming you're using Docker Compose, for example
