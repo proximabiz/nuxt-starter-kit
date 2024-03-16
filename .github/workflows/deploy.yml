@@ -56,7 +56,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # Retrieve secrets from AWS Secrets Manager
       - name: Get secrets by name and by ARN
         uses: aws-actions/aws-secretsmanager-get-secrets@v1
         with:
@@ -64,14 +63,6 @@ jobs:
             ai-flowmapper
           parse-json-secrets: true
 
-      - name: Print all secrets
-        run: |
-          echo "Example Public: ${{ steps.secrets.outputs.NUXT_PUBLIC_SUPABASE_URL }}"
-          echo "Example Public 2: ${{ env.NUXT_PUBLIC_SUPABASE_URL }}"
-          echo "Example Public: ${{ env.AI_FLOWMAPPER_NUXT_PUBLIC_SUPABASE_URL }}"
-          echo "Example Public 3: $NUXT_PUBLIC_SUPABASE_URL"
-
-      # Dynamically create .env file from retrieved secrets, removing prefix
       - name: Create .env file from secrets
         run: |
           for var in $(compgen -e); do
@@ -80,7 +71,6 @@ jobs:
               echo "$name=${!var}" >> .env
             fi
           done
-          cat .env # Optional: For debugging. Remove or comment out in production!
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -92,6 +82,7 @@ jobs:
           REPOSITORY: aiflowmapper
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
+          cat .env # Optional: For debugging. Remove or comment out in production!
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
