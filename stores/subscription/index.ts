@@ -46,12 +46,13 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
     },
 
     async addSubscription(payload: AddAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/subscriptions', {
         method: 'POST',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
@@ -63,12 +64,13 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
     },
 
     async cancelSubscription(payload: CancelAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/subscriptions/cancel', {
         method: 'PATCH',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
 

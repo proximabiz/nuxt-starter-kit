@@ -9,12 +9,13 @@ export const useContactStore = defineStore('contactStore', {
   getters: {},
   actions: {
     async create(payload: createAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/contact', {
         method: 'POST',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })

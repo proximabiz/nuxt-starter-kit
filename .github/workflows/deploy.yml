@@ -9,11 +9,11 @@ jobs:
     steps:
       - name: Checkout Code  ...
         uses: actions/checkout@v2
- 
+
       - name: Setup Node 18 ...
         uses: actions/setup-node@v2
         with:
-          node-version: '18.17.0'
+          node-version: 18.17.0
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -32,4 +32,4 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           scope: ${{ secrets.VERCEL_ORG_ID }}
-          args: deploy --prod 
+          args: deploy --prod
