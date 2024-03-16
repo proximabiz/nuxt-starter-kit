@@ -66,6 +66,9 @@ async function handleDeleteConfirm(): Promise<void> {
     notify.error(error.statusMessage)
   }
 }
+function cancelGst() {
+  state.gstNumber = ''
+}
 </script>
 
 <template>
@@ -82,7 +85,7 @@ async function handleDeleteConfirm(): Promise<void> {
     </h1>
     <div class="flex mt-4">
       <span class="px-4">Tax ID / GST Number : </span>
-      <UForm :state="state" class="" @submit="onSubmit">
+      <UForm :state="state" class="" @submit.stop="onSubmit">
         <UFormGroup name="gst">
           <UInput
             v-model="state.gstNumber" placeholder="Enter your Tax ID/GST No." :disabled="isDisabled" class="custom-input"
@@ -90,7 +93,7 @@ async function handleDeleteConfirm(): Promise<void> {
           />
         </UFormGroup>
         <div class="flex gap-6 mt-8">
-          <UButton v-if="!isDisabled" type="submit" class="w-fit" color="blue">
+          <UButton v-if="!isDisabled" class="w-fit" color="blue" @click="cancelGst">
             Cancel
           </UButton>
           <UButton v-if="!isDisabled" type="submit" class="w-fit" color="blue">

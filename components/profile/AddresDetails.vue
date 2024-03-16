@@ -36,7 +36,7 @@ const initialState: FormState = {
 const state = reactive<FormState>({ ...initialState })
 // #validation
 
-const nameValidation = z.string().refine((value) => {
+const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
   // Check for two words separated by space
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
@@ -166,8 +166,8 @@ onMounted(() => {
           <UFormGroup label="Full Name" name="name" required>
             <UInput v-model="state.name" color="blue" :disabled="!isNewUser" />
           </UFormGroup>
-          <UFormGroup label="Organisation Name" name="orgname" required>
-            <UInput v-model="state.orgname" color="blue" :disabled="!isNewUser" />
+          <UFormGroup label="Organisation Name" name="orgname">
+            <UInput v-model="state.orgname" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
@@ -189,7 +189,7 @@ onMounted(() => {
         <UFormGroup label="Address" name="address" required>
           <UInput v-model="state.address" color="blue" :disabled="!isEditable && !isNewUser" />
         </UFormGroup>
-        <UFormGroup label="Phone no" name="phone" required>
+        <UFormGroup label="Phone No" name="phone" required>
           <VueTelInput
             v-model="state.phone" placeholder="Your Phone no" mode="international"
             :disabled="!isEditable && !isNewUser"

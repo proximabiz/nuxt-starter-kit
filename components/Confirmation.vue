@@ -32,7 +32,7 @@ function cancel() {
         <UButton class="" color="blue" @click="cancel">
           Cancel
         </UButton>
-        <UButton class="" color="gray" @click="confirmDeletion">
+        <UButton color="gray" @click="confirmDeletion">
           {{ props.text.includes("delete") ? "Delete" : "Confirm" }}
         </UButton>
       </div>

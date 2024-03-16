@@ -104,7 +104,7 @@ const features = [
         <p
           class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400"
         >
-          Why use AI Flowmapper?
+          Why use AI FlowMapper?
         </p>
         <ol class="relative text-gray-700 border-s-2 border-gray-200 dark:border-gray-700 dark:text-gray-400 mt-4">
           <li class="mb-10 ms-20">
@@ -168,7 +168,7 @@ const features = [
   </section>
   <section class="flex flex-col gap-2 items-center mb-8 mt-16">
     <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-      About AI Flowmapper
+      About AI FlowMapper
     </p>
     <div>
       Unlock the power of visualization with our AI-driven platform, transforming text seamlessly into interactive

@@ -28,7 +28,11 @@ const schema = z.object({
     .regex(/^[A-Za-z]{3,}$/, 'Enter a valid name of 3 letters and without numbers and symbols'),
   email: z.string().email('Invalid email Id'),
   // phone: z.string().max(15, 'Phone must be a valid number with at least 10 digits'),
-  message: z.string().min(1, 'Message is required'),
+  message: z.string()
+    .min(1, 'Message is required')
+    .refine(value => value.trim().split(/\s+/).filter(Boolean).length >= 10, {
+      message: 'Message must be at least 10 words',
+    }),
 })
 const recaptchaInstance = useReCaptcha() as IReCaptchaComposition
 async function executeRecaptcha() {
@@ -122,7 +126,7 @@ async function onSubmit() {
         <UButton type="submit" class="w-fit p-3" color="blue">
           Submit
         </UButton>
-        <NuxtLink to="/privacy" class="font-medium mt-4 hover:text-blue-700">
+        <NuxtLink to="/privacy" class="font-medium mt-4 text-custom1-600 underline hover:text-blue-800">
           Privacy Policy
         </NuxtLink>
       </div>
