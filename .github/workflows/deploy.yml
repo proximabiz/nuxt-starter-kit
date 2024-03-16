@@ -71,19 +71,16 @@ jobs:
           echo "Example Public: ${{ env.AI_FLOWMAPPER_NUXT_PUBLIC_SUPABASE_URL }}"
           echo "Example Public 3: $NUXT_PUBLIC_SUPABASE_URL"
 
-      # Create .env file and list all files in the current directory
-      - name: Create .env file and list files
+      # Dynamically create .env file from retrieved secrets, removing prefix
+      - name: Create .env file from secrets
         run: |
-          echo "Creating .env with secrets..."
-          echo NUXT_PUBLIC_SUPABASE_URL=${{ env.NUXT_PUBLIC_SUPABASE_URL }} >> .env
-          echo AI_FLOWMAPPER_NUXT_PUBLIC_SUPABASE_URL=${{ env.AI_FLOWMAPPER_NUXT_PUBLIC_SUPABASE_URL }} >> .env
-          # Add other secrets as needed, for example:
-          echo ANOTHER_SECRET=$ANOTHER_SECRET >> .env
-
-          echo "Listing all files in the current directory..."
-          ls -al
-          cat .env
-      # #
+          for var in $(compgen -e); do
+            if [[ $var == AI_FLOWMAPPER_* ]]; then
+              name=${var#AI_FLOWMAPPER_}  # Remove the prefix
+              echo "$name=${!var}" >> .env
+            fi
+          done
+          cat .env # Optional: For debugging. Remove or comment out in production!
 
       - name: Login to Amazon ECR
         id: login-ecr
