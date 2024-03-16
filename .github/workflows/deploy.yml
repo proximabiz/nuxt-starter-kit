@@ -38,12 +38,12 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      # - name: 🔔 ➜ Slack Notification
-      #   if: always()
-      #   uses: act10ns/slack@v2
-      #   with:
-      #     status: ${{ job.status }}
-      #     steps: ${{ toJson(steps) }}
-      #     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-      #     channel: ${{ secrets.SLACK_CHANNEL }}
-      #     config: .github/config/slack.yml
+      - name: 🔔 ➜ Slack Notification
+        if: always()
+        uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          channel: ${{ secrets.SLACK_CHANNEL }}
+          config: .github/config/slack.yml
