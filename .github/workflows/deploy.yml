@@ -61,13 +61,23 @@ jobs:
         uses: aws-actions/aws-secretsmanager-get-secrets@v1
         with:
           secret-ids: ai-flowmapper
-          # parse-json-secrets: true
 
       - name: Print all secrets
         run: |
           echo "Example Public: ${{ steps.secrets.outputs.NUXT_PUBLIC_SUPABASE_URL }}"
           echo "Example Public 2: ${{ env.NUXT_PUBLIC_SUPABASE_URL }}"
           echo "Example Public 3: $NUXT_PUBLIC_SUPABASE_URL"
+
+      # Create .env file and list all files in the current directory
+      - name: Create .env file and list files
+        run: |
+          echo "Creating .env with secrets..."
+          echo NUXT_PUBLIC_SUPABASE_URL=$NUXT_PUBLIC_SUPABASE_URL >> .env
+          # Add other secrets as needed, for example:
+          echo ANOTHER_SECRET=$ANOTHER_SECRET >> .env
+
+          echo "Listing all files in the current directory..."
+          ls -al
       # #
 
       - name: Login to Amazon ECR
