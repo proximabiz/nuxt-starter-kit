@@ -91,6 +91,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Deploying aiflowmapper stack"
+            echo "Branch name: ${{ github.ref }}"
             if [ "${{ github.ref }}" = "refs/heads/main" ]; then
               sh ~/ai-flow-mapper/deploy.sh
             else
