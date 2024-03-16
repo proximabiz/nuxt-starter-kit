@@ -1,35 +1,47 @@
-name: Vercel workflow
+name: AWS Workflow
+
 on:
   push:
     branches:
-      - preview
-jobs:
-  vercel:
+      - stage
+
+  Build_and_Push_to_ECR:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code  ...
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Setup Node 18 ...
-        uses: actions/setup-node@v2
+      - name: Use Node 20+
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.17.0
+          node-version: 20.11.1
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install project dependencies with pnpm
-        run: pnpm install
-
-      - name: Build the project with pnpm
-        run: pnpm build
-
-      - name: Deploy to Vercel ...
-        id: deploy-vercel-staging
-        uses: amondnet/vercel-action@v20
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          scope: ${{ secrets.VERCEL_ORG_ID }}
-          args: deploy --prod
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: aiflowmapper
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      # - name: 🔔 ➜ Slack Notification
+      #   if: always()
+      #   uses: act10ns/slack@v2
+      #   with:
+      #     status: ${{ job.status }}
+      #     steps: ${{ toJson(steps) }}
+      #     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     channel: ${{ secrets.SLACK_CHANNEL }}
+      #     config: .github/config/slack.yml

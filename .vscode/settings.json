@@ -86,5 +86,8 @@
     "className",
     "ngClass",
     "ui"
-  ]
+  ],
+  "yaml.schemas": {
+    "https://json.schemastore.org/yamllint.json": "file:///Users/star/Documents/GitHub/ai-flow-mapper/.github/workflows/deploy.yml"
+  }
 }
