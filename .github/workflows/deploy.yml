@@ -56,6 +56,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # Retrieve secrets from AWS Secrets Manager
+      - name: Get secrets by name and by ARN
+        uses: aws-actions/aws-secretsmanager-get-secrets@v1
+        with:
+          secret-ids: |
+            *
+
+      - name: Print all secrets
+        run: |
+          echo "Example Public: ${{ steps.secrets.outputs.NEXT_PUBLIC_SUPABASE_URL }}"
+          echo ${{ env.NEXT_PUBLIC_SUPABASE_URL }}
+      # #
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
