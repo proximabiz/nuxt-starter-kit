@@ -60,14 +60,14 @@ jobs:
       - name: Get secrets by name and by ARN
         uses: aws-actions/aws-secretsmanager-get-secrets@v1
         with:
-          secret-ids: |
-            NUXT_PUBLIC_SUPABASE_URL,NUXT_PUBLIC_SUPABASE_KEY
+          secret-ids: ai-flowmapper
           parse-json-secrets: true
 
       - name: Print all secrets
         run: |
           echo "Example Public: ${{ steps.secrets.outputs.NUXT_PUBLIC_SUPABASE_URL }}"
           echo "Example Public 2: ${{ env.NUXT_PUBLIC_SUPABASE_URL }}"
+          echo "Example Public 3: $NUXT_PUBLIC_SUPABASE_URL"
       # #
 
       - name: Login to Amazon ECR
