@@ -90,7 +90,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Deploying aiflowmapper stack"
-            sh deploy.aiflowmapper.sh
+            sh ~/ai-flow-mapper/deploy.stage.sh
 
       - name: 🔔 ➜ Slack Notification
         if: always()
@@ -115,7 +115,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Deploying aiflowmapper stack"
-            sh deploy.aiflowmapper.production.sh
+            sh ~/ai-flow-mapper/deploy.sh
       - name: 🔔 ➜ Slack Notification
         if: always()
         uses: act10ns/slack@v2
