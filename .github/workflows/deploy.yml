@@ -72,7 +72,7 @@ jobs:
       - name: Create .env file and list files
         run: |
           echo "Creating .env with secrets..."
-          echo NUXT_PUBLIC_SUPABASE_URL=$NUXT_PUBLIC_SUPABASE_URL >> .env
+          echo NUXT_PUBLIC_SUPABASE_URL=${{ env.NUXT_PUBLIC_SUPABASE_URL }} >> .env
           # Add other secrets as needed, for example:
           echo ANOTHER_SECRET=$ANOTHER_SECRET >> .env
 
