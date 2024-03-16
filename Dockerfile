@@ -13,7 +13,7 @@ LABEL maintainer=${MAINTAINER}
 WORKDIR /app
 
 # Install required packages for building the application
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y
 
 # Copy package.json and related files to the container
 COPY package*.json /app/

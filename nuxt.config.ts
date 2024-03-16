@@ -92,7 +92,4 @@ export default defineNuxtConfig({
         : false,
     },
   },
-  nitro: {
-    preset: 'node',
-  },
 })
