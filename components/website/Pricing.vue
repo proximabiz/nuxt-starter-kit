@@ -100,7 +100,7 @@ function providePlanDetails(val: any) {
   <BillingDetailsBillling v-if="showBillingDetails" :plan-details="cardValue" />
   <template v-else>
     <div class="text-center">
-      <span class="text-3xl font-medium">Choose Your AI Flow Mapper Plan</span>
+      <span class="text-3xl font-medium">Choose Your AI FlowMapper Plan</span>
     </div>
     <div class="flex items-center justify-center relative">
       <div class="rounded-full border mt-2">
