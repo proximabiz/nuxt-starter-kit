@@ -1,5 +1,5 @@
 # Define the Node.js version and port for the build and runtime
-ARG NODE_VERSION=18.14.2
+ARG NODE_VERSION=20.11.1
 ARG PORT=3000
 ARG MAINTAINER=jeetp@proximabiz.com
 
