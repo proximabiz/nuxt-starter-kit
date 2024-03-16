@@ -13,7 +13,7 @@ LABEL maintainer=${MAINTAINER}
 WORKDIR /app
 
 # Install required packages for building the application
-RUN apt-get update && apt-get install -y openssh-client g++ make python3 git
+RUN apt-get update && apt-get install -y git
 
 # Copy package.json and related files to the container
 COPY package*.json /app/
