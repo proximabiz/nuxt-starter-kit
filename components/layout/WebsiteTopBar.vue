@@ -55,7 +55,7 @@ function isActiveRoute(to: string) {
 </script>
 
 <template>
-  <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full">
+  <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full z-50">
     <a class="text-3xl font-bold leading-none" href="#">
       <img src="/assets/media/logo.png" class="h-10" alt="Flowbite Logo" @click="navigateTo('/website')">
     </a>
@@ -67,7 +67,7 @@ function isActiveRoute(to: string) {
         </svg>
       </button>
     </div>
-    <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
+    <ul class="hidden z-50 absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
       <template v-for="(item, index) in links" :key="index">
         <li><a class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer" :class="{ 'active-link': isActiveRoute(item.to) }" @click="navigateTo(item.to)">{{ item.name }}</a></li>
         <li class="text-gray-300">
@@ -85,8 +85,8 @@ function isActiveRoute(to: string) {
     >
       Login
     </UButton>
-    <UDropdown v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-10">
-      <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
+    <UDropdown v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-50">
+      <UAvatar src="https://avatars.githubusercontent.com/u/000000?v=4" />
       <template #account>
         <div class="text-left">
           <p>
