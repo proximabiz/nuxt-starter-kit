@@ -1,13 +1,17 @@
 <script setup lang="ts">
+/** Constants */
 const authStore = useAuthStore()
-const route = useRoute()
-
-const authUser = computed(() => authStore.getAuthUser.value)
 const subscriptionStore = useSubscriptionStore()
 const userStore = useUserStore()
+const route = useRoute()
 
+/** Refs */
 const showUpgradeModal = ref<boolean>(false)
 
+/** Computed */
+const authUser = computed(() => authStore.getAuthUser.value)
+
+/** Watcher */
 watch(
   () => authUser.value,
   async (user) => {
@@ -36,6 +40,7 @@ watch(
   { immediate: true },
 )
 
+/** Methods */
 function upgradePlan() {
   showUpgradeModal.value = false
   navigateTo('/website/pricing')
