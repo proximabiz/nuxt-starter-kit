@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  stage:
+    image: 678161666670.dkr.ecr.ap-south-1.amazonaws.com/aiflowmapper:stage
+    ports:
+      - '3030:3000'
+    environment:
+      - NUXT_PUBLIC_SUPABASE_URL
+      - NUXT_PUBLIC_SUPABASE_KEY
+      - OPENAI_API_KEY
+      - SENDGRID_API_KEY
+      - SENDGRID_EMAIL_TEMPLATE_ID
+      - SENDGRID_FROM_EMAILID
+      - SITE_KEY
+      - GOOGLE_CAPTCHA_SECRET_KEY
+      - NUXT_PUBLIC_UMAMI_HOST
+      - NUXT_PUBLIC_UMAMI_ID
+    labels:
+      - service.stack=nuxt
+      - service.name=aiflowmapper
+      - container.type=fullstack
+    networks:
+      - nuxt-internal
+    logging:
+      driver: json-file
+      options:
+        max-file: '10'
+        max-size: 10m
+
+networks:
+  nuxt-internal:

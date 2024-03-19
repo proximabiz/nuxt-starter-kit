@@ -464,7 +464,7 @@ onBeforeRouteLeave((to) => {
     <UCard>
       Changes are made to Mindmap. Save Changes?
       <div class="flex justify-end my-4">
-        <UButton label="Disacrd Changes" class="mr-2" icon="i-heroicons-backspace" @click="closePopup()" />
+        <UButton label="Discard Changes" class="mr-2" icon="i-heroicons-backspace" @click="closePopup()" />
         <UButton label="Save Changes" icon="i-heroicons-bookmark" @click="saveMap(true)" />
       </div>
     </UCard>
