@@ -38,7 +38,7 @@ function showModal() {
   isModalVisible.value = true
 }
 
-async function onSubmit(): Promise<void> {
+async function onSubmit(): Promise<void> { 
   try {
     const response = await userStore.addTaxGst(state)
     if (response?.status === 200) {
@@ -85,7 +85,7 @@ function cancelGst() {
     </h1>
     <div class="flex mt-4">
       <span class="px-4">Tax ID / GST Number : </span>
-      <UForm :state="state" class="" @submit.stop="onSubmit">
+      <UForm :state="state" class="" @submit="onSubmit">
         <UFormGroup name="gst">
           <UInput
             v-model="state.gstNumber" placeholder="Enter your Tax ID/GST No." :disabled="isDisabled" class="custom-input"
