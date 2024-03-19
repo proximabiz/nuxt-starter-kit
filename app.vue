@@ -15,9 +15,6 @@ const authUser = computed(() => authStore.getAuthUser.value)
 watch(
   () => authUser.value,
   async (user) => {
-    if (!user && !route.fullPath.includes('/login'))
-      navigateTo('/login')
-
     if (user?.id) {
       const response = await subscriptionStore.fetchActivePlan()
       if (response?.subscription_status === 'PLAN_EXPIRED') {
@@ -83,7 +80,6 @@ async function handlePostAuthentication() {
 .page-leave-active {
   transition: all 0.4s;
 }
-
 .page-enter-from,
 .page-leave-to {
   opacity: 0;

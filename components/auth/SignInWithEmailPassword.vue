@@ -4,6 +4,7 @@ import { z } from 'zod'
 /** Constants */
 const supabaseClient = useSupabaseClient()
 const notify = useNotification()
+const userStore = useUserStore()
 const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(1, 'Required'),
@@ -27,13 +28,24 @@ async function signInWithPassword() {
   try {
     loading.value = true
 
-    const { error } = await supabaseClient.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email: formState.email,
       password: formState.password,
     })
 
     if (error)
       throw error
+
+    if (data) {
+      // Check if user has filled the personal details already
+      const response = await userStore.fetchAddress()
+      if (!response)
+        return
+
+      if (!response?.userDetails[0]?.name || !response?.userDetails[0]?.organisation_name)
+        return navigateTo('/user/personal-details')
+      return navigateTo('/app/diagram/list')
+    }
   }
   catch (error) {
     notify.error(error)
