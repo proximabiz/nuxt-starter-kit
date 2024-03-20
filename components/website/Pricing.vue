@@ -56,7 +56,7 @@ const monthlyPrices: PricePlan[] = [
 ]
 
 const annualPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 11, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED', comingSoon: false },
+  { plan: 'Free', price: 0, month: 11, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED'||sub_status?.value.planName === 'Free', comingSoon: false },
   { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: sub_status?.value.planName === 'Basic', comingSoon: true },
   { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: sub_status?.value.planName === 'Premium', comingSoon: true },
   { plan: 'Enterprise', price: 0, month: 11, disabled: sub_status?.value.planName === 'Enterprise', comingSoon: true },
@@ -138,9 +138,12 @@ function providePlanDetails(val: any) {
               <strong class="text-3xl font-bold text-gray-900 sm:text-3xl" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
                 {{ value.currencySymbol }}{{ value.plan === "Free" ? value.calculatedPrice : "" }}
               </strong>
-              <span class="text-sm font-medium text-gray-700" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">{{ value.price === 'Custom' ? ''
-                : isMonthly
-                  ? '/month' : '/year' }}</span>
+              <span class="text-sm font-medium text-gray-700" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">/15 days</span>
+              <!-- <span class="text-sm font-medium text-gray-700" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
+              {{ value.price === 'Custom' ? ''
+                :value.price === 'Free'? '15 days': isMonthly
+                  ? '/month' : '/year' }}
+              </span> -->
               <UButton
                 class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
                 :disabled="value.disabled"

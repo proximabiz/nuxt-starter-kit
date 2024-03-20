@@ -6,7 +6,7 @@ const currentRoutePath = computed(() => route.fullPath)
 
 const links = computed(() => [
   {
-    title: 'Account',
+    title: 'My Account',
     to: '/profile/account',
     icon: 'i-heroicons-user',
   },
