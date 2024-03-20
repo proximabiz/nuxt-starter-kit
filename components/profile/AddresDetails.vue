@@ -12,8 +12,8 @@ const isLoading = ref(true)
 const isNewUser = ref(false)
 
 interface FormState {
-  name?: string
-  orgname?: string
+  name: string
+  orgname: string
   country: string
   zip: string
   city: string
@@ -37,16 +37,19 @@ const state = reactive<FormState>({ ...initialState })
 // #validation
 
 const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
+
+  if (value.trim() === '')
+    return true
   // Check for two words separated by space
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
     return false // Ensure there are at least two words
   // Check for minimum length and no special characters or numbers
   return parts.every((part) => {
-    return /^[A-Za-z]+$/.test(part) && part.length >= 4
+    return /^[A-Za-z]+$/.test(part) && part.length >= 3
   })
 }, {
-  message: 'Enter a valid full name',
+  message: 'Enter a valid name of 3 letters and without numbers and symbols',
 })
 const schema = z.object({
   name: nameValidation,
@@ -61,6 +64,7 @@ const schema = z.object({
 async function getAddress() {
   try {
     const response = await userStore.fetchAddress()
+    console.log('response',response)
     if (!response)
       return
 
@@ -89,6 +93,8 @@ async function getAddress() {
 async function onSubmit() {
   if (!isNewUser.value) {
     const payload = {
+      name:state.name,
+      orgname: state.orgname,
       country: state.country,
       region: state.region,
       city: state.city,
@@ -164,7 +170,7 @@ onMounted(() => {
       <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
           <UFormGroup label="Full Name" name="name" required>
-            <UInput v-model="state.name" color="blue" :disabled="!isNewUser" />
+            <UInput v-model="state.name" color="blue" :disabled="!isNewUser"/>
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
             <UInput v-model="state.orgname" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name" />

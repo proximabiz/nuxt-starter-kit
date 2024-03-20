@@ -1,4 +1,5 @@
-import type { AddAddressResponseType, AddressPostAPIPayload, AddressPutAPIPayload, GetTaxGSTResponseType, State, TaxPostAPIPayload, UserAddressType } from './types'
+import { SupabaseClient } from '@supabase/supabase-js'
+import type { AddAddressResponseType, AddressPostAPIPayload, AddressPutAPIPayload, GetTaxGSTResponseType, State, TaxPostAPIPayload, UserAddressType,InsertUpdateAddressPayload } from './types'
 
 function initialState() {
   return {
@@ -76,24 +77,63 @@ export const useUserStore = defineStore('userStore', {
       if (supabaseError.value)
         throw supabaseError.value
 
+      // const authStore = useAuthStore()
+
+      // const userId = authStore.getAuthUser.value?.id
+      // const supabaseClient = useSupabaseClient()
+
+      // /* @ts-expect-error need to be fixed */
+      // const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_address_details', {
+      //   param_user_id: userId,
+      // })
+
+      // if (supabaseError)
+      //   throw supabaseError
+      // console.log('response',supabaseResponse[0])
       /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
     },
 
-    async editAddress(payload: AddressPutAPIPayload): Promise<void> {
+    async editAddress(payload:AddressPutAPIPayload): Promise<void> {
       const supabaseClient = useSupabaseClient()
-      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+      const authStore = useAuthStore()
+      const userId = authStore.getAuthUser.value?.id
+      try {
+        /* @ts-expect-error need to be fixed */
+        const { data, error } = await supabaseClient.rpc('insert_or_updte_user_address_details', {
+          
+            param_country: payload.country,
+            param_zip_code: payload.zipcode,
+            param_city: payload.city,
+            param_region: payload.region,
+            param_address: payload.address,
+            param_phone_number: payload.phoneNumber,
+            param_name: payload.name,
+            param_organisation_name: payload.orgname,
+            param_user_id: userId
+          
+          })
+        if (error) {
+          console.error('Error calling function:', error.message)
+          return
+        }
+        console.log('Function executed successfully:', data)
+      } catch (error) {
+        console.error('Error calling function:', error.message)
+      }
+      // const supabaseClient = useSupabaseClient()
+      // const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
-      const { error: supabaseError } = await useFetch('/api/user/address', {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: payload,
-      })
+      // const { error: supabaseError } = await useFetch('/api/user/address', {
+      //   method: 'PUT',
+      //   headers: {
+      //     Authorization: `Bearer ${accessToken}`,
+      //   },
+      //   body: payload,
+      // })
 
-      if (supabaseError.value)
-        throw supabaseError.value
+      // if (supabaseError.value)
+      //   throw supabaseError.value
     },
 
     async addAddress(payload: AddressPostAPIPayload): Promise<AddAddressResponseType> {
