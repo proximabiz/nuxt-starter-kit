@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 interface Props {
   planDetails: any
 }
@@ -119,4 +118,3 @@ function isActive(index: number) {
     </UButton>
   </div>
 </template>
-

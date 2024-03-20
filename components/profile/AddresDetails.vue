@@ -37,7 +37,6 @@ const state = reactive<FormState>({ ...initialState })
 // #validation
 
 const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
-
   if (value.trim() === '')
     return true
   // Check for two words separated by space
@@ -64,7 +63,6 @@ const schema = z.object({
 async function getAddress() {
   try {
     const response = await userStore.fetchAddress()
-    console.log('response',response)
     if (!response)
       return
 
@@ -93,7 +91,7 @@ async function getAddress() {
 async function onSubmit() {
   if (!isNewUser.value) {
     const payload = {
-      name:state.name,
+      name: state.name,
       orgname: state.orgname,
       country: state.country,
       region: state.region,
@@ -170,7 +168,7 @@ onMounted(() => {
       <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
           <UFormGroup label="Full Name" name="name" required>
-            <UInput v-model="state.name" color="blue" :disabled="!isNewUser"/>
+            <UInput v-model="state.name" color="blue" :disabled="!isNewUser" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
             <UInput v-model="state.orgname" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name" />

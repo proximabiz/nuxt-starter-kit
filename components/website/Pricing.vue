@@ -56,7 +56,7 @@ const monthlyPrices: PricePlan[] = [
 ]
 
 const annualPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 11, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED'||sub_status?.value.planName === 'Free', comingSoon: false },
+  { plan: 'Free', price: 0, month: 11, disabled: sub_status?.value.planStatus === 'PLAN_EXPIRED' || sub_status?.value.planName === 'Free', comingSoon: false },
   { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: sub_status?.value.planName === 'Basic', comingSoon: true },
   { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: sub_status?.value.planName === 'Premium', comingSoon: true },
   { plan: 'Enterprise', price: 0, month: 11, disabled: sub_status?.value.planName === 'Enterprise', comingSoon: true },

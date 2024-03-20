@@ -33,7 +33,7 @@ const initialState: FormState = {
 const state = reactive<FormState>({ ...initialState })
 // #validation
 
-const nameValidation = z.string().min(1,'Full name is required').refine((value) => {
+const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
   if (value.trim() === '')
     return true
 
@@ -44,14 +44,14 @@ const nameValidation = z.string().min(1,'Full name is required').refine((value) 
 
   // Check for minimum length and no special characters or numbers
   return parts.every((part) => {
-    return /^[A-Za-z]+$/.test(part) && part.length >= 3 
+    return /^[A-Za-z]+$/.test(part) && part.length >= 3
   })
 }, {
   message: 'Enter a valid name of 3 letters and without numbers and symbols',
 })
 const schema = z.object({
   name: nameValidation,
-  country:z.string().min(1,'Country is required'),
+  country: z.string().min(1, 'Country is required'),
   zip: z.string().min(1, 'Zip is required'),
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
@@ -123,7 +123,7 @@ async function onSubmit() {
     </h1>
 
     <UCard class="mb-8">
-      <UForm :state="state" :schema='schema' class="space-y-4 " @submit="onSubmit">
+      <UForm :state="state" :schema="schema" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
           <UFormGroup label="Full Name" name="name" class="w-1/2" required>
             <UInput v-model="state.name" color="blue" placeholder="First Name Last Name" />
