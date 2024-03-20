@@ -79,6 +79,9 @@ async function onSubmit() {
       <UFormGroup name="password">
         <div class="flex justify-between">
           <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+          <div class="text-sm">
+            <a class="cursor-pointer font-semibold text-indigo-500 hover:text-indigo-500" @click="navigateTo('/reset-password')">Forgot password?</a>
+          </div>
         </div>
         <input
           v-model="formState.password"

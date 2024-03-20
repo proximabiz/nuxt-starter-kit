@@ -16,6 +16,7 @@ const formState = reactive({
 })
 const confirmEmailDialog = ref<boolean>(false)
 const loading = ref<boolean>(false)
+const confirmationMessage = ref<string>(`We've sent an email to <b>${formState.email}</b> to confirm the validity of your email address. After receiving the email follow the link provided to complete your registration.`)
 
 /** Methods */
 function isFormValid() {
@@ -92,5 +93,10 @@ async function onSubmit() {
   </UForm>
 
   <!-- Dialog box to show confirm email -->
-  <ModalsConfirmationMailSent v-model="confirmEmailDialog" :email="formState.email" />
+  <ModalsConfirmationMailSent
+    v-model="confirmEmailDialog" :message="confirmationMessage" :icon="{
+      name: 'i-heroicons-envelope-open',
+      color: 'black',
+    }"
+  />
 </template>

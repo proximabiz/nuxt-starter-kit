@@ -19,6 +19,9 @@ function updateCurrentView(viewName: AuthViews) {
 
 <template>
   <div class="py-6" style="width: 500px;">
+    <h2 class="mb-1 text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+      Sign In to AI FlowMapper
+    </h2>
     <div class="flex bg-white overflow-hidden mx-auto">
       <div class="w-full p-8">
         <AuthSignInWithOAuth />
