@@ -21,7 +21,9 @@ const formState = reactive({
 })
 const loading = ref<boolean>(false)
 const confirmEmailDialog = ref<boolean>(false)
-const confirmationMessage = ref<string>(`Your password has been changed successfully. You need to login again with the newly created password.`)
+
+/** Computed */
+const confirmationMessage = computed(() => `Your password has been changed successfully. You need to login again with the newly created password.`)
 
 /** Methods */
 function isFormValid() {
@@ -79,31 +81,31 @@ async function onConfirm() {
         <div class="mt-4">
           <UFormGroup name="email">
             <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
-            <input
+            <UInput
               v-model="formState.email"
-              class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+              input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
               type="email"
-            >
+            />
           </UFormGroup>
         </div>
         <div class="mt-4">
           <UFormGroup name="password">
             <label class="block text-gray-700 text-sm font-bold mb-2">Create Password</label>
-            <input
+            <UInput
               v-model="formState.password"
-              class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+              input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
               type="password"
-            >
+            />
           </UFormGroup>
         </div>
         <div class="mt-4">
           <UFormGroup name="confirmPassword">
             <label class="block text-gray-700 text-sm font-bold mb-2">Confirm Password</label>
-            <input
+            <UInput
               v-model="formState.confirmPassword"
-              class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+              input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
               type="password"
-            >
+            />
           </UFormGroup>
         </div>
         <div class="mt-8">

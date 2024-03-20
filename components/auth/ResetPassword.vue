@@ -15,7 +15,9 @@ const formState = reactive({
 })
 const loading = ref<boolean>(false)
 const confirmEmailDialog = ref<boolean>(false)
-const confirmationMessage = ref<string>(`We've sent an email to <b>${formState.email}</b> to confirm the reset password request. After receiving the email follow the link provided to create new password.`)
+
+/** Computed */
+const confirmationMessage = computed(() => `We've sent an email to <b>${maskEmail(formState.email)}</b> to confirm the validity of your email address. After receiving the email follow the link provided to complete your registration.`)
 
 /** Methods */
 function isFormValid() {
@@ -25,8 +27,12 @@ function isFormValid() {
 
 async function resetPasswordForEmail() {
   try {
+    loading.value = true
+
+    const redirectURL = buildURL('/update-password')
+
     const { error } = await supabaseClient.auth.resetPasswordForEmail(formState.email, {
-      redirectTo: 'http://localhost:3000/update-password',
+      redirectTo: redirectURL,
     })
 
     if (error)
@@ -60,16 +66,16 @@ async function onSubmit() {
         <div class="mt-4">
           <UFormGroup name="email">
             <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
-            <input
+            <UInput
               v-model="formState.email"
-              class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+              input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
               type="email"
-            >
+            />
           </UFormGroup>
         </div>
         <div class="mt-8">
           <UButton block class="font-bold py-2 px-4" type="submit" :loading="loading" @click.stop="onSubmit">
-            Send Reset Password Instructions
+            Send Reset Password Link
           </UButton>
         </div>
       </UForm>

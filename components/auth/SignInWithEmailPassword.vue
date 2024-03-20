@@ -20,7 +20,7 @@ const loading = ref<boolean>(false)
 /** Methods */
 function isFormValid() {
   const isEmailValid = z.string().email().safeParse(formState.email).success
-  const isPasswordValid = z.string().min(8).safeParse(formState.password).success
+  const isPasswordValid = z.string().min(1).safeParse(formState.password).success
   return isEmailValid && isPasswordValid
 }
 
@@ -68,11 +68,11 @@ async function onSubmit() {
     <div class="mt-4">
       <UFormGroup name="email">
         <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
-        <input
+        <UInput
           v-model="formState.email"
-          class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+          input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
           type="email"
-        >
+        />
       </UFormGroup>
     </div>
     <div class="mt-4">
@@ -83,11 +83,11 @@ async function onSubmit() {
             <a class="cursor-pointer font-semibold text-indigo-500 hover:text-indigo-500" @click="navigateTo('/reset-password')">Forgot password?</a>
           </div>
         </div>
-        <input
+        <UInput
           v-model="formState.password"
-          class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+          input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
           type="password"
-        >
+        />
       </UFormGroup>
     </div>
     <div class="mt-8">

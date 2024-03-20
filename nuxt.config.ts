@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     public: {
       OPENAI_API_KEY: process.env.OPENAI_API_KEY,
       SITE_KEY: process.env.SITE_KEY,
+      APP_URL: process.env.APP_URL,
     },
     private: {
       SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,

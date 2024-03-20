@@ -6,10 +6,12 @@ const notify = useNotification()
 /** Methods */
 async function signInWithOAuth() {
   try {
+    const redirectURL = buildURL('/confirm')
+
     const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'http://localhost:3000/confirm',
+        redirectTo: redirectURL,
       },
     })
 

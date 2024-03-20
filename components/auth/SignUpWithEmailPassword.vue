@@ -16,7 +16,9 @@ const formState = reactive({
 })
 const confirmEmailDialog = ref<boolean>(false)
 const loading = ref<boolean>(false)
-const confirmationMessage = ref<string>(`We've sent an email to <b>${formState.email}</b> to confirm the validity of your email address. After receiving the email follow the link provided to complete your registration.`)
+
+/** Computed */
+const confirmationMessage = computed(() => `We've sent an email to <b>${maskEmail(formState.email)}</b> to confirm the validity of your email address. After receiving the email follow the link provided to complete your registration.`)
 
 /** Methods */
 function isFormValid() {
@@ -29,11 +31,15 @@ async function signupWithEmailPassword() {
   try {
     loading.value = true
 
+    const redirectURL = buildURL('/confirm', {
+      requestAction: 'signupWithEmailPassword',
+    })
+
     const { data, error } = await supabaseClient.auth.signUp({
       email: formState.email,
       password: formState.password,
       options: {
-        emailRedirectTo: 'http://localhost:3000/confirm',
+        emailRedirectTo: redirectURL,
       },
     })
 
@@ -66,11 +72,11 @@ async function onSubmit() {
     <div class="mt-4">
       <UFormGroup name="email">
         <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
-        <input
+        <UInput
           v-model="formState.email"
-          class=" text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+          input-class=" text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
           type="email"
-        >
+        />
       </UFormGroup>
     </div>
     <div class="mt-4">
@@ -78,11 +84,11 @@ async function onSubmit() {
         <div class="flex justify-between">
           <label class="block text-gray-700 text-sm font-bold mb-2">Create Password</label>
         </div>
-        <input
+        <UInput
           v-model="formState.password"
-          class=" text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+          input-class=" text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
           type="password"
-        >
+        />
       </UFormGroup>
     </div>
     <div class="mt-8">
