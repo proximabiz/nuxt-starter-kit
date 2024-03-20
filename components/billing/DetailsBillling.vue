@@ -1,11 +1,12 @@
 <script setup lang="ts">
+
 interface Props {
   planDetails: any
 }
 const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
-const duePrice = ref('$77.8')
+const duePrice = ref(props.planDetails.currencySymbol + props.planDetails.calculatedPrice)
 const notify = useNotification()
 
 // const confirmation = reactive({
@@ -16,7 +17,6 @@ const subscriptionStore = useSubscriptionStore()
 const billingAddressCard = computed(() => subscriptionStore.billingDetails)
 
 const steps = [
-  // {label: '', component: 'websitePricing'},
   { label: 'Your plan', component: 'BillingDetailsBillling' },
   { label: 'Your Address', component: 'BillingAddress' },
   { label: 'Card Details', component: 'BillingCardDetails' },
@@ -90,16 +90,16 @@ function isActive(index: number) {
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <USelect v-model="user" :options="users" color="blue" />
           <div>
-            <span>{{ props.planDetails.month }} {{ props.planDetails.month > 1 ? "months" : "month" }} *
-              {{ props.planDetails.price }}</span>
+            <span>1 month *
+              {{ props.planDetails.month > 1 ? props.planDetails.month : '' }}</span>
             <span class="font-semibold pl-1">{{ props.planDetails.currencySymbol }}{{ props.planDetails.calculatedPrice }}</span>
           </div>
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <div>Tax</div>
-          <div class="">
+          <!-- <div class="">
             $11.88
-          </div>
+          </div> -->
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <div class="font-semibold">
@@ -120,4 +120,3 @@ function isActive(index: number) {
   </div>
 </template>
 
-<style scoped></style>
