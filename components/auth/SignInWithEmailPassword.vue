@@ -15,6 +15,7 @@ const formState = reactive({
   email: '',
   password: '',
 })
+const isPasswordHidden = ref<boolean>(true)
 const loading = ref<boolean>(false)
 
 /** Methods */
@@ -86,8 +87,13 @@ async function onSubmit() {
         <UInput
           v-model="formState.password"
           input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-          type="password"
-        />
+          :type="isPasswordHidden ? 'password' : 'text'"
+          :ui="{ icon: { trailing: { pointer: '' } } }"
+        >
+          <template #trailing>
+            <UIcon :name="isPasswordHidden ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="text-xl cursor-pointer" @click.stop="isPasswordHidden = !isPasswordHidden" />
+          </template>
+        </UInput>
       </UFormGroup>
     </div>
     <div class="mt-8">

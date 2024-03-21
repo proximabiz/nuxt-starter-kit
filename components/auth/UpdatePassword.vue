@@ -6,8 +6,16 @@ const supabaseClient = useSupabaseClient()
 const notify = useNotification()
 const schema = z.object({
   email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Min 8 character is required'),
-  confirmPassword: z.string().min(8, 'Min 8 character is required'),
+  password: z
+    .string()
+    .refine(val => new RegExp(getPasswordRegex()).test(val), {
+      message: 'Field must contain at least one uppercase, lowercase, special character, and digit with a minimum of 8 characters. The characters, ", \', <, >, `, \\ are prohibited.',
+    }),
+  confirmPassword: z
+    .string()
+    .refine(val => new RegExp(getPasswordRegex()).test(val), {
+      message: 'Field must contain at least one uppercase, lowercase, special character, and digit with a minimum of 8 characters. The characters, ", \', <, >, `, \\ are prohibited.',
+    }),
 }).refine(data => data.password === data.confirmPassword, {
   message: 'Passwords don\'t match',
   path: ['confirmPassword'],
@@ -20,6 +28,8 @@ const formState = reactive({
   confirmPassword: '',
 })
 const loading = ref<boolean>(false)
+const isPasswordHidden = ref<boolean>(true)
+const isConfirmPasswordHidden = ref<boolean>(true)
 const confirmEmailDialog = ref<boolean>(false)
 
 /** Computed */
@@ -94,8 +104,13 @@ async function onConfirm() {
             <UInput
               v-model="formState.password"
               input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-              type="password"
-            />
+              :type="isPasswordHidden ? 'password' : 'text'"
+              :ui="{ icon: { trailing: { pointer: '' } } }"
+            >
+              <template #trailing>
+                <UIcon :name="isPasswordHidden ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="text-xl cursor-pointer" @click.stop="isPasswordHidden = !isPasswordHidden" />
+              </template>
+            </UInput>
           </UFormGroup>
         </div>
         <div class="mt-4">
@@ -104,8 +119,13 @@ async function onConfirm() {
             <UInput
               v-model="formState.confirmPassword"
               input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-              type="password"
-            />
+              :type="isConfirmPasswordHidden ? 'password' : 'text'"
+              :ui="{ icon: { trailing: { pointer: '' } } }"
+            >
+              <template #trailing>
+                <UIcon :name="isConfirmPasswordHidden ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="text-xl cursor-pointer" @click.stop="isConfirmPasswordHidden = !isConfirmPasswordHidden" />
+              </template>
+            </UInput>
           </UFormGroup>
         </div>
         <div class="mt-8">

@@ -1,21 +1,27 @@
 <script setup lang="ts">
 import { z } from 'zod'
 
-/** Constants */
-const supabaseClient = useSupabaseClient()
-const notify = useNotification()
-const schema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Must be at least 8 characters'),
-})
-
 /** Refs */
 const formState = reactive({
   email: '',
   password: '',
 })
 const confirmEmailDialog = ref<boolean>(false)
+const isPasswordHidden = ref<boolean>(true)
 const loading = ref<boolean>(false)
+
+/** Constants */
+const supabaseClient = useSupabaseClient()
+const notify = useNotification()
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  password:
+    z
+      .string()
+      .refine(val => new RegExp(getPasswordRegex()).test(val), {
+        message: 'Field must contain at least one uppercase, lowercase, special character, and digit with a minimum of 8 characters. The characters, ", \', <, >, `, \\ are prohibited.',
+      }),
+})
 
 /** Computed */
 const confirmationMessage = computed(() => `We've sent an email to <b>${maskEmail(formState.email)}</b> to confirm the validity of your email address. After receiving the email follow the link provided to complete your registration.`)
@@ -86,9 +92,16 @@ async function onSubmit() {
         </div>
         <UInput
           v-model="formState.password"
-          input-class=" text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-          type="password"
-        />
+          input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+          :type="isPasswordHidden ? 'password' : 'text'" :ui="{ icon: { trailing: { pointer: '' } } }"
+        >
+          <template #trailing>
+            <UIcon
+              :name="isPasswordHidden ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="text-xl cursor-pointer"
+              @click.stop="isPasswordHidden = !isPasswordHidden"
+            />
+          </template>
+        </UInput>
       </UFormGroup>
     </div>
     <div class="mt-8">
