@@ -112,13 +112,13 @@ onMounted(() => {
 
 <template>
   <div class="pl-10">
-    <div  v-if="diagramsList?.length === 0" class="flex justify-center my-4">
+    <div v-if="diagramsList?.length === 0" class="flex justify-center my-4">
       <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />
     </div>
     <div v-else class="flex justify-end my-4">
       <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
     </div>
-    <DiagramWelComeMessage v-if="diagramsList?.length === 0"/>
+    <DiagramWelComeMessage v-if="diagramsList?.length === 0" />
     <div v-else class="overflow-x-auto">
       <div class="sm:-mx-6 lg:-mx-8">
         <div class="inline-block w-full py-2 sm:px-6 lg:px-8">

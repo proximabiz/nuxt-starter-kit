@@ -49,14 +49,14 @@ function upgradePlanNO() {
   noplanModal.value = false
   navigateTo('/website/pricing')
 }
-function calculateDaysRemaining(startDateStr:string | undefined, endDateStr:string | undefined) {
-  const startDate = dayjs(startDateStr);
-  const endDate = dayjs(endDateStr);
-  const diffDays = endDate.diff(startDate, 'day');
-  return diffDays;
+function calculateDaysRemaining(startDateStr: string | undefined, endDateStr: string | undefined) {
+  const startDate = dayjs(startDateStr)
+  const endDate = dayjs(endDateStr)
+  const diffDays = endDate.diff(startDate, 'day')
+  return diffDays
 }
 
-const daysRemaining = computed(()=>calculateDaysRemaining(planData.value?.plan_start_date, planData.value?.plan_end_date))
+const daysRemaining = computed(() => calculateDaysRemaining(planData.value?.plan_start_date, planData.value?.plan_end_date))
 </script>
 
 <template>
@@ -98,58 +98,58 @@ const daysRemaining = computed(()=>calculateDaysRemaining(planData.value?.plan_s
         <p class="text-gray-700">
           {{ planData?.description }}
         </p>
-        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">${{ planData?.monthly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name==="Free"?'/15 days':"/month" }}</span>
+        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">${{ planData?.monthly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : "/month" }}</span>
         </strong>
         <p class="text-lg font-medium text-gray-900 sm:text-xl">
           What's included:
         </p>
         <ul class="mt-2 space-y-2 sm:mt-2">
-                <li class="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                  <span class="text-gray-700"> Unlimited mind maps </span>
-                </li>
-                <li class="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                  <span class="text-gray-700"> File,image attachments </span>
-                </li>
-                <li class="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                  <span class="text-gray-700"> PNG image and JSON export </span>
-                </li>
-                <li class="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                  <span class="text-gray-700"> Mindmap printing </span>
-                </li>
-                <li class="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                  <span class="text-gray-700"> Version history </span>
-                </li>
-              </ul>
+          <li class="flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="h-5 w-5 text-indigo-700"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            <span class="text-gray-700"> Unlimited mind maps </span>
+          </li>
+          <li class="flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="h-5 w-5 text-indigo-700"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            <span class="text-gray-700"> File,image attachments </span>
+          </li>
+          <li class="flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="h-5 w-5 text-indigo-700"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            <span class="text-gray-700"> PNG image and JSON export </span>
+          </li>
+          <li class="flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="h-5 w-5 text-indigo-700"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            <span class="text-gray-700"> Mindmap printing </span>
+          </li>
+          <li class="flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="h-5 w-5 text-indigo-700"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            <span class="text-gray-700"> Version history </span>
+          </li>
+        </ul>
         <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
           Current Plan
         </UButton>
@@ -159,7 +159,9 @@ const daysRemaining = computed(()=>calculateDaysRemaining(planData.value?.plan_s
         <p v-if="planData?.plan_end_date && planData?.name !== 'Free'" class="text-red-500 text-xs mt-2">
           Your plan will be auto renewed on {{ dayjs(planData?.plan_end_date).format('MMMM D, YYYY, h:mm:ss A') }}
         </p>
-        <p v-else class="text-red-500 text-xs mt-2"> Free plan will end in {{ daysRemaining }} days</p>
+        <p v-else class="text-red-500 text-xs mt-2">
+          Free plan will end in {{ daysRemaining }} days
+        </p>
       </div>
     </UCard>
     <NuxtLink to="/website/pricing">
