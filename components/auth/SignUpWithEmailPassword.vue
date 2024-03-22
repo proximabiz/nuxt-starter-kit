@@ -52,10 +52,15 @@ async function signupWithEmailPassword() {
     if (error)
       throw error
 
-    if (data) {
-      if (!data.user?.user_metadata.email_verified)
-        confirmEmailDialog.value = true
+    if (!data || !data.user?.user_metadata || !Object.keys(data.user?.user_metadata).length) {
+      throw createError({
+        statusCode: 400,
+        message: 'User elready exists!',
+      })
     }
+
+    if (!data.user?.user_metadata.email_verified)
+      confirmEmailDialog.value = true
   }
   catch (error) {
     notify.error(error)

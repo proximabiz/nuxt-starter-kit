@@ -17,7 +17,7 @@ const loading = ref<boolean>(false)
 const confirmEmailDialog = ref<boolean>(false)
 
 /** Computed */
-const confirmationMessage = computed(() => `We've sent an email to <b>${maskEmail(formState.email)}</b> to confirm the validity of your email address. After receiving the email follow the link provided to complete your registration.`)
+const confirmationMessage = computed(() => `We've sent an email to <b>${maskEmail(formState.email)}</b> as you have requested to reset the password. After receiving the email follow the link provided to create a new password.`)
 
 /** Methods */
 function isFormValid() {
