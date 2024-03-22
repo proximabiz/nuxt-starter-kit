@@ -14,6 +14,7 @@ const PrivateSchema = z.object({
   SENDGRID_FROM_EMAILID: z.string(),
   SITE_KEY: z.string(),
   GOOGLE_CAPTCHA_SECRET_KEY: z.string(),
+  APP_URL: z.string(),
 })
 
 export const Env = BaseSchema.merge(PrivateSchema)

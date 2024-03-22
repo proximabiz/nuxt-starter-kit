@@ -59,7 +59,7 @@ function isActiveRoute(to: string) {
 <template>
   <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full">
     <a class="text-3xl font-bold leading-none" href="#">
-      <img src="/assets/media/logo.png" class="h-10" alt="Flowbite Logo" @click="navigateTo('/website')">
+      <img src="/assets/media/logo.png" class="h-10" alt="Logo" @click="navigateTo('/website')">
     </a>
     <div class="lg:hidden">
       <button class="navbar-burger flex items-center text-blue-600 p-3">
