@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import avatar from '@/assets/media/user.png'
+
 const route = useRoute()
 const notify = useNotification()
 const authStore = useAuthStore()
@@ -86,7 +88,7 @@ function isActiveRoute(to: string) {
       Login
     </UButton>
     <UDropdown v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-10">
-      <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
+      <UAvatar :src="avatar" />
       <template #account>
         <div class="text-left">
           <p>
@@ -151,32 +153,6 @@ function isActiveRoute(to: string) {
       </div>
     </nav>
   </div>
-  <!-- <nav class="flex w-full border-gray-200 dark:bg-gray-900">
-    <NuxtLink to="/">
-      <div class="flex">
-        <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo">
-        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white margin-align">AI Flow
-          Mapper</span>
-      </div>
-    </NuxtLink>
-    <ul class="flex w-full items-center justify-center">
-      <li
-        v-for="link in links" :key="link.name" class="lg:pr-5 font-medium"
-        :class="{ 'active-link': isActiveRoute(link.to) }"
-      >
-        <NuxtLink :to="link.to">
-          {{ link.name }}
-        </NuxtLink>
-      </li>
-    </ul>
-    <UButton
-      v-if="!authUser" @click="navigateTo({
-        path: '/login',
-      })"
-    >
-      Login
-    </UButton>
-  </nav> -->
 </template>
 
 <style scoped>

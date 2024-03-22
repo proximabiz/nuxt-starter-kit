@@ -10,7 +10,6 @@ interface Emit {
 }
 const props = defineProps<Props>()
 const emit = defineEmits<Emit>()
-// const isOpen = ref(false)
 
 function confirmDeletion() {
   props.onDeleteConfirm()

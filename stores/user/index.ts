@@ -75,19 +75,6 @@ export const useUserStore = defineStore('userStore', {
 
       if (supabaseError.value)
         throw supabaseError.value
-
-      // const authStore = useAuthStore()
-
-      // const userId = authStore.getAuthUser.value?.id
-      // const supabaseClient = useSupabaseClient()
-
-      // /* @ts-expect-error need to be fixed */
-      // const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_address_details', {
-      //   param_user_id: userId,
-      // })
-
-      // if (supabaseError)
-      //   throw supabaseError
       /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
     },
@@ -119,19 +106,6 @@ export const useUserStore = defineStore('userStore', {
       catch (supabaseError) {
         throw supabaseError.message
       }
-      // const supabaseClient = useSupabaseClient()
-      // const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
-
-      // const { error: supabaseError } = await useFetch('/api/user/address', {
-      //   method: 'PUT',
-      //   headers: {
-      //     Authorization: `Bearer ${accessToken}`,
-      //   },
-      //   body: payload,
-      // })
-
-      // if (supabaseError.value)
-      //   throw supabaseError.value
     },
 
     async addAddress(payload: AddressPostAPIPayload): Promise<AddAddressResponseType> {
