@@ -20,7 +20,7 @@ const links = computed(() => [
             <span
               class="grid h-10 w-10 place-content-center rounded-lg text-xs text-gray-600"
             >
-              <img src="/assets/media/logo.png" class="" alt="Flowbite Logo">
+              <img src="/assets/media/logo.png" class="" alt="Logo">
             </span>
           </NuxtLink>
         </div>

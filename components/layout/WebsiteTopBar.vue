@@ -57,7 +57,7 @@ function isActiveRoute(to: string) {
 <template>
   <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full z-50">
     <a class="text-3xl font-bold leading-none" href="#">
-      <img src="/assets/media/logo.png" class="h-10" alt="Flowbite Logo" @click="navigateTo('/website')">
+      <img src="/assets/media/logo.png" class="h-10" alt="Logo" @click="navigateTo('/website')">
     </a>
     <div class="lg:hidden">
       <button class="navbar-burger flex items-center text-blue-600 p-3">
@@ -154,7 +154,7 @@ function isActiveRoute(to: string) {
   <!-- <nav class="flex w-full border-gray-200 dark:bg-gray-900">
     <NuxtLink to="/">
       <div class="flex">
-        <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo">
+        <img src="/assets/media/logo.png" class="h-8" alt="Logo">
         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white margin-align">AI Flow
           Mapper</span>
       </div>
