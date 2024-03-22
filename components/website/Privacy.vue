@@ -28,7 +28,7 @@
           <p><strong>CCPA</strong> and/or <strong>CPRA</strong> refers to the California Consumer Privacy Act (the &quot;CCPA&quot;) as amended by the California Privacy Rights Act of 2020 (the &quot;CPRA&quot;).</p>
         </li>
         <li>
-          <p><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Flowmapper AI, 6200 Stoneridge Mall Rd Suite 300 Pleasanton CA 94588.</p>
+          <p><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to AI FlowMapper, 6200 Stoneridge Mall Rd Suite 300 Pleasanton CA 94588.</p>
           <p>For the purpose of the GDPR, the Company is the Data Controller.</p>
         </li>
         <li>

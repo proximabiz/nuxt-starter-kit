@@ -58,7 +58,7 @@ const features = [
   },
   {
     title: 'Collaboration',
-    description: 'Bring team together,Diagram can be shared with team members for review or modifications.',
+    description: 'Bring team together, Diagram can be shared with team members for review or modifications.',
     iconSrc: partner,
     bgColor: 'bg-pink-200',
   },
@@ -83,7 +83,7 @@ const features = [
         >
           What challenges are we solving?
         </p>
-        <p class="mt-4 indent-12">
+        <p class="mt-4">
           Many professionals, especially in the technology, education and enterprises,
           need to create visual representations of their ideas, processes, systems, or structures.
           This could range from developers trying to illustrate the architecture of their software, to managers plotting
@@ -172,7 +172,7 @@ const features = [
     </p>
     <div>
       Unlock the power of visualization with our AI-driven platform, transforming text seamlessly into interactive
-      flowcharts and mind maps.Many professionals,
+      flowcharts and mind maps. Many professionals,
     </div>
     <p class="text-2xl font-semibold">
       Mindmap

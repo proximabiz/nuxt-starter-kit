@@ -17,7 +17,7 @@ const links = ref<NavLink[]>([
   { name: 'Home', to: '/website' },
   { name: 'About', to: '/website/about' },
   { name: 'Pricing', to: '/website/pricing' },
-  { name: 'Contact', to: '/website/contact' },
+  { name: 'Contact Us', to: '/website/contact' },
 ])
 
 const items = [
@@ -55,7 +55,7 @@ function isActiveRoute(to: string) {
 </script>
 
 <template>
-  <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full">
+  <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full z-50">
     <a class="text-3xl font-bold leading-none" href="#">
       <img src="/assets/media/logo.png" class="h-10" alt="Flowbite Logo" @click="navigateTo('/website')">
     </a>
@@ -85,8 +85,8 @@ function isActiveRoute(to: string) {
     >
       Login
     </UButton>
-    <UDropdown v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-10">
-      <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
+    <UDropdown v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-50">
+      <UAvatar src="https://avatars.githubusercontent.com/u/000000?v=4" />
       <template #account>
         <div class="text-left">
           <p>
