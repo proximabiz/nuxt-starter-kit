@@ -42,7 +42,7 @@
     "nuxt-umami": "^2.6.0",
     "openai": "^4.24.3",
     "stripe": "^14.17.0",
-    "typescript": "^5.3.3",
+    "typescript": "^5.4.0",
     "uuid": "^9.0.1",
     "vue-recaptcha": "3.0.0-alpha.6",
     "vue-recaptcha-v3": "^2.0.1",
