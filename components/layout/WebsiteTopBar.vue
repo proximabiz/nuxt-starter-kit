@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import avatar from '@/assets/media/user.png'
+
 const route = useRoute()
 const notify = useNotification()
 const authStore = useAuthStore()
@@ -17,7 +19,7 @@ const links = ref<NavLink[]>([
   { name: 'Home', to: '/website' },
   { name: 'About', to: '/website/about' },
   { name: 'Pricing', to: '/website/pricing' },
-  { name: 'Contact Us', to: '/website/contact' },
+  { name: 'Contact', to: '/website/contact' },
 ])
 
 const items = [
@@ -55,7 +57,7 @@ function isActiveRoute(to: string) {
 </script>
 
 <template>
-  <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full z-50">
+  <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full">
     <a class="text-3xl font-bold leading-none" href="#">
       <img src="/assets/media/logo.png" class="h-10" alt="Logo" @click="navigateTo('/website')">
     </a>
@@ -67,7 +69,7 @@ function isActiveRoute(to: string) {
         </svg>
       </button>
     </div>
-    <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
+    <ul v-if="!authUser" class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
       <template v-for="(item, index) in links" :key="index">
         <li><a class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer" :class="{ 'active-link': isActiveRoute(item.to) }" @click="navigateTo(item.to)">{{ item.name }}</a></li>
         <li class="text-gray-300">
@@ -85,8 +87,8 @@ function isActiveRoute(to: string) {
     >
       Login
     </UButton>
-    <UDropdown v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-50">
-      <UAvatar src="https://avatars.githubusercontent.com/u/000000?v=4" />
+    <UDropdown v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-10">
+      <UAvatar :src="avatar" />
       <template #account>
         <div class="text-left">
           <p>
@@ -151,32 +153,6 @@ function isActiveRoute(to: string) {
       </div>
     </nav>
   </div>
-  <!-- <nav class="flex w-full border-gray-200 dark:bg-gray-900">
-    <NuxtLink to="/">
-      <div class="flex">
-        <img src="/assets/media/logo.png" class="h-8" alt="Logo">
-        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white margin-align">AI Flow
-          Mapper</span>
-      </div>
-    </NuxtLink>
-    <ul class="flex w-full items-center justify-center">
-      <li
-        v-for="link in links" :key="link.name" class="lg:pr-5 font-medium"
-        :class="{ 'active-link': isActiveRoute(link.to) }"
-      >
-        <NuxtLink :to="link.to">
-          {{ link.name }}
-        </NuxtLink>
-      </li>
-    </ul>
-    <UButton
-      v-if="!authUser" @click="navigateTo({
-        path: '/login',
-      })"
-    >
-      Login
-    </UButton>
-  </nav> -->
 </template>
 
 <style scoped>

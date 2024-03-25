@@ -5,7 +5,7 @@ definePageMeta({
 })
 
 const globalStore = useGlobalStore()
-globalStore.pageHeading.title = 'My Accounts'
+globalStore.pageHeading.title = 'My Account'
 </script>
 
 <template>

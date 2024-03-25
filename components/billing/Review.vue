@@ -45,15 +45,6 @@ const allDetails = computed(() => subscriptionStore.billingDetails)
         <p>Security code: {{ allDetails.cvv }}</p>
       </div>
     </div>
-    <!-- <div class="font-bold">
-      Enter payment details
-    </div> -->
-    <!-- <USelectMenu v-model="selected" :options="people">
-      <template #leading>
-        <UIcon v-if="selected.icon" :name="selected.icon" class="w-4 h-4 mx-0.5" />
-        <UAvatar v-else-if="selected.avatar" v-bind="selected.avatar" size="3xs" class="mx-0.5" />
-      </template>
-    </USelectMenu> -->
     <UButton class="mt-4">
       Complete order
     </UButton>

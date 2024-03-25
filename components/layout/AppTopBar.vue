@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import avatar from '@/assets/media/user.png'
+
 const authStore = useAuthStore()
 const notify = useNotification()
 const supabaseClient = useSupabaseClient()
@@ -41,7 +43,7 @@ async function singOut() {
         <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
           <li>
             <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }">
-              <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" />
+              <UAvatar :src="avatar" />
               <template #account>
                 <div class="text-left">
                   <p>
