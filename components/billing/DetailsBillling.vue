@@ -5,7 +5,7 @@ interface Props {
 const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
-const duePrice = ref(props.planDetails.currencySymbol + props.planDetails.calculatedPrice)
+const duePrice = ref<string>(props.planDetails.currencySymbol + props.planDetails.calculatedPrice)
 const notify = useNotification()
 
 // const confirmation = reactive({
@@ -96,9 +96,6 @@ function isActive(index: number) {
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <div>Tax</div>
-          <!-- <div class="">
-            $11.88
-          </div> -->
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <div class="font-semibold">
