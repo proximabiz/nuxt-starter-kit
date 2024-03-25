@@ -9,9 +9,9 @@ definePageMeta({
     <div class="min-h-screen grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
       <AuthSidebar />
 
-      <div class="lg:col-span-2 px-12 flex justify-center items-center">
+      <div class="lg:col-span-2 flex justify-center items-center">
         <div>
-          <Auth />
+          <AuthResetPassword />
         </div>
       </div>
     </div>

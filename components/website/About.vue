@@ -127,7 +127,7 @@ const features = [
               2
             </span>
             <h3 class="font-medium leading-tight">
-              Skill Gap
+              Skill Gap:
             </h3>
             <p class="text-sm">
               Not everyone is skilled in using visual design tools or has an innate ability to layout complex ideas coherently in visual form. The AI assists in bridging this gap.
@@ -205,14 +205,14 @@ const features = [
         <div class="rounded-xl p-6" :class="feature.bgColor">
           <img :src="feature.iconSrc" alt="" width="32px" height="32px">
         </div>
-        <h2 class="text-2xl font-semibold">
+        <h2 class="text-2xl font-semibold mt-8">
           {{ feature.title }}
         </h2>
         <p>{{ feature.description }}</p>
       </div>
     </div>
   </section>
-  <section class="flex flex-col gap-2 items-center mt-8">
+  <section class="flex flex-col gap-2 items-center mt-20">
     <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
       Launching Soon...
     </p>
