@@ -63,18 +63,31 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async fetchAddress(): Promise<UserAddressType> {
-      const supabaseClient = useSupabaseClient()
-      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+      // const supabaseClient = useSupabaseClient()
+      // const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
-      const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/address-contact', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+      // const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/address-contact', {
+      //   method: 'GET',
+      //   headers: {
+      //     Authorization: `Bearer ${accessToken}`,
+      //   },
+      // })
+
+      // if (supabaseError.value)
+      //   throw supabaseError.value
+
+      const authStore = useAuthStore()
+
+      const userId = authStore.getAuthUser.value?.id
+      const supabaseClient = useSupabaseClient()
+
+      /* @ts-expect-error need to be fixed */
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_address_details', {
+        param_user_id: userId,
       })
 
-      if (supabaseError.value)
-        throw supabaseError.value
+      if (supabaseError)
+        throw supabaseError
       /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
     },
@@ -124,7 +137,7 @@ export const useUserStore = defineStore('userStore', {
         throw supabaseError.value
 
       /* @ts-expect-error need to be fixed */
-      return supabaseResponse.value?.data
+      return supabaseResponse.value
     },
   },
   persist: {

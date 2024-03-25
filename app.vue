@@ -46,6 +46,7 @@ function upgradePlan() {
 async function handlePostAuthentication() {
   // Check if user has filled the personal details already
   const response = await userStore.fetchAddress()
+  console.log(response)
   if (!response)
     return
 
