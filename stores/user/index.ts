@@ -76,20 +76,6 @@ export const useUserStore = defineStore('userStore', {
 
       if (supabaseError.value)
         throw supabaseError.value
-
-      // const authStore = useAuthStore()
-
-      // const userId = authStore.getAuthUser.value?.id
-      // const supabaseClient = useSupabaseClient()
-
-      // /* @ts-expect-error need to be fixed */
-      // const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_address_details', {
-      //   param_user_id: userId,
-      // })
-
-      // if (supabaseError)
-      //   throw supabaseError
-      // console.log('response',supabaseResponse[0])
       /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
     },
@@ -113,27 +99,14 @@ export const useUserStore = defineStore('userStore', {
             param_user_id: userId
           
           })
-        if (error) {
-          console.error('Error calling function:', error.message)
-          return
-        }
-        console.log('Function executed successfully:', data)
-      } catch (error) {
-        console.error('Error calling function:', error.message)
+          if (supabaseError)
+          throw supabaseError.message
+
+        return supabaseResponse
       }
-      // const supabaseClient = useSupabaseClient()
-      // const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
-
-      // const { error: supabaseError } = await useFetch('/api/user/address', {
-      //   method: 'PUT',
-      //   headers: {
-      //     Authorization: `Bearer ${accessToken}`,
-      //   },
-      //   body: payload,
-      // })
-
-      // if (supabaseError.value)
-      //   throw supabaseError.value
+      catch (supabaseError) {
+        throw supabaseError.message
+      }
     },
 
     async addAddress(payload: AddressPostAPIPayload): Promise<AddAddressResponseType> {
