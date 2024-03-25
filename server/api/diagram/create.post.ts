@@ -1,9 +1,9 @@
-import { serverSupabaseClient } from '#supabase/server'
 import { OpenAI } from 'openai'
 import { CustomError } from '../../utlis/custom.error'
 import { getPrompt } from '../../utlis/prompts'
 import { protectRoute } from '../../utlis/route.protector'
 import { ChartValidation } from '../../utlis/validations'
+import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
