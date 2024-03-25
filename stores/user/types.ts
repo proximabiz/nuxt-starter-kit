@@ -3,8 +3,8 @@ export interface TaxPostAPIPayload {
 }
 
 export interface AddressPutAPIPayload {
-  name:string
-  orgname:string
+  name: string
+  orgname: string
   country: string
   zipcode: string
   city: string
@@ -127,14 +127,14 @@ export interface GetTaxGSTResponseType {
   gst_number: string
 }
 
-export interface InsertUpdateAddressPayload{
-  param_country:string
-  param_zip_code: string,
-  param_city: string,
-  param_region: string,
-  param_address:string,
-  param_phone_number: string,
-  param_name: string|undefined
-  param_organisation_name: string|undefined
-  param_user_id: string|undefined
+export interface InsertUpdateAddressPayload {
+  param_country: string
+  param_zip_code: string
+  param_city: string
+  param_region: string
+  param_address: string
+  param_phone_number: string
+  param_name: string | undefined
+  param_organisation_name: string | undefined
+  param_user_id: string | undefined
 }

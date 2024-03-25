@@ -38,7 +38,7 @@ function showModal() {
   isModalVisible.value = true
 }
 
-async function onSubmit(): Promise<void> { 
+async function onSubmit(): Promise<void> {
   try {
     const response = await userStore.addTaxGst(state)
     if (response?.status === 200) {

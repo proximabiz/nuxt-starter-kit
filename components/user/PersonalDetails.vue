@@ -44,7 +44,7 @@ const nameValidation = z.string().min(1, 'Full name is required').refine((value)
 
   // Check for minimum length and no special characters or numbers
   return parts.every((part) => {
-    return /^[A-Za-z]+$/.test(part) && part.length >= 3 
+    return /^[A-Za-z]+$/.test(part) && part.length >= 3
   })
 }, {
   message: 'Enter a valid name of 3 letters and without numbers and symbols',
@@ -63,7 +63,6 @@ const schema = z.object({
 async function getAddress() {
   try {
     const response = await userStore.fetchAddress()
-    console.log('personal details',response)
     if (!response)
       return
 
