@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import address from '@/assets/media/address.png'
-import card from '@/assets/media/card.png'
-import tax from '@/assets/media/gst.png'
-import plan from '@/assets/media/plan.png'
+import address from '@/assets/media/building.png'
+import card from '@/assets/media/bill.png'
+import tax from '@/assets/media/tax.png'
+import plan from '@/assets/media/planning.png'
 
 // Refs
 const selectedComponent = ref()
@@ -49,15 +49,15 @@ function resetComponent() {
       <UCard
         v-for="item in cards" :key="item.id"
         class="minimum-width sm:min-w-20"
-        :class="item.isDisabled ? 'cursor-not-allowed opacity-60' : 'hover:bg-gray-300 delay-150 cursor-pointer'"
+        :class="item.isDisabled ? 'cursor-not-allowed opacity-60' : 'hover:bg-custom1-100 delay-150 cursor-pointer'"
         :title="item.isDisabled ? 'This feature is not available for Free Subscription' : ''"
         @click="setComponentName(item.componentName)"
       >
-        <div class="flex items-center" :title="item.isDisabled ? 'This feature is not available for Free Subscription' : ''">
+        <div class="flex items-center py-8" :title="item.isDisabled ? 'This feature is not available for Free Subscription' : ''">
           <div>
             <img :src="item.iconSrc" class="h-10" alt="">
           </div>
-          <div class="text">
+          <div class="text-2xl ml-6 font-semibold">
             {{ item.text }}
           </div>
         </div>

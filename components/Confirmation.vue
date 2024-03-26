@@ -10,7 +10,6 @@ interface Emit {
 }
 const props = defineProps<Props>()
 const emit = defineEmits<Emit>()
-const isOpen = ref(false)
 
 function confirmDeletion() {
   props.onDeleteConfirm()
@@ -22,7 +21,7 @@ function cancel() {
 </script>
 
 <template>
-  <UModal :model-value="isOpen" :transition="false">
+  <UModal :model-value="props.isOpen" :transition="false">
     <div class="p-8">
       <div class="mb-8">
         {{ props.text }}

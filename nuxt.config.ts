@@ -36,6 +36,7 @@ export default defineNuxtConfig({
     },
     display: 'swap',
   },
+  extends: ['nuxt-umami'],
   fontMetrics: { fonts: ['Inter'] },
   i18n: {
     vueI18n: 'locales/i18n.config.ts',

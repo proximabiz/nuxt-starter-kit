@@ -1,14 +1,26 @@
 <script setup>
 const route = useRoute()
+const notify = useNotification()
+const supabaseClient = useSupabaseClient()
 const currentRoutePath = computed(() => route.fullPath)
 
 const links = computed(() => [
   {
-    title: 'Account',
+    title: 'My Account',
     to: '/profile/account',
     icon: 'i-heroicons-user',
   },
 ])
+async function singOut() {
+  try {
+    // Do something with data
+    await supabaseClient.auth.signOut()
+    navigateTo('/')
+  }
+  catch (error) {
+    notify.error(error)
+  }
+}
 </script>
 
 <template>
@@ -63,33 +75,17 @@ const links = computed(() => [
       </div>
 
       <div class="sticky inset-x-0 bottom-0 border-t border-gray-100 bg-white p-2">
-        <form action="/logout">
-          <button
-            type="submit"
-            class="group relative flex w-full justify-center rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+        <button
+          class="group relative flex w-full justify-center rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+          @click="singOut"
+        >
+          <UIcon name="i-heroicons-arrow-right-on-rectangle" class="size-5" />
+          <span
+            class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 opacity-75"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-
-            <span
-              class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
-            >
-              Logout
-            </span>
-          </button>
-        </form>
+            Logout
+          </span>
+        </button>
       </div>
     </div>
   </div>

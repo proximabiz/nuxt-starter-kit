@@ -75,25 +75,37 @@ export const useUserStore = defineStore('userStore', {
 
       if (supabaseError.value)
         throw supabaseError.value
-
       /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
     },
 
     async editAddress(payload: AddressPutAPIPayload): Promise<void> {
       const supabaseClient = useSupabaseClient()
-      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+      const authStore = useAuthStore()
+      const userId = authStore.getAuthUser.value?.id
+      try {
+        /* @ts-expect-error need to be fixed */
+        const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('insert_or_updte_user_address_details', {
 
-      const { error: supabaseError } = await useFetch('/api/user/address', {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: payload,
-      })
+          param_country: payload.country,
+          param_zip_code: payload.zipcode,
+          param_city: payload.city,
+          param_region: payload.region,
+          param_address: payload.address,
+          param_phone_number: payload.phoneNumber,
+          param_name: payload.name,
+          param_organisation_name: payload.orgname,
+          param_user_id: userId,
 
-      if (supabaseError.value)
-        throw supabaseError.value
+        })
+        if (supabaseError)
+          throw supabaseError.message
+
+        return supabaseResponse
+      }
+      catch (supabaseError) {
+        throw supabaseError.message
+      }
     },
 
     async addAddress(payload: AddressPostAPIPayload): Promise<AddAddressResponseType> {

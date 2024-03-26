@@ -26,8 +26,8 @@ const schema = z.object({
   lastname: z.string()
     .min(1, 'Last Name is required')
     .regex(/^[A-Za-z]{3,}$/, 'Enter a valid name of 3 letters and without numbers and symbols'),
-  email: z.string().email('Invalid email Id'),
-  // phone: z.string().max(15, 'Phone must be a valid number with at least 10 digits'),
+  email: z.string().min(1, 'Email id is required').email('Invalid email Id'),
+  phone: z.string().min(1, 'Phone no is required'),
   message: z.string()
     .min(1, 'Message is required')
     .refine(value => value.trim().split(/\s+/).filter(Boolean).length >= 3, {
