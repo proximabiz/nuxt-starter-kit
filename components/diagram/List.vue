@@ -169,12 +169,6 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div
-      v-else
-      class="text-center"
-    >
-      No diagrams available! Please create a new one.
-    </div>
   </div>
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />
