@@ -36,14 +36,14 @@ onMounted(async () => {
   if (!response)
     return
 
-  subscriptionStore.billingDetails.name = response?.userDetails[0]?.name
-  subscriptionStore.billingDetails.orgName = response?.userDetails[0]?.organisation_name
-  subscriptionStore.billingDetails.country = response.userAddress[0]?.country
-  subscriptionStore.billingDetails.zip = response.userAddress[0]?.zip_code
-  subscriptionStore.billingDetails.city = response.userAddress[0]?.city
-  subscriptionStore.billingDetails.region = response.userAddress[0]?.region
-  subscriptionStore.billingDetails.address = response.userAddress[0]?.address
-  subscriptionStore.billingDetails.phone = response.userAddress[0]?.phone_number
+  subscriptionStore.billingDetails.name = response?.name
+  subscriptionStore.billingDetails.orgName = response?.organisation_name
+  subscriptionStore.billingDetails.country = response?.country
+  subscriptionStore.billingDetails.zip = response?.zip_code
+  subscriptionStore.billingDetails.city = response?.city
+  subscriptionStore.billingDetails.region = response?.region
+  subscriptionStore.billingDetails.address = response?.address
+  subscriptionStore.billingDetails.phone = response?.phone_number
 })
 </script>
 

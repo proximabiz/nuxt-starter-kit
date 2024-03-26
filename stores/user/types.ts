@@ -90,9 +90,15 @@ export interface UserData {
 }
 
 export interface UserAddressType {
-  userAddress: UserAddress[]
-  userData?: UserData
-  userDetails: UserDetails[]
+  address: string
+  city: string
+  country: string
+  gst_number: string
+  name: string
+  organisation_name: string
+  phone_number: string
+  region: string
+  zip_code: string
 }
 
 export interface EditAddressResponseType {

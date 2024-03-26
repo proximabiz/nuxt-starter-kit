@@ -5,6 +5,9 @@ import { z } from 'zod'
 
 const notify = useNotification()
 const userStore = useUserStore()
+const authStore = useAuthStore()
+
+const authUser = computed(() => authStore.getAuthUser.value)
 
 interface FormState {
   name: string
@@ -65,15 +68,15 @@ async function getAddress() {
     if (!response)
       return
 
-    formState.name = response.userDetails[0]?.name
-    formState.orgname = response.userDetails[0]?.organisation_name
-    formState.country = response.userAddress[0]?.country
-    formState.zip = response.userAddress[0]?.zip_code
-    formState.city = response.userAddress[0]?.city
-    formState.region = response.userAddress[0]?.region
-    formState.address = response.userAddress[0]?.address
-    formState.phone = response.userAddress[0]?.phone_number
-    formState.email = response.userData?.email
+    formState.name = response?.name
+    formState.orgname = response?.organisation_name
+    formState.country = response?.country
+    formState.zip = response?.zip_code
+    formState.city = response?.city
+    formState.region = response?.region
+    formState.address = response?.address
+    formState.phone = response?.phone_number
+    formState.email = authUser.value?.email
   }
   catch (error) {
     console.error(error)
@@ -86,9 +89,9 @@ onMounted(async () => {
 })
 
 async function onSubmit() {
-  const payloadPost = {
+  const payload = {
     name: formState.name,
-    organisationName: formState.orgname,
+    orgname: formState.orgname,
     country: formState.country,
     region: formState.region,
     city: formState.city,
@@ -96,15 +99,9 @@ async function onSubmit() {
     address: formState.address,
     phoneNumber: formState.phone,
   }
-  try {
-    const response = await userStore.addAddress(payloadPost)
 
-    formState.country = response.country
-    formState.zip = response.zip_code
-    formState.city = response.city
-    formState.region = response.region
-    formState.address = response.address
-    formState.phone = response.phone_number
+  try {
+    await userStore.insertUpdateAddress(payload)
 
     notify.success('Address added successfully!')
 
