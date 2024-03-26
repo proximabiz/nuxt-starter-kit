@@ -19,7 +19,7 @@ const links = ref<NavLink[]>([
   { name: 'Home', to: '/website' },
   { name: 'About', to: '/website/about' },
   { name: 'Pricing', to: '/website/pricing' },
-  { name: 'Contact', to: '/website/contact' },
+  { name: 'Contact Us', to: '/website/contact' },
 ])
 
 const items = [
