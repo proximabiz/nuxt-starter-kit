@@ -5,11 +5,12 @@ import { z } from 'zod'
 
 const notify = useNotification()
 const userStore = useUserStore()
-
+const authStore = useAuthStore()
 const isDisabled = ref(false)
 const isEditable = ref(false)
 const isLoading = ref(true)
 const isNewUser = ref(false)
+const authUser = computed(() => authStore.getAuthUser.value)
 
 interface FormState {
   name: string
@@ -68,17 +69,17 @@ async function getAddress() {
 
     isLoading.value = false
 
-    state.name = response?.userDetails[0]?.name
-    state.orgname = response?.userDetails[0]?.organisation_name
-    state.country = response?.userAddress[0]?.country
-    state.zip = response?.userAddress[0]?.zip_code
-    state.city = response?.userAddress[0]?.city
-    state.region = response?.userAddress[0]?.region
-    state.address = response?.userAddress[0]?.address
-    state.phone = response?.userAddress[0]?.phone_number
-    state.email = response?.userData?.email
+    state.name = response?.name
+    state.orgname = response?.organisation_name
+    state.country = response?.country
+    state.zip = response?.zip_code
+    state.city = response?.city
+    state.region = response?.region
+    state.address = response?.address
+    state.phone = response?.phone_number
+    state.email = authUser.value?.email
 
-    if (!response?.userDetails[0]?.name && !response?.userDetails[0]?.organisation_name) {
+    if (!response?.name && !response?.organisation_name) {
       isEditable.value = false
       isNewUser.value = true
     }
@@ -101,30 +102,10 @@ async function onSubmit() {
       phoneNumber: state.phone,
     }
     try {
-      await userStore.editAddress(payload)
+      await userStore.insertUpdateAddress(payload)
 
       notify.success('Address edited successfully')
 
-      isEditable.value = false
-    }
-    catch (error) {
-      notify.error(error.statusMessage)
-    }
-  }
-  if (isNewUser.value) {
-    const payloadPost = {
-      name: state.name || '',
-      organisationName: state.orgname || '',
-      country: state.country,
-      region: state.region,
-      city: state.city,
-      zipcode: state.zip,
-      address: state.address,
-      phoneNumber: state.phone,
-    }
-    try {
-      await userStore.addAddress(payloadPost)
-      notify.success('Address added successfully')
       isEditable.value = false
     }
     catch (error) {
@@ -155,10 +136,6 @@ onMounted(() => {
     </UCard>
   </UModal>
 
-  <!-- <UBreadcrumb
-    divider=">"
-    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'Address and Contact Details' }]"
-  /> -->
   <section class="grid place-items-center mb-8">
     <h1 class="font-semibold mb-4">
       Address and Contact Details
@@ -220,5 +197,3 @@ onMounted(() => {
     </UCard>
   </section>
 </template>
-
-<style scoped></style>

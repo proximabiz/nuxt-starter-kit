@@ -1,4 +1,4 @@
-import type { AddAddressResponseType, AddressPostAPIPayload, AddressPutAPIPayload, GetTaxGSTResponseType, State, TaxPostAPIPayload, UserAddressType } from './types'
+import type { AddressPutAPIPayload, GetTaxGSTResponseType, State, TaxPostAPIPayload, UserAddressType } from './types'
 
 function initialState() {
   return {
@@ -63,23 +63,23 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async fetchAddress(): Promise<UserAddressType> {
-      const supabaseClient = useSupabaseClient()
-      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+      const authStore = useAuthStore()
 
-      const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/address-contact', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+      const userId = authStore.getAuthUser.value?.id
+      const supabaseClient = useSupabaseClient()
+
+      /* @ts-expect-error need to be fixed */
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_address_details', {
+        param_user_id: userId,
       })
 
-      if (supabaseError.value)
-        throw supabaseError.value
-      /* @ts-expect-error need to be fixed */
-      return supabaseResponse.value?.data
+      if (supabaseError)
+        throw supabaseError
+
+      return supabaseResponse[0]
     },
 
-    async editAddress(payload: AddressPutAPIPayload): Promise<void> {
+    async insertUpdateAddress(payload: AddressPutAPIPayload): Promise<void> {
       const supabaseClient = useSupabaseClient()
       const authStore = useAuthStore()
       const userId = authStore.getAuthUser.value?.id
@@ -106,25 +106,6 @@ export const useUserStore = defineStore('userStore', {
       catch (supabaseError) {
         throw supabaseError.message
       }
-    },
-
-    async addAddress(payload: AddressPostAPIPayload): Promise<AddAddressResponseType> {
-      const supabaseClient = useSupabaseClient()
-      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
-
-      const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/address-contact', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: payload,
-      })
-
-      if (supabaseError.value)
-        throw supabaseError.value
-
-      /* @ts-expect-error need to be fixed */
-      return supabaseResponse.value?.data
     },
   },
   persist: {
