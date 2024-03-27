@@ -2,6 +2,7 @@ import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
 import { UserAddressValidation } from '~/server/utlis/validations'
+import type { Database } from '~/types/supabase'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
@@ -12,7 +13,7 @@ export default defineEventHandler(async (event) => {
   if (!userID)
     throw new CustomError('Error: no user found!', 404)
 
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseClient<Database>(event)
 
   const chartValidation = await UserAddressValidation.validateAsync(params)
   if (!chartValidation) {
@@ -28,7 +29,7 @@ export default defineEventHandler(async (event) => {
         address: chartValidation.address.trim(),
         phone_number: chartValidation.phoneNumber.trim(),
 
-      } as never,
+      },
     ).eq('user_id', userID).select().single()
 
     if (error) {

@@ -1,11 +1,12 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { protectRoute } from '~/server/utlis/route.protector'
 import { UserAddressValidation } from '~/server/utlis/validations'
+import type { Database } from '~/types/supabase'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
   const params = await readBody(event)
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseClient<Database>(event)
 
   const addressValidation = await UserAddressValidation.validateAsync(params)
   if (!addressValidation) {
@@ -25,7 +26,7 @@ export default defineEventHandler(async (event) => {
         zip_code: addressValidation.zipcode,
         address: addressValidation.address,
       },
-    ] as any).select()
+    ]).select()
     if (error) {
       return createError({
         statusCode: 400,

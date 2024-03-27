@@ -3,11 +3,12 @@ import { CustomError } from '../../utlis/custom.error'
 import { getPrompt } from '../../utlis/prompts'
 import { protectRoute } from '../../utlis/route.protector'
 import { ChartValidation } from '../../utlis/validations'
+import type { Database } from '~/types/supabase'
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseClient<Database>(event)
   const params = await readBody(event)
 
   const chartValidation = await ChartValidation.validateAsync(params)
@@ -51,7 +52,7 @@ export default defineEventHandler(async (event) => {
     user_id: event.context.user.id,
     response: chart,
     versions: new Date().toISOString(),
-  }] as any)
+  }])
 
   return { message: 'Success!', data: { diagram }, status }
 })

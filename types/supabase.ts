@@ -227,7 +227,7 @@ export interface Database {
           {
             foreignKeyName: 'public_user_address_details_user_id_fkey'
             columns: ['user_id']
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: 'users'
             referencedColumns: ['id']
           },
@@ -268,7 +268,7 @@ export interface Database {
           {
             foreignKeyName: 'public_user_details_user_id_fkey'
             columns: ['user_id']
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: 'users'
             referencedColumns: ['id']
           },
@@ -419,32 +419,55 @@ export interface Database {
           updated_at: string
         }[]
       }
+      get_user_address_details: {
+        Args: {
+          param_user_id: string
+        }
+        Returns: {
+          country: string
+          zip_code: string
+          city: string
+          region: string
+          address: string
+          phone_number: string
+          name: string
+          organisation_name: string
+          gst_number: string
+        }[]
+      }
       get_user_subscription: {
         Args: {
           userid: string
         }
         Returns: Database['public']['CompositeTypes']['subscription_info']
       }
-      get_user_subscription_old: {
+      insert_or_update_user_address_details_new: {
         Args: {
-          userid: string
+          param_country: string
+          param_zip_code: string
+          param_city: string
+          param_region: string
+          param_address: string
+          param_phone_number: string
+          param_name: string
+          param_organisation_name: string
+          param_user_id: string
         }
-        Returns: {
-          id: string
-          user_id: string
-          amount: number
-          plan_start_date: string
-          plan_end_date: string
-          auto_renew: boolean
-          is_subscription_active: boolean
-          sub_key: string
-          name: string
-          description: string
-          monthly_price: number
-          status: boolean
-          features: Json
-          yearly_price: number
-        }[]
+        Returns: string
+      }
+      insert_or_updte_user_address_details: {
+        Args: {
+          param_country: string
+          param_zip_code: string
+          param_city: string
+          param_region: string
+          param_address: string
+          param_phone_number: string
+          param_name: string
+          param_organisation_name: string
+          param_user_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
@@ -452,29 +475,31 @@ export interface Database {
     }
     CompositeTypes: {
       subscription_info: {
-        id: string
-        user_id: string
-        amount: number
-        plan_start_date: string
-        plan_end_date: string
-        auto_renew: boolean
-        is_subscription_active: boolean
-        sub_key: string
-        name: string
-        description: string
-        monthly_price: number
-        status: boolean
-        features: Json
-        yearly_price: number
-        subscription_status: string
+        id: string | null
+        user_id: string | null
+        amount: number | null
+        plan_start_date: string | null
+        plan_end_date: string | null
+        auto_renew: boolean | null
+        is_subscription_active: boolean | null
+        sub_key: string | null
+        name: string | null
+        description: string | null
+        monthly_price: number | null
+        status: boolean | null
+        features: Json | null
+        yearly_price: number | null
+        subscription_status: string | null
       }
     }
   }
 }
 
+type PublicSchema = Database[Extract<keyof Database, 'public'>]
+
 export type Tables<
   PublicTableNameOrOptions extends
-  | keyof (Database['public']['Tables'] & Database['public']['Views'])
+  | keyof (PublicSchema['Tables'] & PublicSchema['Views'])
   | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions['schema']]['Tables'] &
@@ -487,10 +512,10 @@ export type Tables<
     }
       ? R
       : never
-  : PublicTableNameOrOptions extends keyof (Database['public']['Tables'] &
-  Database['public']['Views'])
-    ? (Database['public']['Tables'] &
-    Database['public']['Views'])[PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof (PublicSchema['Tables'] &
+  PublicSchema['Views'])
+    ? (PublicSchema['Tables'] &
+    PublicSchema['Views'])[PublicTableNameOrOptions] extends {
         Row: infer R
       }
         ? R
@@ -499,7 +524,7 @@ export type Tables<
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
-  | keyof Database['public']['Tables']
+  | keyof PublicSchema['Tables']
   | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
@@ -510,8 +535,8 @@ export type TablesInsert<
   }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof Database['public']['Tables']
-    ? Database['public']['Tables'][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
+    ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
       Insert: infer I
     }
       ? I
@@ -520,7 +545,7 @@ export type TablesInsert<
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
-  | keyof Database['public']['Tables']
+  | keyof PublicSchema['Tables']
   | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
@@ -531,8 +556,8 @@ export type TablesUpdate<
   }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof Database['public']['Tables']
-    ? Database['public']['Tables'][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
+    ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
       Update: infer U
     }
       ? U
@@ -541,13 +566,13 @@ export type TablesUpdate<
 
 export type Enums<
   PublicEnumNameOrOptions extends
-  | keyof Database['public']['Enums']
+  | keyof PublicSchema['Enums']
   | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions['schema']]['Enums']
     : never = never,
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : PublicEnumNameOrOptions extends keyof Database['public']['Enums']
-    ? Database['public']['Enums'][PublicEnumNameOrOptions]
+  : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
+    ? PublicSchema['Enums'][PublicEnumNameOrOptions]
     : never
