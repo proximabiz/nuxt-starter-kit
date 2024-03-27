@@ -1,4 +1,5 @@
 import type { ActivePlanType, AddAPIPayload, CancelAPIPayload, State } from './types'
+import type { Database } from '~/types/supabase'
 
 function initialState() {
   return {
@@ -28,11 +29,10 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       const authStore = useAuthStore()
 
       const userId = authStore.getAuthUser.value?.id
-      const supabaseClient = useSupabaseClient()
+      const supabaseClient = useSupabaseClient<Database>()
 
-      /* @ts-expect-error need to be fixed */
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', {
-        userid: userId,
+        userid: userId as string,
       })
 
       if (supabaseError)

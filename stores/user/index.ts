@@ -1,4 +1,5 @@
 import type { AddressPutAPIPayload, GetTaxGSTResponseType, State, TaxPostAPIPayload, UserAddressType } from './types'
+import type { Database } from '~/types/supabase'
 
 function initialState() {
   return {
@@ -24,7 +25,7 @@ export const useUserStore = defineStore('userStore', {
         throw supabaseError.value
 
       /* @ts-expect-error need to be fixed */
-      return supabaseResponse.value?.data
+      return supabaseResponse.value?.data[0]
     },
 
     async addTaxGst(payload: TaxPostAPIPayload) {
@@ -66,11 +67,10 @@ export const useUserStore = defineStore('userStore', {
       const authStore = useAuthStore()
 
       const userId = authStore.getAuthUser.value?.id
-      const supabaseClient = useSupabaseClient()
+      const supabaseClient = useSupabaseClient<Database>()
 
-      /* @ts-expect-error need to be fixed */
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_address_details', {
-        param_user_id: userId,
+        param_user_id: userId as string,
       })
 
       if (supabaseError)
@@ -80,11 +80,10 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async insertUpdateAddress(payload: AddressPutAPIPayload): Promise<void> {
-      const supabaseClient = useSupabaseClient()
+      const supabaseClient = useSupabaseClient<Database>()
       const authStore = useAuthStore()
       const userId = authStore.getAuthUser.value?.id
       try {
-        /* @ts-expect-error need to be fixed */
         const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('insert_or_updte_user_address_details', {
 
           param_country: payload.country,
@@ -95,7 +94,7 @@ export const useUserStore = defineStore('userStore', {
           param_phone_number: payload.phoneNumber,
           param_name: payload.name,
           param_organisation_name: payload.orgname,
-          param_user_id: userId,
+          param_user_id: userId as string,
 
         })
         if (supabaseError)

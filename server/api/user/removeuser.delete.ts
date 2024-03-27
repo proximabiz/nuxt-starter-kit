@@ -5,7 +5,7 @@ const supabase = createClient('https://oaemobmedmjoqcbcoxoe.supabase.co', 'eyJhb
 
 export default defineEventHandler(async () => {
   const { error } = await supabase.auth.admin.deleteUser(
-    '93c04c11-b30b-407a-9502-aebd28de3efa',
+    '6a8fda3f-c87c-4cce-8781-2d8619fc13bd',
   )
   if (error)
     throw new CustomError(`Error: ${error.message}`, 400)
