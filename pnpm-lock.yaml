@@ -53,9 +53,6 @@ dependencies:
   uuid:
     specifier: ^9.0.1
     version: 9.0.1
-  vue-recaptcha:
-    specifier: 3.0.0-alpha.6
-    version: 3.0.0-alpha.6(rollup@3.29.4)(vue@3.3.13)
   vue-recaptcha-v3:
     specifier: ^2.0.1
     version: 2.0.1(vue@3.3.13)
@@ -7603,11 +7600,6 @@ packages:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  /p-defer@4.0.0:
-    resolution: {integrity: sha512-Vb3QRvQ0Y5XnF40ZUWW7JfLogicVh/EnA5gBIvKDJoYpeI82+1E3AlB9yOcKFS0AhHrWVnAQO39fbR0G99IVEQ==}
-    engines: {node: '>=12'}
-    dev: false
-
   /p-limit@2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}
     engines: {node: '>=6'}
@@ -8298,7 +8290,7 @@ packages:
     resolution: {integrity: sha512-lNeOl38Ws0eNxpO3+wD1I9rkHGQyj1NU1jlzv4go2CtEnEQEUfqnIvZG7W+bC/aXdJ27n5x/yUjb6RoT9tko+Q==}
     dependencies:
       defu: 6.1.4
-      destr: 2.0.2
+      destr: 2.0.3
       flat: 5.0.2
 
   /read-cache@1.0.0:
@@ -9845,29 +9837,6 @@ packages:
     dependencies:
       recaptcha-v3: 1.10.0
       vue: 3.3.13(typescript@5.3.3)
-    dev: false
-
-  /vue-recaptcha@3.0.0-alpha.6(rollup@3.29.4)(vue@3.3.13):
-    resolution: {integrity: sha512-hwxxAXENLN6GKJhH6s+NJV1f6llSFEQ0jMTxjEunpR6CMbQ5xc7DAHFtwrsDutGnbS8wl9yp30jsYcCToZEhTQ==}
-    peerDependencies:
-      '@vue/composition-api': '*'
-      vue: ^3.0.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-    dependencies:
-      '@nuxt/kit': 3.9.1(rollup@3.29.4)
-      '@nuxt/schema': 3.9.1(rollup@3.29.4)
-      '@vueuse/shared': 10.7.0(vue@3.3.13)
-      defu: 6.1.4
-      p-defer: 4.0.0
-      std-env: 3.7.0
-      type-fest: 3.13.1
-      vue: 3.3.13(typescript@5.3.3)
-      vue-demi: 0.14.6(vue@3.3.13)
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
     dev: false
 
   /vue-resize@2.0.0-alpha.1(vue@3.3.13):

@@ -44,7 +44,6 @@
     "stripe": "^14.17.0",
     "typescript": "5.3.3",
     "uuid": "^9.0.1",
-    "vue-recaptcha": "3.0.0-alpha.6",
     "vue-recaptcha-v3": "^2.0.1",
     "vue-tel-input": "^8.3.1",
     "zod": "^3.22.4"

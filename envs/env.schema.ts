@@ -7,8 +7,8 @@ export const BaseSchema = z.object({
 
 const PrivateSchema = z.object({
   OPENAI_API_KEY: z.string(),
-  NUXT_PUBLIC_SUPABASE_URL: z.string(),
-  NUXT_PUBLIC_SUPABASE_KEY: z.string(),
+  SUPABASE_URL: z.string(),
+  SUPABASE_KEY: z.string(),
   SENDGRID_API_KEY: z.string(),
   SENDGRID_EMAIL_TEMPLATE_ID: z.string(),
   SENDGRID_FROM_EMAILID: z.string(),
