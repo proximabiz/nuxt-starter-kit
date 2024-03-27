@@ -91,4 +91,5 @@ export const ContactUsValidation = Joi.object({
   requestFor: Joi.string().required(),
   email: Joi.string().email().required(),
   phoneNumber: Joi.string().required(),
+  token: Joi.string().required(),
 })
