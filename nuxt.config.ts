@@ -4,7 +4,6 @@ export default defineNuxtConfig({
   devtools: { enabled: process.env.NODE_ENV === 'dev' },
   runtimeConfig: {
     public: {
-      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
       SITE_KEY: process.env.SITE_KEY,
       APP_URL: process.env.APP_URL,
     },
@@ -13,6 +12,7 @@ export default defineNuxtConfig({
       SENDGRID_EMAIL_TEMPLATE_ID: process.env.SENDGRID_EMAIL_TEMPLATE_ID,
       SENDGRID_FROM_EMAILID: process.env.SENDGRID_FROM_EMAILID,
       GOOGLE_CAPTCHA_SECRET_KEY: process.env.GOOGLE_CAPTCHA_SECRET_KEY,
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     },
   },
   modules: [

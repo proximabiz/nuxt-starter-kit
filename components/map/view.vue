@@ -4,6 +4,7 @@ import '@mind-elixir/node-menu/dist/style.css'
 import dayjs from 'dayjs'
 import type { MindElixirData, Options } from 'mind-elixir'
 import MindElixir from 'mind-elixir'
+import { cloneDeep } from 'lodash'
 import { useFileExporter } from '@/composables/ExportJsonFile'
 
 const props = defineProps<Props>()
@@ -18,6 +19,7 @@ const globalStore = useGlobalStore()
 const { exportJSONFile } = useFileExporter()
 
 const apiResponse = ref()
+const oldApiResponse = ref()
 const updateApiResponse = ref()
 const saveApiResponse = ref()
 const isOpen = ref(true)
@@ -60,6 +62,7 @@ async function fetchMap() {
     })
 
     if (apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails) {
+      oldApiResponse.value = cloneDeep(apiResponse.value[0].response.nodeData)
       init()
       if (apiResponse.value[0].response.nodeData)
         form.value.title = apiResponse.value[0].response.nodeData.topic
@@ -264,7 +267,10 @@ function loadJSON(jsonData: JSON) {
 }
 
 function createMapFromJSON() {
-  updateApiResponse.value = JSON.parse(form.value.json)
+  const jsonString = `${JSON.parse(form.value.json)}`
+  const parsedObject = JSON.parse(jsonString)
+  updateApiResponse.value = parsedObject
+
   if (updateApiResponse.value.nodeData) {
     init2()
     form.value.title = updateApiResponse.value.topic
@@ -272,6 +278,7 @@ function createMapFromJSON() {
     isOpen.value = false
     notify.success('Mindmap created from JSON')
   }
+  saveMap(false)
 }
 
 onMounted(() => {
@@ -287,10 +294,17 @@ function closePopup() {
   isSavePopupOpen.value = true
   isSave.value = true
   navigateTo(toRoute.value)
+  notify.success('Mindmap changes discarded')
 }
 
 onBeforeRouteLeave((to) => {
-  isSavePopupOpen.value = true
+  if (oldApiResponse.value && mind.value.getData().nodeData && JSON.stringify(oldApiResponse.value) !== JSON.stringify(mind.value.getData().nodeData)) {
+    isSavePopupOpen.value = true
+  }
+  else {
+    isSavePopupOpen.value = false
+    isSave.value = true
+  }
   toRoute.value = to
 
   if (!isSave.value)

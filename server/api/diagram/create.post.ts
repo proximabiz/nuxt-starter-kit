@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   // Open api Call
   const openai: any = new OpenAI({
-    apiKey: useRuntimeConfig().public.OPENAI_API_KEY as string,
+    apiKey: useRuntimeConfig().private.OPENAI_API_KEY as string,
   })
   let chart: Array<any> = []
   // Do not create map through AI if the title is default
