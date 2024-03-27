@@ -1,12 +1,13 @@
 import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
 import { PATCHChartUpdateValidation } from '../../utlis/validations'
-import type { ChartResponseType } from '~/server/types/chart'
 import { serverSupabaseClient } from '#supabase/server'
+import type { ChartResponseType } from '~/server/types/chart.types'
+import type { Database } from '~/types/supabase'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseClient<Database>(event)
   const params = await readBody(event)
   const diagramId: string = getRouterParam(event, 'id')!
 
@@ -58,13 +59,13 @@ async function insertDiagramVersion(client: any, diagramId: string, userId: stri
     response: chart,
     versions: new Date().toISOString(),
     details,
-  }] as any)
+  }])
 }
 
 async function updateDiagramForResponse(client: any, response: ChartResponseType, diagramId: string): Promise<{ data: any, error: any }> {
   return await client.from('diagrams').update(
     {
       response,
-    } as never,
+    },
   ).eq('id', diagramId).select().single()
 }

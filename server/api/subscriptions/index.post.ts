@@ -1,9 +1,10 @@
+import type { Database } from '../../../types/supabase'
 import { CustomError } from '../../utlis/custom.error'
 import { UserSubscriptionValidation } from '../../utlis/validations'
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseClient<Database>(event)
   const params = await readBody(event)
   const validate = await UserSubscriptionValidation.validateAsync(params)
   if (!validate)
@@ -59,7 +60,7 @@ export default defineEventHandler(async (event) => {
       plan_start_date: currentDate,
       plan_end_date: endDate,
     },
-  ] as any)
+  ] as never)
 
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)
