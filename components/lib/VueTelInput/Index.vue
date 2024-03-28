@@ -109,9 +109,9 @@ function onCountryChanged(payload: PhoneCountry) {
   if (phone.value && !phone.value?.includes(payload.dialCode))
     resetPhoneField()
 
-  setTimeout(() => {
-    document.querySelector<HTMLInputElement>('.custom-cursor input')?.focus()
-  }, 0)
+  // setTimeout(() => {
+  //   document.querySelector<HTMLInputElement>('.custom-cursor input')?.focus()
+  // }, 0)
 }
 
 function handlePhoneValidation() {
@@ -225,7 +225,6 @@ defineExpose({
 
 <template>
   <div>
-    {{ phone }}
     <VueTelInput
       ref="phoneRef"
       v-model="phone"
@@ -262,7 +261,9 @@ defineExpose({
   </div>
 </template>
 
-<style scoped>
+<style slang="scss" scoped>
+@import '~/assets/css/vue-tel-input.scss';
+
 .errorState {
   border: 1px solid red !important;
 }
