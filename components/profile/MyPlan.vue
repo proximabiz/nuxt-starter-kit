@@ -49,14 +49,21 @@ function upgradePlanNO() {
   noplanModal.value = false
   navigateTo('/website/pricing')
 }
-function calculateDaysRemaining(startDateStr: string | undefined, endDateStr: string | undefined) {
-  const startDate = dayjs(startDateStr)
-  const endDate = dayjs(endDateStr)
-  const diffDays = endDate.diff(startDate, 'day')
+
+function calculateDaysRemainingFromToday(endDateStr: string | undefined) {
+  // Use dayjs to get today's date at 00:00:00 to ensure full day calculation
+  const today = dayjs().startOf('day')
+  const endDate = dayjs(endDateStr).startOf('day')
+
+  // Calculate the difference in days
+  let diffDays = endDate.diff(today, 'day')
+
+  // Adjust calculation to include today in the count
+  if (endDate.isAfter(today))
+    diffDays -= 1
   return diffDays
 }
-
-const daysRemaining = computed(() => calculateDaysRemaining(planData.value?.plan_start_date, planData.value?.plan_end_date))
+const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.value?.plan_end_date))
 </script>
 
 <template>
