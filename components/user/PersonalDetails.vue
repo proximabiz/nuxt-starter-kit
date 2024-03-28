@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { VueTelInput } from 'vue-tel-input'
-import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+import type PhoneInputField from '@/components/lib/VueTelInput/Index.vue'
 
 const notify = useNotification()
 const userStore = useUserStore()
@@ -34,6 +33,8 @@ const initialState: FormState = {
 }
 
 const formState = reactive<FormState>({ ...initialState })
+const phoneRef = ref<typeof PhoneInputField>()
+
 // #validation
 
 const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
@@ -59,7 +60,9 @@ const schema = z.object({
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
   address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
+  phone: z.string().refine(() => {
+    return phoneRef.value?.handlePhoneValidation().status
+  }),
 })
 
 async function getAddress() {
@@ -148,9 +151,11 @@ async function onSubmit() {
         <UFormGroup label="Address" name="address" required>
           <UInput v-model="formState.address" color="blue" />
         </UFormGroup>
-        <UFormGroup label="Phone No" name="phone" required>
-          <VueTelInput v-model="formState.phone" placeholder="Your Phone no" mode="international" />
-        </UFormGroup>
+        <LibVueTelInput
+          ref="phoneRef"
+          :prop-phone="formState.phone"
+          class="my-4"
+        />
         <UFormGroup label="Email Id" name="email" required>
           <UInput v-model="formState.email" color="blue" :disabled="true" />
         </UFormGroup>
