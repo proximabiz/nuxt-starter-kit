@@ -1,4 +1,5 @@
 import type { CreateDiagramResponseType, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
+import type { Database } from '~/types/supabase'
 
 function initialState() {
   return {
@@ -111,9 +112,7 @@ export const useDiagramStore = defineStore('diagramStore', {
     },
 
     async getVersionList(payload: getAPIPayload) {
-      const supabaseClient = useSupabaseClient()
-
-      /* @ts-expect-error need to be fixed */
+      const supabaseClient = useSupabaseClient<Database>()
       const { data: supabaseResponse, error: diagramError } = await supabaseClient.rpc('get_diagram_versions', {
         diagramid: payload.diagramId,
       })
