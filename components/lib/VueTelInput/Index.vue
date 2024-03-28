@@ -73,6 +73,14 @@ watch(phoneData, (newVal) => {
     handlePhoneValidation()
 })
 
+watch(() => props.propPhone, (newVal) => {
+  /**
+   * This watch will trigger when parent component passes phone number value
+   */
+  if (newVal)
+    initializePhoneDataAndParseCountryCode()
+})
+
 // Methods
 let prevCursor = 0
 let prevNumber: string = ''
@@ -143,6 +151,9 @@ function resetPhoneField() {
 }
 
 function initializePhoneDataAndParseCountryCode() {
+  if (props.propPhone)
+    phone.value = props.propPhone
+
   nextTick(() => {
     if (phone.value) {
       phoneData.value = phoneRef.value?.phoneObject || defaultPhoneDataValues
@@ -214,6 +225,7 @@ defineExpose({
 
 <template>
   <div>
+    {{ phone }}
     <VueTelInput
       ref="phoneRef"
       v-model="phone"

@@ -70,8 +70,6 @@ async function getAddress() {
     if (!response)
       return
 
-    isLoading.value = false
-
     state.name = response?.name
     state.orgname = response?.organisation_name
     state.country = response?.country
@@ -90,6 +88,9 @@ async function getAddress() {
   catch (error) {
     notify.error(error.message)
   }
+  finally {
+    isLoading.value = false
+  }
 }
 
 async function onSubmit() {
@@ -102,7 +103,7 @@ async function onSubmit() {
       city: state.city,
       zipcode: state.zip,
       address: state.address,
-      phoneNumber: state.phone,
+      phoneNumber: phoneRef.value?.phoneData.number,
     }
     try {
       await userStore.insertUpdateAddress(payload)

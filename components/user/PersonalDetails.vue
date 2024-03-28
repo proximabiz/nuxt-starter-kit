@@ -100,7 +100,7 @@ async function onSubmit() {
     city: formState.city,
     zipcode: formState.zip,
     address: formState.address,
-    phoneNumber: formState.phone,
+    phoneNumber: phoneRef.value?.phoneData.number,
   }
 
   try {
