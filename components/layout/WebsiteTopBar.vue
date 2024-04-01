@@ -87,10 +87,12 @@ function isActiveRoute(to: string) {
     >
       Login
     </UButton>
-    <UDropdown v-if="authUser" :items="items" 
-    :ui="{ item: { disabled: 'cursor-text select-text' } }" 
-    :popper="{ placement: 'bottom-start' }" 
-     class="z-10">
+    <UDropdown
+      v-if="authUser" :items="items"
+      :ui="{ item: { disabled: 'cursor-text select-text' } }"
+      :popper="{ placement: 'bottom-start' }"
+      class="z-10"
+    >
       <UAvatar :src="avatar" />
       <template #account>
         <div class="text-left">

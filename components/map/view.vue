@@ -65,22 +65,22 @@ async function fetchMap() {
     })
     if (apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails) {
       oldApiResponse.value = cloneDeep(apiResponse.value[0].response.nodeData)
-      hasEvent.value = true;
+      hasEvent.value = true
       init()
-      if (apiResponse.value[0].response.nodeData){
+      if (apiResponse.value[0].response.nodeData)
         form.value.title = apiResponse.value[0].response.nodeData.topic
-      }
-      else{
+
+      else
         form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
       // form.value.details = apiResponse.value[0].details
-      }
+
       globalStore.pageHeading.title = form.value.title
-      hasEvent.value = true;
+      hasEvent.value = true
     }
   }
   catch (error) {
     notify.error(error)
-    hasEvent.value = false;
+    hasEvent.value = false
   }
 }
 // Initializes the mind map with data from the API response
@@ -188,7 +188,7 @@ async function updateMap() {
       init1()
       form.value.title = updateApiResponse.value.response.chartDetails[0].nodeData.topic as string
       // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
-      hasEvent.value = true;
+      hasEvent.value = true
     }
 
     notify.success('Mindmap generated!')
@@ -325,65 +325,72 @@ onBeforeRouteLeave((to) => {
       <ul class="space-y-1 border-gray-100 pt-4">
         <li @click="isOpen = true">
           <a
-            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+          >
             <UIcon name="i-heroicons-bars-4" class="size-5" />
 
             <span
-              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible">
+              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+            >
               Edit
             </span>
           </a>
         </li>
         <div :class="{ 'cursor-not-allowed': !hasEvent }">
-          <li @click="saveMap(false)" :class="{ 'pointer-events-none': !hasEvent }">
+          <li :class="{ 'pointer-events-none': !hasEvent }" @click="saveMap(false)">
             <a
-              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+            >
               <UIcon name="i-heroicons-bookmark" class="size-5" />
 
               <span
-                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible">
+                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              >
                 Save Data
               </span>
             </a>
           </li>
         </div>
         <div :class="{ 'cursor-not-allowed': !hasEvent }">
-
-          <li @click="fetchDiagramVersions()" :class="{ 'pointer-events-none': !hasEvent }">
+          <li :class="{ 'pointer-events-none': !hasEvent }" @click="fetchDiagramVersions()">
             <a
-              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+            >
               <UIcon name="i-heroicons-rectangle-stack" class="size-5" />
 
               <span
-                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible">
+                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              >
                 Diagram Versions
               </span>
             </a>
           </li>
         </div>
         <div :class="{ 'cursor-not-allowed': !hasEvent }">
-
-          <li @click="downloadMap()" :class="{ 'pointer-events-none': !hasEvent }">
+          <li :class="{ 'pointer-events-none': !hasEvent }" @click="downloadMap()">
             <a
-              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+            >
               <UIcon name="i-heroicons-arrow-down-tray" class="size-5" />
 
               <span
-                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible">
+                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              >
                 Download Image
               </span>
             </a>
           </li>
         </div>
         <div :class="{ 'cursor-not-allowed': !hasEvent }">
-
-          <li @click="exportJSON()" :class="{ 'pointer-events-none': !hasEvent }">
+          <li :class="{ 'pointer-events-none': !hasEvent }" @click="exportJSON()">
             <a
-              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+            >
               <UIcon name="i-heroicons-document-chart-bar" class="size-5" />
 
               <span
-                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible">
+                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              >
                 Export JSON
               </span>
             </a>
@@ -407,8 +414,10 @@ onBeforeRouteLeave((to) => {
               <div class="mb-5">
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">I would like to
                   create a mindmap on</label>
-                <input v-model="form.title"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input
+                  v-model="form.title"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
                 <div class="text-gray-500 text-xs mt-3">
                   Here are some keywords in form of examples-
                   <ul class="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
@@ -419,9 +428,11 @@ onBeforeRouteLeave((to) => {
               </div>
               <div class="flex items-start mb-5">
                 <div class="flex items-center h-5">
-                  <input id="remember" v-model="form.isDetailed" type="checkbox" value=""
+                  <input
+                    id="remember" v-model="form.isDetailed" type="checkbox" value=""
                     class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-                    required>
+                    required
+                  >
                 </div>
                 <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I have more
                   details</label>
@@ -429,17 +440,21 @@ onBeforeRouteLeave((to) => {
               <div v-if="form.isDetailed" class="mb-5">
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Explain your
                   idea in everyday terms</label>
-                <textarea v-model="form.details"
+                <textarea
+                  v-model="form.details"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required />
+                  required
+                />
                 <div class="text-gray-500 text-xs mt-3">
                   For example- I want to visualize the key concepts of blockchain. Start with a central node labeled
                   'Blockchain Technology' and branch out to 'Decentralization,' 'Immutable Ledger,' and 'Cryptographic
                   Security.
                 </div>
               </div>
-              <UButton :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center "
-                @click="updateMap()" />
+              <UButton
+                :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center "
+                @click="updateMap()"
+              />
             </form>
           </div>
           <!-- Json Tab -->
@@ -448,9 +463,11 @@ onBeforeRouteLeave((to) => {
               <div class="mb-5">
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter your JSON
                   Data</label>
-                <textarea v-model="form.json" size="xl"
+                <textarea
+                  v-model="form.json" size="xl"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required />
+                  required
+                />
                 <UButton label="Submit" class="mt-5 px-5 py-2.5 text-center" @click="createMapFromJSON()" />
               </div>
             </form>
@@ -468,8 +485,10 @@ onBeforeRouteLeave((to) => {
       </h1>
       <ul class="mt-4 space-y-2 px-2">
         <li v-for="(item, index) in versionsItems" :key="index">
-          <a href="#" class="block h-full rounded-lg border border-gray-700 p-4 hover:border-gray-300"
-            @click="loadJSON(item.response)">
+          <a
+            href="#" class="block h-full rounded-lg border border-gray-700 p-4 hover:border-gray-300"
+            @click="loadJSON(item.response)"
+          >
             <div class="grid grid-cols-2">
               <p class="font-medium text-gray-900">{{ dayjs(item.updated_at).format("dddd, MMMM D YYYY hh:mm:ss") }}</p>
               <p class="mt-1 text-xs font-medium text-gray-500">

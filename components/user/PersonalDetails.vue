@@ -134,22 +134,22 @@ async function onSubmit() {
         </div>
         <div class="flex gap-2">
           <UFormGroup label="Country" name="country" required>
-            <UInput v-model="formState.country" color="blue" placeholder="Country"/>
+            <UInput v-model="formState.country" color="blue" placeholder="Country" />
           </UFormGroup>
           <UFormGroup label="Zip" name="zip" required>
-            <UInput v-model="formState.zip" color="blue" placeholder="Zip"/>
+            <UInput v-model="formState.zip" color="blue" placeholder="Zip" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="City" name="city" required>
-            <UInput v-model="formState.city" color="blue" placeholder="City"/>
+            <UInput v-model="formState.city" color="blue" placeholder="City" />
           </UFormGroup>
           <UFormGroup label="Region" name="region" required>
-            <UInput v-model="formState.region" color="blue" placeholder="Region"/>
+            <UInput v-model="formState.region" color="blue" placeholder="Region" />
           </UFormGroup>
         </div>
         <UFormGroup label="Address" name="address" required>
-          <UInput v-model="formState.address" color="blue" placeholder="Address"/>
+          <UInput v-model="formState.address" color="blue" placeholder="Address" />
         </UFormGroup>
         <LibVueTelInput
           ref="phoneRef"
@@ -157,7 +157,7 @@ async function onSubmit() {
           class="my-4"
         />
         <UFormGroup label="Email Id" name="email" required>
-          <UInput v-model="formState.email" color="blue" :disabled="true"/>
+          <UInput v-model="formState.email" color="blue" :disabled="true" />
         </UFormGroup>
         <div class="flex gap-2 justify-center">
           <UButton type="submit" color="blue">
