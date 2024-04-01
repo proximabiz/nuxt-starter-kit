@@ -35,7 +35,7 @@ async function signInWithPassword() {
     })
 
     if (error)
-      return notify.error('Invalid Login Credentials')
+      throw new Error ('Invalid Login Credentials')
 
     if (data) {
       // Check if user has filled the personal details already

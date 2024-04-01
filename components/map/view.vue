@@ -192,7 +192,10 @@ async function updateMap() {
   catch (error) {
     notify.error(error)
   }
-  isLoading.value = false
+
+  finally {
+    isLoading.value = false
+  }
 }
 
 async function saveMap(isRedirect: boolean) {
@@ -431,7 +434,6 @@ onBeforeRouteLeave((to) => {
                   For example- I want to visualize the key concepts of blockchain. Start with a central node labeled 'Blockchain Technology' and branch out to 'Decentralization,' 'Immutable Ledger,' and 'Cryptographic Security.
                 </div>
               </div>
-              <!-- <UButton :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" /> -->
               <UButton :loading="isLoading" :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
             </form>
           </div>
