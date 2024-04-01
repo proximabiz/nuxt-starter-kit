@@ -31,7 +31,7 @@ const initialState: FormState = {
   region: '',
   address: '',
   phone: '',
-  email: '',
+  email: authUser.value?.email,
 }
 const state = reactive<FormState>({ ...initialState })
 const phoneRef = ref<typeof PhoneInputField>()
@@ -55,7 +55,7 @@ const nameValidation = z.string().min(1, 'Full name is required').refine((value)
 const schema = z.object({
   name: nameValidation,
   country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip is required'),
+  zip: z.string().min(1, 'Zip code is required'),
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
   address: z.string().min(1, 'Address is required'),
