@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 /** Constants */
 const supabaseClient = useSupabaseClient()
-const notify = useNotification()
+const { $error } = useNuxtApp()
 const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z
@@ -59,7 +59,7 @@ async function updatePassword() {
     confirmEmailDialog.value = true
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
   finally {
     loading.value = false
@@ -68,7 +68,7 @@ async function updatePassword() {
 
 async function onSubmit() {
   if (!isFormValid())
-    return notify.error('Please fill out all the fields correctly.')
+    return $error('Please fill out all the fields correctly.')
 
   await updatePassword()
 }

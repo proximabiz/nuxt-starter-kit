@@ -71,7 +71,6 @@ async function handlePostAuthentication() {
   </UModal>
   <NuxtLayout>
     <NuxtPage />
-    <UNotifications />
   </NuxtLayout>
 </template>
 

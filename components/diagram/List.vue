@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 
 const diagramStore = useDiagramStore()
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const diagramTypeStore = useDiagramTypeStore()
 const isLoading = ref(false)
 const isDelete = ref(false)
@@ -38,7 +38,7 @@ async function fetchDiagramTypes() {
     await diagramTypeStore.list()
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 
@@ -48,7 +48,7 @@ async function fetchDiagrams() {
     await fetchDiagramTypes()
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 
@@ -72,7 +72,7 @@ async function createDiagram() {
   }
   catch (error) {
     isLoading.value = false
-    notify.error(error)
+    $error(error)
   }
 }
 
@@ -87,7 +87,7 @@ async function deleteDiagram(diagramId: string) {
   }
   catch (error) {
     isDelete.value = true
-    notify.error(error)
+    $error(error)
   }
 }
 
@@ -97,11 +97,11 @@ async function confirmedDeleteDiagram() {
       diagramId: deleteDiagramId.value,
     })
     isDelete.value = false
-    notify.success('Diagram deleted successfully!')
+    $success('Diagram deleted successfully!')
     fetchDiagrams()
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 

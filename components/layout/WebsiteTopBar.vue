@@ -2,7 +2,7 @@
 import avatar from '@/assets/media/user.png'
 
 const route = useRoute()
-const notify = useNotification()
+const { $error } = useNuxtApp()
 const authStore = useAuthStore()
 const supabaseClient = useSupabaseClient()
 
@@ -48,7 +48,7 @@ async function singOut() {
     navigateTo('/')
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 function isActiveRoute(to: string) {

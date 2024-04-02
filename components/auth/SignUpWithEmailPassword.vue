@@ -12,7 +12,7 @@ const loading = ref<boolean>(false)
 
 /** Constants */
 const supabaseClient = useSupabaseClient()
-const notify = useNotification()
+const { $error } = useNuxtApp()
 const schema = z.object({
   email: z.string().email('Invalid email'),
   password:
@@ -63,7 +63,7 @@ async function signupWithEmailPassword() {
       confirmEmailDialog.value = true
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
   finally {
     loading.value = false
@@ -72,7 +72,7 @@ async function signupWithEmailPassword() {
 
 async function onSubmit() {
   if (!isFormValid())
-    return notify.error('Please fill out all the required fields.')
+    return $error('Please fill out all the required fields.')
 
   await signupWithEmailPassword()
 }
