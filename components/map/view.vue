@@ -194,7 +194,7 @@ async function updateMap() {
     notify.success('Mindmap generated!')
   }
   catch (error) {
-    notify.error(error)
+    notify.error(error?.message)
   }
 }
 
