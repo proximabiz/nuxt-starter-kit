@@ -40,8 +40,6 @@ async function signInWithPassword() {
     if (data) {
       // Check if user has filled the personal details already
       const response = await userStore.fetchAddress()
-      if (!response)
-        return
 
       if (!response?.name || !response?.organisation_name)
         return navigateTo('/user/personal-details')

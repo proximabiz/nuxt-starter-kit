@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { type IReCaptchaComposition, useReCaptcha } from 'vue-recaptcha-v3'
-import { VueTelInput } from 'vue-tel-input'
-import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+import type PhoneInputField from '@/components/lib/VueTelInput/Index.vue'
 
 const notify = useNotification()
 const contactStore = useContactStore()
+
+/** Refs */
 const selectedOption = ref('Demo')
 function updateSelection(value: string) {
   selectedOption.value = value
@@ -19,6 +20,8 @@ const state = reactive({
   request: '',
   token: '',
 })
+const phoneRef = ref<typeof PhoneInputField>()
+
 const schema = z.object({
   name: z.string()
     .min(1, 'First Name is required')
@@ -27,7 +30,9 @@ const schema = z.object({
     .min(1, 'Last Name is required')
     .regex(/^[A-Za-z]{3,}$/, 'Enter a valid name of 3 letters and without numbers and symbols'),
   email: z.string().min(1, 'Email id is required').email('Invalid email Id'),
-  phone: z.string().min(1, 'Phone no is required'),
+  phone: z.string().refine(() => {
+    return phoneRef.value?.handlePhoneValidation().status
+  }),
   message: z.string()
     .min(1, 'Message is required')
     .refine(value => value.trim().split(/\s+/).filter(Boolean).length >= 3, {
@@ -47,14 +52,16 @@ async function executeRecaptcha() {
 }
 async function onSubmit() {
   await executeRecaptcha()
+
   const payload = {
     name: `${state.name} ${state.lastname}`,
     email: state.email,
-    phoneNumber: state.phone,
+    phoneNumber: phoneRef.value?.phoneData.number,
     requestFor: selectedOption.value,
     message: state.message,
     token: state.token,
   }
+
   try {
     const response = await contactStore.create(payload)
     if (response?.status === 201) {
@@ -99,9 +106,7 @@ async function onSubmit() {
           <UFormGroup name="email" label="Email" required>
             <UInput v-model="state.email" placeholder="Your Email" />
           </UFormGroup>
-          <UFormGroup name="phone" label="Phone No" required>
-            <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" />
-          </UFormGroup>
+          <LibVueTelInput ref="phoneRef" :prop-phone="state.phone" class="my-4" />
         </div>
         <div class="flex flex-col gap-6">
           <div class="flex gap-8 mt-4">

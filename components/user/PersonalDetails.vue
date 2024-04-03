@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { VueTelInput } from 'vue-tel-input'
-import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+import type PhoneInputField from '@/components/lib/VueTelInput/Index.vue'
 
 const notify = useNotification()
 const userStore = useUserStore()
@@ -30,10 +29,12 @@ const initialState: FormState = {
   region: '',
   address: '',
   phone: '',
-  email: '',
+  email: authUser.value?.email,
 }
 
 const formState = reactive<FormState>({ ...initialState })
+const phoneRef = ref<typeof PhoneInputField>()
+
 // #validation
 
 const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
@@ -55,11 +56,13 @@ const nameValidation = z.string().min(1, 'Full name is required').refine((value)
 const schema = z.object({
   name: nameValidation,
   country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip is required'),
+  zip: z.string().min(1, 'Zip code is required'),
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
   address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
+  phone: z.string().refine(() => {
+    return phoneRef.value?.handlePhoneValidation().status
+  }),
 })
 
 async function getAddress() {
@@ -97,7 +100,7 @@ async function onSubmit() {
     city: formState.city,
     zipcode: formState.zip,
     address: formState.address,
-    phoneNumber: formState.phone,
+    phoneNumber: phoneRef.value?.phoneData.number,
   }
 
   try {
@@ -126,31 +129,33 @@ async function onSubmit() {
             <UInput v-model="formState.name" color="blue" placeholder="First Name Last Name" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
-            <UInput v-model="formState.orgname" color="blue" />
+            <UInput v-model="formState.orgname" color="blue" placeholder="Organisation Name" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="Country" name="country" required>
-            <UInput v-model="formState.country" color="blue" />
+            <UInput v-model="formState.country" color="blue" placeholder="Country" />
           </UFormGroup>
           <UFormGroup label="Zip" name="zip" required>
-            <UInput v-model="formState.zip" color="blue" />
+            <UInput v-model="formState.zip" color="blue" placeholder="Zip" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="City" name="city" required>
-            <UInput v-model="formState.city" color="blue" />
+            <UInput v-model="formState.city" color="blue" placeholder="City" />
           </UFormGroup>
           <UFormGroup label="Region" name="region" required>
-            <UInput v-model="formState.region" color="blue" />
+            <UInput v-model="formState.region" color="blue" placeholder="Region" />
           </UFormGroup>
         </div>
         <UFormGroup label="Address" name="address" required>
-          <UInput v-model="formState.address" color="blue" />
+          <UInput v-model="formState.address" color="blue" placeholder="Address" />
         </UFormGroup>
-        <UFormGroup label="Phone No" name="phone" required>
-          <VueTelInput v-model="formState.phone" placeholder="Your Phone no" mode="international" />
-        </UFormGroup>
+        <LibVueTelInput
+          ref="phoneRef"
+          :prop-phone="formState.phone"
+          class="my-4"
+        />
         <UFormGroup label="Email Id" name="email" required>
           <UInput v-model="formState.email" color="blue" :disabled="true" />
         </UFormGroup>

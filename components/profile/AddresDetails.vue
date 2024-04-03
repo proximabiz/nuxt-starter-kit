@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { VueTelInput } from 'vue-tel-input'
-import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+import type PhoneInputField from '@/components/lib/VueTelInput/Index.vue'
 
 const notify = useNotification()
 const userStore = useUserStore()
@@ -32,9 +31,11 @@ const initialState: FormState = {
   region: '',
   address: '',
   phone: '',
-  email: '',
+  email: authUser.value?.email,
 }
 const state = reactive<FormState>({ ...initialState })
+const phoneRef = ref<typeof PhoneInputField>()
+
 // #validation
 
 const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
@@ -54,11 +55,13 @@ const nameValidation = z.string().min(1, 'Full name is required').refine((value)
 const schema = z.object({
   name: nameValidation,
   country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip is required'),
+  zip: z.string().min(1, 'Zip code is required'),
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
   address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
+  phone: z.string().refine(() => {
+    return phoneRef.value?.handlePhoneValidation().status
+  }),
 })
 
 async function getAddress() {
@@ -66,8 +69,6 @@ async function getAddress() {
     const response = await userStore.fetchAddress()
     if (!response)
       return
-
-    isLoading.value = false
 
     state.name = response?.name
     state.orgname = response?.organisation_name
@@ -87,6 +88,9 @@ async function getAddress() {
   catch (error) {
     notify.error(error.message)
   }
+  finally {
+    isLoading.value = false
+  }
 }
 
 async function onSubmit() {
@@ -99,7 +103,7 @@ async function onSubmit() {
       city: state.city,
       zipcode: state.zip,
       address: state.address,
-      phoneNumber: state.phone,
+      phoneNumber: phoneRef.value?.phoneData.number,
     }
     try {
       await userStore.insertUpdateAddress(payload)
@@ -170,12 +174,12 @@ onMounted(() => {
         <UFormGroup label="Address" name="address" required>
           <UInput v-model="state.address" color="blue" :disabled="!isEditable && !isNewUser" />
         </UFormGroup>
-        <UFormGroup label="Phone No" name="phone" required>
-          <VueTelInput
-            v-model="state.phone" placeholder="Your Phone no" mode="international"
-            :disabled="!isEditable && !isNewUser"
-          />
-        </UFormGroup>
+        <LibVueTelInput
+          ref="phoneRef"
+          :prop-phone="state.phone"
+          :disabled="!isEditable && !isNewUser"
+          class="my-4"
+        />
         <UFormGroup label="Email Id" name="email" required>
           <UInput v-model="state.email" color="blue" :disabled="true" />
         </UFormGroup>
