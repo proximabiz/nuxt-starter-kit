@@ -18,6 +18,8 @@ const notify = useNotification()
 const globalStore = useGlobalStore()
 const { exportJSONFile } = useFileExporter()
 
+const isLoading = ref(false)
+
 const apiResponse = ref()
 const oldApiResponse = ref()
 const updateApiResponse = ref()
@@ -174,6 +176,7 @@ async function updateMap() {
     // const mindmapTypeDiagram = diagramTypeStore.getMindMapTypeDiagram
     // if (!mindmapTypeDiagram)
     //   return
+    isLoading.value = true
 
     updateApiResponse.value = await diagramStore.update({
       diagramId: props.diagramId,
@@ -182,7 +185,7 @@ async function updateMap() {
       details: form.value.details,
       // diagramTypeId: mindmapTypeDiagram.id,
     })
-
+    isLoading.value = false
     isOpen.value = false
     if (updateApiResponse.value.response.chartDetails[0].nodeData) {
       init1()
@@ -195,6 +198,10 @@ async function updateMap() {
   }
   catch (error) {
     notify.error(error)
+  }
+
+  finally {
+    isLoading.value = false
   }
 }
 
@@ -451,10 +458,7 @@ onBeforeRouteLeave((to) => {
                   Security.
                 </div>
               </div>
-              <UButton
-                :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center "
-                @click="updateMap()"
-              />
+              <UButton :loading="isLoading" :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
             </form>
           </div>
           <!-- Json Tab -->

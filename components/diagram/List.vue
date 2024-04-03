@@ -149,18 +149,25 @@ onMounted(() => {
                     {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
                   </td>
                   <td class="whitespace-nowrap px-6 py-4">
-                    <UButton
-                      icon="i-heroicons-pencil-square"
-                      size="sm"
-                      variant="ghost"
-                      @click="redirectToPath(item.id)"
-                    />
-                    <UButton
-                      icon="i-heroicons-trash"
-                      size="sm"
-                      variant="ghost"
-                      @click="deleteDiagram(item.id)"
-                    />
+                    <UTooltip text="Edit" :popper="{ arrow: true }">
+                      <UButton
+                        color="blue"
+                        icon="i-heroicons-pencil-square"
+                        size="sm"
+                        variant="ghost"
+                        @click="redirectToPath(item.id)"
+                      />
+                    </UTooltip>
+
+                    <UTooltip text="Delete" :popper="{ arrow: true }">
+                      <UButton
+                        color="blue"
+                        icon="i-heroicons-trash"
+                        size="sm"
+                        variant="ghost"
+                        @click="deleteDiagram(item.id)"
+                      />
+                    </UTooltip>
                   </td>
                 </tr>
               </tbody>
