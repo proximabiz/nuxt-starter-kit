@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import type PhoneInputField from '@/components/lib/VueTelInput/Index.vue'
 
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const userStore = useUserStore()
 const authStore = useAuthStore()
 const isDisabled = ref(false)
@@ -86,7 +86,7 @@ async function getAddress() {
     }
   }
   catch (error) {
-    notify.error(error.message)
+    $error(error.message)
   }
   finally {
     isLoading.value = false
@@ -108,12 +108,12 @@ async function onSubmit() {
     try {
       await userStore.insertUpdateAddress(payload)
 
-      notify.success('Address edited successfully')
+      $success('Address edited successfully')
 
       isEditable.value = false
     }
     catch (error) {
-      notify.error(error.statusMessage)
+      $error(error.statusMessage)
     }
   }
 }

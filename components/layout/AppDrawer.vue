@@ -1,6 +1,6 @@
 <script setup>
 const route = useRoute()
-const notify = useNotification()
+const { $error } = useNuxtApp()
 const supabaseClient = useSupabaseClient()
 const currentRoutePath = computed(() => route.fullPath)
 
@@ -18,7 +18,7 @@ async function singOut() {
     navigateTo('/')
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 </script>

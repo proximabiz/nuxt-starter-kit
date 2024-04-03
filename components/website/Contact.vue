@@ -3,7 +3,7 @@ import { type IReCaptchaComposition, useReCaptcha } from 'vue-recaptcha-v3'
 import { z } from 'zod'
 import type PhoneInputField from '@/components/lib/VueTelInput/Index.vue'
 
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const contactStore = useContactStore()
 
 /** Refs */
@@ -65,7 +65,7 @@ async function onSubmit() {
   try {
     const response = await contactStore.create(payload)
     if (response?.status === 201) {
-      notify.success(response.message)
+      $success(response.message)
       state.name = ''
       state.lastname = ''
       state.email = ''
@@ -76,7 +76,7 @@ async function onSubmit() {
     }
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 </script>

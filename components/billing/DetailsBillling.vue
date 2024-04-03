@@ -6,7 +6,7 @@ const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
 const duePrice = ref<string>(props.planDetails.currencySymbol + props.planDetails.calculatedPrice)
-const notify = useNotification()
+const { $error } = useNuxtApp()
 
 // const confirmation = reactive({
 //   isModalVisible: false,
@@ -35,7 +35,7 @@ function setActiveStep(index: number) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing address.'
 
-      notify.error('Please fill out all the fields in your billing address.')
+      $error('Please fill out all the fields in your billing address.')
       return
     }
     // else if(isAddressComplete){
@@ -47,7 +47,7 @@ function setActiveStep(index: number) {
     if (!isCardDetailsComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing card details.'
-      notify.error('Please fill out all the fields in your billing card address.')
+      $error('Please fill out all the fields in your billing card address.')
       return
     }
     // else if(isCardDetailsComplete){

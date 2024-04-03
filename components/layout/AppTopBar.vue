@@ -2,7 +2,7 @@
 import avatar from '@/assets/media/user.png'
 
 const authStore = useAuthStore()
-const notify = useNotification()
+const { $error } = useNuxtApp()
 const supabaseClient = useSupabaseClient()
 
 const items = [
@@ -28,7 +28,7 @@ async function singOut() {
     navigateTo('/')
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 </script>

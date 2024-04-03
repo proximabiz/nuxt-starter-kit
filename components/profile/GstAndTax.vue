@@ -6,7 +6,7 @@ interface State {
 //   status: number
 //   message: string
 // }
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const userStore = useUserStore()
 const state = reactive<State>({
   gstNumber: '',
@@ -26,7 +26,7 @@ async function getTaxGst() {
     }
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 
@@ -44,11 +44,11 @@ async function onSubmit(): Promise<void> {
     if (response?.status === 200) {
       isDisabled.value = true
       isModalVisible.value = false
-      notify.success(response.message)
+      $success(response.message)
     }
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 async function handleDeleteConfirm(): Promise<void> {
@@ -59,11 +59,11 @@ async function handleDeleteConfirm(): Promise<void> {
       state.gstNumber = ''
       isDisabled.value = false
       isModalVisible.value = false
-      notify.success(response.message)
+      $success(response.message)
     }
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 function cancelGst() {

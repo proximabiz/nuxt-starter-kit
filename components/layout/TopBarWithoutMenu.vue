@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const notify = useNotification()
+const { $error } = useNuxtApp()
 const authStore = useAuthStore()
 
 const items = [
@@ -34,7 +34,7 @@ async function singOut() {
       navigateTo('/')
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 </script>

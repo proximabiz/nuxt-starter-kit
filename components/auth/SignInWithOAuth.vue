@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Constants */
 const supabaseClient = useSupabaseClient()
-const notify = useNotification()
+const { $error } = useNuxtApp()
 
 /** Methods */
 async function signInWithOAuth() {
@@ -19,7 +19,7 @@ async function signInWithOAuth() {
       throw error
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 </script>

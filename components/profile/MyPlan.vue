@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const subscriptionStore = useSubscriptionStore()
 const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
@@ -16,7 +16,7 @@ async function getActivePlan() {
     planData.value = response
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 async function cancelPlan() {
@@ -29,12 +29,12 @@ async function cancelPlan() {
     const res = await subscriptionStore.cancelSubscription(payload)
     if (res?.status === 204) {
       noplanModal.value = true
-      notify.success(res.message)
+      $success(res.message)
       setTimeout(() => navigateTo('/website/pricing'), 1000)
     }
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 onMounted(async () => {

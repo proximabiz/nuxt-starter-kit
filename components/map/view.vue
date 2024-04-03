@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import MindElixir from 'mind-elixir'
 import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
 import dayjs from 'dayjs'
-import type { MindElixirData, Options } from 'mind-elixir'
-import MindElixir from 'mind-elixir'
 import { cloneDeep } from 'lodash'
+import type { MindElixirData, Options } from 'mind-elixir'
 import { useFileExporter } from '@/composables/ExportJsonFile'
 
 const props = defineProps<Props>()
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const diagramStore = useDiagramStore()
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const globalStore = useGlobalStore()
 const { exportJSONFile } = useFileExporter()
 
@@ -56,7 +56,7 @@ async function fetchDiagramVersions() {
     })
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 // Fetches the diagram/map data from the store and initializes the form and mind map
@@ -81,7 +81,7 @@ async function fetchMap() {
     }
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
     hasEvent.value = false
   }
 }
@@ -194,10 +194,10 @@ async function updateMap() {
       hasEvent.value = true
     }
 
-    notify.success('Mindmap generated!')
+    $success('Mindmap generated!')
   }
   catch (error) {
-    notify.error(error?.message)
+    $error(error?.message)
   }
 
   finally {
@@ -212,14 +212,14 @@ async function saveMap(isRedirect: boolean) {
       existingOpenAIResponse: toRaw(mind.value.getDataString()),
       isDiagramChanged: true,
     })
-    notify.success('Mindmap saved!')
+    $success('Mindmap saved!')
     if (isRedirect) {
       isSavePopupOpen.value = false
       isSave.value = true
     }
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
     if (isRedirect) {
       isSavePopupOpen.value = false
       isSave.value = true
@@ -277,7 +277,7 @@ function loadJSON(jsonData: JSON) {
   }
   // form.value.title = updateApiResponse.value[0].nodeData.topic as string
   // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
-  notify.success('Selected mindmap loaded')
+  $success('Selected mindmap loaded')
 }
 
 function createMapFromJSON() {
@@ -290,7 +290,7 @@ function createMapFromJSON() {
     form.value.title = updateApiResponse.value.topic
 
     isOpen.value = false
-    notify.success('Mindmap created from JSON')
+    $success('Mindmap created from JSON')
   }
   saveMap(false)
 }
@@ -308,7 +308,7 @@ function closePopup() {
   isSavePopupOpen.value = true
   isSave.value = true
   navigateTo(toRoute.value)
-  notify.success('Mindmap changes discarded')
+  $success('Mindmap changes discarded')
 }
 // Lifecycle hook to handle before-route-leave event, prompting for save if changes were made
 onBeforeRouteLeave((to) => {

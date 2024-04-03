@@ -3,8 +3,9 @@ import { z } from 'zod'
 
 /** Constants */
 const supabaseClient = useSupabaseClient()
-const notify = useNotification()
 const userStore = useUserStore()
+const { $success, $error } = useNuxtApp()
+
 const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(1, 'Required'),
@@ -38,6 +39,8 @@ async function signInWithPassword() {
       throw new Error ('Invalid Login Credentials')
 
     if (data) {
+      $success('Successfully Login!')
+
       // Check if user has filled the personal details already
       const response = await userStore.fetchAddress()
 
@@ -47,7 +50,7 @@ async function signInWithPassword() {
     }
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
   finally {
     loading.value = false
@@ -56,7 +59,7 @@ async function signInWithPassword() {
 
 async function onSubmit() {
   if (!isFormValid())
-    return notify.error('Please fill out all the required fields.')
+    return $error('Please fill out all the required fields.')
 
   await signInWithPassword()
 }
