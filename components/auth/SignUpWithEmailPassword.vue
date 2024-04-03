@@ -55,7 +55,7 @@ async function signupWithEmailPassword() {
     if (!data || !data.user?.user_metadata || !Object.keys(data.user?.user_metadata).length) {
       throw createError({
         statusCode: 400,
-        message: 'User elready exists!',
+        message: 'User already exists!',
       })
     }
 
