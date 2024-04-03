@@ -57,7 +57,7 @@ function isActiveRoute(to: string) {
 </script>
 
 <template>
-  <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full">
+  <nav class="px-4 py-4 flex justify-between items-center bg-white fixed top-0 w-full z-50">
     <a class="text-3xl font-bold leading-none" href="#">
       <img src="/assets/media/logo.png" class="h-10" alt="Logo" @click="navigateTo('/website')">
     </a>
@@ -91,7 +91,7 @@ function isActiveRoute(to: string) {
       v-if="authUser" :items="items"
       :ui="{ item: { disabled: 'cursor-text select-text' } }"
       :popper="{ placement: 'bottom-start' }"
-      class="z-10"
+      class="z-50"
     >
       <UAvatar :src="avatar" />
       <template #account>

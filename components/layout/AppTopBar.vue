@@ -34,14 +34,14 @@ async function singOut() {
 </script>
 
 <template>
-  <nav class="border-b px-4 py-2 flex justify-between items-center bg-white fixed top-0 w-full">
+  <nav class="border-b px-4 py-2 flex justify-between items-center bg-white fixed top-0 w-full z-30">
     <div class="ms-20">
       <LayoutAppHeading />
     </div>
     <div id="navbar-default" class="hidden w-full md:block md:w-auto">
       <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
         <li>
-          <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }">
+          <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }" class="z-30">
             <UAvatar :src="avatar" />
             <template #account>
               <div class="text-left">
