@@ -172,7 +172,7 @@ const features = [
     </p>
     <div>
       Unlock the power of visualization with our AI-driven platform, transforming text seamlessly into interactive
-      flowcharts and mind maps. Many professionals,
+      flowcharts and mind maps.
     </div>
     <p class="text-2xl font-semibold">
       Mindmap

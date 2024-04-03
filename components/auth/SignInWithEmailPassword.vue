@@ -36,7 +36,7 @@ async function signInWithPassword() {
     })
 
     if (error)
-      throw error
+      throw new Error ('Invalid Login Credentials')
 
     if (data) {
       $success('Successfully Login!')

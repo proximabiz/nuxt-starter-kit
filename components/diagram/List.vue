@@ -118,7 +118,7 @@ onMounted(() => {
     <div v-else class="flex justify-end my-4">
       <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
     </div>
-    <DiagramWelComeMessage v-if="diagramsList?.length === 0" />
+    <DiagramWelcomeMessage v-if="diagramsList?.length === 0" />
     <div v-else class="overflow-x-auto">
       <div class="sm:-mx-6 lg:-mx-8">
         <div class="inline-block w-full py-2 sm:px-6 lg:px-8">
@@ -149,18 +149,25 @@ onMounted(() => {
                     {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
                   </td>
                   <td class="whitespace-nowrap px-6 py-4">
-                    <UButton
-                      icon="i-heroicons-pencil-square"
-                      size="sm"
-                      variant="ghost"
-                      @click="redirectToPath(item.id)"
-                    />
-                    <UButton
-                      icon="i-heroicons-trash"
-                      size="sm"
-                      variant="ghost"
-                      @click="deleteDiagram(item.id)"
-                    />
+                    <UTooltip text="Edit" :popper="{ arrow: true }">
+                      <UButton
+                        color="blue"
+                        icon="i-heroicons-pencil-square"
+                        size="sm"
+                        variant="ghost"
+                        @click="redirectToPath(item.id)"
+                      />
+                    </UTooltip>
+
+                    <UTooltip text="Delete" :popper="{ arrow: true }">
+                      <UButton
+                        color="blue"
+                        icon="i-heroicons-trash"
+                        size="sm"
+                        variant="ghost"
+                        @click="deleteDiagram(item.id)"
+                      />
+                    </UTooltip>
                   </td>
                 </tr>
               </tbody>

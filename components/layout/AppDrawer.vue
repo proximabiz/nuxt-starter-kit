@@ -25,7 +25,7 @@ async function singOut() {
 
 <template>
   <div>
-    <div class="flex h-screen w-16 fixed left-0 flex-col justify-between border-e bg-white z-20">
+    <div class="flex h-screen w-16 fixed left-0 flex-col justify-between border-e bg-white z-50">
       <div>
         <div class="inline-flex h-16 w-16 items-center justify-center">
           <NuxtLink to="/website">

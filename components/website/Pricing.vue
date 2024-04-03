@@ -49,7 +49,7 @@ const regions: regionTypes[] = [
 ]
 
 const monthlyPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value && sub_status?.value.planStatus === '') || sub_status?.value.planName === 'Free', comingSoon: false },
+  { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value && sub_status?.value.planStatus === 'PLAN_EXPIRED') || sub_status?.value.planName === 'Free', comingSoon: false },
   { plan: 'Basic', price: 0, month: 1, disabled: sub_status?.value.planName === 'Basic', comingSoon: true },
   { plan: 'Premium', price: 0, month: 1, disabled: sub_status?.value.planName === 'Premium', comingSoon: true },
   { plan: 'Enterprise', price: 0, month: 1, disabled: sub_status?.value.planName === 'Enterprise', comingSoon: true },

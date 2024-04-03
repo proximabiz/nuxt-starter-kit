@@ -12,7 +12,7 @@ import logo from '../../assets/media/logo.png'
         <h5 id="typed-text" class="mt-5 text-xl font-bold tracking-tight text-white underline">Let AI Shape Your Ideas With</h5>
       </a>
       <p class="text-4xl font-bold mt-5 cursor-pointer" @click="navigateTo('/')">
-        AI FLOWMAPPER
+        AI FlowMapper
       </p>
     </div>
   </div>

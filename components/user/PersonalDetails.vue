@@ -29,7 +29,7 @@ const initialState: FormState = {
   region: '',
   address: '',
   phone: '',
-  email: '',
+  email: authUser.value?.email,
 }
 
 const formState = reactive<FormState>({ ...initialState })
@@ -56,7 +56,7 @@ const nameValidation = z.string().min(1, 'Full name is required').refine((value)
 const schema = z.object({
   name: nameValidation,
   country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip is required'),
+  zip: z.string().min(1, 'Zip code is required'),
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
   address: z.string().min(1, 'Address is required'),
@@ -128,27 +128,27 @@ async function onSubmit() {
             <UInput v-model="formState.name" color="blue" placeholder="First Name Last Name" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
-            <UInput v-model="formState.orgname" color="blue" />
+            <UInput v-model="formState.orgname" color="blue" placeholder="Organisation Name" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="Country" name="country" required>
-            <UInput v-model="formState.country" color="blue" />
+            <UInput v-model="formState.country" color="blue" placeholder="Country" />
           </UFormGroup>
           <UFormGroup label="Zip" name="zip" required>
-            <UInput v-model="formState.zip" color="blue" />
+            <UInput v-model="formState.zip" color="blue" placeholder="Zip" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="City" name="city" required>
-            <UInput v-model="formState.city" color="blue" />
+            <UInput v-model="formState.city" color="blue" placeholder="City" />
           </UFormGroup>
           <UFormGroup label="Region" name="region" required>
-            <UInput v-model="formState.region" color="blue" />
+            <UInput v-model="formState.region" color="blue" placeholder="Region" />
           </UFormGroup>
         </div>
         <UFormGroup label="Address" name="address" required>
-          <UInput v-model="formState.address" color="blue" />
+          <UInput v-model="formState.address" color="blue" placeholder="Address" />
         </UFormGroup>
         <LibVueTelInput
           ref="phoneRef"

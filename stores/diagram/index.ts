@@ -72,7 +72,7 @@ export const useDiagramStore = defineStore('diagramStore', {
       })
 
       if (supabaseError.value)
-        throw supabaseError.value
+        throw supabaseError.value?.data
 
       /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
