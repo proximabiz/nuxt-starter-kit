@@ -1,6 +1,16 @@
 export default defineNuxtRouteMiddleware((to) => {
   const userStore = useUserStore()
+  const subscriptionStore = useSubscriptionStore()
 
+ if(!to.fullPath.includes('/website') ){
+  subscriptionStore.fetchActivePlan().then((response)=>{
+    // console.log("plan",response.subscription_status);
+     if(response?.subscription_status === 'PLAN_EXPIRED')
+    console.log("plan",response.subscription_status);
+
+     return navigateTo('/website/pricing')
+   }
+  )}
   // Redirect '/' to '/website' always
   if (to.fullPath === '/')
     return navigateTo('/website')
@@ -21,4 +31,12 @@ export default defineNuxtRouteMiddleware((to) => {
         return navigateTo('/user/personal-details')
     })
   }
+  // if(to.fullPath ==='/website/pricing'){
+    // subscriptionStore.fetchActivePlan().then((response)=>{
+    //   console.log("plan",response.subscription_status);
+    //    if(response?.subscription_status === 'PLAN_EXPIRED')
+    //    return navigateTo('/website/pricing')
+    //  }
+    // )
+  // }
 })
