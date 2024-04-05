@@ -281,18 +281,23 @@ function loadJSON(jsonData: JSON) {
 }
 
 function createMapFromJSON() {
-  const jsonString = `${JSON.parse(form.value.json)}`
-  const parsedObject = JSON.parse(jsonString)
-  updateApiResponse.value = parsedObject
+  try {
+    const jsonString = `${JSON.parse(form.value.json)}`
+    const parsedObject = JSON.parse(jsonString)
+    updateApiResponse.value = parsedObject
 
-  if (updateApiResponse.value.nodeData) {
-    init2()
-    form.value.title = updateApiResponse.value.topic
+    if (updateApiResponse.value.nodeData) {
+      init2()
+      form.value.title = updateApiResponse.value.topic
 
-    isOpen.value = false
-    $success('Mindmap created from JSON')
+      isOpen.value = false
+      $success('Mindmap created from JSON')
+    }
+    saveMap(false)
   }
-  saveMap(false)
+  catch (error) {
+    $error(error)
+  }
 }
 
 onMounted(() => {
