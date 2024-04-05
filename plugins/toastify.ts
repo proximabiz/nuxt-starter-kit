@@ -1,8 +1,8 @@
 import {
+  toast,
   type Id,
   type ToastOptions,
   type ToastType,
-  toast,
 } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
 
@@ -31,7 +31,6 @@ export default defineNuxtPlugin(() => {
   const error = (message: string) => {
     toast.error(message, {
       ...defaultOptions,
-      autoClose: false,
     })
   }
 
