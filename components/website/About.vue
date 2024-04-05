@@ -201,17 +201,16 @@ const features = [
   </section>
   <section>
     <div class="flex flex-wrap justify-center -mx-8">
-  <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col px-8 mb-16" style="flex: 0 1 calc(33.333% - 16px);">
-    <div class="rounded-xl p-6" :class="feature.bgColor">
-      <img :src="feature.iconSrc" alt="" width="32px" height="32px">
+      <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col px-8 mb-16" style="flex: 0 1 calc(33.333% - 16px);">
+        <div class="rounded-xl p-6" :class="feature.bgColor">
+          <img :src="feature.iconSrc" alt="" width="32px" height="32px">
+        </div>
+        <h2 class="text-2xl font-semibold mt-8">
+          {{ feature.title }}
+        </h2>
+        <p>{{ feature.description }}</p>
+      </div>
     </div>
-    <h2 class="text-2xl font-semibold mt-8">
-      {{ feature.title }}
-    </h2>
-    <p>{{ feature.description }}</p>
-  </div>
-</div>
-
   </section>
   <section class="flex flex-col gap-2 items-center mt-20">
     <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
