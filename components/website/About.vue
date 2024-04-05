@@ -22,13 +22,13 @@ const features = [
   },
   {
     title: 'Graphical Representation',
-    description: 'Visual representation of processes and workflows using graphical elements such as nodes, branches, and connections, making it easier to comprehend complex structures.',
+    description: 'Visual representation of processes and workflows using graphical elements such as nodes, branches, and connections.',
     iconSrc: illustration,
     bgColor: 'bg-yellow-200',
   },
   {
     title: 'Drag-and-Drop Functionality',
-    description: 'Ability to add, rearrange, and connect elements in the flow map using a simple drag-and-drop interface, promoting ease of use.',
+    description: 'Ability to add, rearrange, and connect elements in the flow map using a simple drag-and-drop interface for ease of use.',
     iconSrc: drag,
     bgColor: 'bg-blue-200',
   },
@@ -40,7 +40,7 @@ const features = [
   },
   {
     title: 'Data Input and Output',
-    description: 'Ability to input data in natural language into the flow mapper and let AI visualize the output, allowing users to see the impact of changes or analyze the results of a particular workflow.',
+    description: 'Ability to input data in natural language and let AI visualize the output. Helps user to seamlessly analyze the change in impact on the workflow.',
     iconSrc: input,
     bgColor: 'bg-green-200',
   },
@@ -200,17 +200,18 @@ const features = [
     </p>
   </section>
   <section>
-    <div class="grid grid-cols-3 gap-16">
-      <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col">
-        <div class="rounded-xl p-6" :class="feature.bgColor">
-          <img :src="feature.iconSrc" alt="" width="32px" height="32px">
-        </div>
-        <h2 class="text-2xl font-semibold mt-8">
-          {{ feature.title }}
-        </h2>
-        <p>{{ feature.description }}</p>
-      </div>
+    <div class="flex flex-wrap justify-center -mx-8">
+  <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col px-8 mb-16" style="flex: 0 1 calc(33.333% - 16px);">
+    <div class="rounded-xl p-6" :class="feature.bgColor">
+      <img :src="feature.iconSrc" alt="" width="32px" height="32px">
     </div>
+    <h2 class="text-2xl font-semibold mt-8">
+      {{ feature.title }}
+    </h2>
+    <p>{{ feature.description }}</p>
+  </div>
+</div>
+
   </section>
   <section class="flex flex-col gap-2 items-center mt-20">
     <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
