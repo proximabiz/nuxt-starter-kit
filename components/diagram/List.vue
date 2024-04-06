@@ -112,70 +112,75 @@ onMounted(() => {
 
 <template>
   <div class="pl-10">
-    <div v-if="diagramsList?.length === 0" class="flex justify-center my-4">
-      <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />
-    </div>
-    <div v-else class="flex justify-end my-4">
-      <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
-    </div>
-    <DiagramWelcomeMessage v-if="diagramsList?.length === 0" />
-    <div v-else class="overflow-x-auto">
-      <div class="sm:-mx-6 lg:-mx-8">
-        <div class="inline-block w-full py-2 sm:px-6 lg:px-8">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm font-light">
-              <thead class="border-b font-medium dark:border-neutral-500">
-                <tr>
-                  <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
-                    {{ header.title }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in diagramsList" :key="index" class="border-b dark:border-neutral-500">
-                  <!-- <td class="whitespace-nowrap px-6 py-4">
+    <section v-if="diagramsList?.length === 0">
+      <div class="flex justify-center my-4">
+        <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />
+      </div>
+      <DiagramWelcomeMessage v-if="diagramsList?.length === 0" />
+    </section>
+    <section v-else>
+      <div class="flex justify-end my-4">
+        <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
+      </div>
+
+      <div class="overflow-x-auto">
+        <div class="sm:-mx-6 lg:-mx-8">
+          <div class="inline-block w-full py-2 sm:px-6 lg:px-8">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm font-light">
+                <thead class="border-b font-medium dark:border-neutral-500">
+                  <tr>
+                    <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
+                      {{ header.title }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in diagramsList" :key="index" class="border-b dark:border-neutral-500">
+                    <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.id }}
                   </td> -->
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.title }}
-                  </td>
-                  <!-- <td class="whitespace-nowrap px-6 py-4">
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ item.title }}
+                    </td>
+                    <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.keywords ? item.keywords : 'No keywords specified' }}
                   </td> -->
-                  <!-- <td class="whitespace-nowrap px-6 py-4">
+                    <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ item.created_at }}
                   </td> -->
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    <UTooltip text="Edit" :popper="{ arrow: true }">
-                      <UButton
-                        color="blue"
-                        icon="i-heroicons-pencil-square"
-                        size="sm"
-                        variant="ghost"
-                        @click="redirectToPath(item.id)"
-                      />
-                    </UTooltip>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      <UTooltip text="Edit" :popper="{ arrow: true }">
+                        <UButton
+                          color="blue"
+                          icon="i-heroicons-pencil-square"
+                          size="sm"
+                          variant="ghost"
+                          @click="redirectToPath(item.id)"
+                        />
+                      </UTooltip>
 
-                    <UTooltip text="Delete" :popper="{ arrow: true }">
-                      <UButton
-                        color="blue"
-                        icon="i-heroicons-trash"
-                        size="sm"
-                        variant="ghost"
-                        @click="deleteDiagram(item.id)"
-                      />
-                    </UTooltip>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                      <UTooltip text="Delete" :popper="{ arrow: true }">
+                        <UButton
+                          color="blue"
+                          icon="i-heroicons-trash"
+                          size="sm"
+                          variant="ghost"
+                          @click="deleteDiagram(item.id)"
+                        />
+                      </UTooltip>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />
