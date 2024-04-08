@@ -11,7 +11,6 @@ const sendgridEmailTempletId = useRuntimeConfig().private.SENDGRID_EMAIL_TEMPLAT
 const sendgridEmailFromId = useRuntimeConfig().private.SENDGRID_FROM_EMAILID
 const secretkey = useRuntimeConfig().private.GOOGLE_CAPTCHA_SECRET_KEY
 export default defineEventHandler(async (event: H3Event<EventHandlerRequest>) => {
-  console.log('FROM_ID', sendgridEmailFromId)
   const params = await readBody(event)
   const validate = await ContactUsValidation.validateAsync(params)
   if (!validate)
@@ -38,11 +37,9 @@ export default defineEventHandler(async (event: H3Event<EventHandlerRequest>) =>
         message: params.message,
       },
     }
-    console.log('MSG', msg)
     try {
 
       const response = await sgMail.send(msg)
-      console.log('RESPNSe', response)
       if (response)
         return { message: 'We have recieved your request will get back to you soon!', status: 201 }
     }
