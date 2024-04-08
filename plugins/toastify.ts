@@ -31,7 +31,6 @@ export default defineNuxtPlugin(() => {
   const error = (message: string) => {
     toast.error(message, {
       ...defaultOptions,
-      autoClose: false,
     })
   }
 
