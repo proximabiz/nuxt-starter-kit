@@ -46,8 +46,7 @@ async function executeRecaptcha() {
     state.token = await recaptchaInstance.executeRecaptcha('contact_form_submit')
   }
   catch (error) {
-    console.error('Error executing reCAPTCHA:', error)
-    return null
+    $error(`Error executing reCAPTCHA: ${error}`)
   }
 }
 async function onSubmit() {
