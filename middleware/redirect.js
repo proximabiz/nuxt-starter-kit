@@ -1,6 +1,14 @@
 export default defineNuxtRouteMiddleware((to) => {
   const userStore = useUserStore()
-  
+  const subscriptionStore = useSubscriptionStore()
+
+  if (!to.fullPath.includes('/website')) {
+    subscriptionStore.fetchActivePlan().then((response) => {
+      if (response?.subscription_status === 'PLAN_EXPIRED')
+        return navigateTo('/website/pricing')
+    },
+    )
+  }
   // Redirect '/' to '/website' always
   if (to.fullPath === '/')
     return navigateTo('/website')

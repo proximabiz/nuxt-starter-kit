@@ -152,7 +152,7 @@ onMounted(() => {
             <UInput v-model="state.name" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
-            <UInput v-model="state.orgname" color="blue" :disabled="!isNewUser" />
+            <UInput v-model="state.orgname" color="blue" :disabled="!isEditable && !isNewUser " />
           </UFormGroup>
         </div>
         <div class="flex gap-2">

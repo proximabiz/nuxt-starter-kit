@@ -4,6 +4,7 @@ import avatar from '@/assets/media/user.png'
 const authStore = useAuthStore()
 const { $error } = useNuxtApp()
 const supabaseClient = useSupabaseClient()
+const subscriptionStore = useSubscriptionStore()
 
 const items = [
   [{
@@ -25,6 +26,7 @@ async function singOut() {
   try {
     // Do something with data
     await supabaseClient.auth.signOut()
+    await subscriptionStore.clearSubscription()
     navigateTo('/')
   }
   catch (error) {
