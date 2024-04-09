@@ -47,7 +47,6 @@ const regions: regionTypes[] = [
     conversionRate: 1, // Base rate
   },
 ]
-console.log("value", sub_status?.value.planName === 'Free')
 const monthlyPrices: PricePlan[] = [
   { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value && sub_status?.value.planStatus === 'PLAN_EXPIRED') || sub_status?.value.planName === 'Free', comingSoon: false },
   { plan: 'Basic', price: 0, month: 1, disabled: sub_status?.value.planName === 'Basic', comingSoon: true },
