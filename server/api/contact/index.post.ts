@@ -38,6 +38,7 @@ export default defineEventHandler(async (event: H3Event<EventHandlerRequest>) =>
       },
     }
     try {
+
       const response = await sgMail.send(msg)
       if (response)
         return { message: 'We have recieved your request will get back to you soon!', status: 201 }
