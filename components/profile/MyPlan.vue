@@ -160,7 +160,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
         <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
           Current Plan
         </UButton>
-        <UButton type="submit" class="w-fit mt-2" color="blue" :disabled="planData?.name === 'Free'" @click="() => { isModalVisible = true }">
+        <UButton v-if="planData?.name !== 'Free'" type="submit" class="w-fit mt-2" color="blue" :disabled="planData?.name === 'Free'" @click="() => { isModalVisible = true }">
           Cancel Subscription
         </UButton>
         <p v-if="planData?.plan_end_date && planData?.name !== 'Free'" class="text-red-500 text-xs mt-2">

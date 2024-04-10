@@ -5,6 +5,7 @@ const route = useRoute()
 const { $error } = useNuxtApp()
 const authStore = useAuthStore()
 const supabaseClient = useSupabaseClient()
+const subscriptionStore = useSubscriptionStore()
 
 const authUser = computed(() => authStore.getAuthUser.value)
 // Define the structure of your link objects for better TypeScript support
@@ -44,6 +45,7 @@ async function singOut() {
   try {
     // Do something with data
     await supabaseClient.auth.signOut()
+    await subscriptionStore.clearSubscription()
 
     navigateTo('/')
   }
