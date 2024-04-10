@@ -30,9 +30,6 @@ const schema = z.object({
     .min(1, 'Last Name is required')
     .regex(/^[A-Za-z]{3,}$/, 'Enter a valid name of 3 letters and without numbers and symbols'),
   email: z.string().min(1, 'Email id is required').email('Invalid email Id'),
-  phone: z.string().refine(() => {
-    return phoneRef.value?.handlePhoneValidation().status
-  }),
   message: z.string()
     .min(1, 'Message is required')
     .refine(value => value.trim().split(/\s+/).filter(Boolean).length >= 3, {
@@ -50,6 +47,9 @@ async function executeRecaptcha() {
   }
 }
 async function onSubmit() {
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return
+
   await executeRecaptcha()
 
   const payload = {
@@ -77,6 +77,11 @@ async function onSubmit() {
   catch (error) {
     $error(error.statusMessage)
   }
+}
+
+function handlePhoneValidation() {
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return false
 }
 </script>
 
@@ -127,7 +132,7 @@ async function onSubmit() {
         </div>
       </div>
       <div class="flex flex-col justify-center items-center mt-8">
-        <UButton type="submit" class="w-fit p-3" color="blue">
+        <UButton type="submit" class="w-fit p-3" color="blue" @click="handlePhoneValidation()">
           Submit
         </UButton>
         <NuxtLink to="/privacy" class="font-medium mt-4 text-custom1-600 underline hover:text-blue-800">

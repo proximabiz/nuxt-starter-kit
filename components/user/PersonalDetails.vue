@@ -60,9 +60,6 @@ const schema = z.object({
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
   address: z.string().min(1, 'Address is required'),
-  phone: z.string().refine(() => {
-    return phoneRef.value?.handlePhoneValidation().status
-  }),
 })
 
 async function getAddress() {
@@ -91,6 +88,9 @@ onMounted(async () => {
 })
 
 async function onSubmit() {
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return
+
   const payload = {
     name: formState.name,
     orgname: formState.orgname,
@@ -113,6 +113,11 @@ async function onSubmit() {
     $error(error.statusMessage)
   }
 }
+
+function handlePhoneValidation() {
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return false
+}
 </script>
 
 <template>
@@ -123,6 +128,7 @@ async function onSubmit() {
 
     <UCard class="mb-8">
       <UForm :state="formState" :schema="schema" class="space-y-4 " @submit="onSubmit">
+        Hello
         <div class="flex gap-2">
           <UFormGroup label="Full Name" name="name" class="w-1/2" required>
             <UInput v-model="formState.name" color="blue" placeholder="First Name Last Name" />
@@ -159,7 +165,7 @@ async function onSubmit() {
           <UInput v-model="formState.email" color="blue" :disabled="true" />
         </UFormGroup>
         <div class="flex gap-2 justify-center">
-          <UButton type="submit" color="blue">
+          <UButton type="submit" color="blue" @click="handlePhoneValidation()">
             Save
           </UButton>
         </div>
