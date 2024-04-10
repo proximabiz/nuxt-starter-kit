@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import MindElixir from 'mind-elixir'
 import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
 import dayjs from 'dayjs'
 import { cloneDeep } from 'lodash'
 import type { MindElixirData, Options } from 'mind-elixir'
+import MindElixir from 'mind-elixir'
 import { useFileExporter } from '@/composables/ExportJsonFile'
 
 const props = defineProps<Props>()
@@ -282,6 +282,13 @@ function loadJSON(jsonData: JSON) {
 }
 
 function createMapFromJSON() {
+  try {
+    JSON.parse(form.value.json)
+  }
+  catch (error) {
+    return $error('Invalid JSON')
+  }
+
   try {
     const jsonString = `${JSON.parse(form.value.json)}`
     const parsedObject = JSON.parse(jsonString)
