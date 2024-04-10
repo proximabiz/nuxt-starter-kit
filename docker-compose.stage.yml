@@ -17,6 +17,7 @@ services:
       - NUXT_PUBLIC_UMAMI_HOST
       - NUXT_PUBLIC_UMAMI_ID
       - APP_URL
+      - SUPABASE_SERVICE_KEY
     labels:
       - service.stack=nuxt
       - service.name=aiflowmapper

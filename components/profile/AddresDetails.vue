@@ -59,9 +59,6 @@ const schema = z.object({
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
   address: z.string().min(1, 'Address is required'),
-  phone: z.string().refine(() => {
-    return phoneRef.value?.handlePhoneValidation().status
-  }),
 })
 
 async function getAddress() {
@@ -94,6 +91,9 @@ async function getAddress() {
 }
 
 async function onSubmit() {
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return
+
   if (!isNewUser.value) {
     const payload = {
       name: state.name,
@@ -125,6 +125,11 @@ function toggleEdit() {
 
 async function onCancel() {
   await getAddress()
+}
+
+function handlePhoneValidation() {
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return false
 }
 
 onMounted(() => {
@@ -193,7 +198,7 @@ onMounted(() => {
           <UButton v-else-if="!isNewUser" type="submit" color="blue">
             Update
           </UButton>
-          <UButton v-else type="submit" color="blue">
+          <UButton v-else type="submit" color="blue" @click="handlePhoneValidation()">
             Save
           </UButton>
         </div>
