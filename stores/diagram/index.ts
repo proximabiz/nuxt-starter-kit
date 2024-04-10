@@ -1,4 +1,4 @@
-import type { CreateDiagramResponseType, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
+import type { CreateDiagramResponseType, Diagram, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
 import type { Database } from '~/types/supabase'
 
 function initialState() {
@@ -23,7 +23,7 @@ export const useDiagramStore = defineStore('diagramStore', {
       if (supabaseError)
         throw supabaseError
 
-      this.diagramsList = supabaseResponse
+      this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')
     },
 
     async get(payload: getAPIPayload) {
