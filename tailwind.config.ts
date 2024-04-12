@@ -14,6 +14,12 @@ export default <Partial<Config>> {
     extend: {
       colors: customColors,
     },
+    listStyleType: {
+      none: 'none',
+      disc: 'disc',
+      decimal: 'decimal',
+      circle: 'circle',
+    },
   },
   plugins: [],
 }
