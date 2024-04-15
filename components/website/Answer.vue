@@ -29,7 +29,7 @@ const questionsAndAnswers = [
   },
   {
     question: 'What if I face any issue, how to reach support team?',
-    answer: '',
+    answer: 'Please write email to support@flowmapper.ai, soon we are going to add online chat support.',
   },
   {
     question: 'How do I create an account for AI FlowMapper?',
@@ -41,7 +41,7 @@ const questionsAndAnswers = [
   },
   {
     question: 'How can I reset my password?',
-    answer: '',
+    answer: 'To reset the password you have to navigate login page, click on forget password link and follow the instructions.',
   },
   {
     question: 'What is Data Driven function way to create Mind Map?',
