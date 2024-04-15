@@ -17,11 +17,11 @@ const questionsAndAnswers = [
   },
   {
     question: 'What does the "I have more details" checkbox indicate?',
-    answer: 'You can select the I have more details check box to add more details on your idea or problem. You can elaborate on your requirements to get more accurate results while generating the Mind Map. ',
+    answer: 'You can select the I have more details check box to add more details on your idea or problem. You can elaborate on your requirements to get more accurate results while generating the Mind Map.',
   },
   {
     question: 'How do I create a Mind Map using AI FlowMapper?',
-    answer: 'Login to your account. Click Get Started and then click + Create New. Enter the required keywords on the subject for which you want to create Mind Map and click Submit. ',
+    answer: 'Login to your account. Click Get Started and then click + Create New. Enter the required keywords on the subject for which you want to create Mind Map and click Submit.',
   },
   {
     question: 'What are the various ways in which you can create a Mind Map from AI FlowMapper?',
@@ -41,7 +41,7 @@ const questionsAndAnswers = [
   },
   {
     question: 'How can I reset my password?',
-    answer: 'To reset the password you have to navigate login page, click on forget password link and follow the instructions.',
+    answer: 'To reset the password you have to navigate login page, click on forget password link and follow the instructionsgit .',
   },
   {
     question: 'What is Data Driven function way to create Mind Map?',
