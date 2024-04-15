@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 
 const diagramStore = useDiagramStore()
 const { $success, $error } = useNuxtApp()
@@ -116,7 +116,7 @@ onMounted(() => {
       <div class="flex justify-center my-4">
         <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />
       </div>
-      <DiagramWelcomeMessage v-if="!diagramsList?.length" />
+      <DiagramWelcomeMessage />
     </template>
     <template v-else>
       <div class="flex justify-end my-4">
