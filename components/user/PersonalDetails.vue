@@ -57,7 +57,6 @@ const nameValidation = nonEmptyString('Full name').refine((value) => {
 
 const schema = z.object({
   name: nameValidation,
-  orgname: nonEmptyString('Organisation name'),
   country: nonEmptyString('Country'),
   zip: nonEmptyString('Zip code'),
   city: nonEmptyString('City'),

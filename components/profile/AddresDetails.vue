@@ -155,13 +155,13 @@ onMounted(() => {
     </h1>
 
     <UCard class="mb-8">
-      <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
+      <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
         <div class="flex gap-2">
           <UFormGroup label="Full Name" name="name" required>
             <UInput v-model="state.name" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
-            <UInput v-model="state.orgname" color="blue" :disabled="!isEditable && !isNewUser " />
+            <UInput v-model="state.orgname" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
