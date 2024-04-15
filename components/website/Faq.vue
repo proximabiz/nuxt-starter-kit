@@ -50,7 +50,6 @@ const items = reactive([
       'Can I cancel the Focus Mode?',
       'Can I Move Up a Node?',
       'Can I Move Down a Node?',
-      'What is Summary?',
       'What is Link?',
     ],
   },

@@ -105,11 +105,11 @@ const questionsAndAnswers = [
   },
   {
     question: 'Can I add a Tag?',
-    answer: '',
+    answer: 'No, You can not add.',
   },
   {
     question: 'Can I add an Icon?',
-    answer: '',
+    answer: 'No, You can not add.',
   },
   {
     question: 'Can I add an external link or URL to a Node in the Mind Map?',
@@ -145,19 +145,15 @@ const questionsAndAnswers = [
   },
   {
     question: 'Can I Move Up a Node?',
-    answer: '',
+    answer: 'Yes, You can Right click in the Parent node and select move up. Then the node will move up',
   },
   {
     question: 'Can I Move Down a Node?',
-    answer: '',
-  },
-  {
-    question: 'What is Summary?',
-    answer: '',
+    answer: 'Yes, You can right click in the parent node and select move down. Then the node will move down',
   },
   {
     question: 'What is Link?',
-    answer: '',
+    answer: 'Link is a hyperlink which is added to redirect to any particular webpage',
   },
   {
     question: 'What are the various plans available for the AI FlowMapper tool?',
@@ -165,23 +161,23 @@ const questionsAndAnswers = [
   },
   {
     question: 'Can I cancel Free subscription?',
-    answer: '',
+    answer: 'No, we are not providing any cancel subscription option for free plan. After 15 days it will auto cancel.',
   },
   {
     question: 'Can I cancel Paid subscription?',
-    answer: '',
+    answer: 'Yes. Navigate to my plan section and click on the cancel subscription button.',
   },
   {
     question: 'How to upgrade my subscription?',
-    answer: '',
+    answer: 'Yes. Navigate to my plan section and click on the upgrade now by comparing other plans link.',
   },
   {
     question: 'What happens after my Free plan gets over?',
-    answer: '',
+    answer: 'To continue using AI FlowMapper, you ll need to upgrade to paid plan.',
   },
   {
     question: 'How can I renew my subscription?',
-    answer: '',
+    answer: 'Your subscription gets auto renwed on monthly or annually basis as per your initial selection, unless  you cancel the subcription.',
   },
 ]
 
