@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import MindElixir from 'mind-elixir'
 import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
 import dayjs from 'dayjs'
 import { cloneDeep } from 'lodash'
 import type { MindElixirData, Options } from 'mind-elixir'
+import MindElixir from 'mind-elixir'
 import { useFileExporter } from '@/composables/ExportJsonFile'
 
 const props = defineProps<Props>()
@@ -66,15 +66,16 @@ async function fetchMap() {
       diagramId: props.diagramId,
     })
     if (apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails) {
-      oldApiResponse.value = cloneDeep(apiResponse.value[0].response.nodeData)
-      hasEvent.value = true
-      init()
-      if (apiResponse.value[0].response.nodeData)
+      if (apiResponse.value[0].response.nodeData) {
+        hasEvent.value = true
         form.value.title = apiResponse.value[0].response.nodeData.topic
-
-      else
+        oldApiResponse.value = cloneDeep(apiResponse.value[0].response.nodeData)
+      }
+      else if (apiResponse.value[0].response.chartDetails) {
         form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
-      // form.value.details = apiResponse.value[0].details
+        oldApiResponse.value = cloneDeep(apiResponse.value[0].response.chartDetails[0].nodeData)
+      }
+      init()
 
       globalStore.pageHeading.title = form.value.title
       hasEvent.value = true
@@ -281,6 +282,13 @@ function loadJSON(jsonData: JSON) {
 }
 
 function createMapFromJSON() {
+  try {
+    JSON.parse(form.value.json)
+  }
+  catch (error) {
+    return $error('Invalid JSON')
+  }
+
   try {
     const jsonString = `${JSON.parse(form.value.json)}`
     const parsedObject = JSON.parse(jsonString)

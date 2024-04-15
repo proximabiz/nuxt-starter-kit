@@ -250,6 +250,7 @@ defineExpose({
         showDialCode: true,
       }"
       @on-input="onPhoneInput"
+      @blur="handlePhoneValidation()"
       @country-changed="onCountryChanged"
     />
     <!-- Validation error field -->
