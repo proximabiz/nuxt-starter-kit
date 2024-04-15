@@ -112,13 +112,13 @@ onMounted(() => {
 
 <template>
   <div class="pl-10">
-    <section v-if="diagramsList?.length === 0">
+    <template v-if="!diagramsList?.length">
       <div class="flex justify-center my-4">
         <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />
       </div>
-      <DiagramWelcomeMessage v-if="diagramsList?.length === 0" />
-    </section>
-    <section v-else>
+      <DiagramWelcomeMessage v-if="!diagramsList?.length" />
+    </template>
+    <template v-else>
       <div class="flex justify-end my-4">
         <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
       </div>
@@ -180,7 +180,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-    </section>
+    </template>
   </div>
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />
