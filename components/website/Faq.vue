@@ -134,7 +134,7 @@ function leave(el: any) {
   <div v-else class="flex flex-col mt-8">
     <div v-for="(item, index) in items" :key="index" class="mb-2">
       <button
-        class="px-4 py-2 bg-custom1-100 rounded-md text-custom3-900 text-left w-full flex justify-between items-center"
+        class="px-4 py-2 bg-custom1-400 rounded-md text-custom3-50  font-medium text-left w-full flex justify-between items-center"
         @click="toggle(index)"
       >
         {{ item.label }}
