@@ -37,29 +37,32 @@ const phoneRef = ref<typeof PhoneInputField>()
 
 // #validation
 
-const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
-  if (value.trim() === '')
-    return true
+// Utility function to enforce non-empty, non-space-only strings
+function nonEmptyString(field: string) {
+  return z.string()
+    .min(1, `${field} is required`)
+    .refine(value => value.trim().length > 0, `${field} can't be empty or spaces only`)
+}
 
-  // Check for two words separated by space
+const nameValidation = nonEmptyString('Full name').refine((value) => {
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
     return false // Ensure there are at least two words
 
   // Check for minimum length and no special characters or numbers
-  return parts.every((part) => {
-    return /^[A-Za-z]+$/.test(part) && part.length >= 3
-  })
+  return parts.every(part => /^[A-Za-z]+$/.test(part) && part.length >= 3)
 }, {
   message: 'Enter a valid name of 3 letters and without numbers and symbols',
 })
+
 const schema = z.object({
   name: nameValidation,
-  country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip code is required'),
-  city: z.string().min(1, 'City is required'),
-  region: z.string().min(1, 'Region is required'),
-  address: z.string().min(1, 'Address is required'),
+  orgname: nonEmptyString('Organisation name'),
+  country: nonEmptyString('Country'),
+  zip: nonEmptyString('Zip code'),
+  city: nonEmptyString('City'),
+  region: nonEmptyString('Region'),
+  address: nonEmptyString('Address'),
 })
 
 async function getAddress() {
@@ -128,7 +131,6 @@ function handlePhoneValidation() {
 
     <UCard class="mb-8">
       <UForm :state="formState" :schema="schema" class="space-y-4 " @submit="onSubmit">
-        Hello
         <div class="flex gap-2">
           <UFormGroup label="Full Name" name="name" class="w-1/2" required>
             <UInput v-model="formState.name" color="blue" placeholder="First Name Last Name" />
