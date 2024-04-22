@@ -1,7 +1,7 @@
 <script setup lang="ts">
 enum AuthViews {
-  'signin' = 'signin',
-  'signup' = 'signup',
+  signin = 'signin',
+  signup = 'signup',
 }
 
 /** Refs */

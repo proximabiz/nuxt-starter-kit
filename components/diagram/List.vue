@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs';
+import dayjs from 'dayjs'
 
 const diagramStore = useDiagramStore()
 const { $success, $error } = useNuxtApp()

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const isMonthly = ref(true)
 const showBillingDetails = ref(false)
-let cardValue = ref()
+const cardValue = ref()
 const region = ref('india')
 const subscriptionStore = useSubscriptionStore()
 const authStore = useAuthStore()
@@ -89,7 +89,7 @@ function providePlanDetails(val: any) {
   if (!authStore.getAuthUser.value)
     return navigateTo('/login')
 
-  cardValue = val
+  cardValue.value = val
   showBillingDetails.value = true
   return cardValue
 }

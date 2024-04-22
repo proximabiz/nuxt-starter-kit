@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { z } from 'zod';
+import { z } from 'zod'
 
 /** Constants */
 const supabaseClient = useSupabaseClient()
@@ -39,7 +39,7 @@ function isFormValid() {
   const isConfirmPasswordValid = z.string().min(8).safeParse(formState.confirmPassword).success
   const isNewAndConfirmPasswordSame = formState.password === formState.confirmPassword
 
-  return  isPasswordValid && isConfirmPasswordValid && isNewAndConfirmPasswordSame
+  return isPasswordValid && isConfirmPasswordValid && isNewAndConfirmPasswordSame
 }
 
 async function updatePassword() {
