@@ -38,27 +38,31 @@ const phoneRef = ref<typeof PhoneInputField>()
 
 // #validation
 
-const nameValidation = z.string().min(1, 'Full name is required').refine((value) => {
-  if (value.trim() === '')
-    return true
-  // Check for two words separated by space
+// Utility function to enforce non-empty, non-space-only strings
+function nonEmptyString(field: string) {
+  return z.string()
+    .min(1, `${field} is required`)
+    .refine(value => value.trim().length > 0, `${field} can't be empty or spaces only`)
+}
+
+const nameValidation = nonEmptyString('Full name').refine((value) => {
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
     return false // Ensure there are at least two words
+
   // Check for minimum length and no special characters or numbers
-  return parts.every((part) => {
-    return /^[A-Za-z]+$/.test(part) && part.length >= 3
-  })
+  return parts.every(part => /^[A-Za-z]+$/.test(part) && part.length >= 3)
 }, {
   message: 'Enter a valid name of 3 letters and without numbers and symbols',
 })
 const schema = z.object({
   name: nameValidation,
-  country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip code is required'),
-  city: z.string().min(1, 'City is required'),
-  region: z.string().min(1, 'Region is required'),
-  address: z.string().min(1, 'Address is required'),
+  orgname: nonEmptyString('Organisation name'),
+  country: nonEmptyString('Country'),
+  zip: nonEmptyString('Zip code'),
+  city: nonEmptyString('City'),
+  region: nonEmptyString('Region'),
+  address: nonEmptyString('Address'),
 })
 
 async function getAddress() {
@@ -151,13 +155,13 @@ onMounted(() => {
     </h1>
 
     <UCard class="mb-8">
-      <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
+      <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
         <div class="flex gap-2">
           <UFormGroup label="Full Name" name="name" required>
             <UInput v-model="state.name" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name" />
           </UFormGroup>
           <UFormGroup label="Organisation Name" name="orgname">
-            <UInput v-model="state.orgname" color="blue" :disabled="!isEditable && !isNewUser " />
+            <UInput v-model="state.orgname" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">

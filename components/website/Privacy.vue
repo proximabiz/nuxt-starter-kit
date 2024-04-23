@@ -514,8 +514,8 @@
       <p>Additionally, in order to exercise any of Your rights under the CCPA/CPRA, and if You are a California resident, You can contact Us:</p>
       <ul class="ms-8 list-disc mt-6">
         <li>
-          By email: <NuxtLink href="/cdn-cgi/l/email-protection" class="text-custom1-500 underline" data-cfemail="5625373f782f3338323a23243f162624392e3f3b37343f2c7835393b">
-            sales@proximabiz.com
+          By email: <NuxtLink href="mailto:support@flowmapper.ai" class="text-custom1-500 underline">
+            support@flowmapper.ai
           </NuxtLink>
         </li>
       </ul>
@@ -581,7 +581,11 @@
       </h2>
       <p>If you have any questions about this Privacy Policy, You can contact us:</p>
       <ul>
-        <li>Email to: <a href="/cdn-cgi/l/email-protection" class="text-custom1-500 underline" data-cfemail="ec9f8d85c29589828880999e85ac9c9e839485818d8e8596c28f8381">sales@proximabiz.com</a></li>
+        <li>
+          Email to: <NuxtLink href="mailto:support@flowmapper.ai" class="text-custom1-500 underline">
+            support@flowmapper.ai
+          </NuxtLink>
+        </li>
       </ul>
       <!-- <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script> -->
     </section>
