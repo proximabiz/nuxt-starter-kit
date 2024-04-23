@@ -116,7 +116,7 @@ onMounted(() => {
       <div class="flex justify-center my-4">
         <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />
       </div>
-      <DiagramWelcomeMessage />
+      <DiagramEmptyListInstructions />
     </template>
     <template v-else>
       <div class="flex justify-end my-4">
