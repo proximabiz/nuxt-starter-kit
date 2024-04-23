@@ -10,7 +10,7 @@ dependencies:
     version: 0.8.2
   '@mind-elixir/node-menu':
     specifier: ^1.0.3
-    version: 1.0.3(mind-elixir@3.3.2)
+    version: 1.0.3(mind-elixir@4.0.1)
   '@nuxt/ui':
     specifier: 2.11.1
     version: 2.11.1(nuxt@3.11.2)(rollup@4.16.1)(vite@5.2.10)(vue@3.4.23)
@@ -36,8 +36,8 @@ dependencies:
     specifier: ^1.0.6
     version: 1.0.6
   mind-elixir:
-    specifier: ^3.3.2
-    version: 3.3.2
+    specifier: https://github.com/proximabiz/mind-elixir-core
+    version: github.com/proximabiz/mind-elixir-core/91d34df1dca40bdecc9dc9ec2b9c2d87496ccfa1
   nuxt-umami:
     specifier: ^2.6.0
     version: 2.6.0
@@ -1176,12 +1176,12 @@ packages:
       - encoding
       - supports-color
 
-  /@mind-elixir/node-menu@1.0.3(mind-elixir@3.3.2):
+  /@mind-elixir/node-menu@1.0.3(mind-elixir@4.0.1):
     resolution: {integrity: sha512-iRGl280bja8CDevceHaxlpagIJnGS7oNrzfYdzwWgq4AMUq+pTEZWWHmEma1d/VG+UOB0jT3XrLLWZT9Tz+y0g==}
     peerDependencies:
       mind-elixir: ^2.0.1
     dependencies:
-      mind-elixir: 3.3.2
+      mind-elixir: github.com/proximabiz/mind-elixir-core/91d34df1dca40bdecc9dc9ec2b9c2d87496ccfa1
     dev: false
 
   /@miyaneee/rollup-plugin-json5@1.2.0(rollup@4.16.1):
@@ -1792,6 +1792,7 @@ packages:
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.5
+      napi-wasm: 1.1.0
     bundledDependencies:
       - napi-wasm
 
@@ -6322,10 +6323,6 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /mind-elixir@3.3.2:
-    resolution: {integrity: sha512-SHHospQXT7ARaNMMnaZLFzBsOela9tc8rgSYHPhAPrV8Jxh6MCo1X8qQxJAvuqIVvN8uSGnXf+Po4nhzzSmWWQ==}
-    dev: false
-
   /mini-svg-data-uri@1.4.4:
     resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
     hasBin: true
@@ -6477,6 +6474,9 @@ packages:
     resolution: {integrity: sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==}
     engines: {node: ^18 || >=20}
     hasBin: true
+
+  /napi-wasm@1.1.0:
+    resolution: {integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==}
 
   /natural-compare-lite@1.4.0:
     resolution: {integrity: sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g==}
@@ -9411,4 +9411,12 @@ packages:
 
   /zod@3.23.0:
     resolution: {integrity: sha512-OFLT+LTocvabn6q76BTwVB0hExEBS0IduTr3cqZyMqEDbOnYmcU+y0tUAYbND4uwclpBGi4I4UUBGzylWpjLGA==}
+    dev: false
+
+  github.com/proximabiz/mind-elixir-core/91d34df1dca40bdecc9dc9ec2b9c2d87496ccfa1:
+    resolution: {tarball: https://codeload.github.com/proximabiz/mind-elixir-core/tar.gz/91d34df1dca40bdecc9dc9ec2b9c2d87496ccfa1}
+    name: mind-elixir
+    version: 4.0.1
+    prepare: true
+    requiresBuild: true
     dev: false

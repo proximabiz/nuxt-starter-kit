@@ -3,7 +3,7 @@ import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
 import dayjs from 'dayjs'
 import { cloneDeep } from 'lodash'
-import type { MindElixirData, Options } from 'mind-elixir'
+import type { Options } from 'mind-elixir'
 import MindElixir from 'mind-elixir'
 import { useFileExporter } from '@/composables/ExportJsonFile'
 
@@ -88,7 +88,7 @@ async function fetchMap() {
 }
 // Initializes the mind map with data from the API response
 function init() {
-  const data: MindElixirData = {
+  const data: any = {
     linkData: {},
     nodeData: apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails[0].nodeData,
   }
@@ -109,7 +109,7 @@ function init() {
 }
 
 function init1() {
-  const data: MindElixirData = {
+  const data: any = {
     linkData: {},
     nodeData: updateApiResponse.value.response.chartDetails[0].nodeData,
   }
@@ -130,7 +130,7 @@ function init1() {
 }
 
 function init2() {
-  const data: MindElixirData = {
+  const data: any = {
     linkData: {},
     nodeData: updateApiResponse.value.nodeData,
   }
@@ -151,7 +151,7 @@ function init2() {
 }
 
 function init3() {
-  const data: MindElixirData = {
+  const data: any = {
     linkData: {},
     nodeData: updateApiResponse.value[0].nodeData,
   }
