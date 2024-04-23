@@ -21,6 +21,8 @@ const links = ref<NavLink[]>([
   { name: 'About', to: '/website/about' },
   { name: 'Pricing', to: '/website/pricing' },
   { name: 'Contact Us', to: '/website/contact' },
+  { name: 'FAQ', to: '/website/faq' },
+
 ])
 
 const items = [
