@@ -196,6 +196,7 @@ async function updateMap() {
     }
 
     $success('Mindmap generated!')
+    fetchMap()
   }
   catch (error) {
     $error(error?.message)
