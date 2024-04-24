@@ -38,11 +38,11 @@ const phoneRef = ref<typeof PhoneInputField>()
 
 // #validation
 
-// Utility function to enforce non-empty, non-space-only strings
 function nonEmptyString(field: string) {
   return z.string()
     .min(1, `${field} is required`)
     .refine(value => value.trim().length > 0, `${field} can't be empty or spaces only`)
+    .refine(value => !value.startsWith(' '), `${field} can't start with a space`)
 }
 
 const nameValidation = nonEmptyString('Full name').refine((value) => {
@@ -57,7 +57,6 @@ const nameValidation = nonEmptyString('Full name').refine((value) => {
 })
 const schema = z.object({
   name: nameValidation,
-  orgname: nonEmptyString('Organisation name'),
   country: nonEmptyString('Country'),
   zip: nonEmptyString('Zip code'),
   city: nonEmptyString('City'),
