@@ -41,9 +41,9 @@ const phoneRef = ref<typeof PhoneInputField>()
 function nonEmptyString(field: string) {
   return z.string()
     .min(1, `${field} is required`)
-    .refine(value => value.trim().length > 0, `${field} can't be spaces only`)
+    .refine(value => value.trim().length > 0, `${field} can't be empty or spaces only`)
+    .refine(value => !value.startsWith(' '), `${field} can't start with a space`)
 }
-
 const nameValidation = nonEmptyString('Full name').refine((value) => {
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
@@ -57,9 +57,6 @@ const nameValidation = nonEmptyString('Full name').refine((value) => {
 
 const schema = z.object({
   name: nameValidation,
-  orgname: z.string().optional().refine(value => value === undefined || value.trim().length > 0, {
-    message: 'Orgnisation name cannot be spaces only',
-  }),
   country: nonEmptyString('Country'),
   zip: nonEmptyString('Zip code'),
   city: nonEmptyString('City'),

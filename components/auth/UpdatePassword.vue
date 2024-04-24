@@ -124,8 +124,9 @@ async function onConfirm() {
     </div>
     <div class="mt-5 flex items-center justify-between">
       <span class="border-b w-1/5 md:w-1/5" />
-      <a href="#" class="my-2" @click.stop="navigateTo('/login')">I'm already a
-        member! <span class="text-blue-500">Sign In</span></a>
+      <span class="my-2">I'm already a member !
+        <NuxtLink href="/login" class="text-blue-500">Sign In</NuxtLink>
+      </span>
       <span class="border-b w-1/5 md:w-1/4" />
     </div>
 
