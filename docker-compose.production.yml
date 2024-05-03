@@ -6,8 +6,8 @@ services:
     ports:
       - '80:3000'
     environment:
-      - SUPABASE_URL
-      - SUPABASE_KEY
+      - NUXT_PUBLIC_SUPABASE_URL
+      - NUXT_PUBLIC_SUPABASE_KEY
       - OPENAI_API_KEY
       - SENDGRID_API_KEY
       - SENDGRID_EMAIL_TEMPLATE_ID
