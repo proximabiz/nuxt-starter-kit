@@ -124,6 +124,8 @@ jobs:
           script: |
             echo "Deploying aiflowmapper stack to Stage"
             cd ai-flow-mapper
+            git pull
+            chmod +x deploy.stage.sh
             sh deploy.stage.sh
       - name: 🔔 Stage Deployment Notification
         if: failure()
@@ -186,6 +188,8 @@ jobs:
           script: |
             echo "Deploying aiflowmapper stack to Production"
             cd ai-flow-mapper
+            git pull
+            chmod +x deploy.sh
             sh deploy.sh
       - name: 🔔 Production Deployment Notification
         if: failure()
