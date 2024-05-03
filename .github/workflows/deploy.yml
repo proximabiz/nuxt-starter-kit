@@ -166,7 +166,7 @@ jobs:
         run: |
           for var in $(compgen -e); do
             if [[ $var == AI_FLOWMAPPER_PRODUCTION_* ]]; then
-              name=${var#AI_FLOWMAPPER_}  # Remove the prefix
+              name=${var#AI_FLOWMAPPER_PRODUCTION_}  # Remove the prefix
               echo "$name=${!var}" >> .env
             fi
           done
