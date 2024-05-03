@@ -85,7 +85,7 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: 🔔 ➜ Slack Notification
-        if: always()
+        if: failure()
         uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
@@ -126,7 +126,7 @@ jobs:
             cd ai-flow-mapper
             sh deploy.stage.sh
       - name: 🔔 Stage Deployment Notification
-        if: failure()
+        if: always()
         uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
@@ -170,6 +170,28 @@ jobs:
               echo "$name=${!var}" >> .env
             fi
           done
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: aiflowmapper
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: 🔔 ➜ Slack Notification
+        if: failure()
+        uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          channel: ${{ secrets.SLACK_CHANNEL }}
+          config: .github/config/slack.yml
 
   Production:
     name: Deploy Production
@@ -187,8 +209,9 @@ jobs:
             echo "Deploying aiflowmapper stack to Production"
             cd ai-flow-mapper
             sh deploy.sh
+
       - name: 🔔 Production Deployment Notification
-        if: failure()
+        if: always()
         uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
