@@ -68,6 +68,7 @@ jobs:
             if [[ $var == AI_FLOWMAPPER_* ]]; then
               name=${var#AI_FLOWMAPPER_}  # Remove the prefix
               echo "$name=${!var}" >> .env
+              echo "$name=${!var}"
             fi
           done
           echo "Contents of .env file:"
@@ -170,6 +171,7 @@ jobs:
             if [[ $var == AI_FLOWMAPPER_PRODUCTION_* ]]; then
               name=${var#AI_FLOWMAPPER_}  # Remove the prefix
               echo "$name=${!var}" >> .env
+              echo "$name=${!var}"
             fi
           done
           echo "Contents of .env file:"
