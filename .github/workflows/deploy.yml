@@ -37,7 +37,7 @@ jobs:
           channel: ${{ secrets.SLACK_CHANNEL }}
           config: .github/slack.yml
 
-  Build:
+  Build-Stage:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -70,6 +70,8 @@ jobs:
               echo "$name=${!var}" >> .env
             fi
           done
+          echo "Contents of .env file:"
+          cat .env
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -105,7 +107,7 @@ jobs:
   Secrets:
     name: AWS Secret Manager
     runs-on: ubuntu-latest
-    needs: [Build, E2E]
+    needs: [Build-Stage, E2E]
     steps:
       - name: AWS Secrets
         run: echo "ai-flowmapper"
@@ -135,10 +137,48 @@ jobs:
           channel: ${{ secrets.SLACK_CHANNEL }}
           config: .github/slack.yml
 
+  Build-Production:
+    runs-on: ubuntu-latest
+    needs: [Stage]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node 20+
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.1
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Get secrets by name and by ARN
+        uses: aws-actions/aws-secretsmanager-get-secrets@v1
+        with:
+          secret-ids: |
+            ai-flowmapper-production
+          parse-json-secrets: true
+
+      - name: Create .env file from secrets
+        run: |
+          for var in $(compgen -e); do
+            if [[ $var == AI_FLOWMAPPER_PRODUCTION_* ]]; then
+              name=${var#AI_FLOWMAPPER_}  # Remove the prefix
+              echo "$name=${!var}" >> .env
+            fi
+          done
+          echo "Contents of .env file:"
+          cat .env
+
   Production:
     name: Deploy Production
     runs-on: ubuntu-latest
-    needs: Stage
+    needs: [Stage, Build-Production]
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Deploying [Production]
