@@ -85,7 +85,7 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: 🔔 ➜ Slack Notification
-        if: failure()
+        if: always()
         uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
@@ -126,7 +126,7 @@ jobs:
             cd ai-flow-mapper
             sh deploy.stage.sh
       - name: 🔔 Stage Deployment Notification
-        if: always()
+        if: failure()
         uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
@@ -184,7 +184,7 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: 🔔 ➜ Slack Notification
-        if: failure()
+        if: always()
         uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
@@ -211,7 +211,7 @@ jobs:
             sh deploy.sh
 
       - name: 🔔 Production Deployment Notification
-        if: always()
+        if: failure()
         uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
