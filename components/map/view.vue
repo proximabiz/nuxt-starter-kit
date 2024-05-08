@@ -33,7 +33,7 @@ const hasEvent = ref(false)
 const toRoute = ref()
 const form = ref({
   title: '',
-  details: 'Dummy',
+  details: '',
   json: '',
   isDetailed: false,
 })
@@ -183,7 +183,7 @@ async function updateMap() {
       diagramId: props.diagramId,
       title: form.value.title,
       isDetailed: form.value.isDetailed,
-      details: form.value.details,
+      details: form.value.isDetailed ? form.value.details : undefined,
       // diagramTypeId: mindmapTypeDiagram.id,
     })
     isLoading.value = false
@@ -472,7 +472,7 @@ onBeforeRouteLeave((to) => {
                   Security.
                 </div>
               </div>
-              <UButton :loading="isLoading" :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
+              <UButton :loading="isLoading" :disabled="(form.isDetailed && !form.details) || (!form.title)" label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
             </form>
           </div>
           <!-- Json Tab -->
