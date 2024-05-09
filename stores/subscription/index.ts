@@ -4,6 +4,23 @@ import type { Database } from '~/types/supabase'
 function initialState() {
   return {
     subscriptionStatus: { planName: '', planStatus: '' },
+    activePlan: {
+      id: '',
+      user_id: '',
+      amount: 0,
+      plan_start_date: '',
+      plan_end_date: '',
+      auto_renew: false,
+      is_subscription_active: false,
+      sub_key: null,
+      name: '',
+      description: '',
+      monthly_price: 0,
+      status: false,
+      features: null,
+      yearly_price: 0,
+      subscription_status: '',
+    },
     billingDetails: {
       name: '',
       orgName: '',
@@ -29,6 +46,14 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       const authStore = useAuthStore()
 
       const userId = authStore.getAuthUser.value?.id
+
+      // FIXME:: Find better way to handle this
+      if (!userId) {
+        return new Promise((resolve) => {
+          return resolve(initialState().activePlan)
+        })
+      }
+
       const supabaseClient = useSupabaseClient<Database>()
 
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', {
