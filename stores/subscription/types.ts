@@ -16,6 +16,7 @@ export interface AddAPIPayload {
   userId: string
   subscriptionTypeId: string
   amount: number
+  email: string | undefined
 }
 export interface CancelAPIPayload {
   userId: string
