@@ -25,6 +25,7 @@ watch(
           userId: user.id,
           subscriptionTypeId: '10dbc647-04ea-4588-b6c8-7c535049f18c',
           amount: 0,
+          email: authUser.value?.email,
         }
         if (!route.fullPath.includes('/profile/account'))
           await subscriptionStore.addSubscription(payload)
