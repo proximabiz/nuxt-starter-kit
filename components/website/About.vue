@@ -12,8 +12,7 @@ import flowchart from '@/assets/media/flowchart.png'
 import ui from '@/assets/media/ui.png'
 import drag from '@/assets/media/drag.png'
 import version from '@/assets/media/clock.png'
-import { useMobileScreen } from '@/composables/UseMobileScreen';
-
+import { useMobileScreen } from '@/composables/UseMobileScreen'
 
 const features = [
   {
@@ -71,9 +70,9 @@ const features = [
     bgColor: 'bg-yellow-200',
   },
 ]
-const { truncateTitle } = useMobileScreen();
-
+const { truncateTitle } = useMobileScreen()
 </script>
+
 <template>
   <section class="flex flex-col gap-2 items-center mb-8 mt-10 px-4 md:px-8 lg:px-16">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
@@ -215,7 +214,9 @@ const { truncateTitle } = useMobileScreen();
         <h2 class="text-2xl font-semibold mt-4 md:mt-8">
           {{ truncateTitle(feature.title) }}
         </h2>
-        <p class="text-center">{{ feature.description }}</p>
+        <p class="text-center">
+          {{ feature.description }}
+        </p>
       </div>
     </div>
   </section>

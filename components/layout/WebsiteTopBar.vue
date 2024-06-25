@@ -2,12 +2,12 @@
 import avatar from '@/assets/media/user.png'
 
 const route = useRoute()
-const router = useRouter();
+const router = useRouter()
 const { $error } = useNuxtApp()
 const authStore = useAuthStore()
 const supabaseClient = useSupabaseClient()
 const subscriptionStore = useSubscriptionStore()
-const isMobileMenuOpen = ref(false);
+const isMobileMenuOpen = ref(false)
 
 const authUser = computed(() => authStore.getAuthUser.value)
 // Define the structure of your link objects for better TypeScript support
@@ -27,12 +27,12 @@ const links = ref<NavLink[]>([
 ])
 
 function toggleMobileMenu() {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value;
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
 
 function navigateTo(path: string) {
-  router.push(path);
-  isMobileMenuOpen.value = false; // Close mobile menu on navigation
+  router.push(path)
+  isMobileMenuOpen.value = false // Close mobile menu on navigation
 }
 
 const items = [
@@ -77,48 +77,62 @@ function isActiveRoute(to: string) {
     </a>
     <!-- hambergur icon -->
     <div v-if="!authUser" class="lg:hidden">
-      <button @click="toggleMobileMenu" class="lg:hidden text-blue-600 p-3">
-        <UIcon name="i-heroicons-bars-3" class="size-7" />       
+      <button class="lg:hidden text-blue-600 p-3" @click="toggleMobileMenu">
+        <UIcon name="i-heroicons-bars-3" class="size-7" />
       </button>
     </div>
 
     <!-- Desktop Menu -->
     <ul v-if="!authUser" class="hidden lg:flex lg:space-x-6">
       <template v-for="(item, index) in links" :key="index">
-        <li><a class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer"
-            :class="{ 'active-link': isActiveRoute(item.to) }" @click="navigateTo(item.to)">{{ item.name }}</a></li>
+        <li>
+          <a
+            class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer"
+            :class="{ 'active-link': isActiveRoute(item.to) }" @click="navigateTo(item.to)"
+          >{{ item.name }}</a>
+        </li>
         <li class="text-gray-300">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+            />
           </svg>
         </li>
       </template>
     </ul>
-    <UButton v-if="!authUser && !isLoginRoute" class="hidden lg:inline-block py-2 px-6" @click="navigateTo({
+    <UButton
+      v-if="!authUser && !isLoginRoute" class="hidden lg:inline-block py-2 px-6" @click="navigateTo({
         path: '/login',
-      })">
+      })"
+    >
       Login
     </UButton>
 
     <!-- mobile menu -->
     <USlideover v-model="isMobileMenuOpen" class="lg:hidden">
-      <button @click="toggleMobileMenu" class="absolute top-5 right-5">
-        <UIcon name="i-heroicons-x-mark" class="size-7" />       
+      <button class="absolute top-5 right-5" @click="toggleMobileMenu">
+        <UIcon name="i-heroicons-x-mark" class="size-7" />
       </button>
       <ul class="pt-3 ps-3">
         <li v-for="link in links" :key="link.name" class="mb-1">
-          <a @click.prevent="navigateTo(link.to)"
-            class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded">
+          <a
+            class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+            @click.prevent="navigateTo(link.to)"
+          >
             {{ link.name }}
           </a>
         </li>
       </ul>
     </USlideover>
 
-    <UDropdown v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }"
-      :popper="{ placement: 'bottom-start' }" class="z-50">
+    <UDropdown
+      v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }"
+      :popper="{ placement: 'bottom-start' }" class="z-50"
+    >
       <UAvatar :src="avatar" />
       <template #account>
         <div class="text-left">
