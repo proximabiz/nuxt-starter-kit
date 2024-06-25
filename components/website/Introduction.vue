@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import { useMobileScreen } from '@/composables/UseMobileScreen';
+
+
+const { isMobile } = useMobileScreen();
 const authStore = useAuthStore()
 
 const authUser = computed(() => authStore.getAuthUser.value)
@@ -20,6 +24,11 @@ const authUser = computed(() => authStore.getAuthUser.value)
         AI FlowMapper is built to enhance productivity and visualize ideas with the power of AI.<br>
         It simplifies the complex concepts into elegant diagrams.
       </p>
+      <UButton v-if="!authUser && isMobile" class="mt-4 lg:inline-block py-2 px-6" @click="navigateTo({
+        path: '/login',
+      })">
+      Login
+      </UButton>
       <UButton v-if="authUser" class="mt-10" @click="navigateTo('/app/diagram/list')">
         Get Started
       </UButton>
