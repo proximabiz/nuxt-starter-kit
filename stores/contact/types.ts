@@ -4,6 +4,7 @@ export interface createAPIPayload {
   phoneNumber: string
   requestFor: string
   message: string
+  token:string
 }
 
 export interface State {}
