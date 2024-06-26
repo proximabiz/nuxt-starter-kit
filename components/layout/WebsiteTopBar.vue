@@ -114,7 +114,7 @@ function isActiveRoute(to: string) {
     </UButton>
 
     <!-- mobile menu -->
-    <USlideover v-model="isMobileMenuOpen" class="lg:hidden">
+    <USlideover v-model="isMobileMenuOpen" side="left" class="lg:hidden w-3/4 h-full">
       <button class="absolute top-5 right-5" @click="toggleMobileMenu">
         <UIcon name="i-heroicons-x-mark" class="size-7" />
       </button>
