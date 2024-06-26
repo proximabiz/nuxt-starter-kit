@@ -98,10 +98,10 @@ function providePlanDetails(val: any) {
 <template>
   <BillingDetailsBillling v-if="showBillingDetails" :plan-details="cardValue" />
   <template v-else>
-    <div class="text-center">
-      <span class="text-3xl font-medium">Choose Your AI FlowMapper Plan</span>
+    <div class="text-center my-5">
+      <span class="text-3xl font-medium my-5">Choose Your AI FlowMapper Plan</span>
     </div>
-    <div class="flex items-center justify-center relative">
+    <div class="flex items-center justify-center relative my-5">
       <div class="rounded-full border mt-2">
         <label for="Toggle4" class="inline-flex items-center p-1 cursor-pointer dark:bg-gray-300 dark:text-gray-800">
           <input id="Toggle4" type="checkbox" class="hidden peer" @change="isMonthly = !isMonthly">
@@ -115,18 +115,22 @@ function providePlanDetails(val: any) {
           >Annually</span>
         </label>
       </div>
-
-      <USelect v-model="region" :options="regions" option-attribute="name" class="absolute right-20" color="blue" />
+      <USelect
+        v-model="region" :options="regions" option-attribute="name" class="inline-flex ms-4" color="blue" :ui="{
+          rounded: 'rounded-xl',
+          padding: 'py-10',
+        }"
+      />
     </div>
 
     <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
-      <div class="grid place-items-center grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-4 md:gap-8">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4 lg:gap-8">
         <template v-if="prices && prices.length">
           <div
             v-for="(value, index) in prices" :key="index"
             class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm"
           >
-            <div class="p-4 sm:pt-4 sm:pb-0">
+            <div class="p-4 pb-0">
               <h2 class="text-lg font-medium text-gray-900">
                 {{ value.plan }}
                 <span class="sr-only">Plan</span>
@@ -134,10 +138,16 @@ function providePlanDetails(val: any) {
               <p class="text-gray-700" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
                 No credit card required. Plan valid upto 15 days.
               </p>
-              <strong class="text-3xl font-bold text-gray-900 sm:text-3xl" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
+              <strong
+                class="text-3xl font-bold text-gray-900 sm:text-3xl"
+                :class="{ 'blur-sm pointer-events-none ': value.comingSoon }"
+              >
                 {{ value.currencySymbol }}{{ value.plan === "Free" ? value.calculatedPrice : "" }}
               </strong>
-              <span class="text-sm font-medium text-gray-700" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">/15 days</span>
+              <span
+                class="text-sm font-medium text-gray-700"
+                :class="{ 'blur-sm pointer-events-none ': value.comingSoon }"
+              >/15 days</span>
               <!-- <span class="text-sm font-medium text-gray-700" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
               {{ value.price === 'Custom' ? ''
                 :value.price === 'Free'? '15 days': isMonthly
@@ -145,18 +155,19 @@ function providePlanDetails(val: any) {
               </span> -->
               <UButton
                 class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
-                :disabled="value.disabled"
-                :class="[
+                :disabled="value.disabled" :class="[
                   value.disabled ? 'bg-slate-200 border-transparent' : 'hover:bg-transparent hover:text-indigo-600',
                   { 'bg-slate-200 border-transparent pointer-events-none text-custom1-700': value.comingSoon },
-                ]"
-                @click="providePlanDetails(value)"
+                ]" @click="providePlanDetails(value)"
               >
                 {{ value.plan === 'Free' ? 'Get started' : 'Coming soon...' }}
               </UButton>
             </div>
             <div class="p-2 sm:px-4">
-              <p class="text-lg font-medium text-gray-900 sm:text-xl" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">
+              <p
+                class="text-lg font-medium text-gray-900 sm:text-xl"
+                :class="{ 'blur-sm pointer-events-none ': value.comingSoon }"
+              >
                 What's included:
               </p>
               <ul class="mt-2 space-y-2 sm:mt-2" :class="{ 'blur-sm pointer-events-none ': value.comingSoon }">

@@ -79,7 +79,7 @@ function cancelGst() {
     </UCard>
   </UModal>
 
-  <div class="flex justify-center items-center flex-col py-8">
+  <div class="flex justify-center items-center flex-col my-8">
     <h1 class="font-semibold">
       Tax ID and GST Details
     </h1>
