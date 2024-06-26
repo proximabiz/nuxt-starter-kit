@@ -148,14 +148,14 @@ onMounted(() => {
     </UCard>
   </UModal>
 
-  <section class="grid place-items-center mb-8">
+  <section class="grid place-items-center my-8">
     <h1 class="font-semibold mb-4">
       Address and Contact Details
     </h1>
 
     <UCard class="mb-8">
       <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-        <div class="flex gap-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <UFormGroup label="Full Name" name="name" required>
             <UInput v-model="state.name" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name" />
           </UFormGroup>
@@ -163,7 +163,7 @@ onMounted(() => {
             <UInput v-model="state.orgname" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
         </div>
-        <div class="flex gap-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <UFormGroup label="Country" name="country" required>
             <UInput v-model="state.country" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
@@ -171,7 +171,7 @@ onMounted(() => {
             <UInput v-model="state.zip" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
         </div>
-        <div class="flex gap-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <UFormGroup label="City" name="city" required>
             <UInput v-model="state.city" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>

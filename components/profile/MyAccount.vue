@@ -32,17 +32,17 @@ function resetComponent() {
 
 <template>
   <nav v-if="selectedComponent" aria-label="Breadcrumb" class="ml-4">
-    <ol class="flex font-semibold">
-      <li class="cursor-pointer" @click="resetComponent()">
+    <div class="flex font-semibold text-sm">
+      <span class="cursor-pointer" @click="resetComponent()">
         My Account
-      </li>
-      <li class="mx-1">
+      </span>
+      <span class="mx-1">
         >
-      </li>
-      <li class="text-custom4-600">
+      </span>
+      <span class="text-custom4-600">
         {{ breadcrumbText }}
-      </li>
-    </ol>
+      </span>
+    </div>
   </nav>
   <div v-if="!selectedComponent" class="grid place-items-center">
     <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 mt-20">
