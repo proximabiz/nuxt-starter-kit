@@ -26,7 +26,7 @@ async function signInWithOAuth() {
 
 <template>
   <a
-    href="#" class="flex justify-center mt-4 text-white rounded-full border-gray-500 bg-gray-100"
+    href="#" class="flex justify-center ma-4 text-white rounded-full border-gray-500 bg-gray-100"
     @click="signInWithOAuth()"
   >
     <div class="px-4 py-3">

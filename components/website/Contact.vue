@@ -97,9 +97,9 @@ function handlePhoneValidation() {
     </section>
     <!-- <section class="grid grid-cols-2 gap-12"> -->
     <UForm :state="state" :schema="schema" @submit="onSubmit">
-      <div class="grid grid-cols-2 gap-16">
-        <div class="flex flex-col gap-6">
-          <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-16">
+        <div class="flex flex-col gap-6 ">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-3">
             <UFormGroup name="name" label="First Name" required>
               <UInput v-model="state.name" placeholder="First Name" />
             </UFormGroup>
@@ -110,10 +110,12 @@ function handlePhoneValidation() {
           <UFormGroup name="email" label="Email" required>
             <UInput v-model="state.email" placeholder="Your Email" />
           </UFormGroup>
-          <LibVueTelInput ref="phoneRef" :prop-phone="state.phone" class="my-4" />
+          <UFormGroup name="phone" label="Phone" required>
+            <LibVueTelInput ref="phoneRef" :prop-phone="state.phone" class="my-4" />
+          </UFormGroup>
         </div>
         <div class="flex flex-col gap-6">
-          <div class="flex gap-8 mt-4">
+          <div class="flex gap-8 mt-4 order-2 md:order-1">
             <URadio
               label="Ask for demo" color="blue" :model-value="selectedOption" value="Demo"
               @update:model-value="updateSelection"
@@ -123,7 +125,7 @@ function handlePhoneValidation() {
               @update:model-value="updateSelection"
             />
           </div>
-          <UFormGroup name="message" label="Message" required>
+          <UFormGroup name="message" label="Message" required class="order-1 md:order-2">
             <UTextarea
               v-model="state.message" color="white" size="xl" variant="outline"
               placeholder="Write your query/message"
