@@ -94,7 +94,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
     </div>
   </UModal>
   <section class="grid place-items-center mb-8">
-    <h1 class="font-semibold mb-4">
+    <h1 class="font-semibold my-8">
       My Plan
     </h1>
     <UCard>
