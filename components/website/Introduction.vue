@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { useMobileScreen } from '@/composables/UseMobileScreen'
-
-const { isMobile } = useMobileScreen()
 const authStore = useAuthStore()
 
 const authUser = computed(() => authStore.getAuthUser.value)
@@ -24,7 +21,7 @@ const authUser = computed(() => authStore.getAuthUser.value)
         It simplifies the complex concepts into elegant diagrams.
       </p>
       <UButton
-        v-if="!authUser && isMobile" class="mt-4 lg:inline-block py-2 px-6" @click="navigateTo({
+        v-if="!authUser" class="mt-20 lg:hidden py-2 px-6" @click="navigateTo({
           path: '/login',
         })"
       >

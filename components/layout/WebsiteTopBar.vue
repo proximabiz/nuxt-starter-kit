@@ -14,16 +14,17 @@ const authUser = computed(() => authStore.getAuthUser.value)
 interface NavLink {
   name: string
   to: string
+  icon: string
 }
 
 const isLoginRoute = computed(() => route.fullPath === '/login')
 
 const links = ref<NavLink[]>([
-  { name: 'Home', to: '/website' },
-  { name: 'About', to: '/website/about' },
-  { name: 'Pricing', to: '/website/pricing' },
-  { name: 'Contact Us', to: '/website/contact' },
-  { name: 'FAQ', to: '/website/faq' },
+  { name: 'Home', to: '/website', icon: 'i-heroicons-home' },
+  { name: 'About', to: '/website/about', icon: 'i-heroicons-information-circle' },
+  { name: 'Pricing', to: '/website/pricing', icon: 'i-heroicons-currency-dollar' },
+  { name: 'Contact Us', to: '/website/contact', icon: 'i-heroicons-envelope' },
+  { name: 'FAQ', to: '/website/faq', icon: 'i-heroicons-question-mark-circle' },
 ])
 
 function toggleMobileMenu() {
@@ -87,7 +88,7 @@ function isActiveRoute(to: string) {
       <template v-for="(item, index) in links" :key="index">
         <li>
           <a
-            class="text-sm text-gray-400 hover:text-gray-500 cursor-pointer"
+            class="text-sm text-gray-400 hover:text-gray-700 cursor-pointer"
             :class="{ 'active-link': isActiveRoute(item.to) }" @click="navigateTo(item.to)"
           >{{ item.name }}</a>
         </li>
@@ -117,18 +118,25 @@ function isActiveRoute(to: string) {
       <button class="absolute top-5 right-5" @click="toggleMobileMenu">
         <UIcon name="i-heroicons-x-mark" class="size-7" />
       </button>
+      <div class="flex items-center p-5">
+        <img src="/assets/media/logo.png" alt="Logo" class="w-10 h-10 mr-3">
+        <h2 class="text-lg font-semibold text-gray-900">
+          AI Flowmapper
+        </h2>
+      </div>
       <ul class="pt-3 ps-3">
         <li v-for="link in links" :key="link.name" class="mb-1">
           <a
-            class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+            class="flex items-center p-4 me-2 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded cursor-pointer"
+            :class="{ 'active-mobile-link': isActiveRoute(link.to) }"
             @click.prevent="navigateTo(link.to)"
           >
+            <UIcon :name="link.icon" class="w-5 h-5 mr-3" />
             {{ link.name }}
           </a>
         </li>
       </ul>
     </USlideover>
-
     <UDropdown
       v-if="authUser" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }"
       :popper="{ placement: 'bottom-start' }" class="z-50"
@@ -161,5 +169,10 @@ function isActiveRoute(to: string) {
 .active-link {
   color: rgb(48, 48, 250);
   font-weight: 700;
+}
+.active-mobile-link {
+  color: rgb(48, 48, 250);
+  font-weight: 500;
+  background-color: rgb(239 246 255);
 }
 </style>
