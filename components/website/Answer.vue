@@ -13,7 +13,7 @@ const questionsAndAnswers = [
   },
   {
     question: 'Can I have a trial version of the AI FlowMapper?',
-    answer: 'Yes, you can create a trail version of the AI FlowMapper and access it for XXXX number of days for free.',
+    answer: 'Yes, you can create a trail version of the AI FlowMapper and access it for 15 number of days for free.',
   },
   {
     question: 'What does the "I have more details" checkbox indicate?',
