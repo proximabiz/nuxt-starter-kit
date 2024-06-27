@@ -146,6 +146,7 @@ onMounted(() => {
                       <UTooltip text="Edit" :popper="{ arrow: true }">
                         <UButton
                           color="blue"
+                          class="hidden lg:inline-flex"
                           icon="i-heroicons-pencil-square"
                           size="sm"
                           variant="ghost"

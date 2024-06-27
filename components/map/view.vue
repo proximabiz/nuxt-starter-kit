@@ -423,7 +423,11 @@ onBeforeRouteLeave((to) => {
 
   <!-- Navigation drawer -->
   <USlideover v-model="isOpen">
-    <div class="">
+    <button class="absolute top-5 right-5" @click="isOpen = false">
+      <UIcon name="i-heroicons-x-mark" class="size-6" />
+    </button>
+
+    <div class="mt-10">
       <h1 id="home" class="text-2xl mb-4 font-extrabold text-center mt-6">
         Create Mindmap With AI Magic
       </h1>
