@@ -1,5 +1,5 @@
 <template>
-  <div class="flex">
+  <div class="flex overflow-y-auto md:overflow-hidden">
     <div class="flex-none">
       <LayoutAppDrawer />
     </div>

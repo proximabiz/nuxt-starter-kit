@@ -111,7 +111,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="pl-10">
+  <div class="pl-6">
     <template v-if="!diagramsList?.length">
       <div class="flex justify-center my-4">
         <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />
@@ -119,15 +119,14 @@ onMounted(() => {
       <DiagramEmptyListInstructions />
     </template>
     <template v-else>
-      <div class="flex justify-end my-4">
+      <div class="flex justify-center sm:justify-end my-4">
         <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
       </div>
-
-      <div class="overflow-x-auto">
+      <div class="sm:overflow-x-hidden overflow-x-auto">
         <div class="sm:-mx-6 lg:-mx-8">
-          <div class="inline-block w-full py-2 sm:px-6 lg:px-8">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-sm font-light">
+          <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+            <div class="overflow-x-scroll">
+              <table class="min-w-full text-left text-sm font-light">
                 <thead class="border-b font-medium dark:border-neutral-500">
                   <tr>
                     <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
@@ -137,18 +136,9 @@ onMounted(() => {
                 </thead>
                 <tbody>
                   <tr v-for="(item, index) in diagramsList" :key="index" class="border-b dark:border-neutral-500">
-                    <!-- <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.id }}
-                  </td> -->
                     <td class="whitespace-nowrap px-6 py-4">
                       {{ item.title }}
                     </td>
-                    <!-- <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.keywords ? item.keywords : 'No keywords specified' }}
-                  </td> -->
-                    <!-- <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.created_at }}
-                  </td> -->
                     <td class="whitespace-nowrap px-6 py-4">
                       {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
                     </td>
