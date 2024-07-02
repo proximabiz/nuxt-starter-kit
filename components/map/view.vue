@@ -501,6 +501,9 @@ onBeforeRouteLeave((to) => {
 
   <!-- versions drawer -->
   <USlideover v-model="isVersionDrawerOpen" class="">
+    <button class="absolute top-5 right-5" @click="isVersionDrawerOpen = false">
+      <UIcon name="i-heroicons-x-mark" class="size-6" />
+    </button>
     <div class="overflow-auto">
       <h1 id="home" class="text-2xl mb-4 font-extrabold text-center mt-6">
         Version History
