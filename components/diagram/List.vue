@@ -76,8 +76,13 @@ async function createDiagram() {
   }
 }
 
-function redirectToPath(diagramId: string) {
-  return navigateTo(`/app/diagram/${diagramId}`)
+function redirectToPath(diagramId: string, mode: string = 'edit') {
+  return navigateTo({
+    path: `/app/diagram/${diagramId}`,
+    query: {
+      mode,
+    },
+  })
 }
 
 async function deleteDiagram(diagramId: string) {
@@ -143,23 +148,23 @@ onMounted(() => {
                       {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
                     </td>
                     <td class="whitespace-nowrap px-6 py-4">
+                      <UTooltip text="View" :popper="{ arrow: true }">
+                        <UButton
+                          color="grey" class="inline-flex" icon="i-heroicons-eye" size="sm"
+                          variant="ghost" @click="redirectToPath(item.id, 'view')"
+                        />
+                      </UTooltip>
+
                       <UTooltip text="Edit" :popper="{ arrow: true }">
                         <UButton
-                          color="blue"
-                          class="hidden lg:inline-flex"
-                          icon="i-heroicons-pencil-square"
-                          size="sm"
-                          variant="ghost"
-                          @click="redirectToPath(item.id)"
+                          color="blue" class="hidden lg:inline-flex" icon="i-heroicons-pencil-square" size="sm"
+                          variant="ghost" @click="redirectToPath(item.id)"
                         />
                       </UTooltip>
 
                       <UTooltip text="Delete" :popper="{ arrow: true }">
                         <UButton
-                          color="blue"
-                          icon="i-heroicons-trash"
-                          size="sm"
-                          variant="ghost"
+                          color="red" icon="i-heroicons-trash" size="sm" variant="ghost"
                           @click="deleteDiagram(item.id)"
                         />
                       </UTooltip>

@@ -3,7 +3,6 @@ import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
 import dayjs from 'dayjs'
 import { cloneDeep } from 'lodash'
-import type { Options } from 'mind-elixir'
 import MindElixir from 'mind-elixir'
 import { useFileExporter } from '@/composables/ExportJsonFile'
 
@@ -17,14 +16,14 @@ const diagramStore = useDiagramStore()
 const { $success, $error } = useNuxtApp()
 const globalStore = useGlobalStore()
 const { exportJSONFile } = useFileExporter()
+const route = useRoute()
 
 const isLoading = ref(false)
-
 const apiResponse = ref()
 const oldApiResponse = ref()
 const updateApiResponse = ref()
 const saveApiResponse = ref()
-const isOpen = ref(true)
+const isOpen = ref(false)
 const isVersionDrawerOpen = ref(false)
 const mind = ref()
 const isSavePopupOpen = ref(false)
@@ -46,6 +45,31 @@ const items = [{
 }]
 
 const versionsItems = ref()
+
+/** ----------- Computed ----------- */
+const isViewMode = computed(() => route.query?.mode === 'view')
+const isEditMode = computed(() => !route.query?.mode || route.query?.mode === 'edit')
+const mindMapOptions = computed(() => {
+  return {
+    el: '#map',
+    direction: 2,
+    locale: 'en',
+    allowUndo: false,
+    draggable: false,
+    editable: isEditMode.value,
+    keyPress: false,
+    isFocusMode: false,
+    mobileMenu: false,
+    overflowHidden: false,
+    contextMenu: isEditMode.value,
+    toolbar: isEditMode.value,
+    contextMenuOption: {
+      focus: true,
+      link: true,
+      extend: [],
+    },
+  }
+})
 
 // Fetches the list of diagram versions and updates UI state
 async function fetchDiagramVersions() {
@@ -75,7 +99,8 @@ async function fetchMap() {
         form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
         oldApiResponse.value = cloneDeep(apiResponse.value[0].response.chartDetails[0].nodeData)
       }
-      init()
+
+      initCore(apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails[0].nodeData)
 
       globalStore.pageHeading.title = form.value.title
       hasEvent.value = true
@@ -86,89 +111,19 @@ async function fetchMap() {
     hasEvent.value = false
   }
 }
-// Initializes the mind map with data from the API response
-function init() {
-  const data: any = {
+
+// Initializes the mind map with data from the API responses
+function initCore(apiResponseNodeData: any) {
+  mind.value = new MindElixir(mindMapOptions.value)
+
+  // Show node menu only when on edit mode
+  if (isEditMode.value)
+    mind.value.install(nodeMenu)
+
+  mind.value.init({
     linkData: {},
-    nodeData: apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails[0].nodeData,
-  }
-  const options: Options = {
-    el: '#map',
-    direction: 2,
-    locale: 'en',
-    contextMenuOption: {
-      focus: true,
-      link: true,
-      extend: [],
-    },
-  }
-
-  mind.value = new MindElixir(options)
-  mind.value.install(nodeMenu)
-  mind.value.init(data)
-}
-
-function init1() {
-  const data: any = {
-    linkData: {},
-    nodeData: updateApiResponse.value.response.chartDetails[0].nodeData,
-  }
-  const options: Options = {
-    el: '#map',
-    direction: 2,
-    locale: 'en',
-    contextMenuOption: {
-      focus: true,
-      link: true,
-      extend: [],
-    },
-  }
-
-  mind.value = new MindElixir(options)
-  mind.value.install(nodeMenu)
-  mind.value.init(data)
-}
-
-function init2() {
-  const data: any = {
-    linkData: {},
-    nodeData: updateApiResponse.value.nodeData,
-  }
-  const options: Options = {
-    el: '#map',
-    direction: 2,
-    locale: 'en',
-    contextMenuOption: {
-      focus: true,
-      link: true,
-      extend: [],
-    },
-  }
-
-  mind.value = new MindElixir(options)
-  mind.value.install(nodeMenu)
-  mind.value.init(data)
-}
-
-function init3() {
-  const data: any = {
-    linkData: {},
-    nodeData: updateApiResponse.value[0].nodeData,
-  }
-  const options: Options = {
-    el: '#map',
-    direction: 2,
-    locale: 'en',
-    contextMenuOption: {
-      focus: true,
-      link: true,
-      extend: [],
-    },
-  }
-
-  mind.value = new MindElixir(options)
-  mind.value.install(nodeMenu)
-  mind.value.init(data)
+    nodeData: apiResponseNodeData,
+  })
 }
 
 async function updateMap() {
@@ -189,8 +144,10 @@ async function updateMap() {
     isLoading.value = false
     isOpen.value = false
     if (updateApiResponse.value.response.chartDetails[0].nodeData) {
-      init1()
+      initCore(updateApiResponse.value.response.chartDetails[0].nodeData)
+
       form.value.title = updateApiResponse.value.response.chartDetails[0].nodeData.topic as string
+
       // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
       hasEvent.value = true
     }
@@ -270,11 +227,11 @@ function loadJSON(jsonData: JSON) {
   updateApiResponse.value = jsonData
 
   if (updateApiResponse.value.nodeData) {
-    init2()
+    initCore(updateApiResponse.value.nodeData)
     form.value.title = updateApiResponse.value.nodeData.topic
   }
   else {
-    init3()
+    initCore(updateApiResponse.value[0].nodeData)
     form.value.title = updateApiResponse.value[0].nodeData.topic
   }
   // form.value.title = updateApiResponse.value[0].nodeData.topic as string
@@ -296,7 +253,7 @@ function createMapFromJSON() {
     updateApiResponse.value = parsedObject
 
     if (updateApiResponse.value.nodeData) {
-      init2()
+      initCore(updateApiResponse.value.nodeData)
       form.value.title = updateApiResponse.value.topic
 
       isOpen.value = false
@@ -326,6 +283,10 @@ function closePopup() {
 }
 // Lifecycle hook to handle before-route-leave event, prompting for save if changes were made
 onBeforeRouteLeave((to) => {
+  // No need of this popup in view only mode
+  if (isViewMode.value)
+    return
+
   if (oldApiResponse.value && mind.value.getData().nodeData && JSON.stringify(oldApiResponse.value) !== JSON.stringify(mind.value.getData().nodeData)) {
     isSavePopupOpen.value = true
   }
@@ -338,13 +299,18 @@ onBeforeRouteLeave((to) => {
   if (!isSave.value)
     return false
 })
+
+/** ----------- Hooks ----------- */
+onMounted(() => {
+  isOpen.value = isEditMode.value
+})
 </script>
 
 <template>
   <div class="flex fixed right-0 w-12 flex-col justify-between bg-white z-20">
     <div class="px-2">
       <ul class="space-y-1 border-gray-100 pt-4">
-        <li @click="isOpen = true">
+        <li v-if="isEditMode" @click="isOpen = true">
           <a
             class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
           >
@@ -357,7 +323,7 @@ onBeforeRouteLeave((to) => {
             </span>
           </a>
         </li>
-        <div :class="{ 'cursor-not-allowed': !hasEvent }">
+        <div v-if="isEditMode" :class="{ 'cursor-not-allowed': !hasEvent }">
           <li :class="{ 'pointer-events-none': !hasEvent }" @click="saveMap(false)">
             <a
               class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -402,7 +368,7 @@ onBeforeRouteLeave((to) => {
             </a>
           </li>
         </div>
-        <div :class="{ 'cursor-not-allowed': !hasEvent }">
+        <div v-if="isEditMode" :class="{ 'cursor-not-allowed': !hasEvent }">
           <li :class="{ 'pointer-events-none': !hasEvent }" @click="exportJSON()">
             <a
               class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
