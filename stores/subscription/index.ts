@@ -1,8 +1,26 @@
-import type { AddAPIPayload, CancelAPIPayload, State } from './types'
+import type { ActivePlanType, AddAPIPayload, CancelAPIPayload, State } from './types'
+import type { Database } from '~/types/supabase'
 
 function initialState() {
   return {
     subscriptionStatus: { planName: '', planStatus: '' },
+    activePlan: {
+      id: '',
+      user_id: '',
+      amount: 0,
+      plan_start_date: '',
+      plan_end_date: '',
+      auto_renew: false,
+      is_subscription_active: false,
+      sub_key: null,
+      name: '',
+      description: '',
+      monthly_price: 0,
+      status: false,
+      features: null,
+      yearly_price: 0,
+      subscription_status: '',
+    },
     billingDetails: {
       name: '',
       orgName: '',
@@ -24,29 +42,42 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
   state: (): State => initialState(),
   getters: {},
   actions: {
-    async fetchActivePlan() {
+    async fetchActivePlan(): Promise<ActivePlanType> {
       const authStore = useAuthStore()
 
       const userId = authStore.getAuthUser.value?.id
-      const supabaseClient = useSupabaseClient()
 
-      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', { userid: userId })
+      // FIXME:: Find better way to handle this
+      if (!userId) {
+        return new Promise((resolve) => {
+          return resolve(initialState().activePlan)
+        })
+      }
+
+      const supabaseClient = useSupabaseClient<Database>()
+
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', {
+        userid: userId as string,
+      })
 
       if (supabaseError)
         throw supabaseError
 
-      this.subscriptionStatus.planStatus = supabaseResponse.subscription_status
-      this.subscriptionStatus.planName = supabaseResponse.name
-      return supabaseResponse
+      const response = supabaseResponse as ActivePlanType
+      this.subscriptionStatus.planStatus = response?.subscription_status
+      this.subscriptionStatus.planName = response?.name
+
+      return response
     },
 
     async addSubscription(payload: AddAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/subscriptions', {
         method: 'POST',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
@@ -58,12 +89,13 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
     },
 
     async cancelSubscription(payload: CancelAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/subscriptions/cancel', {
         method: 'PATCH',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
 

@@ -2,5 +2,6 @@
 /.output
 /node_modules
 
+.env
 .gitignore
 README.md

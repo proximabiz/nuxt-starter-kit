@@ -1,11 +1,12 @@
 import { CustomError } from '../../utlis/custom.error'
 import { protectRoute } from '../../utlis/route.protector'
 import { serverSupabaseClient } from '#supabase/server'
+import type { Database } from '~/types/supabase'
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event)
   const userID = event.context.user.id
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseClient<Database>(event)
   const { data, error, status } = await client.from('diagrams').select(
     `
     id,
@@ -29,5 +30,6 @@ export default defineEventHandler(async (event) => {
   return {
     data,
     status,
+    message: 'Success',
   }
 })

@@ -5,7 +5,8 @@ interface Props {
 const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
-const duePrice = ref('$77.8')
+const duePrice = ref<string>(props.planDetails.currencySymbol + props.planDetails.calculatedPrice)
+const { $error } = useNuxtApp()
 
 // const confirmation = reactive({
 //   isModalVisible: false,
@@ -15,7 +16,6 @@ const subscriptionStore = useSubscriptionStore()
 const billingAddressCard = computed(() => subscriptionStore.billingDetails)
 
 const steps = [
-  // {label: '', component: 'websitePricing'},
   { label: 'Your plan', component: 'BillingDetailsBillling' },
   { label: 'Your Address', component: 'BillingAddress' },
   { label: 'Card Details', component: 'BillingCardDetails' },
@@ -34,7 +34,8 @@ function setActiveStep(index: number) {
     if (!isAddressComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing address.'
-      alert('Please fill out all the fields in your billing address.')
+
+      $error('Please fill out all the fields in your billing address.')
       return
     }
     // else if(isAddressComplete){
@@ -46,7 +47,7 @@ function setActiveStep(index: number) {
     if (!isCardDetailsComplete) {
       // confirmation.isModalVisible=true
       // confirmation.context='Please fill out all the fields in your billing card details.'
-      alert('Please fill out all the fields in your billing card details.')
+      $error('Please fill out all the fields in your billing card address.')
       return
     }
     // else if(isCardDetailsComplete){
@@ -88,16 +89,13 @@ function isActive(index: number) {
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <USelect v-model="user" :options="users" color="blue" />
           <div>
-            <span>{{ props.planDetails.month }} {{ props.planDetails.month > 1 ? "months" : "month" }} *
-              {{ props.planDetails.price }}</span>
+            <span>1 month *
+              {{ props.planDetails.month > 1 ? props.planDetails.month : '' }}</span>
             <span class="font-semibold pl-1">{{ props.planDetails.currencySymbol }}{{ props.planDetails.calculatedPrice }}</span>
           </div>
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <div>Tax</div>
-          <div class="">
-            $11.88
-          </div>
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <div class="font-semibold">
@@ -117,5 +115,3 @@ function isActive(index: number) {
     </UButton>
   </div>
 </template>
-
-<style scoped></style>

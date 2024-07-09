@@ -1,3 +1,4 @@
+import type { Database } from '../../../types/supabase'
 import { serverSupabaseClient } from '#supabase/server'
 import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
@@ -8,10 +9,11 @@ export default defineEventHandler(async (event) => {
   if (!userID)
     throw new CustomError('Error: no user found!', 404)
 
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseClient<Database>(event)
   const { data, error, status } = await client.from('user_details').select(
-    `*`,
-  ).eq('user_id', userID).select('gst_number').single()
+    'id, user_id, name, organisation_name, gst_number, is_active',
+  ).eq('user_id', userID).select('gst_number').returns<Database>()
+
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)
 
@@ -21,5 +23,6 @@ export default defineEventHandler(async (event) => {
   return {
     data,
     status,
+    message: 'Success',
   }
 })

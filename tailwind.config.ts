@@ -9,15 +9,20 @@ export default <Partial<Config>> {
     './pages/**/*.vue',
     './plugins/**/*.{js,ts}',
     './nuxt.config.{js,ts}',
-    './node_modules/flowbite/**/*.{js,ts}',
   ],
   theme: {
     extend: {
       colors: customColors,
+      width: {
+        500: '500px',
+      },
+    },
+    listStyleType: {
+      none: 'none',
+      disc: 'disc',
+      decimal: 'decimal',
+      circle: 'circle',
     },
   },
-  plugins: [
-    // eslint-disable-next-line ts/no-require-imports
-    require('flowbite/plugin'),
-  ],
+  plugins: [],
 }

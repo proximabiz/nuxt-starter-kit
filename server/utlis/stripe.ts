@@ -45,6 +45,26 @@ async function addPaymentMethod(cardNumber: string, expMonth: number, expYear: n
   }
 }
 
+// For Testing Payment
+async function intentPaymentMethod(receipt_email: string, amount: number) {
+  try {
+    const paymentIntent = await stripeInstance.paymentIntents.create({
+      amount,
+      currency: 'gbp',
+      payment_method: 'pm_card_visa',
+      receipt_email,
+    })
+    return { status: 'Success', statusCode: 200, paymentId: paymentIntent.id }
+  }
+  catch (error) {
+    let errorMessage = handleStripeErrors(error)
+    if (!errorMessage)
+      errorMessage = `Could not add payment method : ${error.message}`
+
+    return { status: 'Error', statusCode: error.statusCode, errorMessage }
+  }
+}
+
 // Attach payment method to the customers
 async function attachPaymentMethodToUser(stripeCustomerId: string, stripePaymentMethodId: string) {
   try {
@@ -107,6 +127,39 @@ async function cancelSubscription(subscriptionId: string) {
   }
 }
 
+// Get customers list from the stripe platform
+async function getStripeCustomers() {
+  try {
+    const customersList = await stripeInstance.customers.list({ limit: 100 })
+    return { status: 'Success', statusCode: 200, customersList }
+  }
+  catch (error: any) {
+    return { status: 'Error', statusCode: error.statusCode, error: error.message }
+  }
+}
+
+// check customer from the stripe platform
+async function checkStripeCustomer(customerId: string) {
+  try {
+    const customer = await stripeInstance.customers.retrieve(customerId)
+    return { status: 'Success', statusCode: 200, customer }
+  }
+  catch (error: any) {
+    return { status: 'Error', statusCode: error.statusCode, error: error.message }
+  }
+}
+
+// remove customer from the stripe platform
+async function removeStripeCustomer(customerId: string) {
+  try {
+    await stripeInstance.customers.del(customerId)
+    return true
+  }
+  catch (error: any) {
+    return { status: 'Error', statusCode: error.statusCode, error: error.message }
+  }
+}
+
 function handleStripeErrors(error: any) {
   let errorMessage = ''
   switch (error.type) {
@@ -138,4 +191,4 @@ function handleStripeErrors(error: any) {
   return errorMessage
 }
 
-export { createStripeCustomer, addPaymentMethod, attachPaymentMethodToUser, createPaymentIntent, cancelSubscription }
+export { createStripeCustomer, addPaymentMethod, attachPaymentMethodToUser, createPaymentIntent, cancelSubscription, intentPaymentMethod, getStripeCustomers, checkStripeCustomer, removeStripeCustomer }

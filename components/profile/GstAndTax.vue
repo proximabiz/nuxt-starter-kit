@@ -6,7 +6,7 @@ interface State {
 //   status: number
 //   message: string
 // }
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const userStore = useUserStore()
 const state = reactive<State>({
   gstNumber: '',
@@ -27,7 +27,7 @@ async function getTaxGst() {
     }
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 
@@ -45,11 +45,11 @@ async function onSubmit(): Promise<void> {
     if (response?.status === 200) {
       isDisabled.value = true
       isModalVisible.value = false
-      notify.success(response.message)
+      $success(response.message)
     }
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 async function handleDeleteConfirm(): Promise<void> {
@@ -60,12 +60,15 @@ async function handleDeleteConfirm(): Promise<void> {
       state.gstNumber = ''
       isDisabled.value = false
       isModalVisible.value = false
-      notify.success(response.message)
+      $success(response.message)
     }
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
+}
+function cancelGst() {
+  state.gstNumber = ''
 }
 </script>
 
@@ -77,7 +80,7 @@ async function handleDeleteConfirm(): Promise<void> {
     </UCard>
   </UModal>
 
-  <div class="flex justify-center items-center flex-col py-8">
+  <div class="flex justify-center items-center flex-col my-8">
     <h1 class="font-semibold">
       Tax ID and GST Details
     </h1>
@@ -91,7 +94,7 @@ async function handleDeleteConfirm(): Promise<void> {
           />
         </UFormGroup>
         <div class="flex gap-6 mt-8">
-          <UButton v-if="!isDisabled" type="submit" class="w-fit" color="blue">
+          <UButton v-if="!isDisabled" class="w-fit" color="blue" @click="cancelGst">
             Cancel
           </UButton>
           <UButton v-if="!isDisabled" type="submit" class="w-fit" color="blue">

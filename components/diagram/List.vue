@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 
 const diagramStore = useDiagramStore()
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const diagramTypeStore = useDiagramTypeStore()
 const isLoading = ref(false)
 const isDelete = ref(false)
@@ -15,10 +15,10 @@ const headers = computed(() => [
     title: 'Title',
     value: 'title',
   },
-  {
-    title: 'Keywords',
-    value: 'keywords',
-  },
+  // {
+  //   title: 'Keywords',
+  //   value: 'keywords',
+  // },
   {
     title: 'Last Modified On',
     value: 'modified_at',
@@ -38,7 +38,7 @@ async function fetchDiagramTypes() {
     await diagramTypeStore.list()
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 
@@ -48,7 +48,7 @@ async function fetchDiagrams() {
     await fetchDiagramTypes()
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 
@@ -66,16 +66,23 @@ async function createDiagram() {
     })
 
     isLoading.value = false
+
+    /* @ts-expect-error need to be fixed */
     redirectToPath(response?.diagram[0].id)
   }
   catch (error) {
     isLoading.value = false
-    notify.error(error)
+    $error(error)
   }
 }
 
-function redirectToPath(diagramId: string) {
-  return navigateTo(`/app/diagram/${diagramId}`)
+function redirectToPath(diagramId: string, mode: string = 'edit') {
+  return navigateTo({
+    path: `/app/diagram/${diagramId}`,
+    query: {
+      mode,
+    },
+  })
 }
 
 async function deleteDiagram(diagramId: string) {
@@ -85,7 +92,7 @@ async function deleteDiagram(diagramId: string) {
   }
   catch (error) {
     isDelete.value = true
-    notify.error(error)
+    $error(error)
   }
 }
 
@@ -95,11 +102,11 @@ async function confirmedDeleteDiagram() {
       diagramId: deleteDiagramId.value,
     })
     isDelete.value = false
-    notify.success('Diagram deleted successfully!')
+    $success('Diagram deleted successfully!')
     fetchDiagrams()
   }
   catch (error) {
-    notify.error(error)
+    $error(error)
   }
 }
 
@@ -109,60 +116,67 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="pl-10">
-    <div class="flex justify-end my-4">
-      <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
-    </div>
-    <div class="overflow-x-auto">
-      <div class="sm:-mx-6 lg:-mx-8">
-        <div class="inline-block w-full py-2 sm:px-6 lg:px-8">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm font-light">
-              <thead class="border-b font-medium dark:border-neutral-500">
-                <tr>
-                  <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
-                    {{ header.title }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in diagramsList" :key="index" class="border-b dark:border-neutral-500">
-                  <!-- <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.id }}
-                  </td> -->
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.title }}
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.keywords || 'No keywords specified' }}
-                  </td>
-                  <!-- <td class="whitespace-nowrap px-6 py-4">
-                    {{ item.created_at }}
-                  </td> -->
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    <UButton
-                      icon="i-heroicons-pencil-square"
-                      size="sm"
-                      variant="ghost"
-                      @click="redirectToPath(item.id)"
-                    />
-                    <UButton
-                      icon="i-heroicons-trash"
-                      size="sm"
-                      variant="ghost"
-                      @click="deleteDiagram(item.id)"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+  <div class="pl-6">
+    <template v-if="!diagramsList?.length">
+      <div class="flex justify-center my-4">
+        <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />
+      </div>
+      <DiagramEmptyListInstructions />
+    </template>
+    <template v-else>
+      <div class="flex justify-center sm:justify-end my-4">
+        <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
+      </div>
+      <div class="sm:overflow-x-hidden overflow-x-auto">
+        <div class="sm:-mx-6 lg:-mx-8">
+          <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+            <div class="overflow-x-scroll">
+              <table class="min-w-full text-left text-sm font-light">
+                <thead class="border-b font-medium dark:border-neutral-500">
+                  <tr>
+                    <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
+                      {{ header.title }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in diagramsList" :key="index" class="border-b dark:border-neutral-500">
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ item.title }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      <UTooltip text="View" :popper="{ arrow: true }">
+                        <UButton
+                          color="grey" class="inline-flex" icon="i-heroicons-eye" size="sm"
+                          variant="ghost" @click="redirectToPath(item.id, 'view')"
+                        />
+                      </UTooltip>
+
+                      <UTooltip text="Edit" :popper="{ arrow: true }">
+                        <UButton
+                          color="blue" class="hidden lg:inline-flex" icon="i-heroicons-pencil-square" size="sm"
+                          variant="ghost" @click="redirectToPath(item.id)"
+                        />
+                      </UTooltip>
+
+                      <UTooltip text="Delete" :popper="{ arrow: true }">
+                        <UButton
+                          color="red" icon="i-heroicons-trash" size="sm" variant="ghost"
+                          @click="deleteDiagram(item.id)"
+                        />
+                      </UTooltip>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />

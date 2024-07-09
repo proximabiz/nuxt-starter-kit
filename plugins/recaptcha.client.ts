@@ -7,7 +7,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const googleRecaptchaSiteKey = config.public.SITE_KEY
   // Use the recaptcha methods
   nuxtApp.vueApp.use(VueReCaptcha, {
-    siteKey: googleRecaptchaSiteKey,
+    siteKey: googleRecaptchaSiteKey as string,
     loaderOptions: {
       autoHideBadge: false,
       explicitRenderParameters: {

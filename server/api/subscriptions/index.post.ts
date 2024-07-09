@@ -1,9 +1,10 @@
+import type { Database } from '../../../types/supabase'
 import { CustomError } from '../../utlis/custom.error'
 import { UserSubscriptionValidation } from '../../utlis/validations'
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  const client = await serverSupabaseClient(event)
+  const client = await serverSupabaseClient<Database>(event)
   const params = await readBody(event)
   const validate = await UserSubscriptionValidation.validateAsync(params)
   if (!validate)
@@ -46,10 +47,19 @@ export default defineEventHandler(async (event) => {
     }
   }
   else {
-    // End date for a week (7 days)
-    const weekDate = endDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000))
-    weekDate.setUTCHours(23, 59, 0, 0) // Set time to 24:00:00.000Z
-    endDate = weekDate
+    // checking for proxima users
+    const checkUser = checkEmailDomain(params.email, 'proximabiz.com')
+    if (checkUser === true) {
+      const yearDate = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate())
+      yearDate.setUTCHours(23, 59, 0, 0)
+      endDate = yearDate
+    }
+    else {
+      // End date for a week (15 days)
+      const weekDate = endDate = new Date(currentDate.getTime() + (14 * 24 * 60 * 60 * 1000))
+      weekDate.setUTCHours(23, 59, 0, 0)
+      endDate = weekDate
+    }
   }
   const { data: userSub, error, status } = await client.from('user_subscriptions').insert([
     {
@@ -59,9 +69,14 @@ export default defineEventHandler(async (event) => {
       plan_start_date: currentDate,
       plan_end_date: endDate,
     },
-  ] as any)
+  ] as never)
 
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)
   return { message: 'You have successfully subscribed!', data: { userSub }, status }
 })
+function checkEmailDomain(email: string, domain: string): boolean {
+  const emailParts = email.split('@')
+  const emailDomain = emailParts[1]
+  return emailDomain === domain
+}

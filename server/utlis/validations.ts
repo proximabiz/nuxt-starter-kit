@@ -5,6 +5,7 @@ export const ChartValidation = Joi.object({
   diagramTypeId: Joi.string().required(),
   isDetailed: Joi.boolean().optional().default(false),
   details: Joi.string().optional(),
+  diagramId: Joi.string().optional(),
 })
 
 export const PATCHChartUpdateValidation = Joi.object({
@@ -33,15 +34,16 @@ export const CompleteOrderValidation = Joi.object({
   zipcode: Joi.string().required(),
   address: Joi.string().required(),
   phoneNumber: Joi.string().required(),
-
+  amount: Joi.number().required(),
+  email: Joi.string().required().email(),
   subscriptionTypeId: Joi.string().required(),
-  planType: Joi.string().required(),
-  currencyCode: Joi.string().length(3).required(),
+  planType: Joi.string().valid('monthly', 'yearly').required(),
+  currencyCode: Joi.string().valid('INR', 'EUR', 'USD').min(3).max(3).length(3).required(),
 
   cardHolderName: Joi.string().required(),
-  cardNumber: Joi.number().min(12).max(16).required(),
+  cardNumber: Joi.string().creditCard().required(),
   expiryDate: Joi.string().min(5).max(5).required(),
-  securityCode: Joi.number().min(3).max(4).required(),
+  securityCode: Joi.string().min(3).max(4).required(),
 
 })
 
@@ -75,6 +77,7 @@ export const UserSubscriptionValidation = Joi.object({
   userId: Joi.string().required(),
   subscriptionTypeId: Joi.string().required(),
   amount: Joi.number().required(),
+  email: Joi.string().email().required(),
 })
 
 export const CancelUserSubscriptionValidation = Joi.object({
@@ -90,4 +93,5 @@ export const ContactUsValidation = Joi.object({
   requestFor: Joi.string().required(),
   email: Joi.string().email().required(),
   phoneNumber: Joi.string().required(),
+  token: Joi.string().required(),
 })

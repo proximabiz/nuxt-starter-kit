@@ -1,40 +1,65 @@
 <script setup lang="ts">
+/** Constants */
 const authStore = useAuthStore()
-const route = useRoute()
-
-const authUser = computed(() => authStore.getAuthUser.value)
 const subscriptionStore = useSubscriptionStore()
 const userStore = useUserStore()
+const route = useRoute()
 
+/** Refs */
 const showUpgradeModal = ref<boolean>(false)
 
+/** Computed */
+const authUser = computed(() => authStore.getAuthUser.value)
+
+/** Watcher */
 watch(
   () => authUser.value,
   async (user) => {
-    if (!user && !route.fullPath.includes('/login'))
-      navigateTo('/login')
     if (user?.id) {
       const response = await subscriptionStore.fetchActivePlan()
-      if (response?.subscription_status === 'PLAN_EXPIRED') {
-        showUpgradeModal.value = true
-      }
-      else if (response.subscription_status === 'NO_SUBSCRIPTION') {
-        const payload = {
-          userId: user.id,
-          subscriptionTypeId: '10dbc647-04ea-4588-b6c8-7c535049f18c',
-          amount: 0,
-        }
-        if (!route.fullPath.includes('/profile/account'))
-          await subscriptionStore.addSubscription(payload)
-      }
-    }
+      switch (response?.subscription_status) {
+        case 'PLAN_EXPIRED':
+          showUpgradeModal.value = true
 
+          break
+        case 'NO_SUBSCRIPTION':
+
+          if (!route.fullPath.includes('/profile/account')) {
+            const payload = {
+              userId: user.id,
+              subscriptionTypeId: '10dbc647-04ea-4588-b6c8-7c535049f18c',
+              amount: 0,
+              email: authUser.value?.email,
+            }
+            await subscriptionStore.addSubscription(payload)
+          }
+          break
+
+        default:
+          break
+      }
+      //   if (response?.subscription_status === 'PLAN_EXPIRED') {
+      //     showUpgradeModal.value = true
+      //   }
+      //   else if (response.subscription_status === 'NO_SUBSCRIPTION') {
+      //     const payload = {
+      //       userId: user.id,
+      //       subscriptionTypeId: '10dbc647-04ea-4588-b6c8-7c535049f18c',
+      //       amount: 0,
+      //       email: authUser.value?.email,
+      //     }
+      //     if (!route.fullPath.includes('/profile/account'))
+      //       await subscriptionStore.addSubscription(payload)
+      //   }
+      // }
+    }
     if (user && route.fullPath.includes('/login'))
       return handlePostAuthentication()
   },
   { immediate: true },
 )
 
+/** Methods */
 function upgradePlan() {
   showUpgradeModal.value = false
   navigateTo('/website/pricing')
@@ -46,7 +71,7 @@ async function handlePostAuthentication() {
   if (!response)
     return
 
-  if (!response?.data?.userDetails[0]?.name || !response?.data?.userDetails[0]?.organisation_name)
+  if (!response.name || !response?.organisation_name)
     return navigateTo('/user/personal-details')
   return navigateTo('/app/diagram/list')
 }
@@ -68,7 +93,6 @@ async function handlePostAuthentication() {
   </UModal>
   <NuxtLayout>
     <NuxtPage />
-    <UNotifications />
   </NuxtLayout>
 </template>
 

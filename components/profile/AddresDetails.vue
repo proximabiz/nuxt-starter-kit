@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { VueTelInput } from 'vue-tel-input'
-import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+import type PhoneInputField from '@/components/lib/VueTelInput/Index.vue'
 
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const userStore = useUserStore()
-
+const authStore = useAuthStore()
 const isDisabled = ref(false)
 const isEditable = ref(false)
 const isLoading = ref(true)
 const isNewUser = ref(false)
+const authUser = computed(() => authStore.getAuthUser.value)
 
 interface FormState {
-  name?: string
-  orgname?: string
+  name: string
+  orgname: string
   country: string
   zip: string
   city: string
@@ -31,31 +31,37 @@ const initialState: FormState = {
   region: '',
   address: '',
   phone: '',
-  email: '',
+  email: authUser.value?.email,
 }
 const state = reactive<FormState>({ ...initialState })
+const phoneRef = ref<typeof PhoneInputField>()
+
 // #validation
 
-const nameValidation = z.string().refine((value) => {
-  // Check for two words separated by space
+function nonEmptyString(field: string) {
+  return z.string()
+    .min(1, `${field} is required`)
+    .refine(value => value.trim().length > 0, `${field} can't be empty or spaces only`)
+    .refine(value => !value.startsWith(' '), `${field} can't start with a space`)
+}
+
+const nameValidation = nonEmptyString('Full name').refine((value) => {
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
     return false // Ensure there are at least two words
+
   // Check for minimum length and no special characters or numbers
-  return parts.every((part) => {
-    return /^[A-Za-z]+$/.test(part) && part.length >= 4
-  })
+  return parts.every(part => /^[A-Za-z]+$/.test(part) && part.length >= 3)
 }, {
-  message: 'Enter a valid full name',
+  message: 'Enter a valid name of 3 letters and without numbers and symbols',
 })
 const schema = z.object({
   name: nameValidation,
-  country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip is required'),
-  city: z.string().min(1, 'City is required'),
-  region: z.string().min(1, 'Region is required'),
-  address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
+  country: nonEmptyString('Country'),
+  zip: nonEmptyString('Zip code'),
+  city: nonEmptyString('City'),
+  region: nonEmptyString('Region'),
+  address: nonEmptyString('Address'),
 })
 
 async function getAddress() {
@@ -64,80 +70,53 @@ async function getAddress() {
     if (!response)
       return
 
-    isLoading.value = false
+    state.name = response?.name
+    state.orgname = response?.organisation_name
+    state.country = response?.country
+    state.zip = response?.zip_code
+    state.city = response?.city
+    state.region = response?.region
+    state.address = response?.address
+    state.phone = response?.phone_number
+    state.email = authUser.value?.email
 
-    state.name = response?.data?.userDetails[0]?.name
-    state.orgname = response?.data?.userDetails[0]?.organisation_name
-    state.country = response?.data?.userAddress[0]?.country
-    state.zip = response?.data?.userAddress[0]?.zip_code
-    state.city = response?.data?.userAddress[0]?.city
-    state.region = response?.data?.userAddress[0]?.region
-    state.address = response?.data?.userAddress[0]?.address
-    state.phone = response?.data?.userAddress[0]?.phone_number
-    state.email = response.data.userData?.email
-
-    if (!response?.data?.userDetails[0]?.name && !response?.data?.userDetails[0]?.organisation_name) {
+    if (!response?.name && !response?.organisation_name) {
       isEditable.value = false
       isNewUser.value = true
     }
   }
   catch (error) {
-    notify.error(error.message)
+    $error(error.message)
+  }
+  finally {
+    isLoading.value = false
   }
 }
 
 async function onSubmit() {
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return
+
   if (!isNewUser.value) {
     const payload = {
-      country: state.country,
-      region: state.region,
-      city: state.city,
-      zipcode: state.zip,
-      address: state.address,
-      phoneNumber: state.phone,
-    }
-    try {
-      const response = await userStore.editAddress(payload)
-      if (response?.status === 200) {
-        notify.success(response.message)
-        // await getAddress()
-        isEditable.value = false
-      }
-    }
-    catch (error) {
-      notify.error(error.statusMessage)
-    }
-  }
-  if (isNewUser.value) {
-    const payloadPost = {
       name: state.name,
-      organisationName: state.orgname,
+      orgname: state.orgname,
       country: state.country,
       region: state.region,
       city: state.city,
       zipcode: state.zip,
       address: state.address,
-      phoneNumber: state.phone,
+      phoneNumber: phoneRef.value?.phoneData.number,
     }
     try {
-      const response = await userStore.addAddress(payloadPost)
-      if (response?.status === 200) {
-        notify.success(response.message)
+      await userStore.insertUpdateAddress(payload)
 
-        // require for future reference
+      $success('Address edited successfully')
 
-        // state.country = response.data?.country
-        // state.zip = response.data.zipcode
-        // state.city = response.data.city
-        // state.region = response.data.region
-        // state.address = response.data.address
-        // state.phone = response.data.phoneNumber
-        // await getAddress()
-        isEditable.value = false
-      }
+      isEditable.value = false
     }
     catch (error) {
-      notify.error(error.statusMessage)
+      $error(error.statusMessage)
     }
   }
 }
@@ -149,6 +128,11 @@ function toggleEdit() {
 
 async function onCancel() {
   await getAddress()
+}
+
+function handlePhoneValidation() {
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return false
 }
 
 onMounted(() => {
@@ -164,26 +148,22 @@ onMounted(() => {
     </UCard>
   </UModal>
 
-  <!-- <UBreadcrumb
-    divider=">"
-    :links="[{ label: 'My Account', to: '/profile/account' }, { label: 'Address and Contact Details' }]"
-  /> -->
-  <section class="grid place-items-center mb-8">
+  <section class="grid place-items-center my-8">
     <h1 class="font-semibold mb-4">
       Address and Contact Details
     </h1>
 
     <UCard class="mb-8">
-      <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
-        <div class="flex gap-2">
+      <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <UFormGroup label="Full Name" name="name" required>
-            <UInput v-model="state.name" color="blue" :disabled="!isNewUser" />
+            <UInput v-model="state.name" color="blue" :disabled="!isNewUser" placeholder="First Name Last Name" />
           </UFormGroup>
-          <UFormGroup label="Organisation Name" name="orgname" required>
-            <UInput v-model="state.orgname" color="blue" :disabled="!isNewUser" />
+          <UFormGroup label="Organisation Name" name="orgname">
+            <UInput v-model="state.orgname" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
         </div>
-        <div class="flex gap-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <UFormGroup label="Country" name="country" required>
             <UInput v-model="state.country" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
@@ -191,7 +171,7 @@ onMounted(() => {
             <UInput v-model="state.zip" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
         </div>
-        <div class="flex gap-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <UFormGroup label="City" name="city" required>
             <UInput v-model="state.city" color="blue" :disabled="!isEditable && !isNewUser" />
           </UFormGroup>
@@ -202,9 +182,12 @@ onMounted(() => {
         <UFormGroup label="Address" name="address" required>
           <UInput v-model="state.address" color="blue" :disabled="!isEditable && !isNewUser" />
         </UFormGroup>
-        <UFormGroup label="Phone no" name="phone" required>
-          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" :disabled="!isEditable && !isNewUser" />
-        </UFormGroup>
+        <LibVueTelInput
+          ref="phoneRef"
+          :prop-phone="state.phone"
+          :disabled="!isEditable && !isNewUser"
+          class="my-4"
+        />
         <UFormGroup label="Email Id" name="email" required>
           <UInput v-model="state.email" color="blue" :disabled="true" />
         </UFormGroup>
@@ -218,7 +201,7 @@ onMounted(() => {
           <UButton v-else-if="!isNewUser" type="submit" color="blue">
             Update
           </UButton>
-          <UButton v-else type="submit" color="blue">
+          <UButton v-else type="submit" color="blue" @click="handlePhoneValidation()">
             Save
           </UButton>
         </div>
@@ -226,5 +209,3 @@ onMounted(() => {
     </UCard>
   </section>
 </template>
-
-<style scoped></style>

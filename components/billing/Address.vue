@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { VueTelInput } from 'vue-tel-input'
-import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+import type PhoneInputField from '@/components/lib/VueTelInput/Index.vue'
 
 const subscriptionStore = useSubscriptionStore()
 const userStore = useUserStore()
 
 // #validation
-
 const nameValidation = z.string().refine((value) => {
   // Check for two words separated by space
   const parts = value.trim().split(/\s+/)
@@ -21,6 +19,8 @@ const nameValidation = z.string().refine((value) => {
   message: 'Enter a valid full name',
 })
 
+const phoneRef = ref<typeof PhoneInputField>()
+
 const billingSchema = z.object({
   name: nameValidation,
   country: z.string().min(1, 'Country is required'),
@@ -28,22 +28,24 @@ const billingSchema = z.object({
   city: z.string().min(1, 'City is required'),
   region: z.string().min(1, 'Region is required'),
   address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
+  phone: z.string().refine(() => {
+    return phoneRef.value?.handlePhoneValidation().status
+  }),
 })
 
 onMounted(async () => {
   const response = await userStore.fetchAddress()
-  if (!response?.data)
+  if (!response)
     return
 
-  subscriptionStore.billingDetails.name = response?.data?.userDetails[0]?.name
-  subscriptionStore.billingDetails.orgName = response?.data?.userDetails[0]?.organisation_name
-  subscriptionStore.billingDetails.country = response.data?.userAddress[0]?.country
-  subscriptionStore.billingDetails.zip = response.data?.userAddress[0]?.zip_code
-  subscriptionStore.billingDetails.city = response.data?.userAddress[0]?.city
-  subscriptionStore.billingDetails.region = response.data?.userAddress[0]?.region
-  subscriptionStore.billingDetails.address = response.data?.userAddress[0]?.address
-  subscriptionStore.billingDetails.phone = response.data?.userAddress[0]?.phone_number
+  subscriptionStore.billingDetails.name = response?.name
+  subscriptionStore.billingDetails.orgName = response?.organisation_name
+  subscriptionStore.billingDetails.country = response?.country
+  subscriptionStore.billingDetails.zip = response?.zip_code
+  subscriptionStore.billingDetails.city = response?.city
+  subscriptionStore.billingDetails.region = response?.region
+  subscriptionStore.billingDetails.address = response?.address
+  subscriptionStore.billingDetails.phone = response?.phone_number
 })
 </script>
 
@@ -77,9 +79,11 @@ onMounted(async () => {
       <UFormGroup label="Address" name="address" required>
         <UInput v-model="subscriptionStore.billingDetails.address" color="blue" />
       </UFormGroup>
-      <UFormGroup label="Phone no" name="phone" required>
-        <VueTelInput v-model="subscriptionStore.billingDetails.phone" placeholder="Your Phone no" mode="international" />
-      </UFormGroup>
+      <LibVueTelInput
+        ref="phoneRef"
+        :prop-phone="subscriptionStore.billingDetails.phone"
+        class="my-4"
+      />
     </UForm>
   </UCard>
 </template>

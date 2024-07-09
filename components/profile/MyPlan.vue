@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const subscriptionStore = useSubscriptionStore()
 const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
@@ -16,7 +16,7 @@ async function getActivePlan() {
     planData.value = response
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 async function cancelPlan() {
@@ -29,17 +29,18 @@ async function cancelPlan() {
     const res = await subscriptionStore.cancelSubscription(payload)
     if (res?.status === 204) {
       noplanModal.value = true
-      notify.success(res.message)
+      $success(res.message)
       setTimeout(() => navigateTo('/website/pricing'), 1000)
     }
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 onMounted(async () => {
   await getActivePlan()
 })
+
 function upgradePlan() {
   showUpgradeModal.value = false
   navigateTo('/website/pricing')
@@ -48,6 +49,21 @@ function upgradePlanNO() {
   noplanModal.value = false
   navigateTo('/website/pricing')
 }
+
+function calculateDaysRemainingFromToday(endDateStr: string | undefined) {
+  // Use dayjs to get today's date at 00:00:00 to ensure full day calculation
+  const today = dayjs().startOf('day')
+  const endDate = dayjs(endDateStr).startOf('day')
+
+  // Calculate the difference in days
+  let diffDays = endDate.diff(today, 'day')
+
+  // Adjust calculation to include today in the count
+  if (endDate.isAfter(today))
+    diffDays -= 1
+  return diffDays
+}
+const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.value?.plan_end_date))
 </script>
 
 <template>
@@ -78,7 +94,7 @@ function upgradePlanNO() {
     </div>
   </UModal>
   <section class="grid place-items-center mb-8">
-    <h1 class="font-semibold mb-4">
+    <h1 class="font-semibold my-8">
       My Plan
     </h1>
     <UCard>
@@ -89,7 +105,7 @@ function upgradePlanNO() {
         <p class="text-gray-700">
           {{ planData?.description }}
         </p>
-        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">${{ planData?.monthly_price }}<span class="text-sm font-medium text-gray-700">/month</span>
+        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">${{ planData?.monthly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : "/month" }}</span>
         </strong>
         <p class="text-lg font-medium text-gray-900 sm:text-xl">
           What's included:
@@ -102,7 +118,7 @@ function upgradePlanNO() {
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
-            <span class="text-gray-700"> 10 users </span>
+            <span class="text-gray-700"> Unlimited mind maps </span>
           </li>
           <li class="flex items-center gap-1">
             <svg
@@ -111,7 +127,7 @@ function upgradePlanNO() {
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
-            <span class="text-gray-700"> 2GB of storage </span>
+            <span class="text-gray-700"> File,image attachments </span>
           </li>
           <li class="flex items-center gap-1">
             <svg
@@ -120,49 +136,49 @@ function upgradePlanNO() {
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
-            <span class="text-gray-700"> Email support </span>
+            <span class="text-gray-700"> PNG image and JSON export </span>
           </li>
           <li class="flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="h-5 w-5 text-red-700"
+              stroke="currentColor" class="h-5 w-5 text-indigo-700"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
-            <span class="text-gray-700"> Help center access </span>
+            <span class="text-gray-700"> Mindmap printing </span>
           </li>
           <li class="flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="h-5 w-5 text-red-700"
+              stroke="currentColor" class="h-5 w-5 text-indigo-700"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
-            <span class="text-gray-700"> Phone support </span>
-          </li>
-          <li class="flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="h-5 w-5 text-red-700"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            <span class="text-gray-700"> Community access </span>
+            <span class="text-gray-700"> Version history </span>
           </li>
         </ul>
         <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
           Current Plan
         </UButton>
-        <UButton type="submit" class="w-fit mt-2" color="blue" @click="() => { isModalVisible = true }">
+        <UButton v-if="planData?.name !== 'Free'" type="submit" class="w-fit mt-2" color="blue" :disabled="planData?.name === 'Free'" @click="() => { isModalVisible = true }">
           Cancel Subscription
         </UButton>
-        <p v-if="planData?.plan_end_date" class="text-red-500 text-xs">
+        <p v-if="planData?.plan_end_date && planData?.name !== 'Free'" class="text-red-500 text-xs mt-2">
           Your plan will be auto renewed on {{ dayjs(planData?.plan_end_date).format('MMMM D, YYYY, h:mm:ss A') }}
+        </p>
+        <p v-else class="text-red-500 text-xs mt-2">
+          Free plan will end in {{ daysRemaining }} days
         </p>
       </div>
     </UCard>
-    <NuxtLink to="/website/pricing">
-      <h1 class="font-semibold text-blue-700 mt-4 hover:text-blue-900 cursor-pointer">
+    <p v-if="planData?.name === 'Free'" class="mt-4">
+      To know more about paid plans, please contact us at
+      <br><NuxtLink to="mailto:support@flowmapper.ai" class="text-blue-700 underline flex justify-center">
+        support@flowmapper.ai
+      </NuxtLink>
+    </p>
+    <NuxtLink v-else to="/website/pricing">
+      <h1 class="font-semibold text-blue-700 underline mt-4 hover:text-blue-900 cursor-pointer">
         <i>Upgrade Now By Comparing
           Other Plans</i>
       </h1>

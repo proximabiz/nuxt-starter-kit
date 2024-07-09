@@ -1,8 +1,6 @@
 <script setup lang="ts">
-const notify = useNotification()
+const { $error } = useNuxtApp()
 const authStore = useAuthStore()
-const subscriptionStore = useSubscriptionStore()
-const userStore = useUserStore()
 
 const items = [
   [{
@@ -23,21 +21,20 @@ const items = [
     click: () => singOut(),
   }],
 ]
-const authUser = computed(() => authStore.authUser)
+const authUser = computed(() => authStore.getAuthUser.value)
 const isLoggedIn = computed(() => authStore.isLoggedIn)
 
 async function singOut() {
   try {
     // Do something with data
-    await authStore.signOut()
-    await subscriptionStore.clearSubscription()
-    await userStore.clearAddress()
+    const supabaseClient = useSupabaseClient()
+    await supabaseClient.auth.signOut()
 
     if (!isLoggedIn.value)
       navigateTo('/')
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 </script>
@@ -46,7 +43,7 @@ async function singOut() {
   <nav class="flex w-full border-gray-200 dark:bg-gray-900 justify-between px-5 my-5">
     <NuxtLink to="/">
       <div class="flex">
-        <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo">
+        <img src="/assets/media/logo.png" class="h-8" alt="Logo">
         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white margin-align">AI Flow
           Mapper</span>
       </div>
@@ -60,7 +57,7 @@ async function singOut() {
             Signed in as
           </p>
           <p class="truncate font-medium text-gray-900">
-            {{ authUser.email }}
+            {{ authUser?.email }}
           </p>
         </div>
       </template>
