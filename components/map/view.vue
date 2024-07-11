@@ -403,18 +403,7 @@ onMounted(() => {
         </a>
       </li>
       <div v-if="isEditMode" :class="{ 'cursor-not-allowed': !hasEvent }">
-        <li :class="{ 'pointer-events-none': !hasEvent }" @click="saveMap(false)">
-          <a
-            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <UIcon name="i-heroicons-bars-4" class="size-5" />
-            <span
-              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
-            >
-              Edit
-            </span>
-          </a>
-        </li>
+        
         <li @click="saveMap(false)">
           <a
             class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -476,7 +465,7 @@ onMounted(() => {
           </a>
         </li>
       </div>
-      <div :class="{ 'cursor-not-allowed': !hasEvent }">
+      <!-- <div :class="{ 'cursor-not-allowed': !hasEvent }">
         <li :class="{ 'pointer-events-none': !hasEvent }" @click="fetchDiagramVersions()">
           <a
             class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -489,8 +478,8 @@ onMounted(() => {
             </span>
           </a>
         </li>
-      </div>
-      <div :class="{ 'cursor-not-allowed': !hasEvent }">
+      </div> -->
+      <!-- <div :class="{ 'cursor-not-allowed': !hasEvent }">
         <li :class="{ 'pointer-events-none': !hasEvent }" @click="downloadMap()">
           <a
             class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -503,8 +492,8 @@ onMounted(() => {
             </span>
           </a>
         </li>
-      </div>
-      <div v-if="isEditMode" :class="{ 'cursor-not-allowed': !hasEvent }">
+      </div> -->
+      <!-- <div v-if="isEditMode" :class="{ 'cursor-not-allowed': !hasEvent }">
         <li :class="{ 'pointer-events-none': !hasEvent }" @click="exportJSON()">
           <a
             class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -517,7 +506,7 @@ onMounted(() => {
             </span>
           </a>
         </li>
-      </div>
+      </div> -->
     </ul>
   </div>
 </div>
