@@ -111,12 +111,13 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       this.subscriptionStatus = initialState().subscriptionStatus
     },
     async completeOrder(payload: CompleteOrderPostAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/complete-order', {
         method: 'POST',
         headers: {
-          // Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
@@ -124,7 +125,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       if (supabaseError.value)
         throw supabaseError.value
 
-      // return supabaseResponse.value?.data
+      return supabaseResponse.value
     },
   },
   persist: {
