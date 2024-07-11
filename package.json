@@ -30,23 +30,23 @@
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
     "@mind-elixir/node-menu": "^1.0.3",
-    "@nuxt/ui": "^2.11.1",
-    "@nuxtjs/supabase": "^1.1.5",
+    "@nuxt/ui": "2.11.1",
+    "@nuxtjs/supabase": "1.1.5",
     "@pinia/nuxt": "^0.5.1",
     "@sendgrid/mail": "^8.1.1",
     "consola": "^3.2.3",
     "dayjs": "^1.11.10",
-    "flowbite": "^2.2.1",
     "joi": "^17.11.0",
     "json-diff": "^1.0.6",
-    "mind-elixir": "^3.3.2",
+    "mind-elixir": "https://github.com/proximabiz/mind-elixir-core",
+    "nuxt-umami": "^2.6.0",
     "openai": "^4.24.3",
     "stripe": "^14.17.0",
-    "typescript": "^5.3.3",
+    "typescript": "5.3.3",
     "uuid": "^9.0.1",
-    "vue-recaptcha": "3.0.0-alpha.6",
     "vue-recaptcha-v3": "^2.0.1",
     "vue-tel-input": "^8.3.1",
+    "vue3-toastify": "^0.2.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -70,10 +70,11 @@
     "nuxt-icon": "^0.6.8",
     "nuxt-lodash": "^2.5.3",
     "rimraf": "^5.0.5",
+    "sass": "^1.72.0",
     "vue": "^3.3.13",
     "vue-router": "^4.2.5"
   },
-  "packageManager": "^pnpm@8.6.5",
+  "packageManager": "pnpm@9.1.2",
   "engines": {
     "node": ">= 18"
   }

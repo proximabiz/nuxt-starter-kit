@@ -12,23 +12,24 @@ import flowchart from '@/assets/media/flowchart.png'
 import ui from '@/assets/media/ui.png'
 import drag from '@/assets/media/drag.png'
 import version from '@/assets/media/clock.png'
+import { useMobileScreen } from '@/composables/UseMobileScreen'
 
 const features = [
   {
-    title: 'User Interface (UI)',
+    title: 'User Interface(UI)',
     description: 'An intuitive and user-friendly interface that allows users to create, edit, and navigate through the flow map easily',
     iconSrc: ui,
     bgColor: 'bg-pink-200',
   },
   {
     title: 'Graphical Representation',
-    description: 'Visual representation of processes and workflows using graphical elements such as nodes, branches, and connections, making it easier to comprehend complex structures.',
+    description: 'Visual representation of processes and workflows using graphical elements such as nodes, branches, and connections.',
     iconSrc: illustration,
     bgColor: 'bg-yellow-200',
   },
   {
     title: 'Drag-and-Drop Functionality',
-    description: 'Ability to add, rearrange, and connect elements in the flow map using a simple drag-and-drop interface, promoting ease of use.',
+    description: 'Ability to add, rearrange, and connect elements in the flow map using a simple drag-and-drop interface for ease of use.',
     iconSrc: drag,
     bgColor: 'bg-blue-200',
   },
@@ -40,7 +41,7 @@ const features = [
   },
   {
     title: 'Data Input and Output',
-    description: 'Ability to input data in natural language into the flow mapper and let AI visualize the output, allowing users to see the impact of changes or analyze the results of a particular workflow.',
+    description: 'Ability to input data in natural language and let AI visualize the output. Helps user to seamlessly analyze the change in impact on the workflow.',
     iconSrc: input,
     bgColor: 'bg-green-200',
   },
@@ -58,7 +59,7 @@ const features = [
   },
   {
     title: 'Collaboration',
-    description: 'Bring team together,Diagram can be shared with team members for review or modifications.',
+    description: 'Bring team together, Diagram can be shared with team members for review or modifications.',
     iconSrc: partner,
     bgColor: 'bg-pink-200',
   },
@@ -69,21 +70,22 @@ const features = [
     bgColor: 'bg-yellow-200',
   },
 ]
+const { truncateTitle } = useMobileScreen()
 </script>
 
 <template>
-  <section class="flex flex-col gap-2 items-center mb-8 mt-10">
-    <div class="grid grid-cols-3 gap-12">
-      <div class="p-8">
-        <img :src="logo" class="" alt="">
+  <section class="flex flex-col gap-2 items-center mb-8 mt-10 px-4 md:px-8 lg:px-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+      <div class="p-4 md:p-8">
+        <img :src="logo" alt="">
       </div>
-      <div class="mt-4 col-span-2">
+      <div class="mt-4 md:col-span-2">
         <p
-          class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400"
+          class="font-extrabold text-transparent text-2xl md:text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-center md:text-left"
         >
           What challenges are we solving?
         </p>
-        <p class="mt-4 indent-12">
+        <p class="mt-4">
           Many professionals, especially in the technology, education and enterprises,
           need to create visual representations of their ideas, processes, systems, or structures.
           This could range from developers trying to illustrate the architecture of their software, to managers plotting
@@ -98,16 +100,17 @@ const features = [
       </div>
     </div>
   </section>
-  <section class="flex flex-col gap-2 items-center mb-8 mt-10">
-    <div class="grid grid-cols-3 gap-12">
-      <div class="col-span-2">
+
+  <section class="flex flex-col gap-2 items-center mb-8 mt-10 px-4 md:px-8 lg:px-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+      <div class="md:col-span-2">
         <p
-          class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400"
+          class="font-extrabold text-transparent text-2xl md:text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-center md:text-left"
         >
-          Why use AI Flowmapper?
+          Why use AI FlowMapper?
         </p>
         <ol class="relative text-gray-700 border-s-2 border-gray-200 dark:border-gray-700 dark:text-gray-400 mt-4">
-          <li class="mb-10 ms-20">
+          <li class="mb-10 ms-8 md:ms-20">
             <span
               class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900"
             >
@@ -120,20 +123,20 @@ const features = [
               Many people spend unnecessary long time manually creating diagrams. This tool reduces that effort significantly.
             </p>
           </li>
-          <li class="mb-10 ms-20">
+          <li class="mb-10 ms-8 md:ms-20">
             <span
               class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700"
             >
               2
             </span>
             <h3 class="font-medium leading-tight">
-              Skill Gap
+              Skill Gap:
             </h3>
             <p class="text-sm">
               Not everyone is skilled in using visual design tools or has an innate ability to layout complex ideas coherently in visual form. The AI assists in bridging this gap.
             </p>
           </li>
-          <li class="mb-10 ms-20">
+          <li class="mb-10 ms-8 md:ms-20">
             <span
               class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700"
             >
@@ -146,7 +149,7 @@ const features = [
               Often, after creating a diagram, one might want to make changes, which can be cumbersome in traditional tools. Our solution allows easy edits and adjustments.
             </p>
           </li>
-          <li class="ms-20">
+          <li class="ms-8 md:ms-20">
             <span
               class="absolute flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700"
             >
@@ -161,25 +164,26 @@ const features = [
           </li>
         </ol>
       </div>
-      <div class="">
-        <img :src="AboutProduct" class="w-full h-full object-fit" alt="">
+      <div>
+        <img :src="AboutProduct" class="w-full h-full object-cover" alt="">
       </div>
     </div>
   </section>
-  <section class="flex flex-col gap-2 items-center mb-8 mt-16">
-    <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
-      About AI Flowmapper
+
+  <section class="flex flex-col gap-2 items-center mb-8 mt-16 px-4 md:px-8 lg:px-16">
+    <p class="font-extrabold text-transparent text-2xl md:text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-center md:text-left">
+      About AI FlowMapper
     </p>
-    <div>
+    <div class="text-center">
       Unlock the power of visualization with our AI-driven platform, transforming text seamlessly into interactive
-      flowcharts and mind maps.Many professionals,
+      flowcharts and mind maps.
     </div>
-    <p class="text-2xl font-semibold">
+    <p class="text-2xl font-semibold mt-4">
       Mindmap
     </p>
-    <div class="grid grid-cols-2 gap-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
       <div>
-        <img :src="mindmap" class="" alt="">
+        <img :src="mindmap" alt="">
       </div>
       <div class="mt-4">
         <ul class="list-disc flex flex-col gap-2">
@@ -188,45 +192,50 @@ const features = [
           <li>Map tasks, priorities, and deadlines for streamlined productivity.</li>
           <li>Real-time engagement for teams to contribute and refine ideas.</li>
           <li>Modify, add, or rearrange effortlessly as ideas evolve.</li>
-          <li>Transform mind maps into powerful study aids or project overviews</li>
+          <li>Transform mind maps into powerful study aids or project overviews.</li>
           <li>Unleash the potential of your text, transforming it into vibrant mind maps.</li>
         </ul>
       </div>
     </div>
   </section>
-  <section class="flex flex-col gap-2 mt-5 items-center mb-8">
-    <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
+
+  <section class="flex flex-col gap-2 items-center mt-5 mb-8 px-4 md:px-8 lg:px-16">
+    <p class="font-extrabold text-transparent text-2xl md:text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 ">
       Key Features
     </p>
   </section>
+
   <section>
-    <div class="grid grid-cols-3 gap-16">
-      <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col">
+    <div class="flex flex-wrap justify-center -mx-4 md:-mx-8">
+      <div v-for="(feature, index) in features" :key="index" class="flex justify-center items-center flex-col px-4 md:px-8 mb-8 md:mb-16 w-full sm:w-1/2 lg:w-1/3">
         <div class="rounded-xl p-6" :class="feature.bgColor">
           <img :src="feature.iconSrc" alt="" width="32px" height="32px">
         </div>
-        <h2 class="text-2xl font-semibold">
-          {{ feature.title }}
+        <h2 class="text-2xl font-semibold mt-4 md:mt-8">
+          {{ truncateTitle(feature.title) }}
         </h2>
-        <p>{{ feature.description }}</p>
+        <p class="text-center">
+          {{ feature.description }}
+        </p>
       </div>
     </div>
   </section>
-  <section class="flex flex-col gap-2 items-center mt-8">
-    <p class="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
+
+  <section class="flex flex-col gap-2 items-center mt-20 px-4 md:px-8 lg:px-16">
+    <p class="font-extrabold text-transparent text-2xl md:text-3xl bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">
       Launching Soon...
     </p>
-    <div>
+    <div class="text-center">
       Unlock the power of visualization with our AI-driven platform, transforming text seamlessly into interactive
       flowcharts and mind maps.
     </div>
-    <p class="text-2xl font-semibold">
+    <p class="text-2xl font-semibold mt-4">
       Flowchart
     </p>
-    <div class="grid grid-cols-2 gap-12">
-      <div class="mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+      <div class="mt-4 md:mt-0">
         <ul class="list-disc flex flex-col gap-2">
-          <li> Visual representation for clear understanding of processes.</li>
+          <li>Visual representation for clear understanding of processes.</li>
           <li>Detailed process examination to identify improvements.</li>
           <li>Effective tool for conveying workflows and systems.</li>
           <li>Presents pathways and decision points within processes.</li>
@@ -235,7 +244,9 @@ const features = [
           <li>Encourages cross-functional understanding and cooperation.</li>
         </ul>
       </div>
-      <div><img :src="flowchart" class="" alt=""></div>
+      <div>
+        <img :src="flowchart" alt="">
+      </div>
     </div>
   </section>
 </template>

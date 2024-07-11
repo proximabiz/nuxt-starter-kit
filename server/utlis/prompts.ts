@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import { DiagramType } from '../types/chart'
+import { DiagramType } from '../types/chart.types'
 import { CustomError } from './custom.error'
 import { serverSupabaseClient } from '#supabase/server'
 

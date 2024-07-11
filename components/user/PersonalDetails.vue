@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { VueTelInput } from 'vue-tel-input'
-import 'vue-tel-input/vue-tel-input.css'
 import { z } from 'zod'
+import type PhoneInputField from '@/components/lib/VueTelInput/Index.vue'
 
-const notify = useNotification()
+const { $success, $error } = useNuxtApp()
 const userStore = useUserStore()
+const authStore = useAuthStore()
+
+const authUser = computed(() => authStore.getAuthUser.value)
 
 interface FormState {
   name: string
@@ -27,34 +29,39 @@ const initialState: FormState = {
   region: '',
   address: '',
   phone: '',
-  email: '',
+  email: authUser.value?.email,
 }
 
-const state = reactive<FormState>({ ...initialState })
+const formState = reactive<FormState>({ ...initialState })
+const phoneRef = ref<typeof PhoneInputField>()
+
 // #validation
 
-const nameValidation = z.string().refine((value) => {
-  // Check for two words separated by space
+// Utility function to enforce non-empty, non-space-only strings
+function nonEmptyString(field: string) {
+  return z.string()
+    .min(1, `${field} is required`)
+    .refine(value => value.trim().length > 0, `${field} can't be empty or spaces only`)
+    .refine(value => !value.startsWith(' '), `${field} can't start with a space`)
+}
+const nameValidation = nonEmptyString('Full name').refine((value) => {
   const parts = value.trim().split(/\s+/)
   if (parts.length < 2)
     return false // Ensure there are at least two words
 
   // Check for minimum length and no special characters or numbers
-  return parts.every((part) => {
-    return /^[A-Za-z]+$/.test(part) && part.length >= 4
-  })
+  return parts.every(part => /^[A-Za-z]+$/.test(part) && part.length >= 3)
 }, {
-  message: 'Name must consist of at least two words, each with a minimum of 3 characters, without special characters or numbers.',
+  message: 'Enter a valid name of 3 letters and without numbers and symbols',
 })
 
 const schema = z.object({
   name: nameValidation,
-  country: z.string().min(1, 'Country is required'),
-  zip: z.string().min(1, 'Zip is required'),
-  city: z.string().min(1, 'City is required'),
-  region: z.string().min(1, 'Region is required'),
-  address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(1, 'Phone must be a valid number with at least 10 digits'),
+  country: nonEmptyString('Country'),
+  zip: nonEmptyString('Zip code'),
+  city: nonEmptyString('City'),
+  region: nonEmptyString('Region'),
+  address: nonEmptyString('Address'),
 })
 
 async function getAddress() {
@@ -63,19 +70,18 @@ async function getAddress() {
     if (!response)
       return
 
-    state.name = response.userDetails[0]?.name
-    state.orgname = response.userDetails[0]?.organisation_name
-    state.country = response.userAddress[0]?.country
-    state.zip = response.userAddress[0]?.zip_code
-    state.city = response.userAddress[0]?.city
-    state.region = response.userAddress[0]?.region
-    state.address = response.userAddress[0]?.address
-    state.phone = response.userAddress[0]?.phone_number
-    state.email = response.userData?.email
+    formState.name = response?.name
+    formState.orgname = response?.organisation_name
+    formState.country = response?.country
+    formState.zip = response?.zip_code
+    formState.city = response?.city
+    formState.region = response?.region
+    formState.address = response?.address
+    formState.phone = response?.phone_number
+    formState.email = authUser.value?.email
   }
   catch (error) {
-    console.error(error)
-    notify.error(error.message)
+    $error(error.message)
   }
 }
 
@@ -84,33 +90,35 @@ onMounted(async () => {
 })
 
 async function onSubmit() {
-  const payloadPost = {
-    name: state.name,
-    organisationName: state.orgname,
-    country: state.country,
-    region: state.region,
-    city: state.city,
-    zipcode: state.zip,
-    address: state.address,
-    phoneNumber: state.phone,
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return
+
+  const payload = {
+    name: formState.name,
+    orgname: formState.orgname,
+    country: formState.country,
+    region: formState.region,
+    city: formState.city,
+    zipcode: formState.zip,
+    address: formState.address,
+    phoneNumber: phoneRef.value?.phoneData.number,
   }
+
   try {
-    const response = await userStore.addAddress(payloadPost)
+    await userStore.insertUpdateAddress(payload)
 
-    state.country = response.country
-    state.zip = response.zip_code
-    state.city = response.city
-    state.region = response.region
-    state.address = response.address
-    state.phone = response.phone_number
-
-    notify.success('Address added successfully!')
+    $success('Address added successfully!')
 
     navigateTo('/app/diagram/list')
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
+}
+
+function handlePhoneValidation() {
+  if (!phoneRef.value?.handlePhoneValidation().status)
+    return false
 }
 </script>
 
@@ -121,42 +129,44 @@ async function onSubmit() {
     </h1>
 
     <UCard class="mb-8">
-      <UForm :schema="schema" :state="state" class="space-y-4 " @submit="onSubmit">
+      <UForm :state="formState" :schema="schema" class="space-y-4 " @submit="onSubmit">
         <div class="flex gap-2">
-          <UFormGroup label="Full Name" name="name" required>
-            <UInput v-model="state.name" color="blue" />
+          <UFormGroup label="Full Name" name="name" class="w-1/2" required>
+            <UInput v-model="formState.name" color="blue" placeholder="First Name Last Name" />
           </UFormGroup>
-          <UFormGroup label="Organisation Name" name="orgname" required>
-            <UInput v-model="state.orgname" color="blue" />
+          <UFormGroup label="Organisation Name" name="orgname">
+            <UInput v-model="formState.orgname" color="blue" placeholder="Organisation Name" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="Country" name="country" required>
-            <UInput v-model="state.country" color="blue" />
+            <UInput v-model="formState.country" color="blue" placeholder="Country" />
           </UFormGroup>
           <UFormGroup label="Zip" name="zip" required>
-            <UInput v-model="state.zip" color="blue" />
+            <UInput v-model="formState.zip" color="blue" placeholder="Zip" />
           </UFormGroup>
         </div>
         <div class="flex gap-2">
           <UFormGroup label="City" name="city" required>
-            <UInput v-model="state.city" color="blue" />
+            <UInput v-model="formState.city" color="blue" placeholder="City" />
           </UFormGroup>
           <UFormGroup label="Region" name="region" required>
-            <UInput v-model="state.region" color="blue" />
+            <UInput v-model="formState.region" color="blue" placeholder="Region" />
           </UFormGroup>
         </div>
         <UFormGroup label="Address" name="address" required>
-          <UInput v-model="state.address" color="blue" />
+          <UInput v-model="formState.address" color="blue" placeholder="Address" />
         </UFormGroup>
-        <UFormGroup label="Phone no" name="phone" required>
-          <VueTelInput v-model="state.phone" placeholder="Your Phone no" mode="international" />
-        </UFormGroup>
+        <LibVueTelInput
+          ref="phoneRef"
+          :prop-phone="formState.phone"
+          class="my-4"
+        />
         <UFormGroup label="Email Id" name="email" required>
-          <UInput v-model="state.email" color="blue" :disabled="true" />
+          <UInput v-model="formState.email" color="blue" :disabled="true" />
         </UFormGroup>
         <div class="flex gap-2 justify-center">
-          <UButton type="submit" color="blue">
+          <UButton type="submit" color="blue" @click="handlePhoneValidation()">
             Save
           </UButton>
         </div>
@@ -164,5 +174,3 @@ async function onSubmit() {
     </UCard>
   </section>
 </template>
-
-<style scoped></style>

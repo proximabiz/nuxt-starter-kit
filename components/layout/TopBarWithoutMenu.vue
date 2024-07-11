@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const notify = useNotification()
+const { $error } = useNuxtApp()
 const authStore = useAuthStore()
 
 const items = [
@@ -34,7 +34,7 @@ async function singOut() {
       navigateTo('/')
   }
   catch (error) {
-    notify.error(error.statusMessage)
+    $error(error.statusMessage)
   }
 }
 </script>
@@ -43,7 +43,7 @@ async function singOut() {
   <nav class="flex w-full border-gray-200 dark:bg-gray-900 justify-between px-5 my-5">
     <NuxtLink to="/">
       <div class="flex">
-        <img src="/assets/media/logo.png" class="h-8" alt="Flowbite Logo">
+        <img src="/assets/media/logo.png" class="h-8" alt="Logo">
         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white margin-align">AI Flow
           Mapper</span>
       </div>

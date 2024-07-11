@@ -1,4 +1,5 @@
-import type { CreateDiagramResponseType, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
+import type { CreateDiagramResponseType, Diagram, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
+import type { Database } from '~/types/supabase'
 
 function initialState() {
   return {
@@ -22,7 +23,7 @@ export const useDiagramStore = defineStore('diagramStore', {
       if (supabaseError)
         throw supabaseError
 
-      this.diagramsList = supabaseResponse
+      this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')
     },
 
     async get(payload: getAPIPayload) {
@@ -40,12 +41,13 @@ export const useDiagramStore = defineStore('diagramStore', {
     },
 
     async create(payload: createAPIPayload): Promise<CreateDiagramResponseType | undefined> {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/diagram/create', {
         method: 'POST',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
@@ -58,30 +60,32 @@ export const useDiagramStore = defineStore('diagramStore', {
     },
 
     async update(payload: updateAPIPayload): Promise<UpdateDiagramResponseType> {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${payload.diagramId}`, {
         method: 'PUT',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
 
       if (supabaseError.value)
-        throw supabaseError.value
+        throw supabaseError.value?.data
 
       /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
     },
 
     async save(payload: saveAPIPayload) {
-      const authStore = useAuthStore()
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
 
       const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/${payload.diagramId}`, {
         method: 'PATCH',
         headers: {
-          Authorization: await authStore.getBearerToken,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: payload,
       })
@@ -108,9 +112,7 @@ export const useDiagramStore = defineStore('diagramStore', {
     },
 
     async getVersionList(payload: getAPIPayload) {
-      const supabaseClient = useSupabaseClient()
-
-      /* @ts-expect-error need to be fixed */
+      const supabaseClient = useSupabaseClient<Database>()
       const { data: supabaseResponse, error: diagramError } = await supabaseClient.rpc('get_diagram_versions', {
         diagramid: payload.diagramId,
       })

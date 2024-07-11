@@ -5,6 +5,8 @@
 .nitro
 .cache
 .unlighthouse
+.netlify
+.vercel
 dist
 
 # Node dependencies

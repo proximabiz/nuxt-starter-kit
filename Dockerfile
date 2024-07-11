@@ -1,5 +1,5 @@
 # Define the Node.js version and port for the build and runtime
-ARG NODE_VERSION=18.14.2
+ARG NODE_VERSION=20.11.1
 ARG PORT=3000
 ARG MAINTAINER=jeetp@proximabiz.com
 
@@ -13,7 +13,7 @@ LABEL maintainer=${MAINTAINER}
 WORKDIR /app
 
 # Install required packages for building the application
-RUN apt-get update && apt-get install -y openssh-client g++ make python3 git
+RUN apt-get update && apt-get install -y
 
 # Copy package.json and related files to the container
 COPY package*.json /app/
