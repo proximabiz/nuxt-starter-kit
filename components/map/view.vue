@@ -390,69 +390,79 @@ onMounted(() => {
   <div class="flex fixed right-0 w-12 flex-col justify-between bg-white z-20">
   <div class="px-2">
     <ul class="space-y-1 border-gray-100 pt-4">
-      <li v-if="isEditMode" @click="isOpen = true">
-        <a
-          class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-        >
-          <UIcon name="i-heroicons-bars-4" class="size-5" />
-          <span
-            class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
-          >
-            Edit
-          </span>
-        </a>
-      </li>
-      <div v-if="isEditMode" :class="{ 'cursor-not-allowed': !hasEvent }">
-        
-        <li @click="saveMap(false)">
+        <li @click="isOpen = true">
           <a
             class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
           >
-            <UIcon name="i-heroicons-bookmark" class="size-5" />
+            <UIcon name="i-heroicons-bars-4" class="size-5" />
+
             <span
               class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
             >
-              Save Data
+              Edit
             </span>
           </a>
         </li>
-        <li @click="fetchDiagramVersions()">
-          <a
-            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <UIcon name="i-heroicons-rectangle-stack" class="size-5" />
-            <span
-              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+        <div :class="{ 'cursor-not-allowed': !hasEvent }">
+          <li :class="{ 'pointer-events-none': !hasEvent }" @click="saveMap(false)">
+            <a
+              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
             >
-              Diagram Versions
-            </span>
-          </a>
-        </li>
-        <li @click="downloadMap()">
-          <a
-            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <UIcon name="i-heroicons-arrow-down-tray" class="size-5" />
-            <span
-              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              <UIcon name="i-heroicons-bookmark" class="size-5" />
+
+              <span
+                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              >
+                Save Data
+              </span>
+            </a>
+          </li>
+        </div>
+        <div :class="{ 'cursor-not-allowed': !hasEvent }">
+          <li :class="{ 'pointer-events-none': !hasEvent }" @click="fetchDiagramVersions()">
+            <a
+              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
             >
-              Download Image
-            </span>
-          </a>
-        </li>
-        <li @click="exportJSON()">
-          <a
-            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <UIcon name="i-heroicons-document-chart-bar" class="size-5" />
-            <span
-              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              <UIcon name="i-heroicons-rectangle-stack" class="size-5" />
+
+              <span
+                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              >
+                Diagram Versions
+              </span>
+            </a>
+          </li>
+        </div>
+        <div :class="{ 'cursor-not-allowed': !hasEvent }">
+          <li :class="{ 'pointer-events-none': !hasEvent }" @click="downloadMap()">
+            <a
+              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
             >
-              Export JSON
-            </span>
-          </a>
-        </li>
-        <li @click="isSharePopUpOpen = true">
+              <UIcon name="i-heroicons-arrow-down-tray" class="size-5" />
+
+              <span
+                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              >
+                Download Image
+              </span>
+            </a>
+          </li>
+        </div>
+        <div :class="{ 'cursor-not-allowed': !hasEvent }">
+          <li :class="{ 'pointer-events-none': !hasEvent }" @click="exportJSON()">
+            <a
+              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+            >
+              <UIcon name="i-heroicons-document-chart-bar" class="size-5" />
+
+              <span
+                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              >
+                Export JSON
+              </span>
+            </a>
+          </li>
+          <li @click="isSharePopUpOpen = true">
           <a
             class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
           >
@@ -464,50 +474,8 @@ onMounted(() => {
             </span>
           </a>
         </li>
-      </div>
-      <!-- <div :class="{ 'cursor-not-allowed': !hasEvent }">
-        <li :class="{ 'pointer-events-none': !hasEvent }" @click="fetchDiagramVersions()">
-          <a
-            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <UIcon name="i-heroicons-rectangle-stack" class="size-5" />
-            <span
-              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
-            >
-              Diagram Versions
-            </span>
-          </a>
-        </li>
-      </div> -->
-      <!-- <div :class="{ 'cursor-not-allowed': !hasEvent }">
-        <li :class="{ 'pointer-events-none': !hasEvent }" @click="downloadMap()">
-          <a
-            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <UIcon name="i-heroicons-arrow-down-tray" class="size-5" />
-            <span
-              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
-            >
-              Download Image
-            </span>
-          </a>
-        </li>
-      </div> -->
-      <!-- <div v-if="isEditMode" :class="{ 'cursor-not-allowed': !hasEvent }">
-        <li :class="{ 'pointer-events-none': !hasEvent }" @click="exportJSON()">
-          <a
-            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <UIcon name="i-heroicons-document-chart-bar" class="size-5" />
-            <span
-              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
-            >
-              Export JSON
-            </span>
-          </a>
-        </li>
-      </div> -->
-    </ul>
+        </div>
+      </ul>
   </div>
 </div>
   <!-- Navigation drawer -->
