@@ -84,7 +84,7 @@ function isActive(index: number) {
     <UCard v-if="state.activeStep === 0" class="mb-6 mt-4">
       <div class="divide-y divide-solid">
         <header class="flex justify-start">
-          AI Flow mapper {{ props.planDetails.plan }}
+          AI FlowMapper {{ props.planDetails.plan }}
         </header>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <USelect v-model="user" :options="users" color="blue" />

@@ -388,8 +388,8 @@ onMounted(() => {
 
 <template>
   <div class="flex fixed right-0 w-12 flex-col justify-between bg-white z-20">
-  <div class="px-2">
-    <ul class="space-y-1 border-gray-100 pt-4">
+    <div class="px-2">
+      <ul class="space-y-1 border-gray-100 pt-4">
         <li @click="isOpen = true">
           <a
             class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -463,21 +463,21 @@ onMounted(() => {
             </a>
           </li>
           <li @click="isSharePopUpOpen = true">
-          <a
-            class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <UIcon name="i-heroicons-share" class="size-5" />
-            <span
-              class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+            <a
+              class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
             >
-              Share
-            </span>
-          </a>
-        </li>
+              <UIcon name="i-heroicons-share" class="size-5" />
+              <span
+                class="absolute end-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
+              >
+                Share
+              </span>
+            </a>
+          </li>
         </div>
       </ul>
+    </div>
   </div>
-</div>
   <!-- Navigation drawer -->
   <USlideover v-model="isOpen">
     <button class="absolute top-5 right-5" @click="isOpen = false">
@@ -589,7 +589,7 @@ onMounted(() => {
     <section class="p-4">
       <div class="flex justify-between items-center">
         <h2 class="text-2xl">
-          Share "AI Flow Mapper Mindmap Diagram"
+          Share "AI FlowMapper Mindmap Diagram"
         </h2>
         <span>
           <UIcon name="i-heroicons-question-mark-circle" class="size-5" />
@@ -662,7 +662,7 @@ onMounted(() => {
           @click="openSharePopup"
         />
         <h2 class="text-2xl ml-4">
-          Share "AI Flow Mapper Mindmap Diagram"
+          Share "AI FlowMapper Mindmap Diagram"
         </h2>
         <span>
           <UIcon name="i-heroicons-question-mark-circle" class="size-5" />

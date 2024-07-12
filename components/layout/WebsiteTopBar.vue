@@ -3,7 +3,6 @@ import avatar from '@/assets/media/user.png'
 
 const route = useRoute()
 const router = useRouter()
-const { $error } = useNuxtApp()
 const authStore = useAuthStore()
 const supabaseClient = useSupabaseClient()
 const subscriptionStore = useSubscriptionStore()

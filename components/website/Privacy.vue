@@ -122,7 +122,7 @@
 
       <h4>Tracking Technologies and Cookies</h4>
       <p>We use Cookies and similar tracking technologies to track the activity on Our Service and store certain information. Tracking technologies used are beacons, tags, and scripts to collect and track information and to improve and analyze Our Service. The technologies We use may include:</p>
-      
+
       <ul class="ms-8 list-disc">
         <li><strong>Cookies or Browser Cookies.</strong> A cookie is a small file placed on Your Device. You can instruct Your browser to refuse all Cookies or to indicate when a Cookie is being sent. However, if You do not accept Cookies, You may not be able to use some parts of our Service. Unless you have adjusted Your browser setting so that it will refuse Cookies, our Service may use Cookies.</li>
         <li><strong>Web Beacons.</strong> Certain sections of our Service and our emails may contain small electronic files known as web beacons (also referred to as clear gifs, pixel tags, and single-pixel gifs) that permit the Company, for example, to count users who have visited those pages or opened an email and for other related website statistics (for example, recording the popularity of a certain section and verifying system and server integrity).</li>
@@ -136,7 +136,6 @@
         We use both Session and Persistent Cookies for the purposes set out below:
       </p>
       <ul class="ms-8 list-disc">
-
         <li>
           <p><strong>Necessary / Essential Cookies</strong></p>
           <p>Type: Session Cookies</p>

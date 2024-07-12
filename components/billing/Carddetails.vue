@@ -44,7 +44,7 @@ const billingSchema = z.object({
 <template>
   <div class="bg-slate-100 p-4 rounded-md mt-3 min-width">
     <p class="font-medium text-xl">
-      AI Flow maper {{ props.planName }}
+      AI FlowMapper {{ props.planName }}
     </p>
     <p class="font-bold text-3xl">
       {{ props.duePrice }}
