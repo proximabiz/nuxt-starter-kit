@@ -3,7 +3,6 @@ import nodeMenu from '@mind-elixir/node-menu'
 import '@mind-elixir/node-menu/dist/style.css'
 import dayjs from 'dayjs'
 import { cloneDeep } from 'lodash'
-import type { MindElixirData, Options } from 'mind-elixir'
 import MindElixir from 'mind-elixir'
 import { useFileExporter } from '@/composables/ExportJsonFile'
 
@@ -17,14 +16,14 @@ const diagramStore = useDiagramStore()
 const { $success, $error } = useNuxtApp()
 const globalStore = useGlobalStore()
 const { exportJSONFile } = useFileExporter()
+const route = useRoute()
 
 const isLoading = ref(false)
-
 const apiResponse = ref()
 const oldApiResponse = ref()
 const updateApiResponse = ref()
 const saveApiResponse = ref()
-const isOpen = ref(true)
+const isOpen = ref(false)
 const isVersionDrawerOpen = ref(false)
 const mind = ref()
 const isSavePopupOpen = ref(false)
@@ -33,7 +32,7 @@ const hasEvent = ref(false)
 const toRoute = ref()
 const form = ref({
   title: '',
-  details: 'Dummy',
+  details: '',
   json: '',
   isDetailed: false,
 })
@@ -46,6 +45,31 @@ const items = [{
 }]
 
 const versionsItems = ref()
+
+/** ----------- Computed ----------- */
+const isViewMode = computed(() => route.query?.mode === 'view')
+const isEditMode = computed(() => !route.query?.mode || route.query?.mode === 'edit')
+const mindMapOptions = computed(() => {
+  return {
+    el: '#map',
+    direction: 2,
+    locale: 'en',
+    allowUndo: false,
+    draggable: false,
+    editable: isEditMode.value,
+    keyPress: false,
+    isFocusMode: false,
+    mobileMenu: false,
+    overflowHidden: false,
+    contextMenu: isEditMode.value,
+    toolbar: isEditMode.value,
+    contextMenuOption: {
+      focus: true,
+      link: true,
+      extend: [],
+    },
+  }
+})
 
 // Fetches the list of diagram versions and updates UI state
 async function fetchDiagramVersions() {
@@ -75,7 +99,8 @@ async function fetchMap() {
         form.value.title = apiResponse.value[0].response.chartDetails[0].nodeData.topic
         oldApiResponse.value = cloneDeep(apiResponse.value[0].response.chartDetails[0].nodeData)
       }
-      init()
+
+      initCore(apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails[0].nodeData)
 
       globalStore.pageHeading.title = form.value.title
       hasEvent.value = true
@@ -86,89 +111,19 @@ async function fetchMap() {
     hasEvent.value = false
   }
 }
-// Initializes the mind map with data from the API response
-function init() {
-  const data: MindElixirData = {
+
+// Initializes the mind map with data from the API responses
+function initCore(apiResponseNodeData: any) {
+  mind.value = new MindElixir(mindMapOptions.value)
+
+  // Show node menu only when on edit mode
+  if (isEditMode.value)
+    mind.value.install(nodeMenu)
+
+  mind.value.init({
     linkData: {},
-    nodeData: apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails[0].nodeData,
-  }
-  const options: Options = {
-    el: '#map',
-    direction: 2,
-    locale: 'en',
-    contextMenuOption: {
-      focus: true,
-      link: true,
-      extend: [],
-    },
-  }
-
-  mind.value = new MindElixir(options)
-  mind.value.install(nodeMenu)
-  mind.value.init(data)
-}
-
-function init1() {
-  const data: MindElixirData = {
-    linkData: {},
-    nodeData: updateApiResponse.value.response.chartDetails[0].nodeData,
-  }
-  const options: Options = {
-    el: '#map',
-    direction: 2,
-    locale: 'en',
-    contextMenuOption: {
-      focus: true,
-      link: true,
-      extend: [],
-    },
-  }
-
-  mind.value = new MindElixir(options)
-  mind.value.install(nodeMenu)
-  mind.value.init(data)
-}
-
-function init2() {
-  const data: MindElixirData = {
-    linkData: {},
-    nodeData: updateApiResponse.value.nodeData,
-  }
-  const options: Options = {
-    el: '#map',
-    direction: 2,
-    locale: 'en',
-    contextMenuOption: {
-      focus: true,
-      link: true,
-      extend: [],
-    },
-  }
-
-  mind.value = new MindElixir(options)
-  mind.value.install(nodeMenu)
-  mind.value.init(data)
-}
-
-function init3() {
-  const data: MindElixirData = {
-    linkData: {},
-    nodeData: updateApiResponse.value[0].nodeData,
-  }
-  const options: Options = {
-    el: '#map',
-    direction: 2,
-    locale: 'en',
-    contextMenuOption: {
-      focus: true,
-      link: true,
-      extend: [],
-    },
-  }
-
-  mind.value = new MindElixir(options)
-  mind.value.install(nodeMenu)
-  mind.value.init(data)
+    nodeData: apiResponseNodeData,
+  })
 }
 
 async function updateMap() {
@@ -183,19 +138,22 @@ async function updateMap() {
       diagramId: props.diagramId,
       title: form.value.title,
       isDetailed: form.value.isDetailed,
-      details: form.value.details,
+      details: form.value.isDetailed ? form.value.details : undefined,
       // diagramTypeId: mindmapTypeDiagram.id,
     })
     isLoading.value = false
     isOpen.value = false
     if (updateApiResponse.value.response.chartDetails[0].nodeData) {
-      init1()
+      initCore(updateApiResponse.value.response.chartDetails[0].nodeData)
+
       form.value.title = updateApiResponse.value.response.chartDetails[0].nodeData.topic as string
+
       // form.value.details = updateApiResponse.value.response.chartDetails[0].nodeData
       hasEvent.value = true
     }
 
     $success('Mindmap generated!')
+    fetchMap()
   }
   catch (error) {
     $error(error?.message)
@@ -269,11 +227,11 @@ function loadJSON(jsonData: JSON) {
   updateApiResponse.value = jsonData
 
   if (updateApiResponse.value.nodeData) {
-    init2()
+    initCore(updateApiResponse.value.nodeData)
     form.value.title = updateApiResponse.value.nodeData.topic
   }
   else {
-    init3()
+    initCore(updateApiResponse.value[0].nodeData)
     form.value.title = updateApiResponse.value[0].nodeData.topic
   }
   // form.value.title = updateApiResponse.value[0].nodeData.topic as string
@@ -295,7 +253,7 @@ function createMapFromJSON() {
     updateApiResponse.value = parsedObject
 
     if (updateApiResponse.value.nodeData) {
-      init2()
+      initCore(updateApiResponse.value.nodeData)
       form.value.title = updateApiResponse.value.topic
 
       isOpen.value = false
@@ -325,6 +283,10 @@ function closePopup() {
 }
 // Lifecycle hook to handle before-route-leave event, prompting for save if changes were made
 onBeforeRouteLeave((to) => {
+  // No need of this popup in view only mode
+  if (isViewMode.value)
+    return
+
   if (oldApiResponse.value && mind.value.getData().nodeData && JSON.stringify(oldApiResponse.value) !== JSON.stringify(mind.value.getData().nodeData)) {
     isSavePopupOpen.value = true
   }
@@ -337,13 +299,18 @@ onBeforeRouteLeave((to) => {
   if (!isSave.value)
     return false
 })
+
+/** ----------- Hooks ----------- */
+onMounted(() => {
+  isOpen.value = isEditMode.value
+})
 </script>
 
 <template>
   <div class="flex fixed right-0 w-12 flex-col justify-between bg-white z-20">
     <div class="px-2">
       <ul class="space-y-1 border-gray-100 pt-4">
-        <li @click="isOpen = true">
+        <li v-if="isEditMode" @click="isOpen = true">
           <a
             class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
           >
@@ -356,7 +323,7 @@ onBeforeRouteLeave((to) => {
             </span>
           </a>
         </li>
-        <div :class="{ 'cursor-not-allowed': !hasEvent }">
+        <div v-if="isEditMode" :class="{ 'cursor-not-allowed': !hasEvent }">
           <li :class="{ 'pointer-events-none': !hasEvent }" @click="saveMap(false)">
             <a
               class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -401,7 +368,7 @@ onBeforeRouteLeave((to) => {
             </a>
           </li>
         </div>
-        <div :class="{ 'cursor-not-allowed': !hasEvent }">
+        <div v-if="isEditMode" :class="{ 'cursor-not-allowed': !hasEvent }">
           <li :class="{ 'pointer-events-none': !hasEvent }" @click="exportJSON()">
             <a
               class="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -422,7 +389,11 @@ onBeforeRouteLeave((to) => {
 
   <!-- Navigation drawer -->
   <USlideover v-model="isOpen">
-    <div class="">
+    <button class="absolute top-5 right-5" @click="isOpen = false">
+      <UIcon name="i-heroicons-x-mark" class="size-6" />
+    </button>
+
+    <div class="mt-10">
       <h1 id="home" class="text-2xl mb-4 font-extrabold text-center mt-6">
         Create Mindmap With AI Magic
       </h1>
@@ -471,7 +442,7 @@ onBeforeRouteLeave((to) => {
                   Security.
                 </div>
               </div>
-              <UButton :loading="isLoading" :disabled="form.isDetailed && !form.details" label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
+              <UButton :loading="isLoading" :disabled="(form.isDetailed && !form.details) || (!form.title)" label="Submit" class="px-5 py-2.5 text-center " @click="updateMap()" />
             </form>
           </div>
           <!-- Json Tab -->
@@ -496,6 +467,9 @@ onBeforeRouteLeave((to) => {
 
   <!-- versions drawer -->
   <USlideover v-model="isVersionDrawerOpen" class="">
+    <button class="absolute top-5 right-5" @click="isVersionDrawerOpen = false">
+      <UIcon name="i-heroicons-x-mark" class="size-6" />
+    </button>
     <div class="overflow-auto">
       <h1 id="home" class="text-2xl mb-4 font-extrabold text-center mt-6">
         Version History

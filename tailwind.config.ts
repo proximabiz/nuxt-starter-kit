@@ -13,6 +13,9 @@ export default <Partial<Config>> {
   theme: {
     extend: {
       colors: customColors,
+      width: {
+        500: '500px',
+      },
     },
     listStyleType: {
       none: 'none',

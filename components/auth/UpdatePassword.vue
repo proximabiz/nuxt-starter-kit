@@ -5,7 +5,6 @@ import { z } from 'zod'
 const supabaseClient = useSupabaseClient()
 const { $error } = useNuxtApp()
 const schema = z.object({
-  email: z.string().email('Invalid email'),
   password: z
     .string()
     .refine(val => new RegExp(getPasswordRegex()).test(val), {
@@ -23,7 +22,6 @@ const schema = z.object({
 
 /** Refs */
 const formState = reactive({
-  email: '',
   password: '',
   confirmPassword: '',
 })
@@ -37,12 +35,11 @@ const confirmationMessage = computed(() => `Your password has been changed succe
 
 /** Methods */
 function isFormValid() {
-  const isEmailValid = z.string().email().safeParse(formState.email).success
   const isPasswordValid = z.string().min(8).safeParse(formState.password).success
   const isConfirmPasswordValid = z.string().min(8).safeParse(formState.confirmPassword).success
   const isNewAndConfirmPasswordSame = formState.password === formState.confirmPassword
 
-  return isEmailValid && isPasswordValid && isConfirmPasswordValid && isNewAndConfirmPasswordSame
+  return isPasswordValid && isConfirmPasswordValid && isNewAndConfirmPasswordSame
 }
 
 async function updatePassword() {
@@ -89,16 +86,6 @@ async function onConfirm() {
       </h2>
       <UForm :schema="schema" :state="formState" class="space-y-4" @submit.stop="onSubmit">
         <div class="mt-4">
-          <UFormGroup name="email">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
-            <UInput
-              v-model="formState.email"
-              input-class="text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-              type="email"
-            />
-          </UFormGroup>
-        </div>
-        <div class="mt-4">
           <UFormGroup name="password">
             <label class="block text-gray-700 text-sm font-bold mb-2">Create Password</label>
             <UInput
@@ -137,8 +124,9 @@ async function onConfirm() {
     </div>
     <div class="mt-5 flex items-center justify-between">
       <span class="border-b w-1/5 md:w-1/5" />
-      <a href="#" class="my-2" @click.stop="navigateTo('/login')">I'm already a
-        member! <span class="text-blue-500">Sign In</span></a>
+      <span class="my-2">I'm already a member !
+        <NuxtLink href="/login" class="text-blue-500">Sign In</NuxtLink>
+      </span>
       <span class="border-b w-1/5 md:w-1/4" />
     </div>
 

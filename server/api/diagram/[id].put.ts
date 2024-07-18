@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
     const userRequirement = chartValidation.details || diagram[0].details
     const prompt = await getPrompt(event, userKeyword, diagram[0].diagram_type_id.id, chartValidation.isDetailed, userRequirement) // to get prompts
     const openai: any = new OpenAI({
-      apiKey: useRuntimeConfig().private.OPENAI_API_KEY,
+      apiKey: useRuntimeConfig().OPENAI_API_KEY as string,
     })
 
     const completion: any = await openai.completions.create({

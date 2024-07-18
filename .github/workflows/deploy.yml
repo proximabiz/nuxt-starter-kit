@@ -37,7 +37,7 @@ jobs:
           channel: ${{ secrets.SLACK_CHANNEL }}
           config: .github/slack.yml
 
-  Build:
+  Build-Stage:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -97,7 +97,7 @@ jobs:
   E2E:
     name: End-to-End Test
     runs-on: ubuntu-latest
-    needs: [Check, Build]
+    needs: [Check, Build-Stage]
     steps:
       - name: E2E Test
         run: echo "Skipped running E2E tests"
@@ -105,7 +105,7 @@ jobs:
   Secrets:
     name: AWS Secret Manager
     runs-on: ubuntu-latest
-    needs: [Build, E2E]
+    needs: [Build-Stage, E2E]
     steps:
       - name: AWS Secrets
         run: echo "ai-flowmapper"
@@ -135,10 +135,68 @@ jobs:
           channel: ${{ secrets.SLACK_CHANNEL }}
           config: .github/slack.yml
 
+  Build-Production:
+    runs-on: ubuntu-latest
+    needs: [Stage]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node 20+
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.1
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Get secrets by name and by ARN
+        uses: aws-actions/aws-secretsmanager-get-secrets@v1
+        with:
+          secret-ids: |
+            ai-flowmapper-production
+          parse-json-secrets: true
+
+      - name: Create .env file from secrets
+        run: |
+          for var in $(compgen -e); do
+            if [[ $var == AI_FLOWMAPPER_PRODUCTION_* ]]; then
+              name=${var#AI_FLOWMAPPER_PRODUCTION_}  # Remove the prefix
+              echo "$name=${!var}" >> .env
+            fi
+          done
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: aiflowmapper
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: 🔔 ➜ Slack Notification
+        if: always()
+        uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          channel: ${{ secrets.SLACK_CHANNEL }}
+          config: .github/config/slack.yml
+
   Production:
     name: Deploy Production
     runs-on: ubuntu-latest
-    needs: Stage
+    needs: [Stage, Build-Production]
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Deploying [Production]
@@ -151,6 +209,7 @@ jobs:
             echo "Deploying aiflowmapper stack to Production"
             cd ai-flow-mapper
             sh deploy.sh
+
       - name: 🔔 Production Deployment Notification
         if: failure()
         uses: act10ns/slack@v2

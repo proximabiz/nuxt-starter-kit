@@ -38,7 +38,7 @@
     "dayjs": "^1.11.10",
     "joi": "^17.11.0",
     "json-diff": "^1.0.6",
-    "mind-elixir": "^3.3.2",
+    "mind-elixir": "https://github.com/proximabiz/mind-elixir-core",
     "nuxt-umami": "^2.6.0",
     "openai": "^4.24.3",
     "stripe": "^14.17.0",
@@ -74,7 +74,7 @@
     "vue": "^3.3.13",
     "vue-router": "^4.2.5"
   },
-  "packageManager": "pnpm@8.7.6",
+  "packageManager": "pnpm@9.1.2",
   "engines": {
     "node": ">= 18"
   }

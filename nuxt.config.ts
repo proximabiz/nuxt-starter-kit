@@ -7,13 +7,11 @@ export default defineNuxtConfig({
       SITE_KEY: process.env.SITE_KEY,
       APP_URL: process.env.APP_URL,
     },
-    private: {
-      SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
-      SENDGRID_EMAIL_TEMPLATE_ID: process.env.SENDGRID_EMAIL_TEMPLATE_ID,
-      SENDGRID_FROM_EMAILID: process.env.SENDGRID_FROM_EMAILID,
-      GOOGLE_CAPTCHA_SECRET_KEY: process.env.GOOGLE_CAPTCHA_SECRET_KEY,
-      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    },
+    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+    SENDGRID_EMAIL_TEMPLATE_ID: process.env.SENDGRID_EMAIL_TEMPLATE_ID,
+    SENDGRID_FROM_EMAILID: process.env.SENDGRID_FROM_EMAILID,
+    GOOGLE_CAPTCHA_SECRET_KEY: process.env.GOOGLE_CAPTCHA_SECRET_KEY,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
   modules: [
     '@nuxt/ui',
