@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { z } from 'zod'
+
 const year = ref(2024)
 
 const columns = [{
@@ -54,6 +56,34 @@ cardDetails.value.cardNo = 5267437907533201
 cardDetails.value.expDate = '05/28'
 cardDetails.value.cvv = 6635
 
+const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
+const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
+const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
+
+const billingSchema = z.object({
+  cardHolderName: z.string().min(1, 'Card holder name is required'),
+  cardNo: z.string()
+    .min(1, 'Card number is required')
+    .regex(/^\d+$/, 'Card number must be numeric')
+    .refine(val => masterCardRegex.test(val) || visaCardRegex.test(val), {
+      message: 'Invalid card number. Please enter a valid card number with 16 digits.',
+    }),
+  expDate: z.string()
+    .regex(basicExpDateRegex, 'Invalid expiration date format')
+    .refine((val) => {
+      const [month, year] = val.split('/').map(Number)
+      const currentYear = new Date().getFullYear() % 100 // Get last two digits of the current year
+      const currentMonth = new Date().getMonth() + 1 // Get current month (1-12)
+      // Check if the year is valid (current year or later) and month is within 1-12
+      return (
+        year >= currentYear && (year > currentYear || month >= currentMonth)
+      )
+    }, 'Expiration date must be in the future'),
+  cvv: z.string()
+    .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
+    .refine(cvv => /^\d+$/.test(cvv), 'Security code must only contain digits'),
+})
+
 const page = ref(1)
 const pageCount = 5
 
@@ -67,73 +97,73 @@ const years = [
 </script>
 
 <template>
-  <p class="font-bold text-2xl ml-4">
+  <p class="font-bold text-2xl ml-4 mt-4">
     Your saved credit and debit cards
   </p>
   <hr class="ml-4 mt-2">
-  <section class="grid place-items-center">
-    <UCard class="mb-6 mt-6">
-      <UForm schema="" :state="cardDetails" class="space-y-2">
+  <section class="grid place-items-center p-4">
+    <UCard class="mb-6 mt-6 w-full max-w-lg">
+      <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
         <UFormGroup label="Name on the card" name="cardHolderName">
           <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" disabled />
         </UFormGroup>
         <UFormGroup label="Credit or debit card number" name="cardNo">
           <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" disabled />
         </UFormGroup>
-        <div class="flex gap-2">
-          <UFormGroup label="Expire date" name="expDate">
+        <div class="flex flex-col md:flex-row md:gap-2">
+          <UFormGroup label="Expire date" name="expDate" class="flex-grow">
             <UInput v-model="cardDetails.expDate" placeholder="MM/YY" disabled />
           </UFormGroup>
-          <UFormGroup label="Security code" name="cvv">
+          <UFormGroup label="Security code" name="cvv" class="flex-grow">
             <UInput v-model="cardDetails.cvv" placeholder="****" disabled />
           </UFormGroup>
         </div>
       </UForm>
     </UCard>
+    <UButton>Delete</UButton>
   </section>
   <div class="ml-4">
-    <p class="font-bold text-2xl">
+    <p class="font-bold text-2xl mt-4">
       Your billing history
     </p>
     <hr class="mt-2">
-    <section class="grid place-items-center">
-      <USelect v-model="year" :options="years" option-attribute="name" class="mt-4" color="blue" />
-      <!-- <UTable :columns="columns" :rows="rows">
-      <template #invoice="{ row }">
-        <a :href="row.invoice" target="_blank">View Invoice</a>
-      </template>
-    </UTable> -->
-      <table class="min-w-full divide-y divide-gray-200 mt-4 border border-gray-200 rounded-sm">
-        <thead class="bg-gray-50">
-          <tr>
-            <th v-for="column in columns" :key="column.key" class="px-6 py-3 text-left text-xs font-medium  text-gray-900 uppercase tracking-wider">
-              {{ column.label }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200 ">
-          <tr v-for="payment in rows" :key="payment.payment" class="hover:bg-gray-100">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">
-              {{ payment.payment }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ payment.plan }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ payment.amount }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ payment.status }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <NuxtLink :src="payment.invoice" target="_blank" class="text-custom1-500 hover:text-custom1-900 underline">
-                View Invoice
-              </NuxtLink>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+    <section class="grid place-items-center p-4">
+      <div class="w-full max-w-xs">
+      <USelect v-model="year" :options="years" option-attribute="name" class="mt-4 w-full" color="blue" />
+    </div>
+      <div class="overflow-x-auto w-full mt-4">
+        <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-sm">
+          <thead class="bg-gray-50">
+            <tr>
+              <th v-for="column in columns" :key="column.key" class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                {{ column.label }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="payment in rows" :key="payment.payment" class="hover:bg-gray-100">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">
+                {{ payment.payment }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ payment.plan }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ payment.amount }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ payment.status }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <NuxtLink :src="payment.invoice" target="_blank" class="text-custom1-500 hover:text-custom1-900 underline">
+                  View Invoice
+                </NuxtLink>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700 mt-4 w-full">
         <UPagination v-model="page" :page-count="pageCount" :total="payments.length" />
       </div>
     </section>
