@@ -11,8 +11,7 @@ onMounted(async () => {
     const response = await userStore.fetchTaxGst()
 
     if (response) {
-        subscriptionStore.billingDetails.taxId = response.gst_number
-    
+        subscriptionStore.billingDetails.taxId = response.gst_number    
       if (response.gst_number)
         isDisabled.value = true
     }
