@@ -51,12 +51,15 @@ const payments = [
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 
+const isEditable = ref(false)
 const isModalVisible = ref(false)
+const { $success } = useNuxtApp()
 
-cardDetails.value.cardHolderName = 'Ipsita'
-cardDetails.value.cardNo = 5267437907533201
-cardDetails.value.expDate = '05/28'
-cardDetails.value.cvv = 6635
+ if(cardDetails.value.cardHolderName !== ''||
+  cardDetails.value.cardNo !== ''||
+  cardDetails.value.expDate !==''||
+  cardDetails.value.cvv !== '')
+  isEditable.value=true
 
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
@@ -105,6 +108,8 @@ async function handleDeleteConfirm(): Promise<void> {
   cardDetails.value.cardNo = ''
   cardDetails.value.expDate = ''
   cardDetails.value.cvv = ''
+  $success('Your old card details has succussfuly deleted')
+  isEditable.value=false
   // try {
   //   const response = await userStore.deleteTaxGst()
   //   if (response?.status === 200) {
@@ -119,11 +124,20 @@ async function handleDeleteConfirm(): Promise<void> {
   //   $error(error.statusMessage)
   // }
 }
+function handleSubmit(){
+$success('Your new card details has succussfuly added')
+if( cardDetails.value.cardHolderName !== ''||
+  cardDetails.value.cardNo !== ''||
+  cardDetails.value.expDate !==''||
+  cardDetails.value.cvv !== '')
+  isEditable.value=true
+}
 async function onCancel() {
   cardDetails.value.cardHolderName = ''
   cardDetails.value.cardNo = ''
   cardDetails.value.expDate = ''
   cardDetails.value.cvv = ''
+  isEditable.value=false
 }
 </script>
 
@@ -138,33 +152,32 @@ async function onCancel() {
       <UCard>
         <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
           <UFormGroup label="Name on the card" name="cardHolderName">
-            <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="cardDetails.cardHolderName !== ''" />
+            <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
           </UFormGroup>
           <UFormGroup label="Credit or debit card number" name="cardNo">
-            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="cardDetails.cardNo !== ''" />
+            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable"/>
           </UFormGroup>
           <div class="flex flex-col md:flex-row md:gap-2">
             <UFormGroup label="Expire date" name="expDate" class="flex-grow">
-              <UInput v-model="cardDetails.expDate" placeholder="MM/YY" :disabled="cardDetails.expDate !== ''" />
+              <UInput v-model="cardDetails.expDate" placeholder="MM/YY" :disabled="isEditable" />
             </UFormGroup>
             <UFormGroup label="Security code" name="cvv" class="flex-grow">
-              <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="cardDetails.cvv !== ''" />
+              <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditable" />
             </UFormGroup>
           </div>
         </UForm>
       </UCard>
-      <div v-if="cardDetails.cardNo !== ''" class="absolute bottom-[1rem] right-[-3rem]">
+      <div v-if="isEditable" class="absolute bottom-[1rem] right-[-3rem]">
         <UTooltip text="Delete the old card details to add new one." :popper="{ arrow: true }">
           <UButton color="red" icon="i-heroicons-trash" size="sm" variant="ghost" @click="showModal" />
         </UTooltip>
       </div>
     </div>
-    <div v-if="cardDetails.cardNo === ''" class="flex gap-2 justify-center">
+    <div v-if="!isEditable" class="flex gap-2 justify-center">
       <UButton color="blue" @click="onCancel">
         Cancel
       </UButton>
-
-      <UButton type="submit" color="blue">
+      <UButton  color="blue" @click="handleSubmit">
         Save
       </UButton>
     </div>
