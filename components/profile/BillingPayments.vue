@@ -51,6 +51,8 @@ const payments = [
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 
+const isModalVisible = ref(false)
+
 cardDetails.value.cardHolderName = 'Ipsita'
 cardDetails.value.cardNo = 5267437907533201
 cardDetails.value.expDate = '05/28'
@@ -94,6 +96,35 @@ const rows = computed(() => {
 const years = [
   2024,
 ]
+function showModal() {
+  isModalVisible.value = true
+}
+
+async function handleDeleteConfirm(): Promise<void> {
+  cardDetails.value.cardHolderName = ''
+  cardDetails.value.cardNo = ''
+  cardDetails.value.expDate = ''
+  cardDetails.value.cvv = ''
+  // try {
+  //   const response = await userStore.deleteTaxGst()
+  //   if (response?.status === 200) {
+  //     // Clear the GST number from state
+  //     state.gstNumber = ''
+  //     isDisabled.value = false
+  //     isModalVisible.value = false
+  //     $success(response.message)
+  //   }
+  // }
+  // catch (error) {
+  //   $error(error.statusMessage)
+  // }
+}
+async function onCancel() {
+  cardDetails.value.cardHolderName = ''
+  cardDetails.value.cardNo = ''
+  cardDetails.value.expDate = ''
+  cardDetails.value.cvv = ''
+}
 </script>
 
 <template>
@@ -101,26 +132,49 @@ const years = [
     Your saved credit and debit cards
   </p>
   <hr class="ml-4 mt-2">
+
   <section class="grid place-items-center p-4">
-    <UCard class="mb-6 mt-6 w-full max-w-lg">
-      <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
-        <UFormGroup label="Name on the card" name="cardHolderName">
-          <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" disabled />
-        </UFormGroup>
-        <UFormGroup label="Credit or debit card number" name="cardNo">
-          <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" disabled />
-        </UFormGroup>
-        <div class="flex flex-col md:flex-row md:gap-2">
-          <UFormGroup label="Expire date" name="expDate" class="flex-grow">
-            <UInput v-model="cardDetails.expDate" placeholder="MM/YY" disabled />
+    <div class="relative mb-6 mt-6 w-full max-w-lg">
+      <UCard>
+        <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
+          <UFormGroup label="Name on the card" name="cardHolderName">
+            <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="cardDetails.cardHolderName !== ''" />
           </UFormGroup>
-          <UFormGroup label="Security code" name="cvv" class="flex-grow">
-            <UInput v-model="cardDetails.cvv" placeholder="****" disabled />
+          <UFormGroup label="Credit or debit card number" name="cardNo">
+            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="cardDetails.cardNo !== ''" />
           </UFormGroup>
-        </div>
-      </UForm>
-    </UCard>
-    <UButton>Delete</UButton>
+          <div class="flex flex-col md:flex-row md:gap-2">
+            <UFormGroup label="Expire date" name="expDate" class="flex-grow">
+              <UInput v-model="cardDetails.expDate" placeholder="MM/YY" :disabled="cardDetails.expDate !== ''" />
+            </UFormGroup>
+            <UFormGroup label="Security code" name="cvv" class="flex-grow">
+              <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="cardDetails.cvv !== ''" />
+            </UFormGroup>
+          </div>
+        </UForm>
+      </UCard>
+      <div v-if="cardDetails.cardNo !== ''" class="absolute bottom-[1rem] right-[-3rem]">
+        <UTooltip text="Delete the old card details to add new one." :popper="{ arrow: true }">
+          <UButton color="red" icon="i-heroicons-trash" size="sm" variant="ghost" @click="showModal" />
+        </UTooltip>
+      </div>
+    </div>
+    <div v-if="cardDetails.cardNo === ''" class="flex gap-2 justify-center">
+      <UButton color="blue" @click="onCancel">
+        Cancel
+      </UButton>
+
+      <UButton type="submit" color="blue">
+        Save
+      </UButton>
+    </div>
+    <Confirmation
+      v-model="isModalVisible"
+      :is-open="isModalVisible"
+      text="Are you sure! you want to delete this Card details?"
+      @update:is-open="isModalVisible = $event"
+      @delete-confirm="handleDeleteConfirm"
+    />
   </section>
   <div class="ml-4">
     <p class="font-bold text-2xl mt-4">
@@ -129,13 +183,16 @@ const years = [
     <hr class="mt-2">
     <section class="grid place-items-center p-4">
       <div class="w-full max-w-xs">
-      <USelect v-model="year" :options="years" option-attribute="name" class="mt-4 w-full" color="blue" />
-    </div>
+        <USelect v-model="year" :options="years" option-attribute="name" class="mt-4 w-full" color="blue" />
+      </div>
       <div class="overflow-x-auto w-full mt-4">
         <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-sm">
           <thead class="bg-gray-50">
             <tr>
-              <th v-for="column in columns" :key="column.key" class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+              <th
+                v-for="column in columns" :key="column.key"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider"
+              >
                 {{ column.label }}
               </th>
             </tr>
@@ -155,7 +212,10 @@ const years = [
                 {{ payment.status }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <NuxtLink :src="payment.invoice" target="_blank" class="text-custom1-500 hover:text-custom1-900 underline">
+                <NuxtLink
+                  :src="payment.invoice" target="_blank"
+                  class="text-custom1-500 hover:text-custom1-900 underline"
+                >
                   View Invoice
                 </NuxtLink>
               </td>

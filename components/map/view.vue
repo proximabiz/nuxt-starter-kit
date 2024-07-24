@@ -311,7 +311,7 @@ const isSharePopUpOpen = ref(false)
 const emailId = ref('')
 const isFirstDropdownVisible = ref(false)
 const isSecondDropdownVisible = ref(false)
-const selectedPerson = reactive<PersonSelectedType[]>([])
+let selectedPerson = reactive<PersonSelectedType[]>([])
 const textMessage = ref('')
 
 const peopleArray = [
@@ -372,12 +372,12 @@ function select(item: PersonSelectedType) {
   // console.log("Selected person after update:", selectedPerson);
 }
 
-function selectPeople(item: PersonSelectedType) {
-  if (!selectedPerson.some(selectedItem => selectedItem.email === item.email))
-    selectedPerson.push(item)
-}
+// function selectPeople(item: PersonSelectedType) {
+//   if (!selectedPerson.some(selectedItem => selectedItem.email === item.email))
+//     selectedPerson.push(item)
+// }
 function removeTag(itemToRemove: PersonSelectedType) {
-  // selectedPerson = selectedPerson.filter(item => item.email !== itemToRemove.email)
+  selectedPerson = selectedPerson.filter(item => item.email !== itemToRemove.email)
 }
 
 /** ----------- Hooks ----------- */

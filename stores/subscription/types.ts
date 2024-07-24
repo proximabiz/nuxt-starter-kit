@@ -8,9 +8,9 @@ export interface BillingState {
   address: string
   phone: string
   cardHolderName: string
-  cardNo: number
+  cardNo: number | string
   expDate: string
-  cvv: number
+  cvv: number | string
 }
 export interface AddAPIPayload {
   userId: string

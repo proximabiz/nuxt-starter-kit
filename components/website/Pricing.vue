@@ -47,14 +47,14 @@ const regions: regionTypes[] = [
   },
 ]
 const monthlyPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value?.role==='authenticated') || sub_status?.value.planName === 'Free' },
+  { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === 'Free' },
   { plan: 'Basic', price: 5, month: 1, disabled: sub_status?.value.planName === 'Basic' },
   { plan: 'Premium', price: 8, month: 1, disabled: sub_status?.value.planName === 'Premium' },
   { plan: 'Enterprise', price: 'Custom', month: 1, disabled: true },
 ]
 
 const annualPrices: PricePlan[] = reactive([
-  { plan: 'Free', price: 0, month: 11, disabled: (authStore.getAuthUser.value?.role==='authenticated') || sub_status?.value.planName === 'Free' },
+  { plan: 'Free', price: 0, month: 11, disabled: (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === 'Free' },
   { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: sub_status?.value.planName === 'Basic' },
   { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: sub_status?.value.planName === 'Premium' },
   { plan: 'Enterprise', price: 'Custom', month: 11, disabled: true },
@@ -99,7 +99,7 @@ function providePlanDetails(val: any) {
   <template v-else>
     <div class="text-center my-5">
       <span class="text-3xl font-medium my-5">Choose Your AI FlowMapper Plan</span>
-    </div>  
+    </div>
     <div class="flex items-center justify-center relative my-5">
       <div class="rounded-full border mt-2">
         <label for="Toggle4" class="inline-flex items-center p-1 cursor-pointer dark:bg-gray-300 dark:text-gray-800">
@@ -140,7 +140,7 @@ function providePlanDetails(val: any) {
               <strong
                 class="text-3xl font-bold text-gray-900 sm:text-3xl"
               >
-                {{ value.currencySymbol }}{{value.calculatedPrice}}
+                {{ value.currencySymbol }}{{ value.calculatedPrice }}
               </strong>
               <span class="text-sm font-medium text-gray-700">
                 {{ value.price === 'Custom' ? ''
