@@ -19,6 +19,7 @@ const steps = [
   { label: 'Your plan', component: 'BillingDetailsBillling' },
   { label: 'Your Address', component: 'BillingAddress' },
   { label: 'Card Details', component: 'BillingCardDetails' },
+  { label: 'Tax ID', component: 'TaxId' },
   { label: 'Review your details', component: 'BillingReview' },
 ]
 
@@ -32,29 +33,25 @@ function setActiveStep(index: number) {
     // Check if any of the required billingState fields are empty
     const isAddressComplete = bac.name && bac.orgName && bac.country && bac.zip && bac.city && bac.region && bac.address && bac.phone
     if (!isAddressComplete) {
-      // confirmation.isModalVisible=true
-      // confirmation.context='Please fill out all the fields in your billing address.'
-
       $error('Please fill out all the fields in your billing address.')
       return
     }
-    // else if(isAddressComplete){
-    //   confirmation.isModalVisible=false
-    // }
+   
   }
   if (index === 3) {
     const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
     if (!isCardDetailsComplete) {
-      // confirmation.isModalVisible=true
-      // confirmation.context='Please fill out all the fields in your billing card details.'
-      $error('Please fill out all the fields in your billing card address.')
+      $error('Please fill out all the fields in your billing card details.')
       return
-    }
-    // else if(isCardDetailsComplete){
-    //   confirmation.isModalVisible=false
-    // }
+    }  
   }
-
+  // if (index === 4) {
+  //   const isCardDetailsComplete = bac.taxId
+  //   if (!isCardDetailsComplete) {
+  //     $error('Please fill out the Tax Id field in your billing process')
+  //     return
+  //   }
+  // }
   if (index >= 0 && index < steps.length)
     state.activeStep = index
 }
@@ -109,8 +106,9 @@ function isActive(index: number) {
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
     <BillingCardDetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
-    <BillingReview v-if="state.activeStep === 3" :plan-name="props.planDetails.plan" :due-price="duePrice" />
-    <UButton v-if="state.activeStep !== 3" @click="() => setActiveStep(state.activeStep + 1)">
+    <BillingTaxId v-if="state.activeStep === 3" />
+    <BillingReview v-if="state.activeStep === 4" :plan-name="props.planDetails.plan" :due-price="duePrice" />
+    <UButton v-if="state.activeStep !== 4" @click="() => setActiveStep(state.activeStep + 1)">
       Continue
     </UButton>
   </div>

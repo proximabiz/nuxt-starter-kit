@@ -34,6 +34,7 @@ function initialState() {
       cardNo: 0,
       expDate: '',
       cvv: 0,
+      taxId:''
     },
   }
 }

@@ -11,6 +11,7 @@ export interface BillingState {
   cardNo: number | string
   expDate: string
   cvv: number | string
+  taxId:string
 }
 export interface AddAPIPayload {
   userId: string
@@ -64,4 +65,5 @@ export interface CompleteOrderPostAPIPayload {
   cardNumber: number
   expiryDate: string
   securityCode: number
+  taxId:string
 }
