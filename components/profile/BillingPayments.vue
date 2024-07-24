@@ -55,11 +55,11 @@ const isEditable = ref(false)
 const isModalVisible = ref(false)
 const { $success } = useNuxtApp()
 
- if(cardDetails.value.cardHolderName !== ''||
-  cardDetails.value.cardNo !== ''||
-  cardDetails.value.expDate !==''||
-  cardDetails.value.cvv !== '')
-  isEditable.value=true
+if (cardDetails.value.cardHolderName !== ''
+  || cardDetails.value.cardNo !== ''
+  || cardDetails.value.expDate !== ''
+  || cardDetails.value.cvv !== '')
+  isEditable.value = true
 
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
@@ -109,7 +109,7 @@ async function handleDeleteConfirm(): Promise<void> {
   cardDetails.value.expDate = ''
   cardDetails.value.cvv = ''
   $success('Your old card details has succussfuly deleted')
-  isEditable.value=false
+  isEditable.value = false
   // try {
   //   const response = await userStore.deleteTaxGst()
   //   if (response?.status === 200) {
@@ -124,20 +124,20 @@ async function handleDeleteConfirm(): Promise<void> {
   //   $error(error.statusMessage)
   // }
 }
-function handleSubmit(){
-$success('Your new card details has succussfuly added')
-if( cardDetails.value.cardHolderName !== ''||
-  cardDetails.value.cardNo !== ''||
-  cardDetails.value.expDate !==''||
-  cardDetails.value.cvv !== '')
-  isEditable.value=true
+function handleSubmit() {
+  $success('Your new card details has succussfuly added')
+  if (cardDetails.value.cardHolderName !== ''
+    || cardDetails.value.cardNo !== ''
+    || cardDetails.value.expDate !== ''
+    || cardDetails.value.cvv !== '')
+    isEditable.value = true
 }
 async function onCancel() {
   cardDetails.value.cardHolderName = ''
   cardDetails.value.cardNo = ''
   cardDetails.value.expDate = ''
   cardDetails.value.cvv = ''
-  isEditable.value=false
+  isEditable.value = false
 }
 </script>
 
@@ -155,7 +155,7 @@ async function onCancel() {
             <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
           </UFormGroup>
           <UFormGroup label="Credit or debit card number" name="cardNo">
-            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable"/>
+            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable" />
           </UFormGroup>
           <div class="flex flex-col md:flex-row md:gap-2">
             <UFormGroup label="Expire date" name="expDate" class="flex-grow">
@@ -177,7 +177,7 @@ async function onCancel() {
       <UButton color="blue" @click="onCancel">
         Cancel
       </UButton>
-      <UButton  color="blue" @click="handleSubmit">
+      <UButton color="blue" @click="handleSubmit">
         Save
       </UButton>
     </div>

@@ -36,14 +36,13 @@ function setActiveStep(index: number) {
       $error('Please fill out all the fields in your billing address.')
       return
     }
-   
   }
   if (index === 3) {
     const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
     if (!isCardDetailsComplete) {
       $error('Please fill out all the fields in your billing card details.')
       return
-    }  
+    }
   }
   // if (index === 4) {
   //   const isCardDetailsComplete = bac.taxId
