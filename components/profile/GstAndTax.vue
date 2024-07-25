@@ -73,7 +73,7 @@ function cancelGst() {
 </script>
 
 <template>
- <ProfileBreadCrumb breadcrumbText="Tax ID / GST Details"/>
+  <ProfileBreadCrumb breadcrumb-text="Tax ID / GST Details" />
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />
     <UCard>

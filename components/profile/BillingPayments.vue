@@ -142,7 +142,7 @@ async function onCancel() {
 </script>
 
 <template>
-  <ProfileBreadCrumb breadcrumbText="Billing & Payments"/>
+  <ProfileBreadCrumb breadcrumb-text="Billing & Payments" />
   <p class="font-bold text-2xl ml-4 mt-4">
     Your saved credit and debit cards
   </p>
