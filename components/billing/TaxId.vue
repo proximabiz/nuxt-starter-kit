@@ -24,11 +24,11 @@ onMounted(async () => {
 <template>
   <div class="flex justify-center items-center flex-col my-8">
     <div class="flex mt-4">
-      <span class="px-4">Tax ID : </span>
+      <span class="px-4">Tax ID / GST Number: </span>
       <UForm :state="subscriptionStore.billingDetails">
         <UFormGroup name="gst">
           <UInput
-            v-model="subscriptionStore.billingDetails.taxId" placeholder="Enter your Tax ID." :disabled="isDisabled" class="custom-input"
+            v-model="subscriptionStore.billingDetails.taxId" placeholder="Enter your Tax ID / GST Number." :disabled="isDisabled" class="custom-input"
             color="blue"
           />
         </UFormGroup>

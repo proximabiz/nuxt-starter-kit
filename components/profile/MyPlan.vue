@@ -67,6 +67,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
 </script>
 
 <template>
+  <ProfileBreadCrumb breadcrumbText="My plan"/>
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">

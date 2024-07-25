@@ -11,10 +11,10 @@ const subscriptionStore = useSubscriptionStore()
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
 const cards = [
-  { id: 1, text: 'Address, Contact Details', iconSrc: address, componentName: 'ProfileAddressDetails', isDisabled: false },
-  { id: 2, text: 'Tax ID / GST Details', iconSrc: tax, componentName: 'ProfileGstAndTax', isDisabled: false },
-  { id: 3, text: 'Billing & Payments', iconSrc: card, componentName: 'BillingPayments', isDisabled: sub_status.value.planName === 'Free' },
-  { id: 4, text: 'My Plan', iconSrc: plan, componentName: 'ProfileMyPlan', isDisabled: false },
+  { id: 1, text: 'Address, Contact Details', iconSrc: address, componentName: 'ProfileAddressDetails', isDisabled: false ,path:'/profile/address-details'},
+  { id: 2, text: 'Tax ID / GST Details', iconSrc: tax, componentName: 'ProfileGstAndTax', isDisabled: false, path:'/profile/tax-details'},
+  { id: 3, text: 'Billing & Payments', iconSrc: card, componentName: 'BillingPayments', isDisabled: sub_status.value.planName === 'Free',path:'/profile/billing-payments' },
+  { id: 4, text: 'My Plan', iconSrc: plan, componentName: 'ProfileMyPlan', isDisabled: false ,path:'/profile/my-plan'}
 ]
 
 async function setComponentName(componentName: string) {
@@ -31,19 +31,6 @@ function resetComponent() {
 </script>
 
 <template>
-  <nav v-if="selectedComponent" aria-label="Breadcrumb" class="ml-4">
-    <div class="flex font-semibold text-sm">
-      <span class="cursor-pointer" @click="resetComponent()">
-        My Account
-      </span>
-      <span class="mx-1">
-        >
-      </span>
-      <span class="text-custom4-600">
-        {{ breadcrumbText }}
-      </span>
-    </div>
-  </nav>
   <div v-if="!selectedComponent" class="grid place-items-center">
     <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 mt-20">
       <UCard
@@ -52,6 +39,7 @@ function resetComponent() {
         :title="item.isDisabled ? 'This feature is not available for Free Subscription' : ''"
         @click="setComponentName(item.componentName)"
       >
+      <NuxtLink :to="item.path">
         <div class="flex items-center py-8" :title="item.isDisabled ? 'This feature is not available for Free Subscription' : ''">
           <div>
             <img :src="item.iconSrc" class="h-10" alt="">
@@ -60,12 +48,13 @@ function resetComponent() {
             {{ item.text }}
           </div>
         </div>
+      </NuxtLink>
       </UCard>
     </div>
   </div>
 
-  <ProfileAddresDetails v-if="selectedComponent === 'ProfileAddressDetails'" />
+  <!-- <ProfileAddresDetails v-if="selectedComponent === 'ProfileAddressDetails'" />
   <ProfileGstAndTax v-if="selectedComponent === 'ProfileGstAndTax'" />
   <ProfileBillingPayments v-if="selectedComponent === 'BillingPayments'" />
-  <ProfileMyPlan v-if="selectedComponent === 'ProfileMyPlan'" />
+  <ProfileMyPlan v-if="selectedComponent === 'ProfileMyPlan'" /> -->
 </template>
