@@ -26,7 +26,6 @@ watch(
           showUpgradeModal.value = true
           break
         case 'NO_ACTIVE_SUBSCRIPTION':
-
           if (!route.fullPath.includes('/profile/account')) {
             const payload = {
               userId: user.id,
@@ -36,6 +35,7 @@ watch(
             }
             await subscriptionStore.addSubscription(payload)
           }
+          
           break
         case 'ACTIVE_SUBSCRIPTION':
           if (cardDetails.value.cardHolderName === ''
@@ -43,6 +43,8 @@ watch(
             && cardDetails.value.expDate === ''
             && cardDetails.value.cvv === '') {
               showBillingModal.value = true
+              if(user && route.fullPath.includes('/app/diagram/list'))
+              return navigateTo('/profile/billing-payments')
           }
           break
         default:
