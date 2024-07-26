@@ -5,6 +5,7 @@ const cardValue = ref()
 const region = ref('india')
 const subscriptionStore = useSubscriptionStore()
 const authStore = useAuthStore()
+const isLoading = ref(true)
 
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
@@ -46,17 +47,20 @@ const regions: regionTypes[] = [
     conversionRate: 1, // Base rate
   },
 ]
+const basePlane = sub_status?.value.planName !== '' && sub_status?.value.planName === 'Basic'
+const premiumPlane = sub_status?.value.planName !== '' && sub_status?.value.planName === 'Premium'
+
 const monthlyPrices: PricePlan[] = [
   { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === 'Free' },
-  { plan: 'Basic', price: 5, month: 1, disabled: sub_status?.value.planName === 'Basic' },
-  { plan: 'Premium', price: 8, month: 1, disabled: sub_status?.value.planName === 'Premium' },
+  { plan: 'Basic', price: 5, month: 1, disabled: basePlane },
+  { plan: 'Premium', price: 8, month: 1, disabled: premiumPlane },
   { plan: 'Enterprise', price: 'Custom', month: 1, disabled: true },
 ]
 
 const annualPrices: PricePlan[] = reactive([
   { plan: 'Free', price: 0, month: 11, disabled: (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === 'Free' },
-  { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: sub_status?.value.planName === 'Basic' },
-  { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: sub_status?.value.planName === 'Premium' },
+  { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: basePlane },
+  { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: premiumPlane },
   { plan: 'Enterprise', price: 'Custom', month: 11, disabled: true },
 ])
 
@@ -83,6 +87,12 @@ const prices = computed(() => {
   })
   return adjustedPrices
 })
+
+if (sub_status?.value.planName !== '')
+  isLoading.value = false
+
+else
+  isLoading.value = true
 
 function providePlanDetails(val: any) {
   if (!authStore.getAuthUser.value)
@@ -124,7 +134,7 @@ function providePlanDetails(val: any) {
 
     <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4 lg:gap-8">
-        <template v-if="prices && prices.length">
+        <template v-if="prices && prices.length && !isLoading">
           <div
             v-for="(value, index) in prices" :key="index"
             class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm"
@@ -153,7 +163,7 @@ function providePlanDetails(val: any) {
                   value.disabled ? 'bg-slate-200 border-transparent' : 'hover:bg-transparent hover:text-indigo-600']"
                 :disabled="value.disabled" @click="providePlanDetails(value)"
               >
-                Get started
+                {{ value.plan === 'Enterprise' ? 'Coming Soon' : 'Get started' }}
               </UButton>
             </div>
             <div class="p-2 sm:px-4">

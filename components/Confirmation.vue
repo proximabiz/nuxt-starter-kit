@@ -20,11 +20,12 @@ function cancel() {
   emit('update:isOpen', false)
 }
 </script>
+
 <template>
   <UModal :model-value="props.isOpen" :transition="false">
     <div class="p-8">
       <div class="mb-8">
-        {{ props.text }}  
+        {{ props.text }}
       </div>
       <div class="mt-4 flex justify-end gap-4">
         <UButton class="" color="blue" @click="cancel">

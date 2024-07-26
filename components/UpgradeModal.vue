@@ -35,13 +35,19 @@ function upgradePlan() {
 <script setup lang="ts">
 import { defineEmits, defineProps, ref } from 'vue'
 
-const props = defineProps({
-  modelValue: Boolean,
-})
+interface Props {
+  modelValue: boolean
+  onSubmitConfirm: () => void
+  text: string
+  ok: string
+}
+
+const props = defineProps<Props>()
 
 const emits = defineEmits(['update:modelValue', 'upgrade'])
 
 function upgradePlan() {
+  props.onSubmitConfirm()
   emits('upgrade')
 }
 
@@ -59,11 +65,11 @@ watch(
   <UModal :model-value="modelValue" :transition="false">
     <div class="p-8">
       <div class="mb-8">
-        Your plan has expired!...
+        {{ props.text }}
       </div>
       <div class="mt-4 flex justify-end gap-4">
-        <UButton color="gray" @click="upgradePlan">
-          Upgrade
+        <UButton color="blue" @click="upgradePlan">
+          {{ props.ok ? props.ok : "Confirm" }}
         </UButton>
       </div>
     </div>

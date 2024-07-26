@@ -187,8 +187,8 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
     <Confirmation
       v-model="isModalVisible"
       :is-open="isModalVisible"
-       left-button="Cancel"
-    right-button="Confirm"
+      left-button="Cancel"
+      right-button="Confirm"
       text="Are you sure you want to cancel your subscription?"
       @update:is-open="isModalVisible = $event"
       @delete-confirm="cancelPlan"

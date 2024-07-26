@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { z } from 'zod'
+
 const year = ref(2024)
 const columns = [{
   key: 'payment',
@@ -151,6 +152,7 @@ onBeforeRouteLeave((to, from, next) => {
   }
 })
 </script>
+
 <template>
   <ProfileBreadCrumb text="Billing & Payments" />
   <p class="font-bold text-2xl ml-4 mt-4">
@@ -258,7 +260,7 @@ onBeforeRouteLeave((to, from, next) => {
     :is-open="isSavePopupOpen"
     text="Please add card details."
     left-button="Ok"
-    right-button="Later"
+    right-button="Add Later"
     @update:is-open="isSavePopupOpen = $event"
     @delete-confirm="saveDetails(true)"
   />

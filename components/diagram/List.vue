@@ -8,8 +8,14 @@ const isLoading = ref(false)
 const isDelete = ref(false)
 const apiResponse = ref()
 const deleteDiagramId = ref('')
+const isSavePopupOpen = ref(false)
+const isIgnoredCardDetails = ref(false)
+const toRoute = ref()
+const authStore = useAuthStore()
+const checkMode = ref(false)
 
 const diagramsList = computed(() => diagramStore.diagramsList)
+const authUser = computed(() => authStore.getAuthUser.value)
 const headers = computed(() => [
   {
     title: 'Title',
@@ -32,6 +38,9 @@ const headers = computed(() => [
 const globalStore = useGlobalStore()
 globalStore.pageHeading.title = 'My Diagrams'
 
+const subscriptionStore = useSubscriptionStore()
+const cardDetails = computed(() => subscriptionStore.billingDetails)
+
 async function fetchDiagramTypes() {
   try {
     const diagramTypeStore = useDiagramTypeStore()
@@ -53,30 +62,33 @@ async function fetchDiagrams() {
 }
 
 async function createDiagram() {
-  isLoading.value = true
-  try {
-    // Right now we have only one type of diagram - mindmap
-    const diagramType = diagramTypeStore.getMindMapTypeDiagram
-    if (!diagramType)
-      return
-
-    const response = await diagramStore.create({
-      title: 'default',
-      diagramTypeId: diagramType.id,
-    })
-
-    isLoading.value = false
-
-    /* @ts-expect-error need to be fixed */
-    redirectToPath(response?.diagram[0].id)
+  if (cardDetails.value.cardNo !== '') {
+    isLoading.value = true
   }
-  catch (error) {
-    isLoading.value = false
-    $error(error)
+  else {
+    try {
+      // Right now we have only one type of diagram - mindmap
+      const diagramType = diagramTypeStore.getMindMapTypeDiagram
+      if (!diagramType)
+        return
+
+      const response = await diagramStore.create({
+        title: 'default',
+        diagramTypeId: diagramType.id,
+      })
+
+      isLoading.value = false
+      /* @ts-expect-error need to be fixed */
+      redirectToPath(response?.diagram[0].id)
+    }
+    catch (error) {
+      isLoading.value = false
+      $error(error)
+    }
   }
 }
-
 function redirectToPath(diagramId: string, mode: string = 'edit') {
+  checkMode.value = mode.includes('view')
   return navigateTo({
     path: `/app/diagram/${diagramId}`,
     query: {
@@ -112,6 +124,27 @@ async function confirmedDeleteDiagram() {
 
 onMounted(() => {
   fetchDiagrams()
+})
+
+function saveDetails(_valid: boolean) {
+  isSavePopupOpen.value = false
+  isIgnoredCardDetails.value = true
+  if (_valid)
+    navigateTo('/profile/billing-payments')
+}
+onBeforeRouteLeave((to, from, next) => {
+  if (cardDetails.value.cardHolderName === ''
+    && cardDetails.value.cardNo === ''
+    && cardDetails.value.expDate === ''
+    && cardDetails.value.cvv === ''
+    && !isIgnoredCardDetails.value && authUser.value?.email !== undefined && to.path !== '/' && !checkMode.value) {
+    return (
+      isSavePopupOpen.value = true,
+      toRoute.value = to.path)
+  }
+  else {
+    next()
+  }
 })
 </script>
 
@@ -193,4 +226,11 @@ onMounted(() => {
       </div>
     </UCard>
   </UModal>
+  <UpgradeModal
+    v-model="isSavePopupOpen"
+    :is-open="isSavePopupOpen"
+    text="Please add card details."
+    ok="Ok"
+    @submit-confirm="saveDetails(true)"
+  />
 </template>

@@ -6,8 +6,12 @@ interface Props {
 const props = defineProps<Props>()
 const subscriptionStore = useSubscriptionStore()
 const allDetails = computed(() => subscriptionStore.billingDetails)
+const { $success } = useNuxtApp()
+const router = useRouter()
+const isSavePopupOpen = ref(false)
 
 function completeOrder() {
+  isSavePopupOpen.value = true
   // const payload = {
   //   country: allDetails.value.country,
   //   region: allDetails.value.region,
@@ -23,6 +27,18 @@ function completeOrder() {
   //   expiryDate: allDetails.value.expDate,
   //   securityCode: allDetails.value.cvv,
   // }
+}
+function navigateTo(path: string) {
+  router.push(path)
+}
+function saveDetails(valid: boolean) {
+  isSavePopupOpen.value = false
+  if (valid)
+    $success('Plan upgraded successfully.')
+  // eslint-disable-next-line no-lone-blocks
+  { setTimeout(() => {
+    navigateTo('/app/diagram/list')
+  }, 2000) }
 }
 </script>
 
@@ -76,6 +92,15 @@ function completeOrder() {
       Complete order
     </UButton>
   </section>
+  <Confirmation
+    v-model="isSavePopupOpen"
+    :is-open="isSavePopupOpen"
+    text="Are you sure you want to submit details?"
+    left-button="Ok"
+    right-button="Later"
+    @update:is-open="isSavePopupOpen = $event"
+    @delete-confirm="saveDetails(true)"
+  />
 </template>
 
 <style scoped>
