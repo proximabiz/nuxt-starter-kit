@@ -16,6 +16,8 @@ const checkMode = ref(false)
 
 const diagramsList = computed(() => diagramStore.diagramsList)
 const authUser = computed(() => authStore.getAuthUser.value)
+// const subscriptionStore = useSubscriptionStore()
+// const cardDetails = computed(() => subscriptionStore.billingDetails)
 const headers = computed(() => [
   {
     title: 'Title',
@@ -38,8 +40,7 @@ const headers = computed(() => [
 const globalStore = useGlobalStore()
 globalStore.pageHeading.title = 'My Diagrams'
 
-const subscriptionStore = useSubscriptionStore()
-const cardDetails = computed(() => subscriptionStore.billingDetails)
+
 
 async function fetchDiagramTypes() {
   try {
@@ -62,10 +63,7 @@ async function fetchDiagrams() {
 }
 
 async function createDiagram() {
-  if (cardDetails.value.cardNo !== '') {
-    isLoading.value = true
-  }
-  else {
+ 
     try {
       // Right now we have only one type of diagram - mindmap
       const diagramType = diagramTypeStore.getMindMapTypeDiagram
@@ -85,7 +83,7 @@ async function createDiagram() {
       isLoading.value = false
       $error(error)
     }
-  }
+  
 }
 function redirectToPath(diagramId: string, mode: string = 'edit') {
   checkMode.value = mode.includes('view')
@@ -126,26 +124,26 @@ onMounted(() => {
   fetchDiagrams()
 })
 
-function saveDetails(_valid: boolean) {
-  isSavePopupOpen.value = false
-  isIgnoredCardDetails.value = true
-  if (_valid)
-    navigateTo('/profile/billing-payments')
-}
-onBeforeRouteLeave((to, from, next) => {
-  if (cardDetails.value.cardHolderName === ''
-    && cardDetails.value.cardNo === ''
-    && cardDetails.value.expDate === ''
-    && cardDetails.value.cvv === ''
-    && !isIgnoredCardDetails.value && authUser.value?.email !== undefined && to.path !== '/' && !checkMode.value) {
-    return (
-      isSavePopupOpen.value = true,
-      toRoute.value = to.path)
-  }
-  else {
-    next()
-  }
-})
+// function saveDetails(_valid: boolean) {
+//   isSavePopupOpen.value = false
+//   isIgnoredCardDetails.value = true
+//   if (_valid)
+//     navigateTo('/profile/billing-payments')
+// }
+// onBeforeRouteLeave((to, from, next) => {
+//   if (cardDetails.value.cardHolderName === ''
+//     && cardDetails.value.cardNo === ''
+//     && cardDetails.value.expDate === ''
+//     && cardDetails.value.cvv === ''
+//     && !isIgnoredCardDetails.value && authUser.value?.email !== undefined && to.path !== '/' && !checkMode.value) {
+//     return (
+//       isSavePopupOpen.value = true,
+//       toRoute.value = to.path)
+//   }
+//   else {
+//     next()
+//   }
+// })
 </script>
 
 <template>
@@ -226,11 +224,11 @@ onBeforeRouteLeave((to, from, next) => {
       </div>
     </UCard>
   </UModal>
-  <UpgradeModal
+  <!-- <UpgradeModal
     v-model="isSavePopupOpen"
     :is-open="isSavePopupOpen"
     text="Please add card details."
     ok="Ok"
     @submit-confirm="saveDetails(true)"
-  />
+  /> -->
 </template>

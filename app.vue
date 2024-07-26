@@ -2,11 +2,14 @@
 /** Constants */
 const authStore = useAuthStore()
 const subscriptionStore = useSubscriptionStore()
+const cardDetails = computed(() => subscriptionStore.billingDetails)
 const userStore = useUserStore()
 const route = useRoute()
 
 /** Refs */
 const showUpgradeModal = ref<boolean>(false)
+const showBillingModal = ref<boolean>(false)
+
 
 /** Computed */
 const authUser = computed(() => authStore.getAuthUser.value)
@@ -15,14 +18,14 @@ const authUser = computed(() => authStore.getAuthUser.value)
 watch(
   () => authUser.value,
   async (user) => {
+
     if (user?.id) {
       const response = await subscriptionStore.fetchActivePlan()
       switch (response?.subscription_status) {
         case 'PLAN_EXPIRED':
           showUpgradeModal.value = true
-
           break
-        case 'NO_SUBSCRIPTION':
+        case 'NO_ACTIVE_SUBSCRIPTION':
 
           if (!route.fullPath.includes('/profile/account')) {
             const payload = {
@@ -34,7 +37,14 @@ watch(
             await subscriptionStore.addSubscription(payload)
           }
           break
-
+        case 'ACTIVE_SUBSCRIPTION':
+          if (cardDetails.value.cardHolderName === ''
+            && cardDetails.value.cardNo === ''
+            && cardDetails.value.expDate === ''
+            && cardDetails.value.cvv === '') {
+              showBillingModal.value = true
+          }
+          break
         default:
           break
       }
@@ -56,13 +66,20 @@ watch(
     if (user && route.fullPath.includes('/login'))
       return handlePostAuthentication()
   },
+
   { immediate: true },
+
 )
 
 /** Methods */
 function upgradePlan() {
   showUpgradeModal.value = false
   navigateTo('/website/pricing')
+}
+
+function addCard(){
+  showBillingModal.value=false
+  navigateTo("/profile/billing-payments")
 }
 
 async function handlePostAuthentication() {
@@ -91,6 +108,20 @@ async function handlePostAuthentication() {
       </div>
     </div>
   </UModal>
+
+  <UModal :model-value="showBillingModal" :transition="false">
+    <div class="p-8">
+      <p class="mb-3">
+        Please add card details.
+      </p>
+      <div class="mt-4 flex justify-end">
+        <UButton @click="addCard">
+          Ok
+        </UButton>
+      </div>
+    </div>
+  </UModal>
+  
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
