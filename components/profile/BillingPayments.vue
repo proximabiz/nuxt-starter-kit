@@ -50,10 +50,10 @@ const cardDetails = computed(() => subscriptionStore.billingDetails)
 const isEditable = ref(false)
 const isModalVisible = ref(false)
 const { $success } = useNuxtApp()
-const isSavePopupOpen = ref(false)
-const isIgnoredCardDetails = ref(false)
-const toRoute = ref()
-const router = useRouter()
+// const isSavePopupOpen = ref(false)
+// const isIgnoredCardDetails = ref(false)
+// const toRoute = ref()
+// const router = useRouter()
 if (cardDetails.value.cardHolderName !== ''
   || cardDetails.value.cardNo !== ''
   || cardDetails.value.expDate !== ''
