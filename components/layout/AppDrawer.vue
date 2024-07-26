@@ -3,9 +3,9 @@ const route = useRoute()
 const { $error } = useNuxtApp()
 const supabaseClient = useSupabaseClient()
 const subscriptionStore = useSubscriptionStore()
-
+const cardDetails = computed(() => subscriptionStore.billingDetails)
 const currentRoutePath = computed(() => route.fullPath)
-
+const isCardEmtpy = cardDetails?.value?.cardNo !== ''
 const links = computed(() => [
   {
     title: 'My Account',
@@ -40,20 +40,28 @@ async function singOut() {
       </div>
       <div class="border-t border-gray-100">
         <div class="px-2">
-          <div class="py-4">
-            <NuxtLink to="/app/diagram/list">
-              <a
-                class="t group relative flex justify-center rounded px-2 py-1.5" :class="[{ 'text-blue-700 bg-blue-100': currentRoutePath === '/app/diagram/list' }]"
-              >
+          <div v-if="isCardEmtpy" class="py-4 ">
+            <NuxtLink
+              to="/app/diagram/list"
+              class="active-link"
+            >
+              <a class="t group relative flex justify-center rounded px-2 py-1.5 " :class="[{ 'text-blue-700 bg-blue-100': currentRoutePath === '/app/diagram/list' }]">
                 <UIcon name="i-heroicons-map" class="size-5" />
-
-                <span
-                  class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible"
-                >
+                <span class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible">
                   My Diagrams
                 </span>
               </a>
             </NuxtLink>
+          </div>
+          <div v-else class="py-4 cursor-not-allowed">
+            <span class="disabled-link">
+              <a class="t group relative flex justify-center rounded px-2 py-1.5 " :class="[{ 'text-blue-700 bg-blue-100': currentRoutePath === '/app/diagram/list' }]">
+                <UIcon name="i-heroicons-map" class="size-5" />
+                <span class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible">
+                  My Diagrams
+                </span>
+              </a>
+            </span>
           </div>
 
           <ul class="space-y-1 border-t border-gray-100 pt-4">
@@ -91,3 +99,15 @@ async function singOut() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.active-link {
+  cursor: pointer;
+}
+
+.disabled-link {
+  cursor: not-allowed;
+  color: gray;
+  pointer-events: none;
+}
+</style>

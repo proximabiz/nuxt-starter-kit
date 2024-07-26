@@ -50,10 +50,10 @@ const cardDetails = computed(() => subscriptionStore.billingDetails)
 const isEditable = ref(false)
 const isModalVisible = ref(false)
 const { $success } = useNuxtApp()
-const isSavePopupOpen = ref(false)
-const isIgnoredCardDetails = ref(false)
-const toRoute = ref()
-const router = useRouter()
+// const isSavePopupOpen = ref(false)
+// const isIgnoredCardDetails = ref(false)
+// const toRoute = ref()
+// const router = useRouter()
 if (cardDetails.value.cardHolderName !== ''
   || cardDetails.value.cardNo !== ''
   || cardDetails.value.expDate !== ''
@@ -132,25 +132,25 @@ async function onCancel() {
   cardDetails.value.cvv = ''
   isEditable.value = false
 }
-function navigateTo(path: string) {
-  router.push(path)
-}
-function saveDetails(_valid: boolean) {
-  isSavePopupOpen.value = false
-  isIgnoredCardDetails.value = true
-  if (_valid)
-    navigateTo(toRoute.value)
-}
-onBeforeRouteLeave((to, from, next) => {
-  if (cardDetails.value.cardNo === '' && !isIgnoredCardDetails.value) {
-    return (
-      isSavePopupOpen.value = true,
-      toRoute.value = to.path)
-  }
-  else {
-    next()
-  }
-})
+// function navigateTo(path: string) {
+//   router.push(path)
+// }
+// function saveDetails(_valid: boolean) {
+//   isSavePopupOpen.value = false
+//   isIgnoredCardDetails.value = true
+//   if (_valid)
+//     navigateTo(toRoute.value)
+// }
+// onBeforeRouteLeave((to, from, next) => {
+//   if (cardDetails.value.cardNo === '' && !isIgnoredCardDetails.value) {
+//     return (
+//       isSavePopupOpen.value = true,
+//       toRoute.value = to.path)
+//   }
+//   else {
+//     next()
+//   }
+// })
 </script>
 
 <template>
@@ -255,7 +255,7 @@ onBeforeRouteLeave((to, from, next) => {
       </div>
     </section>
   </div>
-  <Confirmation
+  <!-- <Confirmation
     v-model="isSavePopupOpen"
     :is-open="isSavePopupOpen"
     text="Please add card details."
@@ -263,5 +263,5 @@ onBeforeRouteLeave((to, from, next) => {
     right-button="Add Later"
     @update:is-open="isSavePopupOpen = $event"
     @delete-confirm="saveDetails(true)"
-  />
+  /> -->
 </template>
