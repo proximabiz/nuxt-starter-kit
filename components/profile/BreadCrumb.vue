@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 interface Props {
-  breadcrumbText: string
+  text: string
 }
 const props = defineProps<Props>()
 </script>
@@ -17,7 +17,7 @@ const props = defineProps<Props>()
         >
       </span>
       <span class="text-custom4-600">
-        {{ props.breadcrumbText }}
+        {{ props.text }}
       </span>
     </div>
   </nav>

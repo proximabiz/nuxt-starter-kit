@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { z } from 'zod'
-
 const year = ref(2024)
-
 const columns = [{
   key: 'payment',
   label: 'Payment Date',
@@ -16,7 +14,6 @@ const columns = [{
   key: 'status',
   label: 'Status',
 }, { key: 'invoice', label: 'Invoice' }]
-
 const payments = [
   {
     payment: '21/2/2024',
@@ -47,24 +44,23 @@ const payments = [
     invoice: 'https://www.proximabiz.com/',
   },
 ]
-
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
-
 const isEditable = ref(false)
 const isModalVisible = ref(false)
 const { $success } = useNuxtApp()
-
+const isSavePopupOpen = ref(false)
+const isIgnoredCardDetails = ref(false)
+const toRoute = ref()
+const router = useRouter()
 if (cardDetails.value.cardHolderName !== ''
   || cardDetails.value.cardNo !== ''
   || cardDetails.value.expDate !== ''
   || cardDetails.value.cvv !== '')
   isEditable.value = true
-
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
-
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
   cardNo: z.string()
@@ -88,21 +84,17 @@ const billingSchema = z.object({
     .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
     .refine(cvv => /^\d+$/.test(cvv), 'Security code must only contain digits'),
 })
-
 const page = ref(1)
 const pageCount = 5
-
 const rows = computed(() => {
   return payments.slice((page.value - 1) * pageCount, (page.value) * pageCount)
 })
-
 const years = [
   2024,
 ]
 function showModal() {
   isModalVisible.value = true
 }
-
 async function handleDeleteConfirm(): Promise<void> {
   cardDetails.value.cardHolderName = ''
   cardDetails.value.cardNo = ''
@@ -139,15 +131,32 @@ async function onCancel() {
   cardDetails.value.cvv = ''
   isEditable.value = false
 }
+function navigateTo(path: string) {
+  router.push(path)
+}
+function saveDetails(_valid: boolean) {
+  isSavePopupOpen.value = false
+  isIgnoredCardDetails.value = true
+  if (_valid)
+    navigateTo(toRoute.value)
+}
+onBeforeRouteLeave((to, from, next) => {
+  if (cardDetails.value.cardNo === '' && !isIgnoredCardDetails.value) {
+    return (
+      isSavePopupOpen.value = true,
+      toRoute.value = to.path)
+  }
+  else {
+    next()
+  }
+})
 </script>
-
 <template>
-  <ProfileBreadCrumb breadcrumb-text="Billing & Payments" />
+  <ProfileBreadCrumb text="Billing & Payments" />
   <p class="font-bold text-2xl ml-4 mt-4">
     Your saved credit and debit cards
   </p>
   <hr class="ml-4 mt-2">
-
   <section class="grid place-items-center p-4">
     <div class="relative mb-6 mt-6 w-full max-w-lg">
       <UCard>
@@ -186,6 +195,8 @@ async function onCancel() {
       v-model="isModalVisible"
       :is-open="isModalVisible"
       text="Are you sure! you want to delete this Card details?"
+      left-button="Cancel"
+      right-button="Delete"
       @update:is-open="isModalVisible = $event"
       @delete-confirm="handleDeleteConfirm"
     />
@@ -242,4 +253,13 @@ async function onCancel() {
       </div>
     </section>
   </div>
+  <Confirmation
+    v-model="isSavePopupOpen"
+    :is-open="isSavePopupOpen"
+    text="Please add card details."
+    left-button="Ok"
+    right-button="Later"
+    @update:is-open="isSavePopupOpen = $event"
+    @delete-confirm="saveDetails(true)"
+  />
 </template>

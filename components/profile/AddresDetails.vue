@@ -147,7 +147,7 @@ onMounted(() => {
       Fetching your <span class="font-bold"> Address and contact</span> details...
     </UCard>
   </UModal>
-  <ProfileBreadCrumb breadcrumb-text="Address, Contact Details" />
+  <ProfileBreadCrumb text="Address, Contact Details" />
 
   <section class="grid place-items-center my-8">
     <h1 class="font-semibold mb-4">

@@ -73,7 +73,7 @@ function cancelGst() {
 </script>
 
 <template>
-  <ProfileBreadCrumb breadcrumb-text="Tax ID / GST Details" />
+  <ProfileBreadCrumb text="Tax ID / GST Details" />
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />
     <UCard>
@@ -107,6 +107,8 @@ function cancelGst() {
       <Confirmation
         v-model="isModalVisible"
         :is-open="isModalVisible"
+         left-button="Cancel"
+    right-button="Delete"
         text="Are you sure you want to delete this Tax ID/GST No?"
         @update:is-open="isModalVisible = $event"
         @delete-confirm="handleDeleteConfirm"
