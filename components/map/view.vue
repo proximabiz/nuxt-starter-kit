@@ -31,6 +31,18 @@ enum DiagramCreationMethods {
   JSONDriven = 'json-driven',
 }
 
+enum ModificationResponsibleOperations {
+  AddChild = 'addChild',
+  InsertParent = 'insertParent',
+  InsertSibling = 'insertSibling',
+  RemoveNode = 'removeNode',
+  MoveUpNode = 'moveUpNode',
+  MoveDownNode = 'moveDownNode',
+  CreateArrow = 'createArrow',
+  FinishEditArrowLabel = 'finishEditArrowLabel',
+  ReshapeNode = 'reshapeNode',
+}
+
 const diagramStore = useDiagramStore()
 const { $success, $error } = useNuxtApp()
 const globalStore = useGlobalStore()
@@ -47,7 +59,8 @@ const editDrawer = ref<boolean>(false)
 const versionsDrawer = ref<boolean>(false)
 const mind = ref()
 const saveModal = ref<boolean>(false)
-const isSave = ref<boolean>(false)
+const diagramHasUnsavedChanges = ref<boolean>(false)
+const isDiagramInitialized = ref<boolean>(false)
 const hasEvent = ref<boolean>(false)
 const destinationRoute = ref()
 const versions = ref()
@@ -153,6 +166,10 @@ function onActionControlExportJSONClick() {
   exportJSON()
 }
 
+function markDiagramHasUnsavedChanges(status: boolean = true) {
+  diagramHasUnsavedChanges.value = status
+}
+
 function initCore(apiResponseNodeData: any) {
   mind.value = new MindElixir(mindMapOptions.value)
 
@@ -164,11 +181,18 @@ function initCore(apiResponseNodeData: any) {
     linkData: {},
     nodeData: apiResponseNodeData,
   })
+
+  // Attach a listener to the mind map that will track if any modifiable operations happened
+  mind.value.bus.addListener('operation', (operation: any) => {
+    if (Object.values(ModificationResponsibleOperations).includes(operation.name))
+      markDiagramHasUnsavedChanges()
+  })
 }
 
 async function fetchDiagramVersions() {
   try {
     versionsDrawer.value = true
+
     versions.value = await diagramStore.getVersionList({
       diagramId: props.diagramId,
     })
@@ -184,6 +208,8 @@ async function fetchMap() {
       diagramId: props.diagramId,
     })
     if (apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails) {
+      isDiagramInitialized.value = true
+
       if (apiResponse.value[0].response.nodeData) {
         hasEvent.value = true
         editForm.value.title = apiResponse.value[0].response.nodeData.topic
@@ -216,14 +242,18 @@ async function updateMap() {
       isDetailed: editForm.value.isDetailed,
       details: editForm.value.isDetailed ? editForm.value.details : undefined,
     })
+
     isLoading.value = false
     editDrawer.value = false
+
     if (updateApiResponse.value.response.chartDetails[0].nodeData) {
       initCore(updateApiResponse.value.response.chartDetails[0].nodeData)
 
       editForm.value.title = updateApiResponse.value.response.chartDetails[0].nodeData.topic as string
 
       hasEvent.value = true
+
+      markDiagramHasUnsavedChanges()
     }
 
     $success('Mindmap generated!')
@@ -247,9 +277,9 @@ async function saveMap(isRedirect: boolean = false) {
       isDiagramChanged: true,
     })
 
-    $success('Mindmap saved!')
+    markDiagramHasUnsavedChanges(false)
 
-    isSave.value = true
+    $success('Mindmap saved!')
 
     if (isRedirect) {
       navigateTo({
@@ -258,7 +288,6 @@ async function saveMap(isRedirect: boolean = false) {
     }
   }
   catch (error) {
-    isSave.value = false
     $error(error)
   }
 }
@@ -293,6 +322,8 @@ function loadJSON(jsonData: JSON) {
     editForm.value.title = updateApiResponse.value[0].nodeData.topic
   }
 
+  markDiagramHasUnsavedChanges()
+
   $success('Selected mindmap loaded')
 }
 
@@ -324,10 +355,10 @@ function createMapFromJSON() {
 }
 
 function closePopup() {
-  saveModal.value = true
-  isSave.value = true
-  navigateTo(destinationRoute.value.path)
+  saveModal.value = false
+  markDiagramHasUnsavedChanges(false)
   $success('Mindmap changes discarded')
+  navigateTo(destinationRoute.value.path)
 }
 
 /** ----------- Hooks ----------- */
@@ -341,17 +372,17 @@ onBeforeRouteLeave((to) => {
   if (isViewMode.value)
     return
 
-  if (oldApiResponse.value && mind.value.getData().nodeData && JSON.stringify(oldApiResponse.value) !== JSON.stringify(mind.value.getData().nodeData)) {
-    saveModal.value = true
-  }
-  else {
-    saveModal.value = false
-    isSave.value = true
-  }
+  // Save the destination route
   destinationRoute.value = to
 
-  if (!isSave.value)
+  // If diagram is modified, abort the current page leaving operation
+  if (diagramHasUnsavedChanges.value) {
+    saveModal.value = true
     return false
+  }
+
+  // If everything is okay, allow leaving the page
+  return true
 })
 
 onBeforeUnmount(() => {
@@ -405,6 +436,7 @@ onBeforeUnmount(() => {
                   create a mindmap on</label>
                 <input
                   v-model="editForm.title"
+                  :disabled="isDiagramInitialized"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 >
                 <div class="text-gray-500 text-xs mt-3">
