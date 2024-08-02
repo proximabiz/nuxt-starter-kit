@@ -184,13 +184,22 @@ onMounted(() => {
       Creating your <span class="font-bold">Default</span> Diagram...
     </UCard>
   </UModal>
+
+  <!-- Delete diagram modal -->
   <UModal v-model="isDelete">
-    <UCard>
-      Are you sure you want to delete this diagram?
-      <div class="flex justify-end my-4">
-        <UButton label="Cancel" class="mr-2" icon="i-heroicons-x-mark" @click="isDelete = false" />
-        <UButton label="Delete" icon="i-heroicons-archive-box-x-mark" @click="confirmedDeleteDiagram()" />
-      </div>
-    </UCard>
+    <ModalsConfirmation
+      title="Confirm Diagram Deletion"
+      description="Are you sure you want to delete this diagram? This action cannot be undone."
+      :cancel-action="{
+        label: 'Keep',
+        color: 'bg-green-500',
+      }"
+      :confirm-action="{
+        label: 'Delete',
+        color: 'bg-gray-500',
+      }"
+      @on:cancel="isDelete = false"
+      @on:confirm="confirmedDeleteDiagram()"
+    />
   </UModal>
 </template>

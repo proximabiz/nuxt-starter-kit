@@ -533,14 +533,20 @@ onBeforeUnmount(() => {
     </div>
   </UContainer>
 
-  <!-- Save changes dialog -->
   <UModal v-model="saveModal">
-    <UCard>
-      Changes are made to Mindmap. Save Changes?
-      <div class="flex justify-end my-4">
-        <UButton label="Discard Changes" class="mr-2" icon="i-heroicons-backspace" @click="closePopup()" />
-        <UButton label="Save Changes" icon="i-heroicons-bookmark" @click="saveMap(true)" />
-      </div>
-    </UCard>
+    <ModalsConfirmation
+      title="Unsaved Changes Detected"
+      description="You have unsaved changes in your diagram. Do you want to discard the changes or save them before exiting?"
+      :cancel-action="{
+        label: 'Discard',
+        color: 'bg-gray-500',
+      }"
+      :confirm-action="{
+        label: 'Save',
+        color: 'bg-green-500',
+      }"
+      @on:cancel="closePopup()"
+      @on:confirm="saveMap(true)"
+    />
   </UModal>
 </template>
