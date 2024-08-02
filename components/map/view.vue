@@ -64,6 +64,7 @@ const isDiagramInitialized = ref<boolean>(false)
 const hasEvent = ref<boolean>(false)
 const destinationRoute = ref()
 const versions = ref()
+const APIResponseOnInitialPageLoad = ref()
 const editForm = ref<EditFormInterface>({
   title: '',
   details: '',
@@ -170,6 +171,14 @@ function markDiagramHasUnsavedChanges(status: boolean = true) {
   diagramHasUnsavedChanges.value = status
 }
 
+function isDiagramNew() {
+  const response = APIResponseOnInitialPageLoad.value[0]?.response
+  return response === null
+    || response === undefined
+    || (Array.isArray(response) && response.length === 0)
+    || (typeof response === 'object' && !Array.isArray(response) && Object.keys(response).length === 0)
+}
+
 function initCore(apiResponseNodeData: any) {
   mind.value = new MindElixir(mindMapOptions.value)
 
@@ -207,7 +216,9 @@ async function fetchMap() {
     apiResponse.value = await diagramStore.get({
       diagramId: props.diagramId,
     })
+
     if (apiResponse.value[0].response.nodeData || apiResponse.value[0].response.chartDetails) {
+      // It means diagram already has the data
       isDiagramInitialized.value = true
 
       if (apiResponse.value[0].response.nodeData) {
@@ -225,6 +236,8 @@ async function fetchMap() {
       globalStore.pageHeading.title = editForm.value.title
       hasEvent.value = true
     }
+
+    return apiResponse.value
   }
   catch (error) {
     $error(error)
@@ -252,9 +265,14 @@ async function updateMap() {
       editForm.value.title = updateApiResponse.value.response.chartDetails[0].nodeData.topic as string
 
       hasEvent.value = true
-
-      markDiagramHasUnsavedChanges()
     }
+
+    /**
+     * On update operation the diagram should be modified only if this is not
+     * a new diagram that is being updated for the first time
+     */
+    const canDiagramMarkAsModifiedOnUpdate = !isDiagramNew()
+    markDiagramHasUnsavedChanges(canDiagramMarkAsModifiedOnUpdate)
 
     $success('Mindmap generated!')
 
@@ -354,17 +372,21 @@ function createMapFromJSON() {
   }
 }
 
-function closePopup() {
-  saveModal.value = false
+function discardChanges() {
   markDiagramHasUnsavedChanges(false)
   $success('Mindmap changes discarded')
+  closeModal()
   navigateTo(destinationRoute.value.path)
 }
 
+function closeModal() {
+  saveModal.value = false
+}
+
 /** ----------- Hooks ----------- */
-onMounted(() => {
+onMounted(async () => {
   editDrawer.value = isEditMode.value
-  fetchMap()
+  APIResponseOnInitialPageLoad.value = await fetchMap()
 })
 
 onBeforeRouteLeave((to) => {
@@ -545,7 +567,8 @@ onBeforeUnmount(() => {
         label: 'Save',
         color: 'bg-green-500',
       }"
-      @on:cancel="closePopup()"
+      @on:cancel="discardChanges()"
+      @on:close="closeModal()"
       @on:confirm="saveMap(true)"
     />
   </UModal>

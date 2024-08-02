@@ -199,6 +199,7 @@ onMounted(() => {
         color: 'bg-gray-500',
       }"
       @on:cancel="isDelete = false"
+      @on:close="isDelete = false"
       @on:confirm="confirmedDeleteDiagram()"
     />
   </UModal>
