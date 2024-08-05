@@ -5,6 +5,7 @@ interface Props {
 const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
+const isFieldEmtpy = ref(false)
 const duePrice = ref<string>(props.planDetails.currencySymbol + props.planDetails.calculatedPrice)
 const { $error } = useNuxtApp()
 
@@ -26,22 +27,38 @@ const steps = [
 const state = reactive({
   activeStep: 0,
 })
+watch([billingAddressCard.value, isFieldEmtpy.value], () => {
+  if (billingAddressCard.value.cardHolderName !== ''
+    && billingAddressCard.value.cardNo !== ''
+    && billingAddressCard.value.expDate !== ''
+    && billingAddressCard.value.cvv !== '')
+    isFieldEmtpy.value = true
+  else
+    isFieldEmtpy.value = false
+}, { deep: true })
 
 function setActiveStep(index: number) {
   const bac = billingAddressCard.value
-  if (index === 2) {
+  isFieldEmtpy.value = false
+  if (index >= 2) {
     // Check if any of the required billingState fields are empty
     const isAddressComplete = bac.name && bac.orgName && bac.country && bac.zip && bac.city && bac.region && bac.address && bac.phone
     if (!isAddressComplete) {
       $error('Please fill out all the fields in your billing address.')
-      return
+      return isFieldEmtpy.value = false
+    }
+    else {
+      isFieldEmtpy.value = true
     }
   }
-  if (index === 3) {
+  if (index >= 3) {
     const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
     if (!isCardDetailsComplete) {
       $error('Please fill out all the fields in your billing card details.')
-      return
+      return isFieldEmtpy.value = false
+    }
+    else {
+      isFieldEmtpy.value = true
     }
   }
   // if (index === 4) {
@@ -107,7 +124,7 @@ function isActive(index: number) {
     <BillingCardDetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
     <BillingTaxId v-if="state.activeStep === 3" />
     <BillingReview v-if="state.activeStep === 4" :plan-name="props.planDetails.plan" :due-price="duePrice" />
-    <UButton v-if="state.activeStep !== 4" @click="() => setActiveStep(state.activeStep + 1)">
+    <UButton v-if="state.activeStep !== 4" :disabled="isFieldEmtpy" @click="() => setActiveStep(state.activeStep + 1)">
       Continue
     </UButton>
   </div>

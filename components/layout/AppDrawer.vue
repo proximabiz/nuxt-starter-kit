@@ -5,7 +5,7 @@ const supabaseClient = useSupabaseClient()
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const currentRoutePath = computed(() => route.fullPath)
-const isCardEmtpy = cardDetails?.value?.cardNo !== ''
+const isCardEmtpy = ref(true)
 const links = computed(() => [
   {
     title: 'My Account',
@@ -24,6 +24,15 @@ async function singOut() {
     $error(error)
   }
 }
+watch([cardDetails.value, isCardEmtpy.value], () => {
+  if (cardDetails.value.cardHolderName !== ''
+    && cardDetails.value.cardNo !== ''
+    && cardDetails.value.expDate !== ''
+    && cardDetails.value.cvv !== '')
+    isCardEmtpy.value = false
+  else
+    isCardEmtpy.value = true
+}, { deep: true })
 </script>
 
 <template>
@@ -40,7 +49,7 @@ async function singOut() {
       </div>
       <div class="border-t border-gray-100">
         <div class="px-2">
-          <div v-if="isCardEmtpy" class="py-4 ">
+          <div v-if="!isCardEmtpy" class="py-4 ">
             <NuxtLink
               to="/app/diagram/list"
               class="active-link"

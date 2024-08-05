@@ -49,7 +49,8 @@ const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const isEditable = ref(false)
 const isModalVisible = ref(false)
-const { $success } = useNuxtApp()
+const isFieldEmtpy = ref(true)
+const { $success, $error } = useNuxtApp()
 // const isSavePopupOpen = ref(false)
 // const isIgnoredCardDetails = ref(false)
 // const toRoute = ref()
@@ -57,8 +58,11 @@ const { $success } = useNuxtApp()
 if (cardDetails.value.cardHolderName !== ''
   || cardDetails.value.cardNo !== ''
   || cardDetails.value.expDate !== ''
-  || cardDetails.value.cvv !== '')
+  || cardDetails.value.cvv !== '') {
   isEditable.value = true
+  isFieldEmtpy.value = false
+}
+
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
@@ -103,6 +107,7 @@ async function handleDeleteConfirm(): Promise<void> {
   cardDetails.value.cvv = ''
   $success('Your old card details has succussfuly deleted')
   isEditable.value = false
+  isFieldEmtpy.value = true
   // try {
   //   const response = await userStore.deleteTaxGst()
   //   if (response?.status === 200) {
@@ -117,20 +122,40 @@ async function handleDeleteConfirm(): Promise<void> {
   //   $error(error.statusMessage)
   // }
 }
+
 function handleSubmit() {
-  $success('Your new card details has succussfuly added')
   if (cardDetails.value.cardHolderName !== ''
-    || cardDetails.value.cardNo !== ''
-    || cardDetails.value.expDate !== ''
-    || cardDetails.value.cvv !== '')
-    isEditable.value = true
+    && cardDetails.value.cardNo !== ''
+    && cardDetails.value.expDate !== ''
+    && cardDetails.value.cvv !== '') {
+    return (
+      $success('Your new card details has succussfuly added'),
+      isEditable.value = true,
+      isFieldEmtpy.value = false
+    )
+  }
+  else {
+    $error('Card details are should not be empty')
+  }
 }
+
+watch([cardDetails.value, isFieldEmtpy.value], () => {
+  if (cardDetails.value.cardHolderName !== ''
+    && cardDetails.value.cardNo !== ''
+    && cardDetails.value.expDate !== ''
+    && cardDetails.value.cvv !== '')
+    isFieldEmtpy.value = false
+  else
+    isFieldEmtpy.value = true
+}, { deep: true })
+
 async function onCancel() {
   cardDetails.value.cardHolderName = ''
   cardDetails.value.cardNo = ''
   cardDetails.value.expDate = ''
   cardDetails.value.cvv = ''
   isEditable.value = false
+  isFieldEmtpy.value = true
 }
 // function navigateTo(path: string) {
 //   router.push(path)
@@ -189,7 +214,7 @@ async function onCancel() {
       <UButton color="blue" @click="onCancel">
         Cancel
       </UButton>
-      <UButton color="blue" @click="handleSubmit">
+      <UButton color="blue" :disabled="isFieldEmtpy" @click="handleSubmit">
         Save
       </UButton>
     </div>

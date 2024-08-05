@@ -8,7 +8,7 @@ const isLoading = ref(false)
 const isDelete = ref(false)
 const apiResponse = ref()
 const deleteDiagramId = ref('')
-// const isSavePopupOpen = ref(false)
+const isSavePopupOpen = ref(false)
 // const isIgnoredCardDetails = ref(false)
 // const toRoute = ref()
 // const authStore = useAuthStore()
@@ -38,8 +38,8 @@ const headers = computed(() => [
 const globalStore = useGlobalStore()
 globalStore.pageHeading.title = 'My Diagrams'
 
-// const subscriptionStore = useSubscriptionStore()
-// const cardDetails = computed(() => subscriptionStore.billingDetails)
+const subscriptionStore = useSubscriptionStore()
+const cardDetails = computed(() => subscriptionStore.billingDetails)
 
 async function fetchDiagramTypes() {
   try {
@@ -62,29 +62,29 @@ async function fetchDiagrams() {
 }
 
 async function createDiagram() {
-  // if (cardDetails.value.cardNo !== '') {
-  isLoading.value = true
-  // }
-  // else {
-  try {
-    // Right now we have only one type of diagram - mindmap
-    const diagramType = diagramTypeStore.getMindMapTypeDiagram
-    if (!diagramType)
-      return
-
-    const response = await diagramStore.create({
-      title: 'default',
-      diagramTypeId: diagramType.id,
-    })
-
-    isLoading.value = false
-    /* @ts-expect-error need to be fixed */
-    redirectToPath(response?.diagram[0].id)
+  if (cardDetails.value.cardNo !== '') {
+    isLoading.value = true
   }
-  catch (error) {
-    isLoading.value = false
-    $error(error)
-  // }
+  else {
+    try {
+    // Right now we have only one type of diagram - mindmap
+      const diagramType = diagramTypeStore.getMindMapTypeDiagram
+      if (!diagramType)
+        return
+
+      const response = await diagramStore.create({
+        title: 'default',
+        diagramTypeId: diagramType.id,
+      })
+
+      isLoading.value = false
+      /* @ts-expect-error need to be fixed */
+      redirectToPath(response?.diagram[0].id)
+    }
+    catch (error) {
+      isLoading.value = false
+      $error(error)
+    }
   }
 }
 function redirectToPath(diagramId: string, mode: string = 'edit') {
@@ -124,24 +124,23 @@ async function confirmedDeleteDiagram() {
 
 onMounted(() => {
   fetchDiagrams()
-  // isSavePopupOpen.value = false
-  // if (cardDetails.value.cardHolderName === ''
-  //   && cardDetails.value.cardNo === ''
-  //   && cardDetails.value.expDate === ''
-  //   && cardDetails.value.cvv === '') {
-  //   return (
-  //     isSavePopupOpen.value = true
-  //   )
-  // }
-  // console.log('cardDetails', cardDetails.value.cardNo)
+  isSavePopupOpen.value = false
+  if (cardDetails.value.cardHolderName === ''
+    && cardDetails.value.cardNo === ''
+    && cardDetails.value.expDate === ''
+    && cardDetails.value.cvv === '') {
+    return (
+      isSavePopupOpen.value = true
+    )
+  }
 })
 
-// function saveDetails(_valid: boolean) {
-//   isSavePopupOpen.value = false
-//   // isIgnoredCardDetails.value = true
-//   if (_valid)
-//     navigateTo('/profile/billing-payments')
-// }
+function saveDetails(_valid: boolean) {
+  isSavePopupOpen.value = false
+  // isIgnoredCardDetails.value = true
+  if (_valid)
+    navigateTo('/profile/billing-payments')
+}
 // onBeforeRouteLeave((to, from, next) => {
 //   if (cardDetails.value.cardHolderName === ''
 //     && cardDetails.value.cardNo === ''
@@ -236,11 +235,11 @@ onMounted(() => {
       </div>
     </UCard>
   </UModal>
-  <!-- <UpgradeModal
+  <UpgradeModal
     v-model="isSavePopupOpen"
     :is-open="isSavePopupOpen"
-    text="Please add card details."
+    text="Your card details are missing!\n To continue working with diagrams, please add card details."
     ok="Ok"
     @submit-confirm="saveDetails(true)"
-  /> -->
+  />
 </template>

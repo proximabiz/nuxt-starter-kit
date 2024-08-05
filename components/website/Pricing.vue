@@ -6,8 +6,12 @@ const region = ref('india')
 const subscriptionStore = useSubscriptionStore()
 const authStore = useAuthStore()
 const isLoading = ref(true)
+const currencyList = ref()
 
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
+
+const { data: dataFetch } = await useFetch('https://open.er-api.com/v6/latest/USD')
+currencyList.value = dataFetch
 
 interface PricePlan {
   plan: string
@@ -26,25 +30,25 @@ const regions: regionTypes[] = [
     name: 'India',
     value: 'india',
     currencySymbol: '₹', // Rupees
-    conversionRate: 75, // Assuming 1 USD = 75 Rupees
+    conversionRate: currencyList?.value?.value?.rates?.INR, // Assuming 1 USD = 75 Rupees
   },
   {
     name: 'Europe',
     value: 'europe',
     currencySymbol: '€', // Euros
-    conversionRate: 0.9, // Assuming 1 USD = 0.9 Euros
+    conversionRate: currencyList?.value?.value?.rates?.EUR, // Assuming 1 USD = 0.9 Euros
   },
   {
     name: 'US',
     value: 'us',
     currencySymbol: '$', // Dollars
-    conversionRate: 1, // Base rate
+    conversionRate: currencyList?.value?.value?.rates?.USD, // Base rate
   },
   {
     name: 'Other region',
     value: 'other',
     currencySymbol: '$', // Dollars
-    conversionRate: 1, // Base rate
+    conversionRate: currencyList?.value?.value?.rates?.USD, // Base rate
   },
 ]
 const basePlane = sub_status?.value.planName !== '' && sub_status?.value.planName === 'Basic'
@@ -78,10 +82,9 @@ const prices = computed(() => {
         currencySymbol: '', // No currency symbol for 'Free' or 'Custom' plans
       }
     }
-
     return {
       ...plan,
-      calculatedPrice: plan.price * adjustmentFactor, // Adjusting the price
+      calculatedPrice: (plan.price * adjustmentFactor).toFixed(2), // Adjusting the price
       currencySymbol: selectedRegion?.currencySymbol, // Setting the currency symbol
     }
   })
@@ -102,6 +105,13 @@ function providePlanDetails(val: any) {
   showBillingDetails.value = true
   return cardValue
 }
+
+// onMounted(async () => {
+//   // try {
+//   const dataFetch = await useFetch('https://open.er-api.com/v6/latest/USD')
+//   currencyData.value = dataFetch
+//   return currencyData.value
+// })
 </script>
 
 <template>

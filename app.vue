@@ -5,11 +5,9 @@ const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const userStore = useUserStore()
 const route = useRoute()
-
 /** Refs */
 const showUpgradeModal = ref<boolean>(false)
 const showBillingModal = ref<boolean>(false)
-
 
 /** Computed */
 const authUser = computed(() => authStore.getAuthUser.value)
@@ -18,7 +16,6 @@ const authUser = computed(() => authStore.getAuthUser.value)
 watch(
   () => authUser.value,
   async (user) => {
-
     if (user?.id) {
       const response = await subscriptionStore.fetchActivePlan()
       switch (response?.subscription_status) {
@@ -35,16 +32,17 @@ watch(
             }
             await subscriptionStore.addSubscription(payload)
           }
-          
           break
         case 'ACTIVE_SUBSCRIPTION':
           if (cardDetails.value.cardHolderName === ''
             && cardDetails.value.cardNo === ''
             && cardDetails.value.expDate === ''
-            && cardDetails.value.cvv === '') {
-              showBillingModal.value = true
-              if(user && route.fullPath.includes('/app/diagram/list'))
-              return navigateTo('/profile/billing-payments')
+            && cardDetails.value.cvv === ''
+            && user && route.fullPath.includes('/app/diagram/list')
+          ) {
+            showBillingModal.value = true
+            // if (user && route.fullPath.includes('/app/diagram/list'))
+            return navigateTo('/profile/billing-payments')
           }
           break
         default:
@@ -79,9 +77,9 @@ function upgradePlan() {
   navigateTo('/website/pricing')
 }
 
-function addCard(){
-  showBillingModal.value=false
-  navigateTo("/profile/billing-payments")
+function addCard() {
+  showBillingModal.value = false
+  navigateTo('/profile/billing-payments')
 }
 
 async function handlePostAuthentication() {
@@ -123,7 +121,6 @@ async function handlePostAuthentication() {
       </div>
     </div>
   </UModal>
-  
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

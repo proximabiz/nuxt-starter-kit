@@ -96,8 +96,8 @@ function saveDetails(valid: boolean) {
     v-model="isSavePopupOpen"
     :is-open="isSavePopupOpen"
     text="Are you sure you want to submit details?"
-    left-button="Ok"
-    right-button="Later"
+    left-button="Cancel"
+    right-button="Ok"
     @update:is-open="isSavePopupOpen = $event"
     @delete-confirm="saveDetails(true)"
   />
