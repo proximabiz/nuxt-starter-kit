@@ -128,6 +128,15 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
 
       return supabaseResponse.value
     },
+    async getCountryCurrencyData() {
+      const { data, error } = await useFetch('https://open.er-api.com/v6/latest/USD', {
+        method: 'GET',
+      })
+      if (error.value)
+        throw error.value
+
+      return data.value
+    },
   },
   persist: {
     storage: persistedState.localStorage,

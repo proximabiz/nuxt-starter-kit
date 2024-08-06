@@ -10,8 +10,9 @@ const currencyList = ref()
 
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
-const { data: dataFetch } = await useFetch('https://open.er-api.com/v6/latest/USD')
-currencyList.value = dataFetch
+const currency = await subscriptionStore.getCountryCurrencyData()
+if (currency !== '')
+  currencyList.value = currency
 
 interface PricePlan {
   plan: string
@@ -30,25 +31,25 @@ const regions: regionTypes[] = [
     name: 'India',
     value: 'india',
     currencySymbol: '₹', // Rupees
-    conversionRate: currencyList?.value?.value?.rates?.INR, // Assuming 1 USD = 75 Rupees
+    conversionRate: currencyList?.value?.rates?.INR, // Assuming 1 USD = 75 Rupees
   },
   {
     name: 'Europe',
     value: 'europe',
     currencySymbol: '€', // Euros
-    conversionRate: currencyList?.value?.value?.rates?.EUR, // Assuming 1 USD = 0.9 Euros
+    conversionRate: currencyList?.value?.rates?.EUR, // Assuming 1 USD = 0.9 Euros
   },
   {
     name: 'US',
     value: 'us',
     currencySymbol: '$', // Dollars
-    conversionRate: currencyList?.value?.value?.rates?.USD, // Base rate
+    conversionRate: currencyList?.value?.rates?.USD, // Base rate
   },
   {
     name: 'Other region',
     value: 'other',
     currencySymbol: '$', // Dollars
-    conversionRate: currencyList?.value?.value?.rates?.USD, // Base rate
+    conversionRate: currencyList?.value?.rates?.USD, // Base rate
   },
 ]
 const basePlane = sub_status?.value.planName !== '' && sub_status?.value.planName === 'Basic'
@@ -70,6 +71,7 @@ const annualPrices: PricePlan[] = reactive([
 
 const prices = computed(() => {
   const selectedRegion = regions.find(r => r.value === region.value)
+
   if (!selectedRegion)
     return
 
@@ -91,7 +93,7 @@ const prices = computed(() => {
   return adjustedPrices
 })
 
-if (sub_status?.value.planName !== '')
+if (sub_status?.value.planName !== '' && currencyList.value !== '')
   isLoading.value = false
 
 else
