@@ -61,13 +61,6 @@ function setActiveStep(index: number) {
       isFieldEmtpy.value = true
     }
   }
-  // if (index === 4) {
-  //   const isCardDetailsComplete = bac.taxId
-  //   if (!isCardDetailsComplete) {
-  //     $error('Please fill out the Tax Id field in your billing process')
-  //     return
-  //   }
-  // }
   if (index >= 0 && index < steps.length)
     state.activeStep = index
 }

@@ -104,7 +104,8 @@ function providePlanDetails(val: any) {
     return navigateTo('/login')
 
   cardValue.value = val
-  showBillingDetails.value = true
+  // showBillingDetails.value = true
+navigateTo('/billing/billing-details')
   return cardValue
 }
 
@@ -116,8 +117,8 @@ function providePlanDetails(val: any) {
 // })
 </script>
 
-<template>
-  <BillingDetailsBillling v-if="showBillingDetails" :plan-details="cardValue" />
+<!-- <template>
+  <BillingDetailsBillling v-if="showBillingDetails" :plan-details="cardValue" /> -->
   <template v-else>
     <div class="text-center my-5">
       <span class="text-3xl font-medium my-5">Choose Your AI FlowMapper Plan</span>
@@ -236,5 +237,5 @@ function providePlanDetails(val: any) {
         </template>
       </div>
     </div>
-  </template>
+  <!-- </template> -->
 </template>
