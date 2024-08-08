@@ -11,10 +11,19 @@ interface Props {
 const props = defineProps<Props>()
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
+const isEditable = ref(false)
 
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
+
+if (cardDetails.value.cardHolderName !== ''
+  || cardDetails.value.cardNo !== ''
+  || cardDetails.value.expDate !== ''
+  || cardDetails.value.cvv !== '')
+  isEditable.value = true
+else
+  isEditable.value = false
 
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
@@ -63,17 +72,17 @@ const billingSchema = z.object({
 
     <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
       <UFormGroup label="Name on the card" name="cardHolderName" required>
-        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" />
+        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
       </UFormGroup>
       <UFormGroup label="Credit or debit card number" name="cardNo" required>
-        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" />
+        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable" />
       </UFormGroup>
       <div class="flex gap-2">
         <UFormGroup label="Expire date" name="expDate" required>
-          <UInput v-model="cardDetails.expDate" placeholder="MM/YY" />
+          <UInput v-model="cardDetails.expDate" placeholder="MM/YY" :disabled="isEditable" />
         </UFormGroup>
         <UFormGroup label="Security code" name="cvv" required>
-          <UInput v-model="cardDetails.cvv" placeholder="****" />
+          <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditable" />
         </UFormGroup>
       </div>
     </UForm>

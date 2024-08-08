@@ -109,7 +109,7 @@ async function handlePostAuthentication() {
     </div>
   </UModal>
 
-  <UModal :model-value="showBillingModal" :transition="false">
+  <!-- <UModal :model-value="showBillingModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">
         Please add card details.
@@ -120,7 +120,16 @@ async function handlePostAuthentication() {
         </UButton>
       </div>
     </div>
-  </UModal>
+  </UModal> -->
+
+  <UpgradeModal
+    v-model="showBillingModal"
+    :is-open="showBillingModal"
+    text="Your card details are missing!\n To continue working with diagrams, please add card details."
+    ok="Ok"
+    @submit-confirm="addCard"
+  />
+
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

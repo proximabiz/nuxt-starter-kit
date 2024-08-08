@@ -9,6 +9,7 @@ const isDelete = ref(false)
 const apiResponse = ref()
 const deleteDiagramId = ref('')
 const isSavePopupOpen = ref(false)
+const isInActiveSubscription = ref(false)
 // const isIgnoredCardDetails = ref(false)
 // const toRoute = ref()
 // const authStore = useAuthStore()
@@ -122,7 +123,20 @@ async function confirmedDeleteDiagram() {
   }
 }
 
-onMounted(() => {
+async function getActivePlan() {
+  try {
+    const response = await subscriptionStore.fetchActivePlan()
+    if (response?.subscription_status === 'PLAN_EXPIRED' || response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION')
+      isInActiveSubscription.value = true
+    else
+      isInActiveSubscription.value = false
+  }
+  catch (error) {
+    $error(error.statusMessage)
+  }
+}
+
+onMounted(async () => {
   fetchDiagrams()
   isSavePopupOpen.value = false
   if (cardDetails.value.cardHolderName === ''
@@ -133,6 +147,7 @@ onMounted(() => {
       isSavePopupOpen.value = true
     )
   }
+  await getActivePlan()
 })
 
 function saveDetails(_valid: boolean) {
@@ -167,7 +182,7 @@ function saveDetails(_valid: boolean) {
     </template>
     <template v-else>
       <div class="flex justify-center sm:justify-end my-4">
-        <UButton label="Create New" icon="i-heroicons-plus" @click="createDiagram()" />
+        <UButton label="Create New" :disabled="isInActiveSubscription" icon="i-heroicons-plus" @click="createDiagram()" />
       </div>
       <div class="sm:overflow-x-hidden overflow-x-auto">
         <div class="sm:-mx-6 lg:-mx-8">
@@ -199,6 +214,7 @@ function saveDetails(_valid: boolean) {
 
                       <UTooltip text="Edit" :popper="{ arrow: true }">
                         <UButton
+                          :disabled="isInActiveSubscription"
                           color="blue" class="hidden lg:inline-flex" icon="i-heroicons-pencil-square" size="sm"
                           variant="ghost" @click="redirectToPath(item.id)"
                         />
@@ -206,6 +222,7 @@ function saveDetails(_valid: boolean) {
 
                       <UTooltip text="Delete" :popper="{ arrow: true }">
                         <UButton
+                          :disabled="isInActiveSubscription"
                           color="red" icon="i-heroicons-trash" size="sm" variant="ghost"
                           @click="deleteDiagram(item.id)"
                         />

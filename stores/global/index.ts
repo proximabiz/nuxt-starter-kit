@@ -1,4 +1,4 @@
-import type { State } from './types'
+import type { BillingProps, State } from './types'
 
 function initialState() {
   return {
@@ -14,5 +14,30 @@ export const useGlobalStore = defineStore('globalStore', {
   actions: {},
   persist: {
     storage: persistedState.localStorage,
+  },
+})
+
+export const useBillingDetailsStore = defineStore('billingPropsPage', {
+  state: (): BillingProps => ({
+    propObject: {
+      plan: '',
+      price: 0,
+      month: 0,
+      disabled: false,
+      calculatedPrice: '',
+      currencySymbol: '',
+    },
+  }),
+  actions: {
+    setPropObject(newObject: {
+      plan: string
+      price: number
+      month: number
+      disabled: boolean
+      calculatedPrice: string
+      currencySymbol: string
+    }) {
+      this.propObject = newObject
+    },
   },
 })

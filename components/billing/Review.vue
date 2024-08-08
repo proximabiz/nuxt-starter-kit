@@ -79,6 +79,14 @@ function saveDetails(valid: boolean) {
         <p>Security code: {{ allDetails.cvv }}</p>
       </div>
     </div>
+    <div class="grid grid-cols-2 gap-8 bg-slate-100 p-4 min-width">
+      <div class="font-semibold text-2xl">
+        Tax ID:
+      </div>
+      <div>
+        <p>{{ allDetails.taxId }}</p>
+      </div>
+    </div>
     <!-- <div class="font-bold">
       Enter payment details
     </div> -->

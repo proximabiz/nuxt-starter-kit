@@ -1,12 +1,15 @@
 <script setup lang="ts">
-interface Props {
-  planDetails: any
-}
-const props = defineProps<Props>()
+import { useBillingDetailsStore } from '~/stores/global'
+
+// interface Props {
+//   planDetails: any
+// }
+// const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
+const billingStore = useBillingDetailsStore()
 const isFieldEmtpy = ref(false)
-const duePrice = ref<string>(props.planDetails.currencySymbol + props.planDetails.calculatedPrice)
+const duePrice = ref<string>(billingStore.propObject.currencySymbol + billingStore.propObject.calculatedPrice)
 const { $error } = useNuxtApp()
 
 // const confirmation = reactive({
@@ -32,9 +35,9 @@ watch([billingAddressCard.value, isFieldEmtpy.value], () => {
     && billingAddressCard.value.cardNo !== ''
     && billingAddressCard.value.expDate !== ''
     && billingAddressCard.value.cvv !== '')
-    isFieldEmtpy.value = true
-  else
     isFieldEmtpy.value = false
+  else
+    isFieldEmtpy.value = true
 }, { deep: true })
 
 function setActiveStep(index: number) {
@@ -67,6 +70,12 @@ function setActiveStep(index: number) {
 function isActive(index: number) {
   return state.activeStep >= index
 }
+function backStep() {
+  if (state.activeStep === 0)
+    navigateTo('/website/pricing')
+  else
+    setActiveStep(state.activeStep - 1)
+}
 </script>
 
 <template>
@@ -90,14 +99,14 @@ function isActive(index: number) {
     <UCard v-if="state.activeStep === 0" class="mb-6 mt-4">
       <div class="divide-y divide-solid">
         <header class="flex justify-start">
-          AI FlowMapper {{ props.planDetails.plan }}
+          AI FlowMapper {{ billingStore.propObject.plan }}
         </header>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <USelect v-model="user" :options="users" color="blue" />
           <div>
             <span>1 month *
-              {{ props.planDetails.month > 1 ? props.planDetails.month : '' }}</span>
-            <span class="font-semibold pl-1">{{ props.planDetails.currencySymbol }}{{ props.planDetails.calculatedPrice }}</span>
+              {{ billingStore.propObject.month > 1 ? billingStore.propObject.month : '' }}</span>
+            <span class="font-semibold pl-1">{{ billingStore.propObject.currencySymbol }}{{ billingStore.propObject.calculatedPrice }}</span>
           </div>
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
@@ -114,11 +123,16 @@ function isActive(index: number) {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="props.planDetails.plan" :due-price="duePrice" />
+    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="billingStore.propObject.plan" :due-price="duePrice" />
     <BillingTaxId v-if="state.activeStep === 3" />
-    <BillingReview v-if="state.activeStep === 4" :plan-name="props.planDetails.plan" :due-price="duePrice" />
-    <UButton v-if="state.activeStep !== 4" :disabled="isFieldEmtpy" @click="() => setActiveStep(state.activeStep + 1)">
-      Continue
-    </UButton>
+    <BillingReview v-if="state.activeStep === 4" :plan-name="billingStore.propObject.plan" :due-price="duePrice" />
+    <div class="d-flex">
+      <UButton v-if="state.activeStep !== 4" class="mr-5" @click="backStep">
+        Back
+      </UButton>
+      <UButton v-if="state.activeStep !== 4" @click="() => setActiveStep(state.activeStep + 1)">
+        Continue
+      </UButton>
+    </div>
   </div>
 </template>
