@@ -16,6 +16,10 @@ const PrivateSchema = z.object({
   GOOGLE_CAPTCHA_SECRET_KEY: z.string(),
   APP_URL: z.string().default('http://localhost:3000/'),
   SUPABASE_SERVICE_KEY: z.string(),
+  CHARGEBEE_SITE: z.string(),
+  CHARGEBEE_API_KEY: z.string(),
+  CHARGEBEE_PRODUCT_CATLOG_VERSION: z.string().default('v2'),
+  CHARGEBEE_GATEWAY_ACCOUNT_ID: z.string(),
 })
 
 export const Env = BaseSchema.merge(PrivateSchema)
