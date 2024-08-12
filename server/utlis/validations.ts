@@ -28,6 +28,8 @@ export const SignupValidation = Joi.object({
 })
 
 export const CompleteOrderValidation = Joi.object({
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
   country: Joi.string().required(),
   region: Joi.string().required(),
   city: Joi.string().required(),
@@ -39,12 +41,22 @@ export const CompleteOrderValidation = Joi.object({
   subscriptionTypeId: Joi.string().required(),
   planType: Joi.string().valid('monthly', 'yearly').required(),
   currencyCode: Joi.string().valid('INR', 'EUR', 'USD').min(3).max(3).length(3).required(),
+  gstNumber: Joi.string().optional(),
 
   cardHolderName: Joi.string().required(),
   cardNumber: Joi.string().creditCard().required(),
-  expiryDate: Joi.string().min(5).max(5).required(),
+  expiryMonth: Joi.number().integer().positive().required(),
+  expiryYear: Joi.number().integer().positive().required(),
   securityCode: Joi.string().min(3).max(4).required(),
 
+})
+
+export const CustomerCardValidation = Joi.object({
+  cardHolderName: Joi.string().required(),
+  cardNumber: Joi.string().creditCard().required(),
+  expiryMonth: Joi.number().integer().positive().required(),
+  expiryYear: Joi.number().integer().positive().required(),
+  securityCode: Joi.string().min(3).max(4).required(),
 })
 
 export const UserAddressValidation = Joi.object({
@@ -94,4 +106,8 @@ export const ContactUsValidation = Joi.object({
   email: Joi.string().email().required(),
   phoneNumber: Joi.string().required(),
   token: Joi.string().required(),
+})
+
+export const UserCardDetailsValidation = Joi.object({
+  userId: Joi.string().required(),
 })
