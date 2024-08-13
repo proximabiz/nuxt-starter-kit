@@ -151,6 +151,7 @@ export interface Database {
           description: string
           features: Json | null
           id: string
+          limit: number | null
           monthly_price: number
           name: string
           status: boolean
@@ -163,6 +164,7 @@ export interface Database {
           description?: string
           features?: Json | null
           id?: string
+          limit?: number | null
           monthly_price?: number
           name?: string
           status?: boolean
@@ -175,6 +177,7 @@ export interface Database {
           description?: string
           features?: Json | null
           id?: string
+          limit?: number | null
           monthly_price?: number
           name?: string
           status?: boolean
@@ -233,6 +236,50 @@ export interface Database {
           },
         ]
       }
+      user_chargebee_details: {
+        Row: {
+          chargebee_payment_method_id: string | null
+          chargebee_user_id: string | null
+          created_at: string
+          created_by: string | null
+          has_payment_method_active: boolean | null
+          id: string
+          updated_at: string | null
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          chargebee_payment_method_id?: string | null
+          chargebee_user_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          has_payment_method_active?: boolean | null
+          id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          chargebee_payment_method_id?: string | null
+          chargebee_user_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          has_payment_method_active?: boolean | null
+          id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'public_user_stripe_details_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       user_details: {
         Row: {
           created_at: string
@@ -269,50 +316,6 @@ export interface Database {
             foreignKeyName: 'public_user_details_user_id_fkey'
             columns: ['user_id']
             isOneToOne: true
-            referencedRelation: 'users'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      user_stripe_details: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          has_payment_method_active: boolean | null
-          id: string
-          stripe_payment_method_id: string | null
-          stripe_user_id: string | null
-          updated_at: string | null
-          updated_by: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          has_payment_method_active?: boolean | null
-          id?: string
-          stripe_payment_method_id?: string | null
-          stripe_user_id?: string | null
-          updated_at?: string | null
-          updated_by?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          has_payment_method_active?: boolean | null
-          id?: string
-          stripe_payment_method_id?: string | null
-          stripe_user_id?: string | null
-          updated_at?: string | null
-          updated_by?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'public_user_stripe_details_user_id_fkey'
-            columns: ['user_id']
-            isOneToOne: false
             referencedRelation: 'users'
             referencedColumns: ['id']
           },
@@ -396,21 +399,6 @@ export interface Database {
         Returns: {
           id: string
           diagram_id: string
-          user_id: string
-          name: string
-          versions: string
-          response: Json
-          created_at: string
-          updated_at: string
-        }[]
-      }
-      get_diagram_versions_test: {
-        Args: {
-          diagram_id: string
-        }
-        Returns: {
-          id: string
-          digram: string
           user_id: string
           name: string
           versions: string

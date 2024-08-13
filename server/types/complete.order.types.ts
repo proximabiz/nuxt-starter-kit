@@ -1,11 +1,14 @@
 export interface OrderType {
   userId: string
   email: string
-  name: string
+  firstName: string
+  lastName: string
   planType: 'monthly' | 'yearly'
-  expiryDate: string
+  expiryMonth: number
+  expiryYear: number
   cardNumber: string
   securityCode: string
+  cardHolderName: string
   country: string
   region: string
   city: string
@@ -17,6 +20,7 @@ export interface OrderType {
   currencyCode: string
   currentDate: Date
   endDate: Date
+  gstNumber: string
 }
 
 export interface StripeCustomer {
