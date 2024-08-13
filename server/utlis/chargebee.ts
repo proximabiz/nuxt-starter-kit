@@ -50,6 +50,13 @@ async function createChargebeeCustomer(orderDetails: OrderType) {
 async function getCustomerCardDetails(chargebeeCustomerId: string) {
   try {
     const cardDetails = await chargebee.card.retrieve(chargebeeCustomerId).request()
+
+    if (!cardDetails || !cardDetails.card)
+      return { status: 200, data: {} } // Return empty data when no card details are found
+
+    const firstName = cardDetails.card.first_name || ''
+    const lastName = cardDetails.card.last_name || ''
+
     const response = {
       cardNumber: cardDetails.card.masked_number,
       expiryMonth: cardDetails.card.expiry_month,
@@ -58,10 +65,15 @@ async function getCustomerCardDetails(chargebeeCustomerId: string) {
       cardType: cardDetails.card.card_type,
       status: cardDetails.card.status,
       fundingType: cardDetails.card.funding_type,
+      cardHolderName: firstName + (lastName ? ` ${lastName}` : ''),
     }
+
     return { status: 200, data: response }
   }
   catch (error: any) {
+    if (error.http_status_code === 404)
+      return { status: 200, data: {} } // Return empty data if the card is not found
+
     return {
       status: error.http_status_code || 500,
       error: {
@@ -90,17 +102,30 @@ async function deleteCustomerCardDetails(chargebeeCustomerId: string) {
 // **** update Card details of customer
 async function updateCustomerCardDetails(cardDetails: UserCardDetailType, chargebeeCustomerId: string) {
   try {
-    const [cFirstName, cLastName] = cardDetails.cardHolderName.split(' ')
+    const [cFirstName, cLastName] = cardDetails.cardHolderName.split(' ').length > 1
+      ? cardDetails.cardHolderName.split(' ')
+      : [cardDetails.cardHolderName, '']
+
     const response = await chargebee.card.update_card_for_customer(chargebeeCustomerId, {
       gateway_account_id: process.env.CHARGEBEE_GATEWAY_ACCOUNT_ID, // paypal gatway id
-      first_name: cFirstName,
-      last_name: cLastName,
+      first_name: cFirstName || '',
+      last_name: cLastName || '',
       number: cardDetails.cardNumber,
       expiry_month: cardDetails.expiryMonth,
       expiry_year: cardDetails.expiryYear,
       cvv: cardDetails.securityCode,
     }).request()
-    return { status: 'Success', statusCode: 200, data: response.customer.card_status }
+    const res = {
+      cardNumber: response.card.masked_number,
+      expiryMonth: response.card.expiry_month,
+      expiryYear: response.card.expiry_year,
+      gateway: response.card.gateway,
+      cardType: response.card.card_type,
+      status: response.card.status,
+      fundingType: response.card.funding_type,
+      cardHolderName: `${cFirstName} ${cLastName}`,
+    }
+    return { status: 'Success', statusCode: 200, data: res }
   }
   catch (error: any) {
     return {
