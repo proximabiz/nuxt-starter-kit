@@ -10,24 +10,19 @@ interface Props {
 }
 const props = defineProps<Props>()
 const subscriptionStore = useSubscriptionStore()
+
 const { $error } = useNuxtApp()
-// const cardDetails = computed(() => subscriptionStore.billingDetails)
+const cardDetails = computed(() => subscriptionStore.billingDetails)
 const isEditable = ref(false)
-const cardData = ref({
-  cardHolderName: '',
-  cardNumber: '',
-  expiryMonthYear: '',
-  securityCode: '',
-})
 
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 
-if (cardData.value.cardHolderName !== ''
-  || cardData.value.cardNumber !== ''
-  || cardData.value.expiryMonthYear !== ''
-  || cardData.value.securityCode !== '')
+if (cardDetails.value.cardHolderName !== ''
+  && cardDetails.value.cardNo !== ''
+  && cardDetails.value.expDate !== ''
+  && cardDetails.value.cvv !== '')
   isEditable.value = true
 else
   isEditable.value = false
@@ -61,10 +56,10 @@ async function getCardDetails() {
     const response = await subscriptionStore.getCardDetailsAPI()
     const expiryDate = response?.msg !== 'no data' ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (response?.msg !== 'no data') {
-      cardData.value.cardNumber = response?.cardNumber
-      cardData.value.expiryMonthYear = expiryDate !== undefined && expiryDate || ''
-      cardData.value.cardHolderName = response?.cardHolderName
-      cardData.value.securityCode = response?.cardNumber && '****'
+      cardDetails.value.cardHolderName = response?.cardHolderName
+      cardDetails.value.cardNo = response?.cardNumber
+      cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
+      cardDetails.value.cvv = response?.cardNumber && '****'
       isEditable.value = true
     }
     else {
@@ -101,19 +96,19 @@ onMounted(async () => {
       </div>
     </div>
 
-    <UForm :schema="billingSchema" :state="cardData" class="space-y-2">
+    <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
       <UFormGroup label="Name on the card" name="cardHolderName">
-        <UInput v-model="cardData.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
+        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
       </UFormGroup>
       <UFormGroup label="Credit or debit card number" name="cardNo">
-        <UInput v-model="cardData.cardNumber" placeholder="**** **** ****" :disabled="isEditable" />
+        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable" />
       </UFormGroup>
       <div class="flex flex-col md:flex-row md:gap-2">
         <UFormGroup label="Expire date" name="expDate" class="flex-grow">
-          <UInput v-model="cardData.expiryMonthYear" placeholder="MM/YYYY" :disabled="isEditable" />
+          <UInput v-model="cardDetails.expDate" placeholder="MM/YYYY" :disabled="isEditable" />
         </UFormGroup>
         <UFormGroup label="Security code" name="cvv" class="flex-grow">
-          <UInput v-model="cardData.securityCode" placeholder="****" :disabled="isEditable" />
+          <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditable" />
         </UFormGroup>
       </div>
     </UForm>

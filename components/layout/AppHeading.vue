@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { useDiagramCountLimit } from '~/stores/global'
-
 const globalStore = useGlobalStore()
 const subscriptionStore = useSubscriptionStore()
-const diagramsData = useDiagramCountLimit()
 const diagramStore = useDiagramStore()
 const actualDiagramCount = ref(0)
 const showUpgrade = ref(false)
 const limit = ref(0)
-const diagramsDataList = computed(() => diagramStore.diagramsList)
+const diagramsList = computed(() => diagramStore.diagramsList)
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
-actualDiagramCount.value = diagramsDataList.value?.length !== undefined ? diagramsDataList.value?.length : 0
+actualDiagramCount.value = diagramsList.value?.length !== undefined ? diagramsList.value?.length : 0
 
 const color = computed(() => {
   switch (true) {
@@ -23,14 +20,14 @@ const color = computed(() => {
 })
 
 onMounted(async () => {
+  await diagramStore.list()
   if (sub_status?.value.limitDiagrams === actualDiagramCount.value)
     showUpgrade.value = true
   else
     showUpgrade.value = false
-  await diagramStore.list()
 })
 
-watch([diagramsData, subscriptionStore, actualDiagramCount.value, sub_status?.value], async () => {
+watch([actualDiagramCount.value], async () => {
   await diagramStore.list()
 }, { deep: true, immediate: true })
 

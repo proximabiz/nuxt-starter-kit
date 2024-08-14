@@ -40,7 +40,7 @@ watch([billingAddressCard.value, isFieldEmtpy.value], () => {
     isFieldEmtpy.value = true
 }, { deep: true })
 
-function setActiveStep(index: number) {
+async function setActiveStep(index: number) {
   const bac = billingAddressCard.value
   isFieldEmtpy.value = false
   if (index >= 2) {
@@ -56,12 +56,26 @@ function setActiveStep(index: number) {
   }
   if (index >= 3) {
     const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
-    if (!isCardDetailsComplete) {
-      $error('Please fill out all the fields in your billing card details.')
-      return isFieldEmtpy.value = false
+    const monthYear = bac.expDate.split('/')
+    const payload = {
+      cardHolderName: bac.cardHolderName,
+      cardNumber: bac.cardNo.toString(),
+      expiryMonth: Number(monthYear[0]),
+      expiryYear: Number(monthYear[1]),
+      securityCode: bac.cvv.toString(),
     }
-    else {
-      isFieldEmtpy.value = true
+    try {
+      await subscriptionStore.addNewCardDetails(payload)
+      if (!isCardDetailsComplete) {
+        $error('Please fill out all the fields in your billing card details.')
+        return isFieldEmtpy.value = false
+      }
+      else {
+        isFieldEmtpy.value = true
+      }
+    }
+    catch (error) {
+      $error(error.statusMessage)
     }
   }
   if (index >= 0 && index < steps.length)

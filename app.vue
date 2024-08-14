@@ -18,6 +18,7 @@ watch(
   async (user) => {
     if (user?.id) {
       const response = await subscriptionStore.fetchActivePlan()
+      await subscriptionStore.getCardDetailsAPI()
       switch (response?.subscription_status) {
         case 'PLAN_EXPIRED':
           showUpgradeModal.value = true

@@ -1,4 +1,4 @@
-import type { ActivePlanType, AddAPIPayload, AddNewCardPayload, CancelAPIPayload, CompleteOrderPostAPIPayload, DeleteCardDetailsPayload, GetCardDetails, State } from './types'
+import type { ActivePlanType, AddAPIPayload, AddNewCardPayload, CancelAPIPayload, CompleteOrderPostAPIPayload, GetCardDetails, State } from './types'
 import type { Database } from '~/types/supabase'
 
 function initialState() {

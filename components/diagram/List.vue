@@ -1,22 +1,16 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import { useDiagramCountLimit } from '~/stores/global'
 
 const diagramStore = useDiagramStore()
 const { $success, $error, $warning } = useNuxtApp()
 const diagramTypeStore = useDiagramTypeStore()
-const diagramCount = useDiagramCountLimit()
 const isLoading = ref(false)
 const isDelete = ref(false)
 const apiResponse = ref()
 const deleteDiagramId = ref('')
 const isSavePopupOpen = ref(false)
 const isInActiveSubscription = ref(false)
-const planName = ref(false)
-const planCount = ref({
-  name: '',
-  count: 0,
-})
+const isDiagramLimitExceeded = ref(false)
 
 const diagramsList = computed(() => diagramStore.diagramsList)
 const headers = computed(() => [
@@ -43,6 +37,7 @@ globalStore.pageHeading.title = 'My Diagrams'
 
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
+const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
 async function fetchDiagramTypes() {
   try {
@@ -71,17 +66,23 @@ async function createDiagram() {
     if (!diagramType)
       return
 
-    const response = await diagramStore.create({
-      title: 'default',
-      diagramTypeId: diagramType.id,
-    })
+    if (diagramsList.value?.length !== undefined && diagramsList.value?.length >= sub_status.value.limitDiagrams)
+      isDiagramLimitExceeded.value = true
+    else
+      isDiagramLimitExceeded.value = false
 
     isLoading.value = false
-    if (planName.value)
-      $warning(`You have reached your ${planCount.value.count} diagram limit. Upgrade now to increase your monthly limit of diagrams`)
-    else
-    /* @ts-expect-error need to be fixed */
+    if (isDiagramLimitExceeded.value) {
+      $warning(`You have reached your ${sub_status.value.limitDiagrams} diagram limit. Upgrade now to increase your monthly limit of diagrams`)
+    }
+    else {
+      const response = await diagramStore.create({
+        title: 'default',
+        diagramTypeId: diagramType.id,
+      })
+      /* @ts-expect-error need to be fixed */
       redirectToPath(response?.diagram[0].id)
+    }
   }
   catch (error) {
     isLoading.value = false
@@ -116,24 +117,20 @@ async function confirmedDeleteDiagram() {
     isDelete.value = false
     $success('Diagram deleted successfully!')
     fetchDiagrams()
+    getActivePlan()
+    if (diagramsList.value?.length !== undefined && diagramsList.value?.length >= sub_status.value.limitDiagrams)
+      isDiagramLimitExceeded.value = true
+    else
+      isDiagramLimitExceeded.value = false
   }
   catch (error) {
     $error(error)
   }
 }
+
 async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
-    planCount.value.name = response.name
-    planCount.value.count = response.name === 'Basic' ? 4 : response.name === 'Free' ? 8 : response.name === 'Premium' ? 8 : 0
-    if (response.name === 'Basic' && diagramsList.value?.length !== undefined && diagramsList.value?.length >= 4)
-      planName.value = true
-    else if (response.name === 'Free' && diagramsList.value?.length !== undefined && diagramsList.value?.length >= 8)
-      planName.value = true
-    else if (response.name === 'Premium' && diagramsList.value?.length !== undefined && diagramsList.value?.length >= 8)
-      planName.value = true
-    else
-      planName.value = false
     if (response?.subscription_status === 'PLAN_EXPIRED' || response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION')
       isInActiveSubscription.value = true
     else
@@ -152,10 +149,17 @@ onMounted(async () => {
       isSavePopupOpen.value = true
     )
   }
-  diagramCount.setDiagramDetails(planCount.value)
-
   await getActivePlan()
 })
+watch([diagramsList.value, apiResponse.value], async () => {
+  if (diagramsList.value?.length !== undefined && diagramsList.value?.length >= sub_status.value.limitDiagrams)
+    isDiagramLimitExceeded.value = true
+  else
+    isDiagramLimitExceeded.value = false
+
+  await diagramStore.list()
+  await getActivePlan()
+}, { deep: true, immediate: true })
 
 function saveDetails(_valid: boolean) {
   isSavePopupOpen.value = false

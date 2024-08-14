@@ -1,4 +1,4 @@
-import type { BillingProps, DiagramCountLimit, State } from './types'
+import type { BillingProps, State } from './types'
 
 function initialState() {
   return {
@@ -38,23 +38,6 @@ export const useBillingDetailsStore = defineStore('billingPropsPage', {
       currencySymbol: string
     }) {
       this.propObject = newObject
-    },
-  },
-})
-
-export const useDiagramCountLimit = defineStore('diagramCount', {
-  state: (): DiagramCountLimit => ({
-    diagramDetails: {
-      name: '',
-      count: 0,
-    },
-  }),
-  actions: {
-    setDiagramDetails(newObject: {
-      name: string
-      count: number
-    }) {
-      this.diagramDetails = newObject
     },
   },
 })

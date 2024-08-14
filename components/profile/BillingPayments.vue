@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { z } from 'zod'
-import { useDiagramCountLimit } from '~/stores/global'
 
 const year = ref(2024)
 const columns = [{
@@ -47,28 +46,19 @@ const payments = [
   },
 ]
 const subscriptionStore = useSubscriptionStore()
-const diagramsData = useDiagramCountLimit()
 const diagramStore = useDiagramStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const diagramsList = computed(() => diagramStore.diagramsList)
 const isEditable = ref(false)
 const isModalVisible = ref(false)
 const isFieldEmtpy = ref(true)
-const cardData = ref({
-  cardHolderName: '',
-  cardNumber: '',
-  expiryMonthYear: '',
-  securityCode: '',
-})
+
 const { $success, $error } = useNuxtApp()
-// const isSavePopupOpen = ref(false)
-// const isIgnoredCardDetails = ref(false)
-// const toRoute = ref()
-// const router = useRouter()
-if (cardData.value.cardHolderName !== ''
-  && cardData.value.cardNumber !== ''
-  && cardData.value.expiryMonthYear !== ''
-  && cardData.value.securityCode !== '') {
+
+if (cardDetails.value.cardHolderName !== ''
+  && cardDetails.value.cardNo !== ''
+  && cardDetails.value.expDate !== ''
+  && cardDetails.value.cvv !== '') {
   isEditable.value = true
   isFieldEmtpy.value = false
 }
@@ -114,11 +104,10 @@ async function handleDeleteConfirm(): Promise<void> {
   try {
     const response = await subscriptionStore.deleteCardDetails()
     if (response) {
-      cardData.value.cardHolderName = ''
-      cardData.value.cardNumber = ''
-      cardData.value.expiryMonthYear = ''
-      cardData.value.securityCode = ''
+      cardDetails.value.cardHolderName = ''
       cardDetails.value.cardNo = ''
+      cardDetails.value.expDate = ''
+      cardDetails.value.cvv = ''
       isEditable.value = false
       isFieldEmtpy.value = true
       $success('Your old card details has succussfuly deleted')
@@ -134,11 +123,11 @@ async function getCardDetails() {
     const response = await subscriptionStore.getCardDetailsAPI()
     const expiryDate = response?.msg !== 'no data' ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (response?.msg !== 'no data') {
-      cardData.value.cardNumber = response?.cardNumber
-      cardData.value.expiryMonthYear = expiryDate !== undefined && expiryDate || ''
-      cardData.value.cardHolderName = response?.cardHolderName
-      cardData.value.securityCode = response?.cardNumber && '****'
+      cardDetails.value.cardHolderName = response?.cardHolderName
       cardDetails.value.cardNo = response?.cardNumber
+      cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
+      cardDetails.value.cvv = response?.cardNumber && '****'
+
       isEditable.value = true
     }
     else {
@@ -151,19 +140,19 @@ async function getCardDetails() {
 }
 
 async function handleSubmit() {
-  const monthYear = cardData.value.expiryMonthYear.split('/')
+  const monthYear = cardDetails.value.expDate.split('/')
   const payload = {
-    cardHolderName: cardData.value.cardHolderName,
-    cardNumber: cardData.value.cardNumber,
+    cardHolderName: cardDetails.value.cardHolderName,
+    cardNumber: cardDetails.value.cardNo.toString(),
     expiryMonth: Number(monthYear[0]),
     expiryYear: Number(monthYear[1]),
-    securityCode: cardData.value.securityCode,
+    securityCode: cardDetails.value.cvv.toString(),
   }
   const response = await subscriptionStore.addNewCardDetails(payload)
-  if (cardData.value.cardHolderName !== ''
-    || cardData.value.cardNumber !== ''
-    || cardData.value.expiryMonthYear !== ''
-    || cardData.value.securityCode !== ''
+  if (cardDetails.value.cardHolderName !== ''
+    || cardDetails.value.cardNo !== ''
+    || cardDetails.value.expDate !== ''
+    || cardDetails.value.cvv !== ''
     || response) {
     return (
       $success('Your new card details has succussfuly added'),
@@ -181,11 +170,11 @@ onMounted(async () => {
   await getCardDetails()
 })
 
-watch([cardData.value, isFieldEmtpy.value, diagramsData.diagramDetails.count, diagramsList.value?.length], () => {
-  if (cardData.value.cardHolderName !== ''
-    && cardData.value.cardNumber !== ''
-    && cardData.value.expiryMonthYear !== ''
-    && cardData.value.securityCode !== '') { isFieldEmtpy.value = false }
+watch([cardDetails.value, isFieldEmtpy.value, diagramsList.value?.length], () => {
+  if (cardDetails.value.cardHolderName !== ''
+    && cardDetails.value.cardNo !== ''
+    && cardDetails.value.expDate !== ''
+    && cardDetails.value.cvv !== '') { isFieldEmtpy.value = false }
   else {
     isFieldEmtpy.value = true
     isEditable.value = false
@@ -193,32 +182,13 @@ watch([cardData.value, isFieldEmtpy.value, diagramsData.diagramDetails.count, di
 }, { deep: true, immediate: true })
 
 async function onCancel() {
-  cardData.value.cardHolderName = ''
-  cardData.value.cardNumber = ''
-  cardData.value.expiryMonthYear = ''
-  cardData.value.securityCode = ''
+  cardDetails.value.cardHolderName = ''
+  cardDetails.value.cardNo = ''
+  cardDetails.value.expDate = ''
+  cardDetails.value.cvv = ''
   isEditable.value = false
   isFieldEmtpy.value = true
 }
-// function navigateTo(path: string) {
-//   router.push(path)
-// }
-// function saveDetails(_valid: boolean) {
-//   isSavePopupOpen.value = false
-//   isIgnoredCardDetails.value = true
-//   if (_valid)
-//     navigateTo(toRoute.value)
-// }
-// onBeforeRouteLeave((to, from, next) => {
-//   if (cardDetails.value.cardNo === '' && !isIgnoredCardDetails.value) {
-//     return (
-//       isSavePopupOpen.value = true,
-//       toRoute.value = to.path)
-//   }
-//   else {
-//     next()
-//   }
-// })
 </script>
 
 <template>
@@ -230,19 +200,19 @@ async function onCancel() {
   <section class="grid place-items-center p-4">
     <div class="relative mb-6 mt-6 w-full max-w-lg">
       <UCard>
-        <UForm :schema="billingSchema" :state="cardData" class="space-y-2">
+        <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
           <UFormGroup label="Name on the card" name="cardHolderName">
-            <UInput v-model="cardData.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
+            <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
           </UFormGroup>
           <UFormGroup label="Credit or debit card number" name="cardNo">
-            <UInput v-model="cardData.cardNumber" placeholder="**** **** ****" :disabled="isEditable" />
+            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable" />
           </UFormGroup>
           <div class="flex flex-col md:flex-row md:gap-2">
             <UFormGroup label="Expire date" name="expDate" class="flex-grow">
-              <UInput v-model="cardData.expiryMonthYear" placeholder="MM/YYYY" :disabled="isEditable" />
+              <UInput v-model="cardDetails.expDate" placeholder="MM/YYYY" :disabled="isEditable" />
             </UFormGroup>
             <UFormGroup label="Security code" name="cvv" class="flex-grow">
-              <UInput v-model="cardData.securityCode" placeholder="****" :disabled="isEditable" />
+              <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditable" />
             </UFormGroup>
           </div>
         </UForm>
@@ -323,13 +293,4 @@ async function onCancel() {
       </div>
     </section>
   </div>
-  <!-- <Confirmation
-    v-model="isSavePopupOpen"
-    :is-open="isSavePopupOpen"
-    text="Please add card details."
-    left-button="Ok"
-    right-button="Add Later"
-    @update:is-open="isSavePopupOpen = $event"
-    @delete-confirm="saveDetails(true)"
-  /> -->
 </template>
