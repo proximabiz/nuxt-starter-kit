@@ -31,6 +31,13 @@ const headers = computed(() => [
     value: '',
   },
 ])
+const items = [{
+  label: 'Active diagrams',
+  icon: 'i-heroicons-list-bullet',
+}, {
+  label: 'Deleted deiagrams',
+  icon: 'i-heroicons-archive-box-arrow-down', 
+}]
 
 const globalStore = useGlobalStore()
 globalStore.pageHeading.title = 'My Diagrams'
@@ -177,6 +184,7 @@ function saveDetails(_valid: boolean) {
       <DiagramEmptyListInstructions />
     </template>
     <template v-else>
+      <UTabs :items="items" :default-index="0" />
       <div class="flex justify-center sm:justify-end my-4">
         <UButton label="Create New" :disabled="isInActiveSubscription" icon="i-heroicons-plus" @click="createDiagram()" />
       </div>
