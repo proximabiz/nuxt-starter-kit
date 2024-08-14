@@ -25,14 +25,11 @@ async function singOut() {
   }
 }
 watch([cardDetails.value, isCardEmtpy.value], () => {
-  if (cardDetails.value.cardHolderName !== ''
-    && cardDetails.value.cardNo !== ''
-    && cardDetails.value.expDate !== ''
-    && cardDetails.value.cvv !== '')
+  if (cardDetails.value.cardNo !== '')
     isCardEmtpy.value = false
   else
     isCardEmtpy.value = true
-}, { deep: true })
+}, { deep: true, immediate: true })
 </script>
 
 <template>

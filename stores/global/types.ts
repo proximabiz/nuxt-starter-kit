@@ -16,3 +16,10 @@ export interface BillingProps {
     currencySymbol: string
   }
 }
+
+export interface DiagramCountLimit {
+  diagramDetails: {
+    name: string
+    count: number
+  }
+}

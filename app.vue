@@ -41,7 +41,6 @@ watch(
             && user && route.fullPath.includes('/app/diagram/list')
           ) {
             showBillingModal.value = true
-            // if (user && route.fullPath.includes('/app/diagram/list'))
             return navigateTo('/profile/billing-payments')
           }
           break

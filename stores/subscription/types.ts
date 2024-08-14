@@ -27,6 +27,7 @@ export interface CancelAPIPayload {
 export interface SubscriptionStatus {
   planName: string
   planStatus: string
+  limitDiagrams: number
 }
 export interface State {
   subscriptionStatus: SubscriptionStatus
@@ -66,4 +67,25 @@ export interface CompleteOrderPostAPIPayload {
   expiryDate: string
   securityCode: number
   taxId: string
+}
+
+export interface AddNewCardPayload {
+  cardHolderName: string
+  cardNumber: string
+  expiryMonth: number
+  expiryYear: number
+  securityCode: string
+}
+
+export interface DeleteCardDetailsPayload {
+  id: string
+}
+
+export interface GetCardDetails {
+  msg: string
+  cardHolderName: string
+  expiryYear: number
+  expiryMonth: number
+  cardNumber: string
+  id: string
 }

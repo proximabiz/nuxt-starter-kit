@@ -10,30 +10,37 @@ interface Props {
 }
 const props = defineProps<Props>()
 const subscriptionStore = useSubscriptionStore()
-const cardDetails = computed(() => subscriptionStore.billingDetails)
+const { $error } = useNuxtApp()
+// const cardDetails = computed(() => subscriptionStore.billingDetails)
 const isEditable = ref(false)
+const cardData = ref({
+  cardHolderName: '',
+  cardNumber: '',
+  expiryMonthYear: '',
+  securityCode: '',
+})
 
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 
-if (cardDetails.value.cardHolderName !== ''
-  || cardDetails.value.cardNo !== ''
-  || cardDetails.value.expDate !== ''
-  || cardDetails.value.cvv !== '')
+if (cardData.value.cardHolderName !== ''
+  || cardData.value.cardNumber !== ''
+  || cardData.value.expiryMonthYear !== ''
+  || cardData.value.securityCode !== '')
   isEditable.value = true
 else
   isEditable.value = false
 
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
-  cardNo: z.string()
+  cardNumber: z.string()
     .min(1, 'Card number is required')
     .regex(/^\d+$/, 'Card number must be numeric')
     .refine(val => masterCardRegex.test(val) || visaCardRegex.test(val), {
       message: 'Invalid card number.Please enter a valid card number with 16 digits.',
     }),
-  expDate: z.string()
+  expiryMonthYear: z.string()
     .regex(basicExpDateRegex, 'Invalid expiration date format')
     .refine((val) => {
       const [month, year] = val.split('/').map(Number)
@@ -44,9 +51,33 @@ const billingSchema = z.object({
         year >= currentYear && (year > currentYear || month >= currentMonth)
       )
     }, 'Expiration date must be in the future'),
-  cvv: z.string()
+  securityCode: z.string()
     .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
-    .refine(cvv => /^\d+$/.test(cvv), 'Security code must only contain digits'),
+    .refine(securityCode => /^\d+$/.test(securityCode), 'Security code must only contain digits'),
+})
+
+async function getCardDetails() {
+  try {
+    const response = await subscriptionStore.getCardDetailsAPI()
+    const expiryDate = response?.msg !== 'no data' ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
+    if (response?.msg !== 'no data') {
+      cardData.value.cardNumber = response?.cardNumber
+      cardData.value.expiryMonthYear = expiryDate !== undefined && expiryDate || ''
+      cardData.value.cardHolderName = response?.cardHolderName
+      cardData.value.securityCode = response?.cardNumber && '****'
+      isEditable.value = true
+    }
+    else {
+      isEditable.value = false
+    }
+  }
+  catch (error) {
+    $error(error.statusMessage)
+  }
+}
+
+onMounted(async () => {
+  await getCardDetails()
 })
 </script>
 
@@ -70,19 +101,19 @@ const billingSchema = z.object({
       </div>
     </div>
 
-    <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
-      <UFormGroup label="Name on the card" name="cardHolderName" required>
-        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
+    <UForm :schema="billingSchema" :state="cardData" class="space-y-2">
+      <UFormGroup label="Name on the card" name="cardHolderName">
+        <UInput v-model="cardData.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
       </UFormGroup>
-      <UFormGroup label="Credit or debit card number" name="cardNo" required>
-        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable" />
+      <UFormGroup label="Credit or debit card number" name="cardNo">
+        <UInput v-model="cardData.cardNumber" placeholder="**** **** ****" :disabled="isEditable" />
       </UFormGroup>
-      <div class="flex gap-2">
-        <UFormGroup label="Expire date" name="expDate" required>
-          <UInput v-model="cardDetails.expDate" placeholder="MM/YY" :disabled="isEditable" />
+      <div class="flex flex-col md:flex-row md:gap-2">
+        <UFormGroup label="Expire date" name="expDate" class="flex-grow">
+          <UInput v-model="cardData.expiryMonthYear" placeholder="MM/YYYY" :disabled="isEditable" />
         </UFormGroup>
-        <UFormGroup label="Security code" name="cvv" required>
-          <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditable" />
+        <UFormGroup label="Security code" name="cvv" class="flex-grow">
+          <UInput v-model="cardData.securityCode" placeholder="****" :disabled="isEditable" />
         </UFormGroup>
       </div>
     </UForm>

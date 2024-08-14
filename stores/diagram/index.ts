@@ -22,7 +22,6 @@ export const useDiagramStore = defineStore('diagramStore', {
 
       if (supabaseError)
         throw supabaseError
-
       this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')
     },
 
@@ -33,10 +32,8 @@ export const useDiagramStore = defineStore('diagramStore', {
         .from('diagrams')
         .select()
         .eq('id', payload.diagramId)
-
       if (supabaseError)
         throw supabaseError
-
       return supabaseResponse
     },
 

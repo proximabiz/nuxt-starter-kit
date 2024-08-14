@@ -72,7 +72,7 @@ async function getCustomerCardDetails(chargebeeCustomerId: string) {
   }
   catch (error: any) {
     if (error.http_status_code === 404)
-      return { status: 200, data: {} } // Return empty data if the card is not found
+      return { status: 200, data: { msg: 'no data' } } // Return empty data if the card is not found
 
     return {
       status: error.http_status_code || 500,

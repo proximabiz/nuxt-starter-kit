@@ -1,9 +1,9 @@
-import type { ActivePlanType, AddAPIPayload, CancelAPIPayload, CompleteOrderPostAPIPayload, State } from './types'
+import type { ActivePlanType, AddAPIPayload, AddNewCardPayload, CancelAPIPayload, CompleteOrderPostAPIPayload, DeleteCardDetailsPayload, GetCardDetails, State } from './types'
 import type { Database } from '~/types/supabase'
 
 function initialState() {
   return {
-    subscriptionStatus: { planName: '', planStatus: '' },
+    subscriptionStatus: { planName: '', planStatus: '', limitDiagrams: 0 },
     activePlan: {
       id: '',
       user_id: '',
@@ -56,18 +56,16 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       }
 
       const supabaseClient = useSupabaseClient<Database>()
-
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', {
         userid: userId as string,
       })
 
       if (supabaseError)
         throw supabaseError
-
       const response = supabaseResponse as ActivePlanType
       this.subscriptionStatus.planStatus = response?.subscription_status
       this.subscriptionStatus.planName = response?.name
-
+      this.subscriptionStatus.limitDiagrams = response.name === 'Basic' ? 4 : response.name === 'Free' ? 8 : response.name === 'Premium' ? 8 : 0
       return response
     },
 
@@ -136,6 +134,67 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
         throw error.value
 
       return data.value
+    },
+
+    async getCardDetailsAPI(): Promise<GetCardDetails> {
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+      const getRefreshToken = (await supabaseClient.auth.getSession()).data.session?.refresh_token
+      const cookie = `sb-access-token=${accessToken}; sb-refresh-token=${getRefreshToken}`
+      const user_id = (await supabaseClient.auth.getSession()).data.session?.user?.id
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/user/card/${user_id}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Cookie: cookie,
+        },
+      })
+      if (supabaseError.value)
+        throw supabaseError.value
+      /* @ts-expect-error need to be fixed */
+      return supabaseResponse.value?.data
+    },
+
+    async addNewCardDetails(payload: AddNewCardPayload) {
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+      const getRefreshToken = (await supabaseClient.auth.getSession()).data.session?.refresh_token
+      const cookie = `sb-access-token=${accessToken}; sb-refresh-token=${getRefreshToken}`
+      const user_id = (await supabaseClient.auth.getSession()).data.session?.user?.id
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/user/card/${user_id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Cookie: cookie,
+        },
+        body: payload,
+      })
+
+      if (supabaseError.value)
+        throw supabaseError.value
+
+      return supabaseResponse.value
+    },
+
+    async deleteCardDetails() {
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+      const getRefreshToken = (await supabaseClient.auth.getSession()).data.session?.refresh_token
+      const cookie = `sb-access-token=${accessToken}; sb-refresh-token=${getRefreshToken}`
+      const user_id = (await supabaseClient.auth.getSession()).data.session?.user?.id
+
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/user/card/${user_id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Cookie: cookie,
+        },
+      })
+
+      if (supabaseError.value)
+        throw supabaseError.value
+
+      return supabaseResponse.value
     },
   },
   persist: {

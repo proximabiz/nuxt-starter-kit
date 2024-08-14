@@ -99,7 +99,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
       My Plan
     </h1>
     <UCard>
-      <div class="sm:pb-0">
+      <div v-if="planData?.subscription_status === 'ACTIVE_SUBSCRIPTION'" class="sm:pb-0">
         <h2 class="text-lg font-medium text-gray-900">
           {{ planData?.name }}
         </h2>
@@ -119,7 +119,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
-            <span class="text-gray-700"> Unlimited mind maps </span>
+            <span class="text-gray-700"> {{ planData?.name === "Basic" ? "Up to 4 mind maps" : planData?.name === "Free" ? "Up to 8 mind maps" : planData?.name === "Premimum" ? "Up to 8 mind maps" : "Unlimited mind maps" }} </span>
           </li>
           <li class="flex items-center gap-1">
             <svg
@@ -170,6 +170,11 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
         <p v-else class="text-red-500 text-xs mt-2">
           Free plan will end in {{ daysRemaining }} days
         </p>
+      </div>
+      <div v-else>
+        <h2 class="text-lg font-medium text-gray-900">
+          You do not have an active plan, upgrade plan now to continue creating diagrams.
+        </h2>
       </div>
     </UCard>
     <p v-if="planData?.name === 'Free'" class="mt-4">
