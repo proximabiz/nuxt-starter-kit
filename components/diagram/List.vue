@@ -32,11 +32,9 @@ const headers = computed(() => [
   },
 ])
 const items = [{
-  label: 'Active diagrams',
-  icon: 'i-heroicons-list-bullet',
+  label: 'Active Mindmaps',
 }, {
-  label: 'Deleted deiagrams',
-  icon: 'i-heroicons-archive-box-arrow-down', 
+  label: 'Archived Mindmaps',
 }]
 
 const globalStore = useGlobalStore()
@@ -183,63 +181,99 @@ function saveDetails(_valid: boolean) {
       </div>
       <DiagramEmptyListInstructions />
     </template>
-    <template v-else>
-      <UTabs :items="items" :default-index="0" />
-      <div class="flex justify-center sm:justify-end my-4">
-        <UButton label="Create New" :disabled="isInActiveSubscription" icon="i-heroicons-plus" @click="createDiagram()" />
-      </div>
-      <div class="sm:overflow-x-hidden overflow-x-auto">
-        <div class="sm:-mx-6 lg:-mx-8">
-          <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-            <div class="overflow-x-scroll">
-              <table class="min-w-full text-left text-sm font-light">
-                <thead class="border-b font-medium dark:border-neutral-500">
-                  <tr>
-                    <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
-                      {{ header.title }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, index) in diagramsList" :key="index" class="border-b dark:border-neutral-500">
-                    <td class="whitespace-nowrap px-6 py-4">
-                      {{ item.title }}
-                    </td>
-                    <td class="whitespace-nowrap px-6 py-4">
-                      {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
-                    </td>
-                    <td class="whitespace-nowrap px-6 py-4">
-                      <UTooltip text="View" :popper="{ arrow: true }">
-                        <UButton
-                          color="grey" class="inline-flex" icon="i-heroicons-eye" size="sm"
-                          variant="ghost" @click="redirectToPath(item.id, 'view')"
-                        />
-                      </UTooltip>
 
-                      <UTooltip text="Edit" :popper="{ arrow: true }">
-                        <UButton
-                          :disabled="isInActiveSubscription"
-                          color="blue" class="hidden lg:inline-flex" icon="i-heroicons-pencil-square" size="sm"
-                          variant="ghost" @click="redirectToPath(item.id)"
-                        />
-                      </UTooltip>
+    <!-- <template v-else> -->
+      <UTabs v-else :items="items" :default-index="0">
+        <template #item="{ item }">
+          <div v-if="item.label === 'Active Mindmaps'" class="space-y-3">
+            <div class="flex justify-center sm:justify-end my-4">
+              <UButton label="Create New" :disabled="isInActiveSubscription" icon="i-heroicons-plus"
+                @click="createDiagram()" />
+            </div>
+            <div class="sm:overflow-x-hidden overflow-x-auto">
+              <div class="sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                  <div class="overflow-x-scroll">
+                    <table class="min-w-full text-left text-sm font-light">
+                      <thead class="border-b font-medium dark:border-neutral-500">
+                        <tr>
+                          <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
+                            {{ header.title }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in diagramsList" :key="index" class="border-b dark:border-neutral-500">
+                          <td class="whitespace-nowrap px-6 py-4">
+                            {{ item.title }}
+                          </td>
+                          <td class="whitespace-nowrap px-6 py-4">
+                            {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
+                          </td>
+                          <td class="whitespace-nowrap px-6 py-4">
+                            <UTooltip text="View" :popper="{ arrow: true }">
+                              <UButton color="grey" class="inline-flex" icon="i-heroicons-eye" size="sm" variant="ghost"
+                                @click="redirectToPath(item.id, 'view')" />
+                            </UTooltip>
 
-                      <UTooltip text="Delete" :popper="{ arrow: true }">
-                        <UButton
-                          :disabled="isInActiveSubscription"
-                          color="red" icon="i-heroicons-trash" size="sm" variant="ghost"
-                          @click="deleteDiagram(item.id)"
-                        />
-                      </UTooltip>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                            <UTooltip text="Edit" :popper="{ arrow: true }">
+                              <UButton :disabled="isInActiveSubscription" color="blue" class="hidden lg:inline-flex"
+                                icon="i-heroicons-pencil-square" size="sm" variant="ghost"
+                                @click="redirectToPath(item.id)" />
+                            </UTooltip>
+
+                            <UTooltip text="Delete" :popper="{ arrow: true }">
+                              <UButton :disabled="isInActiveSubscription" color="red" icon="i-heroicons-trash" size="sm"
+                                variant="ghost" @click="deleteDiagram(item.id)" />
+                            </UTooltip>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </template>
+          <div v-else="item.label === 'Archived Mindmaps'" class="space-y-3">
+            <div class="sm:overflow-x-hidden overflow-x-auto">
+              <div class="sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                  <div class="overflow-x-scroll">
+                    <table class="min-w-full text-left text-sm font-light">
+                      <thead class="border-b font-medium dark:border-neutral-500">
+                        <tr>
+                          <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
+                            {{ header.title }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in diagramsList" :key="index" class="border-b dark:border-neutral-500">
+                          <td class="whitespace-nowrap px-6 py-4">
+                            {{ item.title }}
+                          </td>
+                          <td class="whitespace-nowrap px-6 py-4">
+                            {{ dayjs(item.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
+                          </td>
+                          <td class="whitespace-nowrap px-6 py-4">
+                            <UTooltip text="View" :popper="{ arrow: true }">
+                              <UButton color="grey" class="inline-flex" icon="i-heroicons-eye" size="sm" variant="ghost"
+                                @click="redirectToPath(item.id, 'view')" />
+                            </UTooltip>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </UTabs>
+    <!-- </template> -->
+
   </div>
   <UModal v-model="isLoading">
     <UProgress animation="carousel" />
@@ -250,27 +284,16 @@ function saveDetails(_valid: boolean) {
 
   <!-- Delete diagram modal -->
   <UModal v-model="isDelete">
-    <ModalsConfirmation
-      title="Confirm Diagram Deletion"
-      description="Are you sure you want to delete this diagram? This action cannot be undone."
-      :cancel-action="{
-        label: 'Keep',
-        color: 'bg-green-500',
-      }"
-      :confirm-action="{
-        label: 'Delete',
-        color: 'bg-gray-500',
-      }"
-      @on:cancel="isDelete = false"
-      @on:close="isDelete = false"
-      @on:confirm="confirmedDeleteDiagram()"
-    />
+    <ModalsConfirmation title="Confirm Diagram Deletion"
+      description="Are you sure you want to delete this diagram? This action cannot be undone." :cancel-action="{
+      label: 'Keep',
+      color: 'bg-green-500',
+    }" :confirm-action="{
+      label: 'Delete',
+      color: 'bg-gray-500',
+    }" @on:cancel="isDelete = false" @on:close="isDelete = false" @on:confirm="confirmedDeleteDiagram()" />
   </UModal>
-  <UpgradeModal
-    v-model="isSavePopupOpen"
-    :is-open="isSavePopupOpen"
-    text="Your card details are missing!\n To continue working with diagrams, please add card details."
-    ok="Ok"
-    @submit-confirm="saveDetails(true)"
-  />
+  <UpgradeModal v-model="isSavePopupOpen" :is-open="isSavePopupOpen"
+    text="Your card details are missing!\n To continue working with diagrams, please add card details." ok="Ok"
+    @submit-confirm="saveDetails(true)" />
 </template>
