@@ -16,6 +16,7 @@ const currentMonthActivatedDiagrams = ref()
 const diagramsList = computed(() => diagramStore.diagramsList)
 const activeDiagrams = computed(() => diagramStore.activeDiagrams)
 const deletedDiagrams = computed(() => diagramStore.deletedDiagrams)
+const diagramsCountList = computed(() => diagramStore.diagramsCountList)
 
 const headers = computed(() => [
   {
@@ -55,26 +56,26 @@ async function fetchDiagramTypes() {
 
     currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
 
-    const value = currentMonthActivatedDiagrams.value !== null ? currentMonthActivatedDiagrams?.value.length : 0
-    const max = sub_status?.value?.total_diagrams_count
+    const value = diagramsCountList?.value.currentCount
+    const max = diagramsCountList?.value.allowedCount
     cardDetails.value.diagramPercentage = toPercentage(value, max).toString()
-    cardDetails.value.actualDiagramCount = value
+    cardDetails.value.actualDiagramCount = value.toString()
   }
   catch (error) {
     $error(error)
   }
 }
-
 async function fetchDiagrams() {
   try {
     await diagramStore.list()
     await fetchDiagramTypes()
-
+    await diagramStore.getDiagramsCount()
     currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
 
-    const value = currentMonthActivatedDiagrams.value !== null ? currentMonthActivatedDiagrams?.value.length : 0
-    const max = sub_status?.value?.total_diagrams_count
+    const value = diagramsCountList?.value.currentCount
+    const max = diagramsCountList?.value.allowedCount
     cardDetails.value.diagramPercentage = toPercentage(value, max).toString()
+    cardDetails.value.actualDiagramCount = value.toString()
   }
   catch (error) {
     $error(error)
@@ -178,7 +179,7 @@ onMounted(async () => {
   }
   await getActivePlan()
 })
-watch([diagramsList.value, apiResponse.value], async () => {
+watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async () => {
   if (diagramsList.value?.length !== undefined && diagramsList.value?.length >= sub_status.value.total_diagrams_count)
     isDiagramLimitExceeded.value = true
   else
@@ -186,6 +187,7 @@ watch([diagramsList.value, apiResponse.value], async () => {
 
   await diagramStore.list()
   await getActivePlan()
+  fetchDiagrams()
 }, { deep: true, immediate: true })
 
 function saveDetails(_valid: boolean) {
