@@ -1,4 +1,4 @@
-import type { CreateDiagramResponseType, Diagram, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
+import type { CreateDiagramResponseType, Diagram, GetDiagramsCountType, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
 import type { Database } from '~/types/supabase'
 
 function initialState() {
@@ -6,6 +6,11 @@ function initialState() {
     diagramsList: null,
     activeDiagrams: [],
     deletedDiagrams: [],
+    diagramsCountList: {
+      allowedCount: 0,
+      currentCount: 0,
+      planType: '',
+    },
   }
 }
 
@@ -124,6 +129,30 @@ export const useDiagramStore = defineStore('diagramStore', {
 
       return supabaseResponse
     },
+
+    async getDiagramsCount() {
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/diagramsCount`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      if (supabaseError.value)
+        throw supabaseError.value
+
+      const response = supabaseResponse.value as GetDiagramsCountType
+
+      this.diagramsCountList.allowedCount = response?.allowedCount
+      this.diagramsCountList.currentCount = response?.currentCount
+      this.diagramsCountList.planType = response?.planType
+
+      return supabaseResponse.value
+    },
+
   },
   persist: {
     storage: persistedState.localStorage,

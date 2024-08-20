@@ -41,10 +41,18 @@ export interface saveAPIPayload {
   isDiagramChanged: boolean
 }
 
+export interface DiagramsList {
+  total_diagrams_count: number
+}
 export interface State {
   diagramsList: Diagram[] | null
   activeDiagrams: Diagram[] | null
   deletedDiagrams: Diagram[] | null
+  diagramsCountList: {
+    allowedCount: number
+    currentCount: number
+    planType: string
+  }
 }
 
 export interface CreateDiagramResponseType {
@@ -58,4 +66,11 @@ export interface UpdateDiagramResponseType {
     isDetailed: boolean
     userRequirement: string
   }
+}
+export interface GetDiagramsCountType {
+  status: number
+  message: string
+  currentCount: number
+  allowedCount: number
+  planType: string
 }
