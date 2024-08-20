@@ -5,7 +5,7 @@ export enum PaymentGatwayID {
 }
 export enum SubscriptionPlanName {
   FREE = 'Free',
-  BASIC='Basic',
-  PREMIUM='Premium',
-  ENTERPRISE='Enterprise'
+  BASIC = 'Basic',
+  PREMIUM = 'Premium',
+  ENTERPRISE = 'Enterprise',
 }
