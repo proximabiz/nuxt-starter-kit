@@ -1,14 +1,9 @@
 import type { Database } from '../../../types/supabase'
 import { CustomError } from '../../utlis/custom.error'
 import { UserSubscriptionValidation } from '../../utlis/validations'
+import type { SubscriptionParams } from '../../types/subscription.types'
+import { SubscriptionPlanName } from '../../types/enum'
 import { serverSupabaseClient } from '#supabase/server'
-
-interface SubscriptionParams {
-  userId: string
-  subscriptionTypeId: string
-  amount: number
-  email: string
-}
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient<Database>(event)
@@ -21,7 +16,7 @@ export default defineEventHandler(async (event) => {
   // Fetch subscription type data
   const { data: subData, error: subError, status: subStatus } = await client
     .from('subscription_type')
-    .select('id, monthly_price, yearly_price')
+    .select('id,name, monthly_price, yearly_price')
     .eq('id', params.subscriptionTypeId)
     .single()
 
@@ -29,22 +24,18 @@ export default defineEventHandler(async (event) => {
     throw new CustomError(`Supabase Error: ${subError.message}`, subStatus)
 
   // Check if user already has an active subscription
-  const { data: userSubCheck, error: userSubError, status: userSubStatus } = await client
+  const { error: userSubError, status: userSubStatus } = await client
     .from('user_subscriptions')
-    .select('user_id, sub_type_id')
+    .select('user_id')
     .eq('user_id', params.userId)
     .eq('is_subscription_active', true)
 
   if (userSubError)
     throw new CustomError(`Supabase Error: ${userSubError.message}`, userSubStatus)
 
-  // Restrict creation of specific sub_type_id if user has canceled this subscription before
-  const restrictedSubTypeId = '10dbc647-04ea-4588-b6c8-7c535049f18c'
-  if (userSubCheck.some(sub => sub.sub_type_id === restrictedSubTypeId))
-    throw new CustomError(`You cannot create a subscription with this type again after cancellation.`, 401)
-
-  if (userSubCheck.length > 0)
-    throw new CustomError(`User already has an active subscription`, 401)
+  // If the last subscription was "Free" and has not ended, do not create a new one
+  if (subData?.name === SubscriptionPlanName.FREE)
+    throw new CustomError(`Cannot re-subscribe to Free plan after cancellation`, 401)
 
   const currentDate = new Date()
   let endDate = new Date()
