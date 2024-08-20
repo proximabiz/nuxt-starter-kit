@@ -3,7 +3,16 @@ import type { Database } from '~/types/supabase'
 
 function initialState() {
   return {
-    subscriptionStatus: { planName: '', planStatus: '', limitDiagrams: 0 },
+    subscriptionStatus: {
+      planName: '',
+      planStatus: '',
+      monthly_price: 0,
+      yearly_price: 0,
+      plan_type: '',
+      total_diagrams_count: 0,
+      plan_start_date: '',
+      plan_end_date: '',
+    },
     activePlan: {
       id: '',
       user_id: '',
@@ -19,7 +28,9 @@ function initialState() {
       status: false,
       features: null,
       yearly_price: 0,
+      plan_type: '',
       subscription_status: '',
+      total_diagrams_count: 0,
     },
     billingDetails: {
       name: '',
@@ -35,6 +46,8 @@ function initialState() {
       expDate: '',
       cvv: 0,
       taxId: '',
+      diagramPercentage: '',
+      actualDiagramCount: '',
     },
   }
 }
@@ -65,7 +78,15 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       const response = supabaseResponse as ActivePlanType
       this.subscriptionStatus.planStatus = response?.subscription_status
       this.subscriptionStatus.planName = response?.name
-      this.subscriptionStatus.limitDiagrams = response.name === 'Basic' ? 4 : response.name === 'Free' ? 8 : response.name === 'Premium' ? 8 : 0
+      this.subscriptionStatus.monthly_price = response?.monthly_price
+      this.subscriptionStatus.yearly_price = response?.yearly_price
+      this.subscriptionStatus.plan_type = response?.plan_type !== null ? response?.plan_type : 'monthly'
+      this.subscriptionStatus.plan_start_date = response?.plan_start_date
+      this.subscriptionStatus.plan_end_date = response?.plan_end_date
+      if (this.subscriptionStatus.plan_type === 'monthly')
+        this.subscriptionStatus.total_diagrams_count = response?.monthly_price
+      else
+        this.subscriptionStatus.total_diagrams_count = response?.yearly_price
       return response
     },
 
@@ -152,7 +173,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       if (supabaseError.value)
         throw supabaseError.value
       /* @ts-expect-error need to be fixed */
-      return supabaseResponse.value?.data
+      return supabaseResponse.value !== null ? supabaseResponse.value?.data : []
     },
 
     async addNewCardDetails(payload: AddNewCardPayload) {

@@ -12,6 +12,8 @@ export interface BillingState {
   expDate: string
   cvv: number | string
   taxId: string
+  diagramPercentage: string
+  actualDiagramCount: string
 }
 export interface AddAPIPayload {
   userId: string
@@ -27,7 +29,12 @@ export interface CancelAPIPayload {
 export interface SubscriptionStatus {
   planName: string
   planStatus: string
-  limitDiagrams: number
+  monthly_price: number
+  yearly_price: number
+  plan_type: string
+  total_diagrams_count: number
+  plan_start_date: string
+  plan_end_date: string
 }
 export interface State {
   subscriptionStatus: SubscriptionStatus
@@ -50,6 +57,8 @@ export interface ActivePlanType {
   features: null | string
   yearly_price: number
   subscription_status: string
+  plan_type: string
+  total_diagrams_count: number
 }
 
 export interface CompleteOrderPostAPIPayload {

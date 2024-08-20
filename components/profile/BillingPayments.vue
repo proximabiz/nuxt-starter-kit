@@ -53,6 +53,9 @@ const isEditable = ref(false)
 const isModalVisible = ref(false)
 const isFieldEmtpy = ref(true)
 
+const isLoadingDelete = ref(false)
+const isLoadingAdd = ref(false)
+
 const { $success, $error } = useNuxtApp()
 
 if (cardDetails.value.cardHolderName !== ''
@@ -102,8 +105,11 @@ function showModal() {
 }
 async function handleDeleteConfirm(): Promise<void> {
   try {
+    isLoadingDelete.value = true
     const response = await subscriptionStore.deleteCardDetails()
+
     if (response) {
+      isLoadingDelete.value = false
       cardDetails.value.cardHolderName = ''
       cardDetails.value.cardNo = ''
       cardDetails.value.expDate = ''
@@ -148,6 +154,7 @@ async function handleSubmit() {
     expiryYear: Number(monthYear[1]),
     securityCode: cardDetails.value.cvv.toString(),
   }
+  isLoadingAdd.value = true
   const response = await subscriptionStore.addNewCardDetails(payload)
   if (cardDetails.value.cardHolderName !== ''
     || cardDetails.value.cardNo !== ''
@@ -156,6 +163,7 @@ async function handleSubmit() {
     || response) {
     return (
       $success('Your new card details has succussfuly added'),
+      isLoadingAdd.value = false,
       isEditable.value = true,
       isFieldEmtpy.value = false,
       await getCardDetails()
@@ -199,6 +207,18 @@ async function onCancel() {
   <hr class="ml-4 mt-2">
   <section class="grid place-items-center p-4">
     <div class="relative mb-6 mt-6 w-full max-w-lg">
+      <UModal v-model="isLoadingDelete">
+        <UProgress animation="carousel" />
+        <UCard>
+          Deleting your <span class="font-bold">Card details.</span>
+        </UCard>
+      </UModal>
+      <UModal v-model="isLoadingAdd">
+        <UProgress animation="carousel" />
+        <UCard>
+          Adding your <span class="font-bold">Card details.</span>
+        </UCard>
+      </UModal>
       <UCard>
         <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
           <UFormGroup label="Name on the card" name="cardHolderName">

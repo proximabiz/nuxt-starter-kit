@@ -4,6 +4,8 @@ import type { Database } from '~/types/supabase'
 function initialState() {
   return {
     diagramsList: null,
+    activeDiagrams: [],
+    deletedDiagrams: [],
   }
 }
 
@@ -23,6 +25,8 @@ export const useDiagramStore = defineStore('diagramStore', {
       if (supabaseError)
         throw supabaseError
       this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')
+      this.activeDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && el.active_status === false)
+      this.deletedDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && el.active_status === true)
     },
 
     async get(payload: getAPIPayload) {
@@ -99,7 +103,8 @@ export const useDiagramStore = defineStore('diagramStore', {
 
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient
         .from('diagrams')
-        .delete()
+        // .delete()
+        .update({ active_status: true } as never)
         .eq('id', payload.diagramId)
 
       if (supabaseError)

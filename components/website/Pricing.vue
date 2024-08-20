@@ -98,7 +98,6 @@ const prices = computed(() => {
 
 if (sub_status?.value.planName !== '' && currencyList.value !== '')
   isLoading.value = false
-
 else
   isLoading.value = true
 

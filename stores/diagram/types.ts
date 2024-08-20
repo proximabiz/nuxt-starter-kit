@@ -16,6 +16,7 @@ export interface Diagram {
   title: string | null
   updated_at: string | null
   user_id: string | null
+  active_status: boolean
 }
 
 export interface getAPIPayload {
@@ -42,6 +43,8 @@ export interface saveAPIPayload {
 
 export interface State {
   diagramsList: Diagram[] | null
+  activeDiagrams: Diagram[] | null
+  deletedDiagrams: Diagram[] | null
 }
 
 export interface CreateDiagramResponseType {
