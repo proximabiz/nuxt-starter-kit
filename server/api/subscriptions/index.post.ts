@@ -1,25 +1,30 @@
 import type { Database } from '../../../types/supabase'
 import { CustomError } from '../../utlis/custom.error'
 import { UserSubscriptionValidation } from '../../utlis/validations'
+import type { SubscriptionParams } from '../../types/subscription.types'
+import { SubscriptionPlanName } from '../../types/enum'
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient<Database>(event)
-  const params = await readBody(event)
+  const params: SubscriptionParams = await readBody(event)
+
   const validate = await UserSubscriptionValidation.validateAsync(params)
   if (!validate)
     throw new CustomError('Invalid input provided', 401)
 
+  // Fetch subscription type data
   const { data: subData, error: subError, status: subStatus } = await client
     .from('subscription_type')
-    .select('id, monthly_price, yearly_price')
+    .select('id,name, monthly_price, yearly_price')
     .eq('id', params.subscriptionTypeId)
     .single()
 
   if (subError)
     throw new CustomError(`Supabase Error: ${subError.message}`, subStatus)
 
-  const { data: userSubCheck, error: userSubError, status: userSubStatus } = await client
+  // Check if user already has an active subscription
+  const { error: userSubError, status: userSubStatus } = await client
     .from('user_subscriptions')
     .select('user_id')
     .eq('user_id', params.userId)
@@ -27,40 +32,40 @@ export default defineEventHandler(async (event) => {
 
   if (userSubError)
     throw new CustomError(`Supabase Error: ${userSubError.message}`, userSubStatus)
-  if (userSubCheck.length > 0)
-    throw new CustomError(`User is already there with subscription`, 401)
+
+  // If the last subscription was "Free" and has not ended, do not create a new one
+  if (subData?.name === SubscriptionPlanName.FREE)
+    throw new CustomError(`Cannot re-subscribe to Free plan after cancellation`, 401)
 
   const currentDate = new Date()
   let endDate = new Date()
+
   if (params.amount > 0) {
-    if (subData.monthly_price === params.amount) {
-      // End date for a month (30 days)
+    if (subData?.monthly_price === params.amount) {
       const monthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate())
-      monthDate.setUTCHours(23, 59, 0, 0) // Set time to 24:00:00.000Z
+      monthDate.setUTCHours(23, 59, 0, 0)
       endDate = monthDate
     }
-    else if (subData.yearly_price === params.amount) {
-      // End date for a year (365 days)
+    else if (subData?.yearly_price === params.amount) {
       const yearDate = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate())
-      yearDate.setUTCHours(23, 59, 0, 0) // Set time to 24:00:00.000Z
+      yearDate.setUTCHours(23, 59, 0, 0)
       endDate = yearDate
     }
   }
   else {
-    // checking for proxima users
     const checkUser = checkEmailDomain(params.email, 'proximabiz.com')
-    if (checkUser === true) {
+    if (checkUser) {
       const yearDate = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate())
       yearDate.setUTCHours(23, 59, 0, 0)
       endDate = yearDate
     }
     else {
-      // End date for a week (15 days)
-      const weekDate = endDate = new Date(currentDate.getTime() + (14 * 24 * 60 * 60 * 1000))
+      const weekDate = new Date(currentDate.getTime() + 14 * 24 * 60 * 60 * 1000)
       weekDate.setUTCHours(23, 59, 0, 0)
       endDate = weekDate
     }
   }
+
   const { data: userSub, error, status } = await client.from('user_subscriptions').insert([
     {
       user_id: params.userId,
@@ -73,8 +78,10 @@ export default defineEventHandler(async (event) => {
 
   if (error)
     throw new CustomError(`Supabase Error: ${error.message}`, status)
+
   return { message: 'You have successfully subscribed!', data: { userSub }, status }
 })
+
 function checkEmailDomain(email: string, domain: string): boolean {
   const emailParts = email.split('@')
   const emailDomain = emailParts[1]
