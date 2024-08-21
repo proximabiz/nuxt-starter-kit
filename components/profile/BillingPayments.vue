@@ -14,35 +14,35 @@ const columns = [{
 }, {
   key: 'status',
   label: 'Status',
-}, { key: 'invoice', label: 'Invoice' }]
+}]
 const payments = [
   {
     payment: '21/2/2024',
-    plan: 'Basic',
+    plan: 'Premium',
     amount: '$8',
     status: 'Success',
-    invoice: 'https://www.proximabiz.com/',
+    // invoice: 'https://www.proximabiz.com/',
   },
   {
     payment: '21/2/2024',
     plan: 'Basic',
+    amount: '$4',
+    status: 'Success',
+    // invoice: 'https://www.proximabiz.com/',
+  },
+  {
+    payment: '21/2/2024',
+    plan: 'Premium',
     amount: '$8',
     status: 'Success',
-    invoice: 'https://www.proximabiz.com/',
+    // invoice: 'https://www.proximabiz.com/',
   },
   {
     payment: '21/2/2024',
     plan: 'Basic',
-    amount: '$8',
+    amount: '$4',
     status: 'Success',
-    invoice: 'https://www.proximabiz.com/',
-  },
-  {
-    payment: '21/2/2024',
-    plan: 'Basic',
-    amount: '$8',
-    status: 'Success',
-    invoice: 'https://www.proximabiz.com/',
+    // invoice: 'https://www.proximabiz.com/',
   },
 ]
 const subscriptionStore = useSubscriptionStore()
@@ -99,6 +99,7 @@ const rows = computed(() => {
 })
 const years = [
   2024,
+  2025,
 ]
 function showModal() {
   isModalVisible.value = true
@@ -267,7 +268,7 @@ async function onCancel() {
     </p>
     <hr class="mt-2">
     <section class="grid place-items-center p-4">
-      <div class="w-full max-w-xs">
+      <div class=" max-w-xs">
         <USelect v-model="year" :options="years" option-attribute="name" class="mt-4 w-full" color="blue" />
       </div>
       <div class="overflow-x-auto w-full mt-4">
@@ -296,14 +297,14 @@ async function onCancel() {
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ payment.status }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <!-- <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <NuxtLink
                   :src="payment.invoice" target="_blank"
                   class="text-custom1-500 hover:text-custom1-900 underline"
                 >
                   View Invoice
                 </NuxtLink>
-              </td>
+              </td> -->
             </tr>
           </tbody>
         </table>
