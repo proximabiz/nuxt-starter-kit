@@ -64,18 +64,23 @@ async function setActiveStep(index: number) {
       expiryYear: Number(monthYear[1]),
       securityCode: bac.cvv.toString(),
     }
-    try {
-      await subscriptionStore.addNewCardDetails(payload)
-      if (!isCardDetailsComplete) {
-        $error('Please fill out all the fields in your billing card details.')
-        return isFieldEmtpy.value = false
+    if (billingAddressCard.value.cardHolderName === ''
+      && billingAddressCard.value.cardNo === ''
+      && billingAddressCard.value.expDate === ''
+      && billingAddressCard.value.cvv === '') {
+      try {
+        await subscriptionStore.addNewCardDetails(payload)
+        if (!isCardDetailsComplete) {
+          $error('Please fill out all the fields in your billing card details.')
+          return isFieldEmtpy.value = false
+        }
+        else {
+          isFieldEmtpy.value = true
+        }
       }
-      else {
-        isFieldEmtpy.value = true
+      catch (error) {
+        $error(error.statusMessage)
       }
-    }
-    catch (error) {
-      $error(error.statusMessage)
     }
   }
   if (index >= 0 && index < steps.length)
