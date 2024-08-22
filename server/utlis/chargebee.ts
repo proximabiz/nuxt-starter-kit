@@ -2,6 +2,7 @@ import { ChargeBee } from 'chargebee-typescript'
 import type { OrderType } from '../types/complete.order.types'
 import { PaymentGatwayID } from '../types/enum'
 import type { UserCardDetailType } from '../types/user.card.details.types'
+import { formatTimestampToDate } from './formatTimestamp'
 
 const chargebee = new ChargeBee()
 
@@ -315,4 +316,42 @@ async function getPlanDetails() {
   }
 }
 
-export { updateCustomerCardDetails, cancelSubscription, deleteCustomerCardDetails, createSubscription, createChargebeeCustomer, listChargebeeCustomers, getChargebeeCustomer, deleteChargebeeCustomer, getCustomerCardDetails, getPlanDetails, createChargebeeItemAndPrice }
+// Get customer billing history
+async function getListOfTransaction(chargebeeCustomerId: string) {
+  try {
+    const transactions = await chargebee.transaction.list({
+      limit: 100,
+      customer_id: chargebeeCustomerId as any,
+    }).request()
+
+    if (!transactions || transactions.list.length === 0)
+      return { status: 200, data: [] }
+
+    return transactions.list
+
+    // const response = transactions.list.map((entry: any) => {
+    //   const transaction = entry.transaction
+    //   return {
+    //     paymentDate: formatTimestampToDate(transaction.date),
+    //     searchedYear: formatTimestampToDate(transaction.date, true),
+    //     amount: transaction.amount,
+    //     currencyCode: transaction.currency_code,
+    //     status: transaction.status,
+    //   }
+    // })
+    // return { status: 200, data: response }
+  }
+  catch (error: any) {
+    if (error.http_status_code === 404)
+      return { status: 200, data: { msg: 'no data' } } // Return empty data if no transactions are found
+
+    return {
+      status: error.http_status_code || 500,
+      error: {
+        message: `Error getting customer transaction history: ${error.message}`,
+      },
+    }
+  }
+}
+
+export { updateCustomerCardDetails, cancelSubscription, deleteCustomerCardDetails, createSubscription, createChargebeeCustomer, listChargebeeCustomers, getChargebeeCustomer, deleteChargebeeCustomer, getCustomerCardDetails, getPlanDetails, createChargebeeItemAndPrice, getListOfTransaction }
