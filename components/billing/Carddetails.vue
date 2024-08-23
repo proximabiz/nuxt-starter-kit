@@ -19,10 +19,12 @@ const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 
-if (cardDetails.value.cardHolderName !== ''
-  && cardDetails.value.cardNo !== ''
-  && cardDetails.value.expDate !== ''
-  && cardDetails.value.cvv !== '')
+let { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
+
+if (cardHolderName !== ''
+  && cardNo !== ''
+  && expDate !== ''
+  && cvv !== '')
   isEditable.value = true
 else
   isEditable.value = false
@@ -56,10 +58,10 @@ async function getCardDetails() {
     const response = await subscriptionStore.getCardDetailsAPI()
     const expiryDate = response?.msg !== 'no data' ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (response?.msg !== 'no data') {
-      cardDetails.value.cardHolderName = response?.cardHolderName
-      cardDetails.value.cardNo = response?.cardNumber
-      cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
-      cardDetails.value.cvv = response?.cardNumber && '****'
+      cardHolderName = response?.cardHolderName
+      cardNo = response?.cardNumber
+      expDate = expiryDate !== undefined ? expiryDate : ''
+      cvv = response?.cardNumber && '****'
       isEditable.value = true
     }
     else {
