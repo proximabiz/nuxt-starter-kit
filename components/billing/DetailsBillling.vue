@@ -64,10 +64,10 @@ async function setActiveStep(index: number) {
       expiryYear: Number(monthYear[1]),
       securityCode: bac.cvv.toString(),
     }
-    if (billingAddressCard.value.cardHolderName === ''
-      && billingAddressCard.value.cardNo === ''
-      && billingAddressCard.value.expDate === ''
-      && billingAddressCard.value.cvv === '') {
+    if (billingAddressCard.value.cardHolderName !== ''
+      && billingAddressCard.value.cardNo !== ''
+      && billingAddressCard.value.expDate !== ''
+      && billingAddressCard.value.cvv !== '') {
       try {
         await subscriptionStore.addNewCardDetails(payload)
         if (!isCardDetailsComplete) {

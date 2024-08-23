@@ -154,23 +154,30 @@ async function handleSubmit() {
     expiryYear: Number(monthYear[1]),
     securityCode: cardDetails.value.cvv.toString(),
   }
-  isLoadingAdd.value = true
-  const response = await subscriptionStore.addNewCardDetails(payload)
-  if (cardDetails.value.cardHolderName !== ''
-    || cardDetails.value.cardNo !== ''
-    || cardDetails.value.expDate !== ''
-    || cardDetails.value.cvv !== ''
-    || response) {
-    return (
-      $success('Your new card details has succussfuly added'),
-      isLoadingAdd.value = false,
-      isEditable.value = true,
-      isFieldEmtpy.value = false,
-      await getCardDetails()
-    )
+  try {
+    isLoadingAdd.value = true
+    const response = await subscriptionStore.addNewCardDetails(payload)
+    if (cardDetails.value.cardHolderName !== ''
+      || cardDetails.value.cardNo !== ''
+      || cardDetails.value.expDate !== ''
+      || cardDetails.value.cvv !== ''
+      || response) {
+      return (
+        $success('Your new card details has succussfuly added'),
+        isLoadingAdd.value = false,
+        isEditable.value = true,
+        isFieldEmtpy.value = false,
+        await getCardDetails()
+      )
+    }
+    else {
+      isLoadingAdd.value = false
+      $error('Card details are should not be empty')
+    }
   }
-  else {
-    $error('Card details are should not be empty')
+  catch (error) {
+    $error(error.statusMessage)
+    isLoadingAdd.value = false
   }
 }
 
