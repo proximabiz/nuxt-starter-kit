@@ -65,30 +65,29 @@ if (cardDetails.value.cardHolderName !== ''
   isEditable.value = true
   isFieldEmtpy.value = false
 }
-
-const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
+const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
-  cardNumber: z.string()
+  cardNo: z.string()
     .min(1, 'Card number is required')
     .regex(/^\d+$/, 'Card number must be numeric')
     .refine(val => masterCardRegex.test(val) || visaCardRegex.test(val), {
       message: 'Invalid card number. Please enter a valid card number with 16 digits.',
     }),
-  expiryMonthYear: z.string()
+  expDate: z.string()
     .regex(basicExpDateRegex, 'Invalid expiration date format')
     .refine((val) => {
       const [month, year] = val.split('/').map(Number)
-      const currentYear = new Date().getFullYear() % 100 // Get last two digits of the current year
+      const currentYear = new Date().getFullYear() // Get current year
       const currentMonth = new Date().getMonth() + 1 // Get current month (1-12)
       // Check if the year is valid (current year or later) and month is within 1-12
       return (
         year >= currentYear && (year > currentYear || month >= currentMonth)
       )
     }, 'Expiration date must be in the future'),
-  securityCode: z.string()
+  cvv: z.string()
     .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
     .refine(securityCode => /^\d+$/.test(securityCode), 'Security code must only contain digits'),
 })

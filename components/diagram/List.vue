@@ -359,9 +359,6 @@ function rediectToPricePage(_valid: boolean) {
       </p>
       <p>To continue working with mind maps, please add card details.</p>
       <div class="mt-4 flex justify-end gap-4">
-        <UButton class="" color="gray" @click="rediectToPricePage(false)">
-          Cancel
-        </UButton>
         <UButton class="" @click="saveDetails(true)">
           Ok
         </UButton>
