@@ -327,23 +327,33 @@ async function getListOfTransaction(chargebeeCustomerId: string) {
     if (!transactions || transactions.list.length === 0)
       return { status: 200, data: [] }
 
-    return transactions.list
+    const response = []
 
-    // const response = transactions.list.map((entry: any) => {
-    //   const transaction = entry.transaction
-    //   return {
-    //     paymentDate: formatTimestampToDate(transaction.date),
-    //     searchedYear: formatTimestampToDate(transaction.date, true),
-    //     amount: transaction.amount,
-    //     currencyCode: transaction.currency_code,
-    //     status: transaction.status,
-    //   }
-    // })
-    // return { status: 200, data: response }
+    for (const entry of transactions.list) {
+      const transaction = entry.transaction
+
+      // Retrieve subscription with subscription id
+      const subResponse = await chargebee.subscription.retrieve(transaction.subscription_id).request()
+      const plan_id = subResponse.subscription.subscription_items[0].item_price_id
+
+      // Retrieve plan name with plan id
+      const itemPriceResponse = await chargebee.item_price.retrieve(plan_id).request()
+      const plan_name = itemPriceResponse.item_price.name
+
+      response.push({
+        paymentDate: formatTimestampToDate(transaction.date),
+        searchedYear: formatTimestampToDate(transaction.date, true),
+        amount: transaction.amount,
+        currencyCode: transaction.currency_code,
+        paymentStatus: transaction.status,
+        planName: plan_name,
+      })
+    }
+    return { status: 200, data: response }
   }
   catch (error: any) {
     if (error.http_status_code === 404)
-      return { status: 200, data: { msg: 'no data' } } // Return empty data if no transactions are found
+      return { status: 200, data: { msg: 'no data' } }
 
     return {
       status: error.http_status_code || 500,
