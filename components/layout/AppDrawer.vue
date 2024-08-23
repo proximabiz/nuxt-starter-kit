@@ -49,7 +49,7 @@ watch([cardDetails.value, isCardEmtpy.value], () => {
           <div v-if="!isCardEmtpy" class="py-4 ">
             <NuxtLink
               to="/app/diagram/list"
-              class="active-link"
+              class="cursor-pointer"
             >
               <a class="t group relative flex justify-center rounded px-2 py-1.5 " :class="[{ 'text-blue-700 bg-blue-100': currentRoutePath === '/app/diagram/list' }]">
                 <UIcon name="i-heroicons-map" class="size-5" />
@@ -60,7 +60,7 @@ watch([cardDetails.value, isCardEmtpy.value], () => {
             </NuxtLink>
           </div>
           <div v-else class="py-4 cursor-not-allowed">
-            <span class="disabled-link">
+            <span class="cursor-not-allowed text-gray-400 pointer-events-none">
               <a class="t group relative flex justify-center rounded px-2 py-1.5 " :class="[{ 'text-blue-700 bg-blue-100': currentRoutePath === '/app/diagram/list' }]">
                 <UIcon name="i-heroicons-map" class="size-5" />
                 <span class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible">
@@ -105,15 +105,3 @@ watch([cardDetails.value, isCardEmtpy.value], () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.active-link {
-  cursor: pointer;
-}
-
-.disabled-link {
-  cursor: not-allowed;
-  color: gray;
-  pointer-events: none;
-}
-</style>

@@ -7,12 +7,11 @@ const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
 const noplanModal = ref<boolean>(false)
 const isModalVisible = ref(false)
-
+// planData?.name === "Basic" ? "Up to 4 mind maps" : planData?.name === "Free" ? "Up to 8 mind maps" : planData?.name === "Premimum" ? "Up to 8 mind maps" : "Unlimited mind maps"
 async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
-    if (response?.subscription_status === 'PLAN_EXPIRED' || response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION')
-      showUpgradeModal.value = true
+    showUpgradeModal.value = ['PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION', 'NO_SUBSCRIPTION'].includes(response?.subscription_status)
     planData.value = response
   }
   catch (error) {

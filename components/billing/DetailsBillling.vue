@@ -1,23 +1,14 @@
 <script setup lang="ts">
-import { useBillingDetailsStore } from '~/stores/global'
-
-// interface Props {
-//   planDetails: any
-// }
-// const props = defineProps<Props>()
 const users = ['1user']
 const user = ref(users[0])
 const billingStore = useBillingDetailsStore()
-const isFieldEmtpy = ref(false)
-const duePrice = ref<string>(billingStore.propObject.currencySymbol + billingStore.propObject.calculatedPrice)
+const isFieldEmtpy = ref<boolean>(false)
 const { $error } = useNuxtApp()
 
-// const confirmation = reactive({
-//   isModalVisible: false,
-//   context: '',
-// })
 const subscriptionStore = useSubscriptionStore()
 const billingAddressCard = computed(() => subscriptionStore.billingDetails)
+const duePrice = computed(() => billingStore.propObject.currencySymbol + billingStore.propObject.calculatedPrice)
+const { cardHolderName, cardNo, expDate, cvv, name, orgName, country, zip, city, region, address, phone } = billingAddressCard.value
 
 const steps = [
   { label: 'Your plan', component: 'BillingDetailsBillling' },
@@ -31,21 +22,20 @@ const state = reactive({
   activeStep: 0,
 })
 watch([billingAddressCard.value, isFieldEmtpy.value], () => {
-  if (billingAddressCard.value.cardHolderName !== ''
-    && billingAddressCard.value.cardNo !== ''
-    && billingAddressCard.value.expDate !== ''
-    && billingAddressCard.value.cvv !== '')
+  if (cardHolderName !== ''
+    && cardNo !== ''
+    && expDate !== ''
+    && cvv !== '')
     isFieldEmtpy.value = false
   else
     isFieldEmtpy.value = true
 }, { deep: true })
 
 async function setActiveStep(index: number) {
-  const bac = billingAddressCard.value
   isFieldEmtpy.value = false
   if (index >= 2) {
     // Check if any of the required billingState fields are empty
-    const isAddressComplete = bac.name && bac.orgName && bac.country && bac.zip && bac.city && bac.region && bac.address && bac.phone
+    const isAddressComplete = name && orgName && country && zip && city && region && address && phone
     if (!isAddressComplete) {
       $error('Please fill out all the fields in your billing address.')
       return isFieldEmtpy.value = false
@@ -55,28 +45,26 @@ async function setActiveStep(index: number) {
     }
   }
   if (index >= 3) {
-    const isCardDetailsComplete = bac.cardHolderName && bac.cardNo && bac.expDate && bac.cvv
-    const monthYear = bac.expDate.split('/')
+    const response = await subscriptionStore.getCardDetailsAPI()
+    const isCardDetailsComplete = cardHolderName === '' && cardNo === '' && expDate === ''
+    const monthYear = expDate.split('/')
     const payload = {
-      cardHolderName: bac.cardHolderName,
-      cardNumber: bac.cardNo.toString(),
+      cardHolderName,
+      cardNumber: cardNo.toString(),
       expiryMonth: Number(monthYear[0]),
       expiryYear: Number(monthYear[1]),
-      securityCode: bac.cvv.toString(),
+      securityCode: cvv.toString(),
     }
-    if (billingAddressCard.value.cardHolderName !== ''
-      && billingAddressCard.value.cardNo !== ''
-      && billingAddressCard.value.expDate !== ''
-      && billingAddressCard.value.cvv !== '') {
+    if (response?.msg === 'no data') {
+      if (isCardDetailsComplete) {
+        $error('Please fill out all the fields in your billing card details.')
+        return isFieldEmtpy.value = false
+      }
+      else {
+        isFieldEmtpy.value = true
+      }
       try {
         await subscriptionStore.addNewCardDetails(payload)
-        if (!isCardDetailsComplete) {
-          $error('Please fill out all the fields in your billing card details.')
-          return isFieldEmtpy.value = false
-        }
-        else {
-          isFieldEmtpy.value = true
-        }
       }
       catch (error) {
         $error(error.statusMessage)

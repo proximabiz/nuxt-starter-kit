@@ -49,20 +49,21 @@ const subscriptionStore = useSubscriptionStore()
 const diagramStore = useDiagramStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const diagramsList = computed(() => diagramStore.diagramsList)
-const isEditable = ref(false)
-const isModalVisible = ref(false)
-const isFieldEmtpy = ref(true)
+const isEditDisable = ref<boolean>(false)
+const isModalVisible = ref<boolean>(false)
+const isFieldEmtpy = ref<boolean>(true)
 
-const isLoadingDelete = ref(false)
-const isLoadingAdd = ref(false)
+const isLoadingDelete = ref<boolean>(false)
+const isLoadingAdd = ref<boolean>(false)
 
 const { $success, $error } = useNuxtApp()
+// const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
 
 if (cardDetails.value.cardHolderName !== ''
   && cardDetails.value.cardNo !== ''
   && cardDetails.value.expDate !== ''
   && cardDetails.value.cvv !== '') {
-  isEditable.value = true
+  isEditDisable.value = true
   isFieldEmtpy.value = false
 }
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/
@@ -114,7 +115,7 @@ async function handleDeleteConfirm(): Promise<void> {
       cardDetails.value.cardNo = ''
       cardDetails.value.expDate = ''
       cardDetails.value.cvv = ''
-      isEditable.value = false
+      isEditDisable.value = false
       isFieldEmtpy.value = true
       $success('Your old card details has succussfuly deleted')
     }
@@ -134,10 +135,10 @@ async function getCardDetails() {
       cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
       cardDetails.value.cvv = response?.cardNumber && '****'
 
-      isEditable.value = true
+      isEditDisable.value = true
     }
     else {
-      isEditable.value = false
+      isEditDisable.value = false
     }
   }
   catch (error) {
@@ -165,7 +166,7 @@ async function handleSubmit() {
       return (
         $success('Your new card details has succussfuly added'),
         isLoadingAdd.value = false,
-        isEditable.value = true,
+        isEditDisable.value = true,
         isFieldEmtpy.value = false,
         await getCardDetails()
       )
@@ -192,7 +193,7 @@ watch([cardDetails.value, isFieldEmtpy.value, diagramsList.value?.length], () =>
     && cardDetails.value.cvv !== '') { isFieldEmtpy.value = false }
   else {
     isFieldEmtpy.value = true
-    isEditable.value = false
+    isEditDisable.value = false
   }
 }, { deep: true, immediate: true })
 
@@ -201,7 +202,7 @@ async function onCancel() {
   cardDetails.value.cardNo = ''
   cardDetails.value.expDate = ''
   cardDetails.value.cvv = ''
-  isEditable.value = false
+  isEditDisable.value = false
   isFieldEmtpy.value = true
 }
 </script>
@@ -229,28 +230,28 @@ async function onCancel() {
       <UCard>
         <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
           <UFormGroup label="Name on the card" name="cardHolderName">
-            <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
+            <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
           </UFormGroup>
           <UFormGroup label="Credit or debit card number" name="cardNo">
-            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable" />
+            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditDisable" />
           </UFormGroup>
           <div class="flex flex-col md:flex-row md:gap-2">
             <UFormGroup label="Expire date" name="expDate" class="flex-grow">
-              <UInput v-model="cardDetails.expDate" placeholder="MM/YYYY" :disabled="isEditable" />
+              <UInput v-model="cardDetails.expDate" placeholder="MM/YYYY" :disabled="isEditDisable" />
             </UFormGroup>
             <UFormGroup label="Security code" name="cvv" class="flex-grow">
-              <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditable" />
+              <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditDisable" />
             </UFormGroup>
           </div>
         </UForm>
       </UCard>
-      <div v-if="isEditable" class="absolute bottom-[1rem] right-[-3rem]">
+      <div v-if="isEditDisable" class="absolute bottom-[1rem] right-[-3rem]">
         <UTooltip text="Delete the old card details to add new one." :popper="{ arrow: true }">
           <UButton color="red" icon="i-heroicons-trash" size="sm" variant="ghost" @click="showModal" />
         </UTooltip>
       </div>
     </div>
-    <div v-if="!isEditable" class="flex gap-2 justify-center">
+    <div v-if="!isEditDisable" class="flex gap-2 justify-center">
       <UButton color="blue" @click="onCancel">
         Cancel
       </UButton>

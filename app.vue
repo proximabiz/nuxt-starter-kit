@@ -97,13 +97,19 @@ async function handlePostAuthentication() {
     </div>
   </UModal>
 
-  <UpgradeModal
-    v-model="billingModal"
-    :is-open="billingModal"
-    text="Your card details are missing!\n To continue working with mind maps, please add card details."
-    ok="Ok"
-    @submit-confirm="addCard"
-  />
+  <UModal :model-value="billingModal" :transition="false">
+    <div class="p-8">
+      <p class="mb-3">
+        Your card details are missing!
+      </p>
+      <p>To continue working with mind maps, please add card details.</p>
+      <div class="mt-4 flex justify-end gap-4">
+        <UButton class="" @click="addCard">
+          Ok
+        </UButton>
+      </div>
+    </div>
+  </UModal>
 
   <NuxtLayout>
     <NuxtPage />

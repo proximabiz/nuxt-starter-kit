@@ -4,15 +4,15 @@ import dayjs from 'dayjs'
 const diagramStore = useDiagramStore()
 const { $success, $error, $warning } = useNuxtApp()
 const diagramTypeStore = useDiagramTypeStore()
-const isLoading = ref(false)
-const isDelete = ref(false)
+const isLoading = ref<boolean>(false)
+const isDelete = ref<boolean>(false)
 const apiResponse = ref()
-const deleteDiagramId = ref('')
-const isSavePopupOpen = ref(false)
-const isInActiveSubscription = ref(false)
-const isDiagramLimitExceeded = ref(false)
+const deleteDiagramId = ref<string>('')
+const saveModal = ref<boolean>(false)
+const isInactiveSubscription = ref<boolean>(false)
+const isDiagramLimitExceeded = ref<boolean>(false)
 const currentMonthActivatedDiagrams = ref()
-const isNoActivePlanModal = ref(false)
+const inActivePlanModal = ref<boolean>(false)
 const fetchPlanDetails = ref()
 
 const diagramsList = computed(() => diagramStore.diagramsList)
@@ -85,9 +85,7 @@ async function fetchDiagrams() {
 }
 
 function toPercentage(value: number, max: number) {
-  if (max === 0)
-    return 0
-  return (value / max) * 100
+  return max === 0 ? 0 : (value / max) * 100
 }
 async function createDiagram() {
   const plan_exp = dayjs().isBefore(dayjs(fetchPlanDetails.value.plan_end_date))
@@ -95,20 +93,17 @@ async function createDiagram() {
     || (fetchPlanDetails.value?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION' && plan_exp)
     || fetchPlanDetails.value?.subscription_status === 'NO_SUBSCRIPTION'
   ) {
-    isNoActivePlanModal.value = true
+    inActivePlanModal.value = true
   }
   else {
-    isNoActivePlanModal.value = false
+    inActivePlanModal.value = false
     try {
     // Right now we have only one type of diagram - mindmap
       const diagramType = diagramTypeStore.getMindMapTypeDiagram
       if (!diagramType)
         return
 
-      if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
-        isDiagramLimitExceeded.value = true
-      else
-        isDiagramLimitExceeded.value = false
+      isDiagramLimitExceeded.value = diagramsCountList.value.currentCount === diagramsCountList?.value.allowedCount
 
       isLoading.value = false
       if (isDiagramLimitExceeded.value) {
@@ -158,10 +153,7 @@ async function confirmedDeleteDiagram() {
     $success('Diagram deleted successfully!')
     fetchDiagrams()
     getActivePlan()
-    if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
-      isDiagramLimitExceeded.value = true
-    else
-      isDiagramLimitExceeded.value = false
+    isDiagramLimitExceeded.value = diagramsCountList.value.currentCount === diagramsCountList?.value.allowedCount
   }
   catch (error) {
     $error(error)
@@ -173,13 +165,7 @@ async function getActivePlan() {
     const response = await subscriptionStore.fetchActivePlan()
     fetchPlanDetails.value = response
     const plan_exp = dayjs().isBefore(dayjs(response.plan_end_date))
-    if (response?.subscription_status === 'PLAN_EXPIRED'
-      || (response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION' && !plan_exp)
-      || response?.subscription_status === 'NO_SUBSCRIPTION'
-    )
-      isInActiveSubscription.value = true
-    else
-      isInActiveSubscription.value = false
+    isInactiveSubscription.value = ['NO_SUBSCRIPTION', 'PLAN_EXPIRED'].includes(response?.subscription_status) || (response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION' && !plan_exp)
   }
   catch (error) {
     $error(error.statusMessage)
@@ -188,10 +174,10 @@ async function getActivePlan() {
 
 onMounted(async () => {
   fetchDiagrams()
-  isSavePopupOpen.value = false
+  saveModal.value = false
   if (cardDetails.value.cardNo === '') {
     return (
-      isSavePopupOpen.value = true
+      saveModal.value = true
     )
   }
   await getActivePlan()
@@ -208,12 +194,12 @@ watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async ()
 }, { deep: true, immediate: true })
 
 function saveDetails(_valid: boolean) {
-  isSavePopupOpen.value = false
+  saveModal.value = false
   if (_valid)
     navigateTo('/profile/billing-payments')
 }
 function rediectToPricePage(_valid: boolean) {
-  isNoActivePlanModal.value = false
+  inActivePlanModal.value = false
   if (_valid)
     navigateTo('/website/pricing')
 }
@@ -269,7 +255,7 @@ function rediectToPricePage(_valid: boolean) {
 
                           <UTooltip text="Edit" :popper="{ arrow: true }">
                             <UButton
-                              :disabled="isInActiveSubscription" color="blue" class="hidden lg:inline-flex"
+                              :disabled="isInactiveSubscription" color="blue" class="hidden lg:inline-flex"
                               icon="i-heroicons-pencil-square" size="sm" variant="ghost"
                               @click="redirectToPath(activeDiagram.id)"
                             />
@@ -277,7 +263,7 @@ function rediectToPricePage(_valid: boolean) {
 
                           <UTooltip text="Delete" :popper="{ arrow: true }">
                             <UButton
-                              :disabled="isInActiveSubscription" color="red" icon="i-heroicons-trash" size="sm"
+                              :disabled="isInactiveSubscription" color="red" icon="i-heroicons-trash" size="sm"
                               variant="ghost" @click="deleteDiagram(activeDiagram.id)"
                             />
                           </UTooltip>
@@ -352,7 +338,7 @@ function rediectToPricePage(_valid: boolean) {
     />
   </UModal>
 
-  <UModal :model-value="isSavePopupOpen" :transition="false">
+  <UModal :model-value="saveModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">
         Your card details are missing!
@@ -365,7 +351,7 @@ function rediectToPricePage(_valid: boolean) {
       </div>
     </div>
   </UModal>
-  <UModal :model-value="isNoActivePlanModal" :transition="false">
+  <UModal :model-value="inActivePlanModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">
         You do not have an active plan,
