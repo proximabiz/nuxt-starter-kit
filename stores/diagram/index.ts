@@ -26,6 +26,7 @@ export const useDiagramStore = defineStore('diagramStore', {
         .from('diagrams')
         .select()
         .eq('user_id', authStore.getAuthUser.value?.id as string)
+        .order('updated_at', { ascending: false })
 
       if (supabaseError)
         throw supabaseError
