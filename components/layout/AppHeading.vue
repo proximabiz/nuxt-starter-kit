@@ -4,11 +4,10 @@ const subscriptionStore = useSubscriptionStore()
 const diagramStore = useDiagramStore()
 const digramCount = ref(0)
 const diagramsList = computed(() => diagramStore.diagramsList)
+const diagramsCountList = computed(() => diagramStore.diagramsCountList)
 
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 const cardDetails = computed(() => subscriptionStore.billingDetails)
-
-// const diagramPercentage = computed(() => diagramStore.diagramPercentage)
 
 digramCount.value = sub_status.value.plan_type === 'monthly' ? Number(sub_status.value.monthly_price) : Number(sub_status.value.yearly_price)
 
@@ -39,8 +38,9 @@ const validPercentage = (diagramsList.value !== null && cardDetails.value.diagra
       </h1>
       <div v-if="validPercentage" class="ml-5">
         <span>
-          {{ cardDetails?.actualDiagramCount }} of {{ sub_status.plan_type === 'monthly' ? sub_status.monthly_price : sub_status.yearly_price }} diagrams are created
-          <UButton v-if="digramCount === Number(cardDetails.actualDiagramCount)" class="ml-2" :ui="{ rounded: 'rounded-full' }" color="white" variant="solid" @click="upgradePlan">Upgrade</UButton>
+          {{ diagramsCountList?.currentCount }} of {{ diagramsCountList?.allowedCount }} mind maps are created
+          <UButton v-if="diagramsCountList?.currentCount === diagramsCountList?.allowedCount" class="ml-2" :ui="{ rounded: 'rounded-full' }" color="white" variant="solid" @click="upgradePlan">Upgrade</UButton>
+
           <div class="mt-1">
             <UProgress :value="Number(cardDetails.diagramPercentage)" :max="100" :color="color" />
           </div>

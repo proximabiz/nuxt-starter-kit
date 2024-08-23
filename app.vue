@@ -7,10 +7,12 @@ const userStore = useUserStore()
 const route = useRoute()
 /** Refs */
 const showUpgradeModal = ref<boolean>(false)
-const showBillingModal = ref<boolean>(false)
+const billingModal = ref<boolean>(false)
 
 /** Computed */
 const authUser = computed(() => authStore.getAuthUser.value)
+
+const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
 
 /** Watcher */
 watch(
@@ -35,33 +37,19 @@ watch(
           }
           break
         case 'ACTIVE_SUBSCRIPTION':
-          if (cardDetails.value.cardHolderName === ''
-            && cardDetails.value.cardNo === ''
-            && cardDetails.value.expDate === ''
-            && cardDetails.value.cvv === ''
+          if (!cardHolderName
+            && !cardNo
+            && !expDate
+            && !cvv
             && user && route.fullPath.includes('/app/diagram/list')
           ) {
-            showBillingModal.value = true
+            billingModal.value = true
             return navigateTo('/profile/billing-payments')
           }
           break
         default:
           break
       }
-      //   if (response?.subscription_status === 'PLAN_EXPIRED') {
-      //     showUpgradeModal.value = true
-      //   }
-      //   else if (response.subscription_status === 'NO_SUBSCRIPTION') {
-      //     const payload = {
-      //       userId: user.id,
-      //       subscriptionTypeId: '10dbc647-04ea-4588-b6c8-7c535049f18c',
-      //       amount: 0,
-      //       email: authUser.value?.email,
-      //     }
-      //     if (!route.fullPath.includes('/profile/account'))
-      //       await subscriptionStore.addSubscription(payload)
-      //   }
-      // }
     }
     if (user && route.fullPath.includes('/login'))
       return handlePostAuthentication()
@@ -78,7 +66,7 @@ function upgradePlan() {
 }
 
 function addCard() {
-  showBillingModal.value = false
+  billingModal.value = false
   navigateTo('/profile/billing-payments')
 }
 
@@ -109,23 +97,10 @@ async function handlePostAuthentication() {
     </div>
   </UModal>
 
-  <!-- <UModal :model-value="showBillingModal" :transition="false">
-    <div class="p-8">
-      <p class="mb-3">
-        Please add card details.
-      </p>
-      <div class="mt-4 flex justify-end">
-        <UButton @click="addCard">
-          Ok
-        </UButton>
-      </div>
-    </div>
-  </UModal> -->
-
   <UpgradeModal
-    v-model="showBillingModal"
-    :is-open="showBillingModal"
-    text="Your card details are missing!\n To continue working with diagrams, please add card details."
+    v-model="billingModal"
+    :is-open="billingModal"
+    text="Your card details are missing!\n To continue working with mind maps, please add card details."
     ok="Ok"
     @submit-confirm="addCard"
   />

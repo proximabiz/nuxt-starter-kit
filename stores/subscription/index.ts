@@ -77,10 +77,10 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
         throw supabaseError
       const response = supabaseResponse as ActivePlanType
       this.subscriptionStatus.planStatus = response?.subscription_status
-      this.subscriptionStatus.planName = response?.name
+      this.subscriptionStatus.planName = response?.name !== null ? response?.name : ''
       this.subscriptionStatus.monthly_price = response?.monthly_price
       this.subscriptionStatus.yearly_price = response?.yearly_price
-      this.subscriptionStatus.plan_type = response?.plan_type !== null ? response?.plan_type : 'monthly'
+      this.subscriptionStatus.plan_type = response?.plan_type
       this.subscriptionStatus.plan_start_date = response?.plan_start_date
       this.subscriptionStatus.plan_end_date = response?.plan_end_date
       if (this.subscriptionStatus.plan_type === 'monthly')

@@ -2,7 +2,6 @@
 import { useBillingDetailsStore } from '~/stores/global'
 
 const isMonthly = ref(true)
-// const showBillingDetails = ref(false)
 const cardValue = ref()
 const region = ref('india')
 const subscriptionStore = useSubscriptionStore()
@@ -10,12 +9,15 @@ const billingStore = useBillingDetailsStore()
 const authStore = useAuthStore()
 const isLoading = ref(true)
 const currencyList = ref()
-
+const getPlanName = ref()
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
 const currency = await subscriptionStore.getCountryCurrencyData()
+const getPlanData = await subscriptionStore.fetchActivePlan()
+
 if (currency !== '')
   currencyList.value = currency
+getPlanName.value = getPlanData
 
 interface PricePlan {
   plan: string
@@ -55,8 +57,9 @@ const regions: regionTypes[] = [
     conversionRate: currencyList?.value?.rates?.USD, // Base rate
   },
 ]
-const basePlane = sub_status?.value.planName !== '' && sub_status?.value.planName === 'Basic'
-const premiumPlane = sub_status?.value.planName !== '' && sub_status?.value.planName === 'Premium'
+
+const basePlane = getPlanName.value.name !== null && getPlanName.value.name === 'Basic'
+const premiumPlane = getPlanName.value.name !== null && getPlanName.value.name === 'Premium'
 
 const monthlyPrices: PricePlan[] = [
   { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === 'Free' },
@@ -96,7 +99,7 @@ const prices = computed(() => {
   return adjustedPrices
 })
 
-if (sub_status?.value.planName !== '' && currencyList.value !== '')
+if (currencyList.value !== '')
   isLoading.value = false
 else
   isLoading.value = true
@@ -106,21 +109,11 @@ function providePlanDetails(val: any) {
     return navigateTo('/login')
   cardValue.value = val
   billingStore.setPropObject(val)
-  // showBillingDetails.value = true
   navigateTo('/plan/upgrade-plan')
   return cardValue
 }
-
-// onMounted(async () => {
-//   // try {
-//   const dataFetch = await useFetch('https://open.er-api.com/v6/latest/USD')
-//   currencyData.value = dataFetch
-//   return currencyData.value
-// })
 </script>
 
-<!-- <template>
-  <BillingDetailsBillling v-if="showBillingDetails" :plan-details="cardValue" /> -->
 <template>
   <div class="text-center my-5">
     <span class="text-3xl font-medium my-5">Choose Your AI FlowMapper Plan</span>
@@ -253,4 +246,3 @@ function providePlanDetails(val: any) {
     </div>
   </div>
 </template>
-<!-- </template> -->

@@ -12,6 +12,8 @@ const isSavePopupOpen = ref(false)
 const isInActiveSubscription = ref(false)
 const isDiagramLimitExceeded = ref(false)
 const currentMonthActivatedDiagrams = ref()
+const isNoActivePlanModal = ref(false)
+const fetchPlanDetails = ref()
 
 const diagramsList = computed(() => diagramStore.diagramsList)
 const activeDiagrams = computed(() => diagramStore.activeDiagrams)
@@ -88,33 +90,43 @@ function toPercentage(value: number, max: number) {
   return (value / max) * 100
 }
 async function createDiagram() {
-  try {
-    // Right now we have only one type of diagram - mindmap
-    const diagramType = diagramTypeStore.getMindMapTypeDiagram
-    if (!diagramType)
-      return
-
-    if (diagramsList.value?.length !== undefined && diagramsList.value?.length >= sub_status.value.total_diagrams_count)
-      isDiagramLimitExceeded.value = true
-    else
-      isDiagramLimitExceeded.value = false
-
-    isLoading.value = false
-    if (isDiagramLimitExceeded.value) {
-      $warning(`You have reached your ${sub_status.value.total_diagrams_count} diagram limit. Upgrade now to increase your monthly limit of diagrams`)
-    }
-    else {
-      const response = await diagramStore.create({
-        title: 'default',
-        diagramTypeId: diagramType.id,
-      })
-      /* @ts-expect-error need to be fixed */
-      redirectToPath(response?.diagram[0].id)
-    }
+  const plan_exp = dayjs().isBefore(dayjs(fetchPlanDetails.value.plan_end_date))
+  if (fetchPlanDetails.value?.subscription_status === 'PLAN_EXPIRED'
+    || (fetchPlanDetails.value?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION' && plan_exp)
+    || fetchPlanDetails.value?.subscription_status === 'NO_SUBSCRIPTION'
+  ) {
+    isNoActivePlanModal.value = true
   }
-  catch (error) {
-    isLoading.value = false
-    $error(error)
+  else {
+    isNoActivePlanModal.value = false
+    try {
+    // Right now we have only one type of diagram - mindmap
+      const diagramType = diagramTypeStore.getMindMapTypeDiagram
+      if (!diagramType)
+        return
+
+      if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
+        isDiagramLimitExceeded.value = true
+      else
+        isDiagramLimitExceeded.value = false
+
+      isLoading.value = false
+      if (isDiagramLimitExceeded.value) {
+        $warning(`You have reached your ${diagramsCountList?.value.allowedCount} diagram limit. Upgrade now to increase your monthly limit of diagrams`)
+      }
+      else {
+        const response = await diagramStore.create({
+          title: 'default',
+          diagramTypeId: diagramType.id,
+        })
+        /* @ts-expect-error need to be fixed */
+        redirectToPath(response?.diagram[0].id)
+      }
+    }
+    catch (error) {
+      isLoading.value = false
+      $error(error)
+    }
   }
 }
 function redirectToPath(diagramId: string, mode: string = 'edit') {
@@ -146,7 +158,7 @@ async function confirmedDeleteDiagram() {
     $success('Diagram deleted successfully!')
     fetchDiagrams()
     getActivePlan()
-    if (diagramsList.value?.length !== undefined && diagramsList.value?.length >= sub_status.value.total_diagrams_count)
+    if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
       isDiagramLimitExceeded.value = true
     else
       isDiagramLimitExceeded.value = false
@@ -159,7 +171,12 @@ async function confirmedDeleteDiagram() {
 async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
-    if (response?.subscription_status === 'PLAN_EXPIRED' || response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION')
+    fetchPlanDetails.value = response
+    const plan_exp = dayjs().isBefore(dayjs(response.plan_end_date))
+    if (response?.subscription_status === 'PLAN_EXPIRED'
+      || (response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION' && !plan_exp)
+      || response?.subscription_status === 'NO_SUBSCRIPTION'
+    )
       isInActiveSubscription.value = true
     else
       isInActiveSubscription.value = false
@@ -180,7 +197,7 @@ onMounted(async () => {
   await getActivePlan()
 })
 watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async () => {
-  if (diagramsList.value?.length !== undefined && diagramsList.value?.length >= sub_status.value.total_diagrams_count)
+  if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
     isDiagramLimitExceeded.value = true
   else
     isDiagramLimitExceeded.value = false
@@ -194,6 +211,11 @@ function saveDetails(_valid: boolean) {
   isSavePopupOpen.value = false
   if (_valid)
     navigateTo('/profile/billing-payments')
+}
+function rediectToPricePage(_valid: boolean) {
+  isNoActivePlanModal.value = false
+  if (_valid)
+    navigateTo('/website/pricing')
 }
 </script>
 
@@ -212,7 +234,7 @@ function saveDetails(_valid: boolean) {
         <div v-if="item.label === 'Active Mindmaps'" class="space-y-3">
           <div class="flex justify-center sm:justify-end my-4">
             <UButton
-              label="Create New" :disabled="isInActiveSubscription" icon="i-heroicons-plus"
+              label="Create New" icon="i-heroicons-plus"
               @click="createDiagram()"
             />
           </div>
@@ -235,7 +257,7 @@ function saveDetails(_valid: boolean) {
                           {{ activeDiagram.title }}
                         </td>
                         <td class="whitespace-nowrap px-6 py-4">
-                          {{ dayjs(activeDiagram.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
+                          {{ dayjs(activeDiagram.updated_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
                         </td>
                         <td class="whitespace-nowrap px-6 py-4">
                           <UTooltip text="View" :popper="{ arrow: true }">
@@ -287,7 +309,7 @@ function saveDetails(_valid: boolean) {
                           {{ deletedDiagram.title }}
                         </td>
                         <td class="whitespace-nowrap px-6 py-4">
-                          {{ dayjs(deletedDiagram.created_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
+                          {{ dayjs(deletedDiagram.updated_at).format("dddd, MMMM D YYYY hh:mm:ss") }}
                         </td>
                         <td class="whitespace-nowrap px-6 py-4">
                           <UTooltip text="View" :popper="{ arrow: true }">
@@ -320,7 +342,7 @@ function saveDetails(_valid: boolean) {
   <UModal v-model="isDelete">
     <ModalsConfirmation
       title="Confirm Diagram Deletion"
-      description="Are you sure you want to delete this diagram? This action cannot be undone." :cancel-action="{
+      description="Are you sure you want to delete this mind map? This action cannot be undone." :cancel-action="{
         label: 'Keep',
         color: 'bg-green-500',
       }" :confirm-action="{
@@ -329,9 +351,37 @@ function saveDetails(_valid: boolean) {
       }" @on:cancel="isDelete = false" @on:close="isDelete = false" @on:confirm="confirmedDeleteDiagram()"
     />
   </UModal>
-  <UpgradeModal
-    v-model="isSavePopupOpen" :is-open="isSavePopupOpen"
-    text="Your card details are missing!\n To continue working with diagrams, please add card details." ok="Ok"
-    @submit-confirm="saveDetails(true)"
-  />
+
+  <UModal :model-value="isSavePopupOpen" :transition="false">
+    <div class="p-8">
+      <p class="mb-3">
+        Your card details are missing!
+      </p>
+      <p>To continue working with mind maps, please add card details.</p>
+      <div class="mt-4 flex justify-end gap-4">
+        <UButton class="" color="gray" @click="rediectToPricePage(false)">
+          Cancel
+        </UButton>
+        <UButton class="" @click="saveDetails(true)">
+          Ok
+        </UButton>
+      </div>
+    </div>
+  </UModal>
+  <UModal :model-value="isNoActivePlanModal" :transition="false">
+    <div class="p-8">
+      <p class="mb-3">
+        You do not have an active plan,
+      </p>
+      <p>upgrade plan now to continue creating mind maps.</p>
+      <div class="mt-4 flex justify-end gap-4">
+        <UButton class="" color="gray" @click="rediectToPricePage(false)">
+          Cancel
+        </UButton>
+        <UButton class="" @click="rediectToPricePage(true)">
+          Upgrade
+        </UButton>
+      </div>
+    </div>
+  </UModal>
 </template>
