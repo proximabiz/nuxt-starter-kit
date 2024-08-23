@@ -21,18 +21,47 @@ export const useDiagramStore = defineStore('diagramStore', {
     async list(): Promise<void> {
       const supabaseClient = useSupabaseClient()
       const authStore = useAuthStore()
+      const userId = authStore.getAuthUser.value?.id as string
+
+      // Fetch the sub_type_id from the user_subscriptions table
+      const { data: subscriptionResponse, error: subscriptionError } = await supabaseClient
+        .from('user_subscriptions')
+        .select('sub_type_id')
+        .eq('user_id', userId)
+        .order('id', { ascending: false })
+        .single()
+
+      if (subscriptionError)
+        throw subscriptionError
+
+      // Fetch the plan_name from the subscription_type table using the sub_type_id
+      const { data: subscriptionTypeData, error: subscriptionTypeError } = await supabaseClient
+        .from('subscription_type')
+        .select('name')
+        .eq('id', subscriptionResponse?.sub_type_id)
+        .single()
+
+      if (subscriptionTypeError)
+        throw subscriptionTypeError
 
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient
         .from('diagrams')
         .select()
-        .eq('user_id', authStore.getAuthUser.value?.id as string)
+        .eq('user_id', userId)
         .order('updated_at', { ascending: false })
 
       if (supabaseError)
         throw supabaseError
-      this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')
-      this.activeDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && el.active_status === false)
-      this.deletedDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && el.active_status === true)
+
+      // Include plan_name in the diagrams data
+      const enhancedDiagrams = supabaseResponse.map((diagram: Diagram) => ({
+        ...diagram,
+        plan_name: subscriptionTypeData?.name
+      }))
+
+      this.diagramsList = enhancedDiagrams.filter((el: Diagram) => el.title !== 'default') as Diagram[]
+      this.activeDiagrams = enhancedDiagrams.filter((el: Diagram) => el.title !== 'default' && el.active_status === false)
+      this.deletedDiagrams = enhancedDiagrams.filter((el: Diagram) => el.title !== 'default' && el.active_status === true)
     },
 
     async get(payload: getAPIPayload) {

@@ -17,6 +17,7 @@ export interface Diagram {
   updated_at: string | null
   user_id: string | null
   active_status: boolean
+  plan_name: string | null
 }
 
 export interface getAPIPayload {
