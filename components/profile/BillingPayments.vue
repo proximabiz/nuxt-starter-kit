@@ -50,19 +50,19 @@ const diagramStore = useDiagramStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const diagramsList = computed(() => diagramStore.diagramsList)
 const isEditDisable = ref<boolean>(false)
-const isModalVisible = ref<boolean>(false)
+const confirmationModal = ref<boolean>(false)
 const isFieldEmtpy = ref<boolean>(true)
 
 const isLoadingDelete = ref<boolean>(false)
 const isLoadingAdd = ref<boolean>(false)
 
 const { $success, $error } = useNuxtApp()
-// const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
+const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
 
-if (cardDetails.value.cardHolderName !== ''
-  && cardDetails.value.cardNo !== ''
-  && cardDetails.value.expDate !== ''
-  && cardDetails.value.cvv !== '') {
+if (cardHolderName !== ''
+  && cardNo !== ''
+  && expDate !== ''
+  && cvv !== '') {
   isEditDisable.value = true
   isFieldEmtpy.value = false
 }
@@ -102,7 +102,7 @@ const years = [
   2025,
 ]
 function showModal() {
-  isModalVisible.value = true
+  confirmationModal.value = true
 }
 async function handleDeleteConfirm(): Promise<void> {
   try {
@@ -147,21 +147,21 @@ async function getCardDetails() {
 }
 
 async function handleSubmit() {
-  const monthYear = cardDetails.value.expDate.split('/')
+  const monthYear = expDate.split('/')
   const payload = {
-    cardHolderName: cardDetails.value.cardHolderName,
-    cardNumber: cardDetails.value.cardNo.toString(),
+    cardHolderName,
+    cardNumber: cardNo.toString(),
     expiryMonth: Number(monthYear[0]),
     expiryYear: Number(monthYear[1]),
-    securityCode: cardDetails.value.cvv.toString(),
+    securityCode: cvv.toString(),
   }
   try {
     isLoadingAdd.value = true
     const response = await subscriptionStore.addNewCardDetails(payload)
-    if (cardDetails.value.cardHolderName !== ''
-      || cardDetails.value.cardNo !== ''
-      || cardDetails.value.expDate !== ''
-      || cardDetails.value.cvv !== ''
+    if (cardHolderName !== ''
+      || cardNo !== ''
+      || expDate !== ''
+      || cvv !== ''
       || response) {
       return (
         $success('Your new card details has succussfuly added'),
@@ -187,10 +187,10 @@ onMounted(async () => {
 })
 
 watch([cardDetails.value, isFieldEmtpy.value, diagramsList.value?.length], () => {
-  if (cardDetails.value.cardHolderName !== ''
-    && cardDetails.value.cardNo !== ''
-    && cardDetails.value.expDate !== ''
-    && cardDetails.value.cvv !== '') { isFieldEmtpy.value = false }
+  if (cardHolderName !== ''
+    && cardNo !== ''
+    && expDate !== ''
+    && cvv !== '') { isFieldEmtpy.value = false }
   else {
     isFieldEmtpy.value = true
     isEditDisable.value = false
@@ -260,12 +260,12 @@ async function onCancel() {
       </UButton>
     </div>
     <Confirmation
-      v-model="isModalVisible"
-      :is-open="isModalVisible"
+      v-model="confirmationModal"
+      :is-open="confirmationModal"
       text="Are you sure! you want to delete this Card details?"
       left-button="Cancel"
       right-button="Delete"
-      @update:is-open="isModalVisible = $event"
+      @update:is-open="confirmationModal = $event"
       @delete-confirm="handleDeleteConfirm"
     />
   </section>
@@ -304,14 +304,6 @@ async function onCancel() {
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ payment.status }}
               </td>
-              <!-- <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <NuxtLink
-                  :src="payment.invoice" target="_blank"
-                  class="text-custom1-500 hover:text-custom1-900 underline"
-                >
-                  View Invoice
-                </NuxtLink>
-              </td> -->
             </tr>
           </tbody>
         </table>

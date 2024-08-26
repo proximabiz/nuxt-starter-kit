@@ -62,6 +62,15 @@ function calculateDaysRemainingFromToday(endDateStr: string | undefined) {
   return diffDays
 }
 const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.value?.plan_end_date))
+function uptoMindMaps(plan: string) {
+  return plan === 'Basic'
+    ? 'Up to 4 mind maps'
+    : plan === 'Free'
+      ? 'Up to 8 mind maps'
+      : plan === 'Premimum'
+        ? 'Up to 8 mind maps'
+        : 'Unlimited mind maps'
+}
 </script>
 
 <template>
@@ -117,7 +126,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
-            <span class="text-gray-700"> {{ planData?.name === "Basic" ? "Up to 4 mind maps" : planData?.name === "Free" ? "Up to 8 mind maps" : planData?.name === "Premimum" ? "Up to 8 mind maps" : "Unlimited mind maps" }} </span>
+            <span class="text-gray-700"> {{ uptoMindMaps(planData?.name) }} </span>
           </li>
           <li class="flex items-center gap-1">
             <svg

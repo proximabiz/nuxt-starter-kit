@@ -112,6 +112,21 @@ function providePlanDetails(val: any) {
   navigateTo('/plan/upgrade-plan')
   return cardValue
 }
+function uptoMindMaps(plan: string, isMonthly: boolean) {
+  return plan === 'Basic' && isMonthly
+    ? 'Up to 4 mind maps'
+    : plan === 'Basic'
+      ? 'Up to 48 mind maps'
+      : plan === 'Free' && isMonthly
+        ? 'Up to 8 mind maps'
+        : plan === 'Free'
+          ? 'Up to 96 mind maps'
+          : plan === 'Premium' && isMonthly
+            ? 'Up to 8 mind maps'
+            : plan === 'Premium'
+              ? 'Up to 96 mind maps'
+              : 'Unlimited mind maps'
+}
 </script>
 
 <template>
@@ -189,19 +204,7 @@ function providePlanDetails(val: any) {
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
                 <span class="text-gray-700"> {{
-                  value.plan === "Basic" && isMonthly
-                    ? "Up to 4 mind maps"
-                    : value.plan === "Basic"
-                      ? "Up to 48 mind maps"
-                      : value.plan === "Free" && isMonthly
-                        ? "Up to 8 mind maps"
-                        : value.plan === "Free"
-                          ? "Up to 96 mind maps"
-                          : value.plan === "Premium" && isMonthly
-                            ? "Up to 8 mind maps"
-                            : value.plan === "Premium"
-                              ? "Up to 96 mind maps"
-                              : "Unlimited mind maps" }}</span>
+                  uptoMindMaps(value.plan, isMonthly) }}</span>
               </li>
               <li class="flex items-center gap-1">
                 <svg

@@ -5,7 +5,7 @@ const supabaseClient = useSupabaseClient()
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const currentRoutePath = computed(() => route.fullPath)
-const isCardEmtpy = ref<boolean>(true)
+const isCardEmtpy = ref(true)
 const links = computed(() => [
   {
     title: 'My Account',
