@@ -1,3 +1,4 @@
+import { PaymentHistoryLimitValidation } from '../../../utlis/validations'
 import { serverSupabaseClient } from '#supabase/server'
 import { getListOfTransaction } from '~/server/utlis/chargebee'
 import { CustomError } from '~/server/utlis/custom.error'
@@ -8,6 +9,12 @@ export default defineEventHandler(async (event) => {
   await protectRoute(event)
 
   const userId = event.context.user.id
+  // const params = await readBody(event)
+
+  // Extract the limit from the query parameters
+  const query = getQuery(event)
+  const limit = query.limit ? Number.parseInt(query.limit as string, 10) : 100
+
   if (!userId)
     throw new CustomError('Please provide user-id', 401)
   const client = await serverSupabaseClient<Database>(event)
@@ -18,7 +25,11 @@ export default defineEventHandler(async (event) => {
   const chargebeeUserId = subUser.chargebee_user_id
   if (!chargebeeUserId)
     throw new CustomError('Chargebee user ID not found', 400)
-  const { status, data, error } = await getListOfTransaction(chargebeeUserId, 100)
+
+  const limitValidation = await PaymentHistoryLimitValidation.validateAsync(query)
+  if (!limitValidation)
+    throw new CustomError('Error: Invalid input provided', 401)
+  const { status, data, error } = await getListOfTransaction(chargebeeUserId, limit)
 
   if (error)
     throw new CustomError(`${error.message}`, status)

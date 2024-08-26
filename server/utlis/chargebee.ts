@@ -2,7 +2,6 @@ import { ChargeBee } from 'chargebee-typescript'
 import type { OrderType } from '../types/complete.order.types'
 import { PaymentGatwayID } from '../types/enum'
 import type { UserCardDetailType } from '../types/user.card.details.types'
-import { formatTimestampToDate } from './formatTimestamp'
 
 const chargebee = new ChargeBee()
 
@@ -341,8 +340,8 @@ async function getListOfTransaction(chargebeeCustomerId: string, limit: number =
       const plan_name = itemPriceResponse.item_price.name
 
       response.push({
-        paymentDate: formatTimestampToDate(transaction.date),
-        searchedYear: formatTimestampToDate(transaction.date, true),
+        paymentDate: new Date(transaction.date).toISOString(),
+        searchedYear: new Date(transaction.date).getFullYear(),
         amount: transaction.amount,
         currencyCode: transaction.currency_code,
         paymentStatus: transaction.status,
