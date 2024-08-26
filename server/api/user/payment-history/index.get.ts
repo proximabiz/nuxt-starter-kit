@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
   await protectRoute(event)
 
   const userId = event.context.user.id
-  // const params = await readBody(event)
 
   // Extract the limit from the query parameters
   const query = getQuery(event)
