@@ -317,10 +317,10 @@ async function getPlanDetails() {
 }
 
 // Get customer billing history
-async function getListOfTransaction(chargebeeCustomerId: string) {
+async function getListOfTransaction(chargebeeCustomerId: string, limit: number = 100) {
   try {
     const transactions = await chargebee.transaction.list({
-      limit: 100,
+      limit,
       customer_id: chargebeeCustomerId as any,
     }).request()
 

@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   const chargebeeUserId = subUser.chargebee_user_id
   if (!chargebeeUserId)
     throw new CustomError('Chargebee user ID not found', 400)
-  const { status, data, error } = await getListOfTransaction(chargebeeUserId)
+  const { status, data, error } = await getListOfTransaction(chargebeeUserId, 100)
 
   if (error)
     throw new CustomError(`${error.message}`, status)
