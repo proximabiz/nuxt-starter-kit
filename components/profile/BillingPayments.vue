@@ -53,11 +53,18 @@ const isEditDisable = ref<boolean>(false)
 const confirmationModal = ref<boolean>(false)
 const isFieldEmtpy = ref<boolean>(true)
 
+const isLoadingFetch = ref<boolean>(false)
 const isLoadingDelete = ref<boolean>(false)
 const isLoadingAdd = ref<boolean>(false)
+const cardData = ref({
+  cardHolderName: '',
+  cardNo: '',
+  expDate: '',
+  cvv: '',
+})
 
 const { $success, $error } = useNuxtApp()
-const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
+const { cardHolderName, cardNo, expDate, cvv } = cardData.value
 
 if (cardHolderName !== ''
   && cardNo !== ''
@@ -66,6 +73,7 @@ if (cardHolderName !== ''
   isEditDisable.value = true
   isFieldEmtpy.value = false
 }
+
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
@@ -111,6 +119,11 @@ async function handleDeleteConfirm(): Promise<void> {
 
     if (response) {
       isLoadingDelete.value = false
+      cardData.value.cardHolderName = ''
+      cardData.value.cardNo = ''
+      cardData.value.expDate = ''
+      cardData.value.cvv = ''
+
       cardDetails.value.cardHolderName = ''
       cardDetails.value.cardNo = ''
       cardDetails.value.expDate = ''
@@ -126,10 +139,17 @@ async function handleDeleteConfirm(): Promise<void> {
 }
 
 async function getCardDetails() {
+  isLoadingFetch.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
     const expiryDate = response?.msg !== 'no data' ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (response?.msg !== 'no data') {
+      isLoadingFetch.value = false
+      cardData.value.cardHolderName = response?.cardHolderName
+      cardData.value.cardNo = response?.cardNumber
+      cardData.value.expDate = expiryDate !== undefined ? expiryDate : ''
+      cardData.value.cvv = response?.cardNumber && '****'
+
       cardDetails.value.cardHolderName = response?.cardHolderName
       cardDetails.value.cardNo = response?.cardNumber
       cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
@@ -138,7 +158,12 @@ async function getCardDetails() {
       isEditDisable.value = true
     }
     else {
+      isLoadingFetch.value = false
       isEditDisable.value = false
+      cardDetails.value.cardHolderName = ''
+      cardDetails.value.cardNo = ''
+      cardDetails.value.expDate = ''
+      cardDetails.value.cvv = ''
     }
   }
   catch (error) {
@@ -147,16 +172,18 @@ async function getCardDetails() {
 }
 
 async function handleSubmit() {
-  const monthYear = expDate.split('/')
-  const payload = {
-    cardHolderName,
-    cardNumber: cardNo.toString(),
-    expiryMonth: Number(monthYear[0]),
-    expiryYear: Number(monthYear[1]),
-    securityCode: cvv.toString(),
-  }
   try {
+    const { cardHolderName, cardNo, expDate, cvv } = cardData.value
+
     isLoadingAdd.value = true
+    const monthYear = expDate.split('/')
+    const payload = {
+      cardHolderName,
+      cardNumber: cardNo.toString(),
+      expiryMonth: Number(monthYear[0]),
+      expiryYear: Number(monthYear[1]),
+      securityCode: cvv.toString(),
+    }
     const response = await subscriptionStore.addNewCardDetails(payload)
     if (cardHolderName !== ''
       || cardNo !== ''
@@ -186,7 +213,9 @@ onMounted(async () => {
   await getCardDetails()
 })
 
-watch([cardDetails.value, isFieldEmtpy.value, diagramsList.value?.length], () => {
+watch([cardDetails.value, cardData.value, isFieldEmtpy.value, diagramsList.value?.length], () => {
+  const { cardHolderName, cardNo, expDate, cvv } = cardData.value
+
   if (cardHolderName !== ''
     && cardNo !== ''
     && expDate !== ''
@@ -198,10 +227,10 @@ watch([cardDetails.value, isFieldEmtpy.value, diagramsList.value?.length], () =>
 }, { deep: true, immediate: true })
 
 async function onCancel() {
-  cardDetails.value.cardHolderName = ''
-  cardDetails.value.cardNo = ''
-  cardDetails.value.expDate = ''
-  cardDetails.value.cvv = ''
+  cardData.value.cardHolderName = ''
+  cardData.value.cardNo = ''
+  cardData.value.expDate = ''
+  cardData.value.cvv = ''
   isEditDisable.value = false
   isFieldEmtpy.value = true
 }
@@ -215,6 +244,12 @@ async function onCancel() {
   <hr class="ml-4 mt-2">
   <section class="grid place-items-center p-4">
     <div class="relative mb-6 mt-6 w-full max-w-lg">
+      <UModal v-model="isLoadingFetch">
+        <UProgress animation="carousel" />
+        <UCard>
+          Fetching your <span class="font-bold">Card details.</span>
+        </UCard>
+      </UModal>
       <UModal v-model="isLoadingDelete">
         <UProgress animation="carousel" />
         <UCard>
@@ -228,19 +263,19 @@ async function onCancel() {
         </UCard>
       </UModal>
       <UCard>
-        <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
+        <UForm :schema="billingSchema" :state="cardData" class="space-y-2">
           <UFormGroup label="Name on the card" name="cardHolderName">
-            <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
+            <UInput v-model="cardData.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
           </UFormGroup>
           <UFormGroup label="Credit or debit card number" name="cardNo">
-            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditDisable" />
+            <UInput v-model="cardData.cardNo" placeholder="**** **** ****" :disabled="isEditDisable" />
           </UFormGroup>
           <div class="flex flex-col md:flex-row md:gap-2">
             <UFormGroup label="Expire date" name="expDate" class="flex-grow">
-              <UInput v-model="cardDetails.expDate" placeholder="MM/YYYY" :disabled="isEditDisable" />
+              <UInput v-model="cardData.expDate" placeholder="MM/YYYY" :disabled="isEditDisable" />
             </UFormGroup>
             <UFormGroup label="Security code" name="cvv" class="flex-grow">
-              <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditDisable" />
+              <UInput v-model="cardData.cvv" placeholder="****" :disabled="isEditDisable" />
             </UFormGroup>
           </div>
         </UForm>
