@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { useBillingDetailsStore } from '~/stores/global'
 
-const isMonthly = ref(true)
+const isMonthly = ref<boolean>(true)
 const cardValue = ref()
 const region = ref('india')
 const subscriptionStore = useSubscriptionStore()
 const billingStore = useBillingDetailsStore()
 const authStore = useAuthStore()
-const isLoading = ref(true)
+const isLoading = ref<boolean>(true)
 const currencyList = ref()
 const getPlanName = ref()
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)

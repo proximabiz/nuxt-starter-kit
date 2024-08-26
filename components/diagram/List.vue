@@ -25,10 +25,6 @@ const headers = computed(() => [
     title: 'Title',
     value: 'title',
   },
-  // {
-  //   title: 'Keywords',
-  //   value: 'keywords',
-  // },
   {
     title: 'Last Modified On',
     value: 'modified_at',
@@ -89,10 +85,7 @@ function toPercentage(value: number, max: number) {
 }
 async function createDiagram() {
   const plan_exp = dayjs().isBefore(dayjs(fetchPlanDetails.value.plan_end_date))
-  if (fetchPlanDetails.value?.subscription_status === 'PLAN_EXPIRED'
-    || (fetchPlanDetails.value?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION' && plan_exp)
-    || fetchPlanDetails.value?.subscription_status === 'NO_SUBSCRIPTION'
-  ) {
+  if (['NO_SUBSCRIPTION', 'PLAN_EXPIRED'].includes(fetchPlanDetails.value?.subscription_status) || (fetchPlanDetails.value?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION' && !plan_exp)) {
     inActivePlanModal.value = true
   }
   else {
