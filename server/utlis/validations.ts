@@ -111,3 +111,6 @@ export const ContactUsValidation = Joi.object({
 export const UserCardDetailsValidation = Joi.object({
   userId: Joi.string().required(),
 })
+export const PaymentHistoryLimitValidation = Joi.object({
+  limit: Joi.number(),
+})
