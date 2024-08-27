@@ -20,7 +20,6 @@ export const PUTChartUpdateValidation = Joi.object({
   isDetailed: Joi.boolean().optional().default(false),
   details: Joi.string().optional(),
   diagramId: Joi.string().optional(),
-  subTypeId: Joi.string().required(),
 })
 
 export const SignupValidation = Joi.object({
