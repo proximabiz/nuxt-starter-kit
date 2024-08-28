@@ -6,6 +6,7 @@ export const ChartValidation = Joi.object({
   isDetailed: Joi.boolean().optional().default(false),
   details: Joi.string().optional(),
   diagramId: Joi.string().optional(),
+  subTypeId: Joi.string().required(),
 })
 
 export const PATCHChartUpdateValidation = Joi.object({
@@ -110,4 +111,7 @@ export const ContactUsValidation = Joi.object({
 
 export const UserCardDetailsValidation = Joi.object({
   userId: Joi.string().required(),
+})
+export const PaymentHistoryLimitValidation = Joi.object({
+  limit: Joi.number().optional(),
 })
