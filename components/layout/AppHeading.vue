@@ -38,7 +38,7 @@ const validPercentage = (diagramsList.value !== null && cardDetails.value.diagra
       </h1>
       <div v-if="validPercentage" class="ml-5">
         <span>
-          {{ diagramsCountList?.currentCount }} of {{ diagramsCountList?.allowedCount }} mind maps are created
+          {{ diagramsCountList?.currentCount }} of {{ diagramsCountList?.allowedCount }} mindmaps are generated in this plan
           <UButton v-if="diagramsCountList?.currentCount === diagramsCountList?.allowedCount" class="ml-2" :ui="{ rounded: 'rounded-full' }" color="white" variant="solid" @click="upgradePlan">Upgrade</UButton>
 
           <div class="mt-1">

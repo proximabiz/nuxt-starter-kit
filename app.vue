@@ -102,7 +102,7 @@ async function handlePostAuthentication() {
       <p class="mb-3">
         Your card details are missing!
       </p>
-      <p>To continue working with mind maps, please add card details.</p>
+      <p>To continue working with mindmaps, please add card details.</p>
       <div class="mt-4 flex justify-end gap-4">
         <UButton class="" @click="addCard">
           Ok

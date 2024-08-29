@@ -64,12 +64,12 @@ function calculateDaysRemainingFromToday(endDateStr: string | undefined) {
 const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.value?.plan_end_date))
 function uptoMindMaps(plan: string) {
   return plan === 'Basic'
-    ? 'Up to 4 mind maps'
+    ? 'Up to 4 mindmaps'
     : plan === 'Free'
-      ? 'Up to 8 mind maps'
+      ? 'Up to 8 mindmaps'
       : plan === 'Premimum'
-        ? 'Up to 8 mind maps'
-        : 'Unlimited mind maps'
+        ? 'Up to 8 mindmaps'
+        : 'Unlimited mindmaps'
 }
 </script>
 
