@@ -4,6 +4,7 @@ import { serverSupabaseClient } from '#supabase/server'
 import { createChargebeeCustomer, createSubscription } from '~/server/utlis/chargebee'
 import { CustomError } from '~/server/utlis/custom.error'
 import { protectRoute } from '~/server/utlis/route.protector'
+import { intentPaymentMethod } from '~/server/utlis/stripe'
 import { CompleteOrderValidation } from '~/server/utlis/validations'
 
 export default defineEventHandler(async (event) => {
@@ -37,6 +38,16 @@ export default defineEventHandler(async (event) => {
     if (error)
       throw new CustomError(`Error 2: ${error.message}`, 400)
 
+    const currentDate = new Date()
+
+    if (orderDetails.planType === 'monthly')
+      orderDetails.endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate())
+
+    else if (orderDetails.planType === 'yearly')
+      orderDetails.endDate = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate())
+
+    orderDetails.currentDate = currentDate
+
     // check and create customer on chargebee
     const { data: userCheck, error: errorUsercheck, status: subStatus } = await client.from('user_chargebee_details').select('user_id, chargebee_user_id').eq('user_id', userId).limit(1).single()
     if (!userCheck) {
@@ -54,37 +65,31 @@ export default defineEventHandler(async (event) => {
     }
     if (errorUsercheck)
       throw new CustomError(`Error: ${errorUsercheck.message}`, subStatus)
-    //* **** */ create user subscription in chargebee
+    //* **** */ create user subscription in chargebee **** need to uncomment to fix and check subscription part
 
-    const { subscripton: chargebeeSubscroption, error: errorMessage } = await createSubscription(orderDetails, orderDetails.customerId)
+    const { error: errorMessage } = await createSubscription(orderDetails, orderDetails.customerId)
     if (errorMessage)
       return { message: 'Error! 5', errorMessage, status: 400 }
 
-    // console.log(`chargebeeSubscroption${chargebeeSubscroption}`)
-    // console.log(`chargebee Subscroption${chargebeeSubscroption.subscription}`)
+    const { error: errorUserDetails } = await addUserSubscription(orderDetails)
 
-    if (chargebeeSubscroption && chargebeeSubscroption.subscription) {
-      orderDetails.currentDate = new Date(chargebeeSubscroption.subscription.current_term_start).toISOString()
-      orderDetails.endDate = new Date(chargebeeSubscroption.subscription.current_term_end).toISOString()
-      orderDetails.currencyCode = chargebeeSubscroption.subscription.currency_code
+    if (errorUserDetails)
+      return { message: 'Error! 5', errorUserDetails, status: 400 }
 
-      const { error: errorUserDetails } = await addUserSubscription(orderDetails)
-
-      if (errorUserDetails)
-        return { message: 'Error! 5', errorUserDetails, status: 400 }
-    }
-
+    // **Save customer card details on Stripe (FOR Actual Payment Details)*******
+    // **const [expiryMonth, expiryYear] = orderDetails.expiryDate.split('/')
+    // **const paymentMethodResponse: any = addPaymentMethod(orderDetails.cardNumber, expiryMonth, expiryYear, orderDetails.securityCode)
     // **Need to add main payment logic
-    // const paymentMethodResponse = 200
+    const paymentMethodResponse: any = await intentPaymentMethod(orderDetails.email, orderDetails.amount)
 
-    // if (paymentMethodResponse.statusCode === 200) {
-    //   // const { error: errorPaymentMethod } = await updateStripePaymentMethodId(userId, paymentMethodResponse.paymentMethod.id) // for actual payments
-    //   const { error: errorPaymentMethod } = await updateStripePaymentMethodId(userId, paymentMethodResponse.paymentId) // for actual payments
-    //   if (error)
-    //     throw new CustomError(`Error 6: ${errorPaymentMethod}`, 400)
-    // }
-    // else { throw new CustomError(`Error: ${paymentMethodResponse.errorMessage.message}`, paymentMethodResponse.statusCode) }
-    // // *************** need to uncomment to fix and check subscription part
+    if (paymentMethodResponse.statusCode === 200) {
+      // const { error: errorPaymentMethod } = await updateStripePaymentMethodId(userId, paymentMethodResponse.paymentMethod.id) // for actual payments
+      const { error: errorPaymentMethod } = await updateStripePaymentMethodId(userId, paymentMethodResponse.paymentId) // for actual payments
+      if (error)
+        throw new CustomError(`Error 6: ${errorPaymentMethod}`, 400)
+    }
+    else { throw new CustomError(`Error: ${paymentMethodResponse.errorMessage.message}`, paymentMethodResponse.statusCode) }
+    // *************** need to uncomment to fix and check subscription part
 
     return { message: 'Order Complete successfully!', data: orderDetails, status: 200 }
   }
@@ -112,7 +117,7 @@ export default defineEventHandler(async (event) => {
   }
 
   async function checkSubscriptionType(subId: string): Promise<{ error: any }> {
-    return await client.from('subscription_type').select('name').eq('chargebee_plan_id', subId)
+    return await client.from('subscription_type').select('name').eq('id', subId)
   }
 
   async function addUserSubscription(orderDetails: OrderType): Promise<{ error: any }> {
@@ -129,14 +134,14 @@ export default defineEventHandler(async (event) => {
     ).single()
   }
 
-  // async function updateStripePaymentMethodId(userId: string, paymentMethodId: string): Promise<{ error: any }> {
-  //   return await client.from('user_stripe_details').update(
-  //     {
-  //       stripe_payment_method_id: paymentMethodId.trim(),
-  //       has_payment_method_active: true,
-  //     },
-  //   ).eq('user_id', userId).select().single()
-  // }
+  async function updateStripePaymentMethodId(userId: string, paymentMethodId: string): Promise<{ error: any }> {
+    return await client.from('user_stripe_details').update(
+      {
+        stripe_payment_method_id: paymentMethodId.trim(),
+        has_payment_method_active: true,
+      },
+    ).eq('user_id', userId).select().single()
+  }
 
   // insert new user in chargebee table
   async function insertChargebeeUserDetails(userId: string, chargebee_user_id: string | undefined): Promise<{ error: any }> {

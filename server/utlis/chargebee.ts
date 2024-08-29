@@ -1,4 +1,5 @@
 import { ChargeBee } from 'chargebee-typescript'
+import type { ChargebeeItemPriceType, ChargebeeItemType, ChargebeeProductFamilyType } from '../types/chargebee.function.types'
 import type { OrderType } from '../types/complete.order.types'
 import { PaymentGatwayID } from '../types/enum'
 import type { UserCardDetailType } from '../types/user.card.details.types'
@@ -156,7 +157,7 @@ async function createSubscription(orderDetails: OrderType, customerId: string) {
     }).request()
 
     const response = {
-      subscriptionId: sub.subscription.id,
+      subscription: sub.subscription,
     }
     return { status: 'Success', statusCode: 200, subscripton: response }
   }
@@ -175,13 +176,179 @@ async function cancelSubscription(subcriptionId: string) {
   try {
     const subCancel = await chargebee.subscription.cancel(subcriptionId, { end_of_term: true }).request()
     const response = {
-      subscriptionId: subCancel.subscription.id,
+      status: subCancel.subscription.status,
     }
     return { status: 'Success', statusCode: 200, subscripton: response }
   }
   catch (error: any) {
     return {
       statusCode: error.http_status_code || 500,
+      error: {
+        message: error.message,
+      },
+    }
+  }
+}
+
+// ******* For Maintaing Product Family with plan and item price in Chargebee side to linkup our's ***********
+
+async function createProductFamily(productFamily: ChargebeeProductFamilyType) {
+  try {
+    const res = await chargebee.item_family.create({
+      id: productFamily.proFamId,
+      description: productFamily.descp,
+      name: productFamily.name,
+    }).request()
+    return { status: 'Success', statusCode: 200, family: res.item_family }
+  }
+  catch (error: any) {
+    return { status: 'Error', statusCode: error.statusCode, error }
+  }
+}
+
+// this is use to create Item or item on chargebee side
+async function createItem(item: ChargebeeItemType) {
+  try {
+    const res = await chargebee.item.create({
+      id: item.itemId,
+      name: item.itemName,
+      description: item.description,
+      item_family_id: item.productFamily,
+      type: 'plan', // Type of item (plan, addon, or charge)
+      enabled_in_portal: true,
+    }).request()
+    return { status: 'Success', statusCode: 200, item: res.item }
+  }
+  catch (error: any) {
+    return { status: 'Error', statusCode: error.statusCode, error }
+  }
+}
+
+// this is use to creat item/plan price on chargebee side
+async function createItemPrice(itemPrice: ChargebeeItemPriceType) {
+  try {
+    const res = await chargebee.item_price.create({
+      id: itemPrice.priceId,
+      item_id: itemPrice.itemId,
+      name: itemPrice.name,
+      price: itemPrice.price,
+      currency_code: itemPrice.currencyCode,
+      period: itemPrice.period,
+      period_unit: itemPrice.periodUnit,
+    }).request()
+    return { status: 'Success', statusCode: 200, itemPrice: res.item_price }
+  }
+  catch (error: any) {
+    return { status: 'Error', statusCode: error.statusCode, error }
+  }
+}
+
+// Get all plans/items Family
+async function getIProductFamilyDetails() {
+  try {
+    const response = await chargebee.item_family.list().request()
+    const item_family = []
+    for (let i = 0; i < response.list.length; i++) {
+      const entry = response.list[i]
+      item_family.push(entry.item_family)
+    }
+    return { status: 'Success', statusCode: 200, productFamily: item_family }
+  }
+  catch (error: any) {
+    return {
+      status: error.http_status_code || 500,
+      error: {
+        message: error.message,
+      },
+    }
+  }
+}
+
+// Get all plans/items Family
+async function getProductFamilyDetailsById(planFamilyId: string) {
+  try {
+    const response = await chargebee.item_family.retrieve(planFamilyId).request()
+    return { status: 'Success', statusCode: 200, family: response.item_family }
+  }
+  catch (error: any) {
+    return {
+      status: error.http_status_code || 500,
+      error: {
+        message: error.message,
+      },
+    }
+  }
+}
+
+// Get all plans/items
+async function getItemDetails() {
+  try {
+    const response = await chargebee.item.list().request()
+    const item = []
+    for (let i = 0; i < response.list.length; i++) {
+      const entry = response.list[i]
+      if (entry.item.status === 'active')
+        item.push(entry.item)
+    }
+    return { status: 'Success', statusCode: 200, plans: item }
+  }
+  catch (error: any) {
+    return {
+      status: error.http_status_code || 500,
+      error: {
+        message: error.message,
+      },
+    }
+  }
+}
+
+// Get plans/items by id
+async function getItemDetailsById(planId: string) {
+  try {
+    const response = await chargebee.item.retrieve(planId).request()
+    return { status: 'Success', statusCode: 200, plan: response.item }
+  }
+  catch (error: any) {
+    return {
+      status: error.http_status_code || 500,
+      error: {
+        message: error.message,
+      },
+    }
+  }
+}
+
+// Get all plans/items prices
+async function getItemPriceDetails() {
+  try {
+    const response = await chargebee.item_price.list().request()
+    const item = []
+    for (let i = 0; i < response.list.length; i++) {
+      const entry = response.list[i]
+      if (entry.item_price.status === 'active')
+        item.push(entry.item_price)
+    }
+    return { status: 'Success', statusCode: 200, itemPrice: item }
+  }
+  catch (error: any) {
+    return {
+      status: error.http_status_code || 500,
+      error: {
+        message: error.message,
+      },
+    }
+  }
+}
+
+// Get plans/items Price by id
+async function getItemPriceDetailsById(planPriceId: string) {
+  try {
+    const response = await chargebee.item_price.retrieve(planPriceId).request()
+    return { status: 'Success', statusCode: 200, plans: response.item_price }
+  }
+  catch (error: any) {
+    return {
+      status: error.http_status_code || 500,
       error: {
         message: error.message,
       },
@@ -241,80 +408,6 @@ async function deleteChargebeeCustomer(customerId: string) {
   }
 }
 
-// Create Item/Plan details
-async function createChargebeeItemAndPrice(itemData: {
-  id: string
-  name: string
-  description: string
-}, itemPriceData: {
-  id: string
-  item_id: string
-  name: string
-  price: number
-  currency_code: string
-  period: number
-  period_unit: string
-  trial_period?: number
-  trial_period_unit?: string
-}) {
-  try {
-    // Create the item
-    const itemResponse = await chargebee.item.create({
-      id: itemData.id,
-      name: itemData.name,
-      description: itemData.description,
-      item_family_id: 'AFM-Plan', // Optional
-      type: 'plan', // Type of item (plan, addon, or charge)
-      enabled_in_portal: true,
-    }).request()
-
-    // Create the item price
-    const itemPriceResponse = await chargebee.item_price.create({
-      id: itemPriceData.id,
-      item_id: itemPriceData.item_id,
-      name: itemPriceData.name,
-      price: itemPriceData.price,
-      currency_code: itemPriceData.currency_code,
-      period: itemPriceData.period,
-      period_unit: itemPriceData.period_unit,
-      trial_period: itemPriceData.trial_period,
-      trial_period_unit: itemPriceData.trial_period_unit,
-    }).request()
-
-    return { status: 'Success', statusCode: 200, item: itemResponse.item, itemPrice: itemPriceResponse.item_price }
-  }
-  catch (error: any) {
-    return {
-      status: error.http_status_code || 500,
-      error: {
-        message: error.message,
-      },
-    }
-  }
-}
-
-// Get all plans/items
-async function getPlanDetails() {
-  try {
-    const response = await chargebee.item.list().request()
-    const item = []
-    for (let i = 0; i < response.list.length; i++) {
-      const entry = response.list[i]
-      if (entry.item.status === 'active')
-        item.push(entry.item)
-    }
-    return { status: 'Success', statusCode: 200, plans: item }
-  }
-  catch (error: any) {
-    return {
-      status: error.http_status_code || 500,
-      error: {
-        message: error.message,
-      },
-    }
-  }
-}
-
 // Get customer billing history
 async function getListOfTransaction(chargebeeCustomerId: string, limit: number = 100) {
   try {
@@ -363,4 +456,4 @@ async function getListOfTransaction(chargebeeCustomerId: string, limit: number =
   }
 }
 
-export { updateCustomerCardDetails, cancelSubscription, deleteCustomerCardDetails, createSubscription, createChargebeeCustomer, listChargebeeCustomers, getChargebeeCustomer, deleteChargebeeCustomer, getCustomerCardDetails, getPlanDetails, createChargebeeItemAndPrice, getListOfTransaction }
+export { updateCustomerCardDetails, getIProductFamilyDetails, getProductFamilyDetailsById, getItemPriceDetails, getItemPriceDetailsById, getItemDetailsById, createItemPrice, createItem, createProductFamily, cancelSubscription, deleteCustomerCardDetails, createSubscription, createChargebeeCustomer, listChargebeeCustomers, getChargebeeCustomer, deleteChargebeeCustomer, getCustomerCardDetails, getItemDetails, getListOfTransaction }
