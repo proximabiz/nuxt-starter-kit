@@ -54,6 +54,8 @@ export interface State {
     allowedCount: number
     currentCount: number
     planType: string
+    diagramPercentage: string
+    actualDiagramCount: string
   }
 }
 

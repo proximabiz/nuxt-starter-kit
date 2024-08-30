@@ -10,6 +10,8 @@ function initialState() {
       allowedCount: 0,
       currentCount: 0,
       planType: '',
+      diagramPercentage: '',
+      actualDiagramCount: '',
     },
   }
 }

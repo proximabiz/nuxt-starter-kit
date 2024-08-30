@@ -74,8 +74,8 @@ async function fetchDiagramTypes() {
 
     const value = diagramsCountList?.value.currentCount
     const max = diagramsCountList?.value.allowedCount
-    cardDetails.value.diagramPercentage = toPercentage(value, max).toString()
-    cardDetails.value.actualDiagramCount = value.toString()
+    diagramsCountList.value.diagramPercentage = toPercentage(value, max).toString()
+    diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
     $error(error)
@@ -90,8 +90,8 @@ async function fetchDiagrams() {
 
     const value = diagramsCountList?.value.currentCount
     const max = diagramsCountList?.value.allowedCount
-    cardDetails.value.diagramPercentage = toPercentage(value, max).toString()
-    cardDetails.value.actualDiagramCount = value.toString()
+    diagramsCountList.value.diagramPercentage = toPercentage(value, max).toString()
+    diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
     $error(error)
