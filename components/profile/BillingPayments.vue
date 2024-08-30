@@ -112,6 +112,7 @@ async function handleDeleteConfirm(): Promise<void> {
     }
   }
   catch (error) {
+    isLoadingDelete.value = false
     $error(error)
   }
 }
@@ -145,6 +146,7 @@ async function getCardDetails() {
     }
   }
   catch (error) {
+    isLoadingFetch.value = false
     $error(error.statusMessage)
   }
 }
