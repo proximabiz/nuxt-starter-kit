@@ -46,8 +46,6 @@ function initialState() {
       expDate: '',
       cvv: 0,
       taxId: '',
-      diagramPercentage: '',
-      actualDiagramCount: '',
     },
   }
 }

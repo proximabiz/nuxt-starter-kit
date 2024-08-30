@@ -12,8 +12,7 @@ export interface BillingState {
   expDate: string
   cvv: number | string
   taxId: string
-  diagramPercentage: string
-  actualDiagramCount: string
+
 }
 export interface AddAPIPayload {
   userId: string
