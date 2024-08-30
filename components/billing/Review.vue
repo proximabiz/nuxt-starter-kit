@@ -11,6 +11,27 @@ const router = useRouter()
 const saveModal = ref(false)
 
 function completeOrder() {
+  const payload={
+    firstName: allDetails.value.name.split(' ')[0],
+    lastName: allDetails.value.name.split(' ')[1],
+    email: "raveenas@proximabiz.com",
+    country: "US",
+    region: "South",
+    city: "Bangalore",
+    zipcode: "33601",
+    address: "Krishna Homes",
+    phoneNumber: "7999788525",
+    amount: 150,
+    subscriptionTypeId: "68ded691-d78e-42a9-8ae3-b5715444a5a6",
+    planType: "monthly",
+    currencyCode: "USD",
+    gstNumber: "",
+    cardHolderName: "Raveena Sisodiya",
+    cardNumber: "4111111111111111",
+    expiryMonth: 12,
+    expiryYear: 2030,
+    securityCode: "106" 
+}
   saveModal.value = true
 }
 function navigateTo(path: string) {

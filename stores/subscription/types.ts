@@ -12,7 +12,6 @@ export interface BillingState {
   expDate: string
   cvv: number | string
   taxId: string
-
 }
 export interface AddAPIPayload {
   userId: string
@@ -61,20 +60,26 @@ export interface ActivePlanType {
 }
 
 export interface CompleteOrderPostAPIPayload {
+  firstName:string
+  lastName:string
+  email:string
   country: string
   region: string
   city: string
   zipcode: string
   address: string
   phoneNumber: string
+  amount:number
   subscriptionTypeId: string
   planType: string
   currencyCode: string
+  gstNumber:string
   cardHolderName: string
-  cardNumber: number
-  expiryDate: string
-  securityCode: number
-  taxId: string
+  cardNumber: string
+  expiryMonth: number
+  expiryYear:number
+  securityCode: string
+  // taxId: string
 }
 
 export interface AddNewCardPayload {
