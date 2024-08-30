@@ -7,12 +7,10 @@ const planData = ref()
 const showUpgradeModal = ref<boolean>(false)
 const noplanModal = ref<boolean>(false)
 const isModalVisible = ref(false)
-
 async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
-    if (response?.subscription_status === 'PLAN_EXPIRED' || response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION')
-      showUpgradeModal.value = true
+    showUpgradeModal.value = ['PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION', 'NO_SUBSCRIPTION'].includes(response?.subscription_status)
     planData.value = response
   }
   catch (error) {
@@ -64,6 +62,15 @@ function calculateDaysRemainingFromToday(endDateStr: string | undefined) {
   return diffDays
 }
 const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.value?.plan_end_date))
+function uptoMindMaps(plan: string) {
+  return plan === 'Basic'
+    ? 'Up to 4 mindmaps'
+    : plan === 'Free'
+      ? 'Up to 8 mindmaps'
+      : plan === 'Premimum'
+        ? 'Up to 8 mindmaps'
+        : 'Unlimited mindmaps'
+}
 </script>
 
 <template>
@@ -119,7 +126,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
-            <span class="text-gray-700"> {{ planData?.name === "Basic" ? "Up to 4 mind maps" : planData?.name === "Free" ? "Up to 8 mind maps" : planData?.name === "Premimum" ? "Up to 8 mind maps" : "Unlimited mind maps" }} </span>
+            <span class="text-gray-700"> {{ uptoMindMaps(planData?.name) }} </span>
           </li>
           <li class="flex items-center gap-1">
             <svg

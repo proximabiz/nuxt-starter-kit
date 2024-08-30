@@ -49,46 +49,54 @@ const subscriptionStore = useSubscriptionStore()
 const diagramStore = useDiagramStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const diagramsList = computed(() => diagramStore.diagramsList)
-const isEditable = ref(false)
-const isModalVisible = ref(false)
-const isFieldEmtpy = ref(true)
+const isEditDisable = ref<boolean>(false)
+const confirmationModal = ref<boolean>(false)
+const isFieldEmtpy = ref<boolean>(true)
 
-const isLoadingDelete = ref(false)
-const isLoadingAdd = ref(false)
+const isLoadingFetch = ref<boolean>(false)
+const isLoadingDelete = ref<boolean>(false)
+const isLoadingAdd = ref<boolean>(false)
+const cardData = ref({
+  cardHolderName: '',
+  cardNo: '',
+  expDate: '',
+  cvv: '',
+})
 
 const { $success, $error } = useNuxtApp()
+const { cardHolderName, cardNo, expDate, cvv } = cardData.value
 
-if (cardDetails.value.cardHolderName !== ''
-  && cardDetails.value.cardNo !== ''
-  && cardDetails.value.expDate !== ''
-  && cardDetails.value.cvv !== '') {
-  isEditable.value = true
+if (cardHolderName !== ''
+  && cardNo !== ''
+  && expDate !== ''
+  && cvv !== '') {
+  isEditDisable.value = true
   isFieldEmtpy.value = false
 }
 
-const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
+const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
-  cardNumber: z.string()
+  cardNo: z.string()
     .min(1, 'Card number is required')
     .regex(/^\d+$/, 'Card number must be numeric')
     .refine(val => masterCardRegex.test(val) || visaCardRegex.test(val), {
       message: 'Invalid card number. Please enter a valid card number with 16 digits.',
     }),
-  expiryMonthYear: z.string()
+  expDate: z.string()
     .regex(basicExpDateRegex, 'Invalid expiration date format')
     .refine((val) => {
       const [month, year] = val.split('/').map(Number)
-      const currentYear = new Date().getFullYear() % 100 // Get last two digits of the current year
+      const currentYear = new Date().getFullYear() // Get current year
       const currentMonth = new Date().getMonth() + 1 // Get current month (1-12)
       // Check if the year is valid (current year or later) and month is within 1-12
       return (
         year >= currentYear && (year > currentYear || month >= currentMonth)
       )
     }, 'Expiration date must be in the future'),
-  securityCode: z.string()
+  cvv: z.string()
     .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
     .refine(securityCode => /^\d+$/.test(securityCode), 'Security code must only contain digits'),
 })
@@ -102,7 +110,7 @@ const years = [
   2025,
 ]
 function showModal() {
-  isModalVisible.value = true
+  confirmationModal.value = true
 }
 async function handleDeleteConfirm(): Promise<void> {
   try {
@@ -111,11 +119,16 @@ async function handleDeleteConfirm(): Promise<void> {
 
     if (response) {
       isLoadingDelete.value = false
+      cardData.value.cardHolderName = ''
+      cardData.value.cardNo = ''
+      cardData.value.expDate = ''
+      cardData.value.cvv = ''
+
       cardDetails.value.cardHolderName = ''
       cardDetails.value.cardNo = ''
       cardDetails.value.expDate = ''
       cardDetails.value.cvv = ''
-      isEditable.value = false
+      isEditDisable.value = false
       isFieldEmtpy.value = true
       $success('Your old card details has succussfuly deleted')
     }
@@ -126,19 +139,31 @@ async function handleDeleteConfirm(): Promise<void> {
 }
 
 async function getCardDetails() {
+  isLoadingFetch.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
     const expiryDate = response?.msg !== 'no data' ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (response?.msg !== 'no data') {
+      isLoadingFetch.value = false
+      cardData.value.cardHolderName = response?.cardHolderName
+      cardData.value.cardNo = response?.cardNumber
+      cardData.value.expDate = expiryDate !== undefined ? expiryDate : ''
+      cardData.value.cvv = response?.cardNumber && '****'
+
       cardDetails.value.cardHolderName = response?.cardHolderName
       cardDetails.value.cardNo = response?.cardNumber
       cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
       cardDetails.value.cvv = response?.cardNumber && '****'
 
-      isEditable.value = true
+      isEditDisable.value = true
     }
     else {
-      isEditable.value = false
+      isLoadingFetch.value = false
+      isEditDisable.value = false
+      cardDetails.value.cardHolderName = ''
+      cardDetails.value.cardNo = ''
+      cardDetails.value.expDate = ''
+      cardDetails.value.cvv = ''
     }
   }
   catch (error) {
@@ -147,31 +172,40 @@ async function getCardDetails() {
 }
 
 async function handleSubmit() {
-  const monthYear = cardDetails.value.expDate.split('/')
-  const payload = {
-    cardHolderName: cardDetails.value.cardHolderName,
-    cardNumber: cardDetails.value.cardNo.toString(),
-    expiryMonth: Number(monthYear[0]),
-    expiryYear: Number(monthYear[1]),
-    securityCode: cardDetails.value.cvv.toString(),
+  try {
+    const { cardHolderName, cardNo, expDate, cvv } = cardData.value
+
+    isLoadingAdd.value = true
+    const monthYear = expDate.split('/')
+    const payload = {
+      cardHolderName,
+      cardNumber: cardNo.toString(),
+      expiryMonth: Number(monthYear[0]),
+      expiryYear: Number(monthYear[1]),
+      securityCode: cvv.toString(),
+    }
+    const response = await subscriptionStore.addNewCardDetails(payload)
+    if (cardHolderName !== ''
+      || cardNo !== ''
+      || expDate !== ''
+      || cvv !== ''
+      || response) {
+      return (
+        $success('Your new card details has succussfuly added'),
+        isLoadingAdd.value = false,
+        isEditDisable.value = true,
+        isFieldEmtpy.value = false,
+        await getCardDetails()
+      )
+    }
+    else {
+      isLoadingAdd.value = false
+      $error('Card details are should not be empty')
+    }
   }
-  isLoadingAdd.value = true
-  const response = await subscriptionStore.addNewCardDetails(payload)
-  if (cardDetails.value.cardHolderName !== ''
-    || cardDetails.value.cardNo !== ''
-    || cardDetails.value.expDate !== ''
-    || cardDetails.value.cvv !== ''
-    || response) {
-    return (
-      $success('Your new card details has succussfuly added'),
-      isLoadingAdd.value = false,
-      isEditable.value = true,
-      isFieldEmtpy.value = false,
-      await getCardDetails()
-    )
-  }
-  else {
-    $error('Card details are should not be empty')
+  catch (error) {
+    $error(error.statusMessage)
+    isLoadingAdd.value = false
   }
 }
 
@@ -179,23 +213,25 @@ onMounted(async () => {
   await getCardDetails()
 })
 
-watch([cardDetails.value, isFieldEmtpy.value, diagramsList.value?.length], () => {
-  if (cardDetails.value.cardHolderName !== ''
-    && cardDetails.value.cardNo !== ''
-    && cardDetails.value.expDate !== ''
-    && cardDetails.value.cvv !== '') { isFieldEmtpy.value = false }
+watch([cardDetails.value, cardData.value, isFieldEmtpy.value, diagramsList.value?.length], () => {
+  const { cardHolderName, cardNo, expDate, cvv } = cardData.value
+
+  if (cardHolderName !== ''
+    && cardNo !== ''
+    && expDate !== ''
+    && cvv !== '') { isFieldEmtpy.value = false }
   else {
     isFieldEmtpy.value = true
-    isEditable.value = false
+    isEditDisable.value = false
   }
 }, { deep: true, immediate: true })
 
 async function onCancel() {
-  cardDetails.value.cardHolderName = ''
-  cardDetails.value.cardNo = ''
-  cardDetails.value.expDate = ''
-  cardDetails.value.cvv = ''
-  isEditable.value = false
+  cardData.value.cardHolderName = ''
+  cardData.value.cardNo = ''
+  cardData.value.expDate = ''
+  cardData.value.cvv = ''
+  isEditDisable.value = false
   isFieldEmtpy.value = true
 }
 </script>
@@ -208,6 +244,12 @@ async function onCancel() {
   <hr class="ml-4 mt-2">
   <section class="grid place-items-center p-4">
     <div class="relative mb-6 mt-6 w-full max-w-lg">
+      <UModal v-model="isLoadingFetch">
+        <UProgress animation="carousel" />
+        <UCard>
+          Fetching your <span class="font-bold">Card details.</span>
+        </UCard>
+      </UModal>
       <UModal v-model="isLoadingDelete">
         <UProgress animation="carousel" />
         <UCard>
@@ -221,30 +263,30 @@ async function onCancel() {
         </UCard>
       </UModal>
       <UCard>
-        <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
+        <UForm :schema="billingSchema" :state="cardData" class="space-y-2">
           <UFormGroup label="Name on the card" name="cardHolderName">
-            <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
+            <UInput v-model="cardData.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
           </UFormGroup>
           <UFormGroup label="Credit or debit card number" name="cardNo">
-            <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable" />
+            <UInput v-model="cardData.cardNo" placeholder="**** **** ****" :disabled="isEditDisable" />
           </UFormGroup>
           <div class="flex flex-col md:flex-row md:gap-2">
             <UFormGroup label="Expire date" name="expDate" class="flex-grow">
-              <UInput v-model="cardDetails.expDate" placeholder="MM/YYYY" :disabled="isEditable" />
+              <UInput v-model="cardData.expDate" placeholder="MM/YYYY" :disabled="isEditDisable" />
             </UFormGroup>
             <UFormGroup label="Security code" name="cvv" class="flex-grow">
-              <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditable" />
+              <UInput v-model="cardData.cvv" placeholder="****" :disabled="isEditDisable" />
             </UFormGroup>
           </div>
         </UForm>
       </UCard>
-      <div v-if="isEditable" class="absolute bottom-[1rem] right-[-3rem]">
+      <div v-if="isEditDisable" class="absolute bottom-[1rem] right-[-3rem]">
         <UTooltip text="Delete the old card details to add new one." :popper="{ arrow: true }">
           <UButton color="red" icon="i-heroicons-trash" size="sm" variant="ghost" @click="showModal" />
         </UTooltip>
       </div>
     </div>
-    <div v-if="!isEditable" class="flex gap-2 justify-center">
+    <div v-if="!isEditDisable" class="flex gap-2 justify-center">
       <UButton color="blue" @click="onCancel">
         Cancel
       </UButton>
@@ -253,12 +295,12 @@ async function onCancel() {
       </UButton>
     </div>
     <Confirmation
-      v-model="isModalVisible"
-      :is-open="isModalVisible"
+      v-model="confirmationModal"
+      :is-open="confirmationModal"
       text="Are you sure! you want to delete this Card details?"
       left-button="Cancel"
       right-button="Delete"
-      @update:is-open="isModalVisible = $event"
+      @update:is-open="confirmationModal = $event"
       @delete-confirm="handleDeleteConfirm"
     />
   </section>
@@ -297,14 +339,6 @@ async function onCancel() {
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ payment.status }}
               </td>
-              <!-- <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <NuxtLink
-                  :src="payment.invoice" target="_blank"
-                  class="text-custom1-500 hover:text-custom1-900 underline"
-                >
-                  View Invoice
-                </NuxtLink>
-              </td> -->
             </tr>
           </tbody>
         </table>

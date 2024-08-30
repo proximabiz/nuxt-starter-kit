@@ -30,8 +30,8 @@ export const useDiagramStore = defineStore('diagramStore', {
       if (supabaseError)
         throw supabaseError
       this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')
-      this.activeDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && el.active_status === false)
-      this.deletedDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && el.active_status === true)
+      this.activeDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && !el.active_status)
+      this.deletedDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && el.active_status)
     },
 
     async get(payload: getAPIPayload) {

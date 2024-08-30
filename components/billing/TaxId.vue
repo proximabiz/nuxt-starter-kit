@@ -3,9 +3,9 @@ const { $error } = useNuxtApp()
 const userStore = useUserStore()
 const subscriptionStore = useSubscriptionStore()
 
-const isDisabled = ref(false)
+const isDisabled = ref<boolean>(false)
 
-onMounted(async () => {
+async function fetchGstTax() {
   try {
     const response = await userStore.fetchTaxGst()
 
@@ -18,6 +18,10 @@ onMounted(async () => {
   catch (error) {
     $error(error.statusMessage)
   }
+}
+
+onMounted(async () => {
+  await fetchGstTax()
 })
 </script>
 

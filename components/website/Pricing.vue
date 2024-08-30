@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { useBillingDetailsStore } from '~/stores/global'
 
-const isMonthly = ref(true)
+const isMonthly = ref<boolean>(true)
 const cardValue = ref()
 const region = ref('india')
 const subscriptionStore = useSubscriptionStore()
 const billingStore = useBillingDetailsStore()
 const authStore = useAuthStore()
-const isLoading = ref(true)
+const isLoading = ref<boolean>(true)
 const currencyList = ref()
 const getPlanName = ref()
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
@@ -112,6 +112,21 @@ function providePlanDetails(val: any) {
   navigateTo('/plan/upgrade-plan')
   return cardValue
 }
+function uptoMindMaps(plan: string, isMonthly: boolean) {
+  return plan === 'Basic' && isMonthly
+    ? 'Up to 4 mindmaps'
+    : plan === 'Basic'
+      ? 'Up to 48 mindmaps'
+      : plan === 'Free' && isMonthly
+        ? 'Up to 8 mindmaps'
+        : plan === 'Free'
+          ? 'Up to 96 mindmaps'
+          : plan === 'Premium' && isMonthly
+            ? 'Up to 8 mindmaps'
+            : plan === 'Premium'
+              ? 'Up to 96 mindmaps'
+              : 'Unlimited mindmaps'
+}
 </script>
 
 <template>
@@ -189,19 +204,7 @@ function providePlanDetails(val: any) {
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
                 <span class="text-gray-700"> {{
-                  value.plan === "Basic" && isMonthly
-                    ? "Up to 4 mind maps"
-                    : value.plan === "Basic"
-                      ? "Up to 48 mind maps"
-                      : value.plan === "Free" && isMonthly
-                        ? "Up to 8 mind maps"
-                        : value.plan === "Free"
-                          ? "Up to 96 mind maps"
-                          : value.plan === "Premium" && isMonthly
-                            ? "Up to 8 mind maps"
-                            : value.plan === "Premium"
-                              ? "Up to 96 mind maps"
-                              : "Unlimited mind maps" }}</span>
+                  uptoMindMaps(value.plan, isMonthly) }}</span>
               </li>
               <li class="flex items-center gap-1">
                 <svg

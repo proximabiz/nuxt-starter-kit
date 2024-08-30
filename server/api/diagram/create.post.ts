@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
       keywords: [],
       details: params.details,
       response: chart,
+      sub_type_id: params.subTypeId,
     },
   ] as any).select('id,user_id,diagram_type_id,title,keywords,details,response,access,diagram_identifier')
   if (error)
