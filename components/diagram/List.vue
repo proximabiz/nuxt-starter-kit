@@ -106,6 +106,7 @@ async function createDiagram() {
         const response = await diagramStore.create({
           title: 'default',
           diagramTypeId: diagramType.id,
+          subTypeId:'fcb9588a-38bc-451d-b227-8ddbb2fbcca3'
         })
         /* @ts-expect-error need to be fixed */
         redirectToPath(response?.diagram[0].id)
