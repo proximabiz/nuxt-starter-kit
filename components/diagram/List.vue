@@ -329,10 +329,10 @@ function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSor
                           @click="sortDiagramList(header.value, 'deletedDiagrams', isActiveTitleSort = header.value === 'title' ? !isActiveTitleSort : isActiveTitleSort, isActiveUpdateDateSort = header.value === 'updated_at' ? !isActiveUpdateDateSort : isActiveUpdateDateSort)"
                         >
                           <span>
-                            <span v-if="header.value === 'title' && isActiveTitleSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
-                            <span v-else-if="header.value === 'title' && !isActiveTitleSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
-                            <span v-else-if="header.value === 'updated_at' && isActiveUpdateDateSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
-                            <span v-else-if="header.value === 'updated_at' && !isActiveUpdateDateSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                            <span v-if="selectedHeader === 'title' && header.value === 'title' && isActiveTitleSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                            <span v-else-if="selectedHeader === 'title' && header.value === 'title' && !isActiveTitleSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                            <span v-else-if="selectedHeader === 'updated_at' && header.value === 'updated_at' && isActiveUpdateDateSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                            <span v-else-if="selectedHeader === 'updated_at' && header.value === 'updated_at' && !isActiveUpdateDateSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
                             {{ header.title }}</span>
                         </th>
                       </tr>

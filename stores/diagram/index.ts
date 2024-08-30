@@ -24,23 +24,15 @@ export const useDiagramStore = defineStore('diagramStore', {
       const userId: string | undefined = authStore.getAuthUser.value?.id || ''
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_diagrams_list', {
         userid: userId,
-      })
+      } as never)
 
-      // const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_diagrams_list', { userid: userId })
+      const dataList = Array.isArray(supabaseResponse) ? supabaseResponse : []
 
-      // async list(payload: getListAPIPayload) {
-      // const supabaseClient = useSupabaseClient()
-      // const authStore = useAuthStore()
-
-      // const { data: supabaseResponse, error: supabaseError } = await supabaseClient
-      //   .from('diagrams')
-      //   .select()
-      //   .eq('user_id', authStore.getAuthUser.value?.id as string)
       if (supabaseError)
         throw supabaseError
-      this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')
-      this.activeDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && !el.active_status)
-      this.deletedDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && el.active_status)
+      this.diagramsList = dataList.filter((el: Diagram) => el.title !== 'default')
+      this.activeDiagrams = dataList.filter((el: Diagram) => el.title !== 'default' && !el.active_status)
+      this.deletedDiagrams = dataList.filter((el: Diagram) => el.title !== 'default' && el.active_status)
     },
 
     async get(payload: getAPIPayload) {
