@@ -1,4 +1,4 @@
-import type { ActivePlanType, AddAPIPayload, AddNewCardPayload, CancelAPIPayload, CompleteOrderPostAPIPayload, GetCardDetails, State } from './types'
+import type { ActivePlanType, AddAPIPayload, AddNewCardPayload, CancelAPIPayload, CompleteOrderPostAPIPayload, GetCardDetails, State, getBillingHistoryDetails } from './types'
 import type { Database } from '~/types/supabase'
 
 function initialState() {
@@ -217,6 +217,23 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
 
       return supabaseResponse.value
     },
+
+    async getBillingHistory(param: number): Promise<getBillingHistoryDetails> {
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/user/payment-history?limit=${param}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      if (supabaseError.value)
+        throw supabaseError.value
+
+      /* @ts-expect-error need to be fixed */
+      return supabaseResponse.value?.data
+    },
+
   },
   persist: {
     storage: persistedState.localStorage,

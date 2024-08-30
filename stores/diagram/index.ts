@@ -21,12 +21,22 @@ export const useDiagramStore = defineStore('diagramStore', {
     async list(): Promise<void> {
       const supabaseClient = useSupabaseClient()
       const authStore = useAuthStore()
+      const userId = authStore.getAuthUser.value?.id
 
-      const { data: supabaseResponse, error: supabaseError } = await supabaseClient
-        .from('diagrams')
-        .select()
-        .eq('user_id', authStore.getAuthUser.value?.id as string)
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_diagrams_list', {
+        userid: userId as string,
+      })
 
+      // const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_diagrams_list', { userid: userId })
+
+      // async list(payload: getListAPIPayload) {
+      //   const supabaseClient = useSupabaseClient()
+      //   // const authStore = useAuthStore()
+
+      // const { data: supabaseResponse, error: supabaseError } = await supabaseClient
+      //   .from('diagrams')
+      //   .select()
+      //   .eq('user_id', authStore.getAuthUser.value?.id as string)
       if (supabaseError)
         throw supabaseError
       this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')

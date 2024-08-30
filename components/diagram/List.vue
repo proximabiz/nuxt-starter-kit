@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import crown from '../../assets/media/crown.png'
 
 const diagramStore = useDiagramStore()
 const { $success, $error, $warning } = useNuxtApp()
@@ -14,20 +15,26 @@ const isDiagramLimitExceeded = ref<boolean>(false)
 const currentMonthActivatedDiagrams = ref()
 const inActivePlanModal = ref<boolean>(false)
 const fetchPlanDetails = ref()
+const isActiveTitleSort = ref<boolean>(false)
+const isActiveUpdateDateSort = ref<boolean>(false)
+const selectedHeader = ref('')
 
 const diagramsList = computed(() => diagramStore.diagramsList)
 const activeDiagrams = computed(() => diagramStore.activeDiagrams)
 const deletedDiagrams = computed(() => diagramStore.deletedDiagrams)
 const diagramsCountList = computed(() => diagramStore.diagramsCountList)
-
 const headers = computed(() => [
+  {
+    title: 'Membership Type',
+    value: 'MembershipType',
+  },
   {
     title: 'Title',
     value: 'title',
   },
   {
     title: 'Last Modified On',
-    value: 'modified_at',
+    value: 'updated_at',
   },
   {
     title: 'Actions',
@@ -40,18 +47,29 @@ const items = [{
   label: 'Archived Mindmaps',
 }]
 
+const page = ref(1)
+const pageCount = 5
+const activeDiagramRows = Array.isArray(activeDiagrams.value) ? activeDiagrams.value : []
+const inActiveDiagramRows = Array.isArray(deletedDiagrams.value) ? deletedDiagrams.value : []
+
+const activeRows = computed(() => {
+  return activeDiagramRows.slice((page.value - 1) * pageCount, (page.value) * pageCount)
+})
+
+const inActiveRows = computed(() => {
+  return inActiveDiagramRows.slice((page.value - 1) * pageCount, (page.value) * pageCount)
+})
+
 const globalStore = useGlobalStore()
 globalStore.pageHeading.title = 'My Diagrams'
 
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
-
 async function fetchDiagramTypes() {
   try {
     const diagramTypeStore = useDiagramTypeStore()
     await diagramTypeStore.list()
-
     currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
 
     const value = diagramsCountList?.value.currentCount
@@ -106,6 +124,9 @@ async function createDiagram() {
         const response = await diagramStore.create({
           title: 'default',
           diagramTypeId: diagramType.id,
+          subTypeId: fetchPlanDetails.value.sub_type_id,
+          // subTypeId: '68ded691-d78e-42a9-8ae3-b5715444a5a6',
+          // sub_status.value?.planName
         })
         /* @ts-expect-error need to be fixed */
         redirectToPath(response?.diagram[0].id)
@@ -196,6 +217,15 @@ function rediectToPricePage(_valid: boolean) {
   if (_valid)
     navigateTo('/website/pricing')
 }
+
+function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSort: boolean, _isActiveUpdateDateSort: boolean) {
+  selectedHeader.value = header
+  const diagrams = _diagramType === 'activeDiagrams' ? Array.isArray(activeRows.value) && activeRows.value : Array.isArray(inActiveRows.value) && inActiveRows.value
+  header === 'title'
+  && diagrams && diagrams.sort((a: any, b: any) => _isActiveTitleSort ? (a[header].toLowerCase() > b[header].toLowerCase()) ? 1 : -1 : -1)
+  header === 'updated_at'
+  && diagrams && diagrams.sort((a: any, b: any) => _isActiveUpdateDateSort ? (dayjs(a[header]) > (dayjs(b[header]))) ? 1 : -1 : -1)
+}
 </script>
 
 <template>
@@ -225,13 +255,29 @@ function rediectToPricePage(_valid: boolean) {
                   <table class="min-w-full text-left text-sm font-light">
                     <thead class="border-b font-medium dark:border-neutral-500">
                       <tr>
-                        <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
-                          {{ header.title }}
+                        <th
+                          v-for="(header, index) in headers" :key="index" :class="header.value === 'MembershipType' ? 'w-3 pt-0 pb-0 pl-0' : ''" scope="col"
+                          class="px-6 py-4 cursor-pointer"
+                          @click="sortDiagramList(header.value, 'activeDiagrams', isActiveTitleSort = header.value === 'title' ? !isActiveTitleSort : isActiveTitleSort, isActiveUpdateDateSort = header.value === 'updated_at' ? !isActiveUpdateDateSort : isActiveUpdateDateSort)"
+                        >
+                          <span>
+                            <span v-if="selectedHeader === 'title' && header.value === 'title' && isActiveTitleSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                            <span v-else-if="selectedHeader === 'title' && header.value === 'title' && !isActiveTitleSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                            <span v-else-if="selectedHeader === 'updated_at' && header.value === 'updated_at' && isActiveUpdateDateSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                            <span v-else-if="selectedHeader === 'updated_at' && header.value === 'updated_at' && !isActiveUpdateDateSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                            {{ header.title }}</span>
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(activeDiagram, index) in activeDiagrams" :key="index" class="border-b dark:border-neutral-500">
+                      <tr v-for="(activeDiagram, index) in activeRows" :key="index" class="border-b dark:border-neutral-500">
+                        <td>
+                          <span v-if="activeDiagram.plan_name !== 'Free' ">
+                            <UTooltip :text="activeDiagram.plan_name" :popper="{ arrow: true }">
+                              <img :src="crown" class="w-8 h-8 flex justify-center items-center">
+                            </UTooltip>
+                          </span>
+                        </td>
                         <td class="whitespace-nowrap px-6 py-4">
                           {{ activeDiagram.title }}
                         </td>
@@ -265,6 +311,9 @@ function rediectToPricePage(_valid: boolean) {
                     </tbody>
                   </table>
                 </div>
+                <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700 mt-4 w-full">
+                  <UPagination v-model="page" :page-count="pageCount" :total="activeDiagramRows.length" />
+                </div>
               </div>
             </div>
           </div>
@@ -277,13 +326,26 @@ function rediectToPricePage(_valid: boolean) {
                   <table class="min-w-full text-left text-sm font-light">
                     <thead class="border-b font-medium dark:border-neutral-500">
                       <tr>
-                        <th v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4">
-                          {{ header.title }}
+                        <th
+                          v-for="(header, index) in headers" :key="index" scope="col" class="px-6 py-4 cursor-pointer"
+                          @click="sortDiagramList(header.value, 'deletedDiagrams', isActiveTitleSort = header.value === 'title' ? !isActiveTitleSort : isActiveTitleSort, isActiveUpdateDateSort = header.value === 'updated_at' ? !isActiveUpdateDateSort : isActiveUpdateDateSort)"
+                        >
+                          <span>
+                            <span v-if="header.value === 'title' && isActiveTitleSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                            <span v-else-if="header.value === 'title' && !isActiveTitleSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                            <span v-else-if="header.value === 'updated_at' && isActiveUpdateDateSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                            <span v-else-if="header.value === 'updated_at' && !isActiveUpdateDateSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                            {{ header.title }}</span>
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(deletedDiagram, index) in deletedDiagrams" :key="index" class="border-b dark:border-neutral-500">
+                      <tr v-for="(deletedDiagram, index) in inActiveRows" :key="index" class="border-b dark:border-neutral-500">
+                        <td>
+                          <UTooltip :text="deletedDiagram.plan_name" :popper="{ arrow: true }">
+                            <img :src="crown" class="w-8 h-8 flex justify-center items-center">
+                          </UTooltip>
+                        </td>
                         <td class="whitespace-nowrap px-6 py-4">
                           {{ deletedDiagram.title }}
                         </td>
@@ -301,6 +363,9 @@ function rediectToPricePage(_valid: boolean) {
                       </tr>
                     </tbody>
                   </table>
+                </div>
+                <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700 mt-4 w-full">
+                  <UPagination v-model="page" :page-count="pageCount" :total="inActiveDiagramRows.length" />
                 </div>
               </div>
             </div>
@@ -321,7 +386,7 @@ function rediectToPricePage(_valid: boolean) {
   <UModal v-model="isDelete">
     <ModalsConfirmation
       title="Confirm Diagram Deletion"
-      description="Are you sure you want to delete this mind map? This action cannot be undone." :cancel-action="{
+      description="Are you sure you want to delete this mindmap? This action cannot be undone." :cancel-action="{
         label: 'Keep',
         color: 'bg-green-500',
       }" :confirm-action="{
@@ -336,7 +401,7 @@ function rediectToPricePage(_valid: boolean) {
       <p class="mb-3">
         Your card details are missing!
       </p>
-      <p>To continue working with mind maps, please add card details.</p>
+      <p>To continue working with mindmaps, please add card details.</p>
       <div class="mt-4 flex justify-end gap-4">
         <UButton class="" @click="saveDetails(true)">
           Ok
@@ -349,7 +414,7 @@ function rediectToPricePage(_valid: boolean) {
       <p class="mb-3">
         You do not have an active plan,
       </p>
-      <p>upgrade plan now to continue creating mind maps.</p>
+      <p>upgrade plan now to continue creating mindmaps.</p>
       <div class="mt-4 flex justify-end gap-4">
         <UButton class="" color="gray" @click="rediectToPricePage(false)">
           Cancel

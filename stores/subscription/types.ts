@@ -98,3 +98,12 @@ export interface GetCardDetails {
   cardNumber: string
   id: string
 }
+
+export interface getBillingHistoryDetails {
+  paymentDate: string
+  searchedYear: number
+  amount: number
+  currencyCode: string
+  paymentStatus: string
+  planName: string
+}
