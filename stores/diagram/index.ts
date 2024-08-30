@@ -21,17 +21,16 @@ export const useDiagramStore = defineStore('diagramStore', {
     async list(): Promise<void> {
       const supabaseClient = useSupabaseClient()
       const authStore = useAuthStore()
-      const userId = authStore.getAuthUser.value?.id
-
+      const userId: string | undefined = authStore.getAuthUser.value?.id || ''
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_diagrams_list', {
-        userid: userId as string,
+        userid: userId,
       })
 
       // const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_diagrams_list', { userid: userId })
 
       // async list(payload: getListAPIPayload) {
-      //   const supabaseClient = useSupabaseClient()
-      //   // const authStore = useAuthStore()
+      // const supabaseClient = useSupabaseClient()
+      // const authStore = useAuthStore()
 
       // const { data: supabaseResponse, error: supabaseError } = await supabaseClient
       //   .from('diagrams')

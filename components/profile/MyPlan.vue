@@ -67,7 +67,7 @@ function uptoMindMaps(plan: string) {
     ? 'Up to 4 mindmaps'
     : plan === 'Free'
       ? 'Up to 8 mindmaps'
-      : plan === 'Premimum'
+      : plan === 'Premium'
         ? 'Up to 8 mindmaps'
         : 'Unlimited mindmaps'
 }

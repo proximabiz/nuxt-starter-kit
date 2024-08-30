@@ -24,7 +24,7 @@ const cards = [
         :class="item.isDisabled ? 'cursor-not-allowed opacity-60' : 'hover:bg-custom1-100 delay-150 cursor-pointer'"
         :title="item.isDisabled ? 'This feature is not available for Free Subscription' : ''"
       >
-        <NuxtLink :to="item.path">
+        <NuxtLink :to="!item.isDisabled ? item.path : '#'" :class="item.isDisabled && 'cursor-not-allowed opacity-60'">
           <div class="flex items-center py-8" :title="item.isDisabled ? 'This feature is not available for Free Subscription' : ''">
             <div>
               <img :src="item.iconSrc" class="h-10" alt="">

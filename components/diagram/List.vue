@@ -125,8 +125,6 @@ async function createDiagram() {
           title: 'default',
           diagramTypeId: diagramType.id,
           subTypeId: fetchPlanDetails.value.sub_type_id,
-          // subTypeId: '68ded691-d78e-42a9-8ae3-b5715444a5a6',
-          // sub_status.value?.planName
         })
         /* @ts-expect-error need to be fixed */
         redirectToPath(response?.diagram[0].id)

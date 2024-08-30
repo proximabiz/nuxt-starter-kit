@@ -117,15 +117,13 @@ function uptoMindMaps(plan: string, isMonthly: boolean) {
     ? 'Up to 4 mindmaps'
     : plan === 'Basic'
       ? 'Up to 48 mindmaps'
-      : plan === 'Free' && isMonthly
+      : plan === 'Free'
         ? 'Up to 8 mindmaps'
-        : plan === 'Free'
-          ? 'Up to 96 mindmaps'
-          : plan === 'Premium' && isMonthly
-            ? 'Up to 8 mindmaps'
-            : plan === 'Premium'
-              ? 'Up to 96 mindmaps'
-              : 'Unlimited mindmaps'
+        : plan === 'Premium' && isMonthly
+          ? 'Up to 8 mindmaps'
+          : plan === 'Premium'
+            ? 'Up to 96 mindmaps'
+            : 'Unlimited mindmaps'
 }
 </script>
 
