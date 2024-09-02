@@ -1,6 +1,6 @@
 import { ChargeBee } from 'chargebee-typescript'
 import type { ChargebeeItemPriceType, ChargebeeItemType, ChargebeeProductFamilyType } from '../types/chargebee.function.types'
-import type { OrderType } from '../types/complete.order.types'
+import type { OrderType, SubscriptionDetails } from '../types/complete.order.types'
 import { PaymentGatwayID } from '../types/enum'
 import type { UserCardDetailType } from '../types/user.card.details.types'
 
@@ -139,25 +139,58 @@ async function updateCustomerCardDetails(cardDetails: UserCardDetailType, charge
 }
 
 //* **** Create Customer Subscription
-async function createSubscription(orderDetails: OrderType, customerId: string) {
+async function createSubscription(subscription: SubscriptionDetails, customerId: string) {
   try {
-    const sub = await chargebee.subscription.create({
-      plan_id: `Premium-fcb9588a-38bc-451d-b227-8ddbb2fbcca3`,
+    const result = await chargebee.subscription.create_with_items(customerId, {
+      subscription_items: [
+        {
+          item_price_id: subscription.itemPriceId,
+          // unit_price: subscription.amount,
+        },
+      ],
       payment_intent: {
         gateway_account_id: PaymentGatwayID.CHARGEBEE,
-        payment_method_type: 'chargebee',
+        payment_method_type: 'card',
       },
-      customer: {
-        id: customerId,
-      },
-      payment_method: {
-        type: 'card',
-      },
-
+      auto_collection: 'on',
     }).request()
 
+    return { status: 'Success', statusCode: 200, subscripton: result }
+  }
+  catch (error: any) {
+    return {
+      statusCode: error.http_status_code || 500,
+      error: {
+        message: error.message,
+      },
+    }
+  }
+}
+
+//* **** Get Customer Subscription
+async function getCustomerSubscription(subcriptionId: string) {
+  try {
+    const response = await chargebee.subscription.retrieve(subcriptionId).request()
+    if (!response || !response.subscription)
+      return { status: 200, data: { message: 'user don\'t have subscription' } }
+    return { status: 'Success', statusCode: 200, subcriptionDetails: response.subscription }
+  }
+  catch (error: any) {
+    return {
+      status: error.http_status_code || 500,
+      error: {
+        message: error.message,
+      },
+    }
+  }
+}
+
+// ***** Cancel Customer Subscription
+async function cancelSubscription(subcriptionId: string) {
+  try {
+    const subCancel = await chargebee.subscription.cancel_for_items(subcriptionId, { end_of_term: true }).request()
     const response = {
-      subscription: sub.subscription,
+      status: subCancel.subscription.status,
     }
     return { status: 'Success', statusCode: 200, subscripton: response }
   }
@@ -171,18 +204,23 @@ async function createSubscription(orderDetails: OrderType, customerId: string) {
   }
 }
 
-// ***** Cancel Customer Subscription
-async function cancelSubscription(subcriptionId: string) {
+//* **** Get Customer Transaction Details
+async function getCustomerTransactionDetails(customerId: string, subcriptionId: string) {
   try {
-    const subCancel = await chargebee.subscription.cancel(subcriptionId, { end_of_term: true }).request()
-    const response = {
-      status: subCancel.subscription.status,
-    }
-    return { status: 'Success', statusCode: 200, subscripton: response }
+    const response = await chargebee.transaction.list({
+      'limit': 1,
+      'customer_id': { is: customerId },
+      'subscription_id': { is: subcriptionId },
+      'sort_by[desc]': 'date',
+    }).request()
+    if (!response || !response.list[0].transaction)
+      return { status: 200, data: { message: 'user don\'t have transaction details' } }
+
+    return { status: 'Success', statusCode: 200, transactionDetails: response.list[0] }
   }
   catch (error: any) {
     return {
-      statusCode: error.http_status_code || 500,
+      status: error.http_status_code || 500,
       error: {
         message: error.message,
       },
@@ -247,6 +285,8 @@ async function createItemPrice(itemPrice: ChargebeeItemPriceType) {
 async function getIProductFamilyDetails() {
   try {
     const response = await chargebee.item_family.list().request()
+    if (!response || response.list.length === 0)
+      return { status: 200, data: { message: 'there is no product family' } }
     const item_family = []
     for (let i = 0; i < response.list.length; i++) {
       const entry = response.list[i]
@@ -268,6 +308,8 @@ async function getIProductFamilyDetails() {
 async function getProductFamilyDetailsById(planFamilyId: string) {
   try {
     const response = await chargebee.item_family.retrieve(planFamilyId).request()
+    if (!response || !response.item_family)
+      return { status: 200, data: { message: 'there is no product family details' } }
     return { status: 'Success', statusCode: 200, family: response.item_family }
   }
   catch (error: any) {
@@ -284,6 +326,8 @@ async function getProductFamilyDetailsById(planFamilyId: string) {
 async function getItemDetails() {
   try {
     const response = await chargebee.item.list().request()
+    if (!response || response.list.length === 0)
+      return { status: 200, data: { message: 'there is no item or plan details' } }
     const item = []
     for (let i = 0; i < response.list.length; i++) {
       const entry = response.list[i]
@@ -306,6 +350,8 @@ async function getItemDetails() {
 async function getItemDetailsById(planId: string) {
   try {
     const response = await chargebee.item.retrieve(planId).request()
+    if (!response || !response.item)
+      return { status: 200, data: { message: 'there is no specific item or plan details' } }
     return { status: 'Success', statusCode: 200, plan: response.item }
   }
   catch (error: any) {
@@ -322,6 +368,8 @@ async function getItemDetailsById(planId: string) {
 async function getItemPriceDetails() {
   try {
     const response = await chargebee.item_price.list().request()
+    if (!response || response.list.length === 0)
+      return { status: 200, data: { message: 'there is no item price details' } }
     const item = []
     for (let i = 0; i < response.list.length; i++) {
       const entry = response.list[i]
@@ -344,6 +392,8 @@ async function getItemPriceDetails() {
 async function getItemPriceDetailsById(planPriceId: string) {
   try {
     const response = await chargebee.item_price.retrieve(planPriceId).request()
+    if (!response || !response.item_price)
+      return { status: 200, data: { message: 'there is no specific itme price details' } }
     return { status: 'Success', statusCode: 200, plans: response.item_price }
   }
   catch (error: any) {
@@ -380,6 +430,8 @@ async function listChargebeeCustomers(limit: number = 10) {
 async function getChargebeeCustomer(customerId: string) {
   try {
     const response = await chargebee.customer.retrieve(customerId).request()
+    if (!response || !response.customer)
+      return { status: 200, data: { message: 'there is no customer details' } }
     return { status: 'Success', statusCode: 200, customer: response.customer }
   }
   catch (error: any) {
@@ -456,4 +508,4 @@ async function getListOfTransaction(chargebeeCustomerId: string, limit: number =
   }
 }
 
-export { updateCustomerCardDetails, getIProductFamilyDetails, getProductFamilyDetailsById, getItemPriceDetails, getItemPriceDetailsById, getItemDetailsById, createItemPrice, createItem, createProductFamily, cancelSubscription, deleteCustomerCardDetails, createSubscription, createChargebeeCustomer, listChargebeeCustomers, getChargebeeCustomer, deleteChargebeeCustomer, getCustomerCardDetails, getItemDetails, getListOfTransaction }
+export { updateCustomerCardDetails, getCustomerTransactionDetails, getCustomerSubscription, getIProductFamilyDetails, getProductFamilyDetailsById, getItemPriceDetails, getItemPriceDetailsById, getItemDetailsById, createItemPrice, createItem, createProductFamily, cancelSubscription, deleteCustomerCardDetails, createSubscription, createChargebeeCustomer, listChargebeeCustomers, getChargebeeCustomer, deleteChargebeeCustomer, getCustomerCardDetails, getItemDetails, getListOfTransaction }

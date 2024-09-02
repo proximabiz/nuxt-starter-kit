@@ -306,33 +306,42 @@ export interface Database {
       user_chargebee_details: {
         Row: {
           chargebee_payment_method_id: string | null
+          chargebee_status: string | null
           chargebee_user_id: string | null
           created_at: string
           created_by: string | null
+          gateway: string | null
           has_payment_method_active: boolean | null
           id: string
+          payment_source_id: string | null
           updated_at: string | null
           updated_by: string | null
           user_id: string
         }
         Insert: {
           chargebee_payment_method_id?: string | null
+          chargebee_status?: string | null
           chargebee_user_id?: string | null
           created_at?: string
           created_by?: string | null
+          gateway?: string | null
           has_payment_method_active?: boolean | null
           id?: string
+          payment_source_id?: string | null
           updated_at?: string | null
           updated_by?: string | null
           user_id: string
         }
         Update: {
           chargebee_payment_method_id?: string | null
+          chargebee_status?: string | null
           chargebee_user_id?: string | null
           created_at?: string
           created_by?: string | null
+          gateway?: string | null
           has_payment_method_active?: boolean | null
           id?: string
+          payment_source_id?: string | null
           updated_at?: string | null
           updated_by?: string | null
           user_id?: string
@@ -392,11 +401,18 @@ export interface Database {
         Row: {
           amount: number
           auto_renew: boolean
+          chargebee_payment_method_id: string | null
+          chargebee_payment_status: string | null
+          chargeebee_subscription_id: string | null
           created_at: string
           currency: string | null
+          gateway: string | null
           id: string
           is_subscription_active: boolean | null
           note: string | null
+          object: string | null
+          payment_method_type: string | null
+          payment_source_id: string | null
           plan_end_date: string
           plan_start_date: string
           plan_type: string | null
@@ -408,11 +424,18 @@ export interface Database {
         Insert: {
           amount?: number
           auto_renew?: boolean
+          chargebee_payment_method_id?: string | null
+          chargebee_payment_status?: string | null
+          chargeebee_subscription_id?: string | null
           created_at?: string
           currency?: string | null
+          gateway?: string | null
           id?: string
           is_subscription_active?: boolean | null
           note?: string | null
+          object?: string | null
+          payment_method_type?: string | null
+          payment_source_id?: string | null
           plan_end_date: string
           plan_start_date: string
           plan_type?: string | null
@@ -424,11 +447,18 @@ export interface Database {
         Update: {
           amount?: number
           auto_renew?: boolean
+          chargebee_payment_method_id?: string | null
+          chargebee_payment_status?: string | null
+          chargeebee_subscription_id?: string | null
           created_at?: string
           currency?: string | null
+          gateway?: string | null
           id?: string
           is_subscription_active?: boolean | null
           note?: string | null
+          object?: string | null
+          payment_method_type?: string | null
+          payment_source_id?: string | null
           plan_end_date?: string
           plan_start_date?: string
           plan_type?: string | null
