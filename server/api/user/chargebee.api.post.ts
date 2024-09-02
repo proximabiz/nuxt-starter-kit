@@ -1,4 +1,5 @@
-// import { createChargebeeItemAndPrice } from '~/server/utlis/chargebee';
+// import { createChargebeeCustomer, createSubscription } from '~/server/utlis/chargebee'
+import { cancelSubscription } from '~/server/utlis/chargebee'
 
 export default defineEventHandler(async () => {
   // delete customer card
@@ -160,69 +161,53 @@ export default defineEventHandler(async () => {
   //     };
   // }
 
-  // ****** Create Subcription for customer
+  // ****** Create Item/Plan in Chargebee (same our plans)
   // const newItemData = {
-  //     id: 'basic_plan',
-  //     name: 'Basic Plan',
-  //     description: 'This is a basic subscription plan.',
-  //   };
-
-  //   const newItemPriceData = {
-  //     id: 'basic_plan_monthly',
-  //     item_id: 'basic_plan',
-  //     name: 'Basic Plan Monthly',
-  //     price: 2999, // In cents
-  //     currency_code: 'USD',
-  //     period: 1,
-  //     period_unit: 'month',
-  //     trial_period: 30,
-  //     trial_period_unit: 'day',
-  //   };
-  // try {
-  //         const { status, statusCode, item, error } = await createChargebeeItemAndPrice(newItemData,newItemPriceData );
-
-  //         if (status === 'Error') {
-  //         console.error('Error retrieving customer:', error);
-  //         return {
-  //             statusCode: statusCode || 500,
-  //             body: { message: 'Error retrieving customer', error }
-  //         };
-  //         }
-
-  //         console.log('Customer', item);
-  //         return {
-  //         statusCode: 200,
-  //         body: item
-  //         };
-  // } catch (err: any) {
-  //     console.error('Unexpected error:', err);
-  //     return {
-  //     statusCode: 500,
-  //     body: { message: 'Unexpected error occurred', error: err.message }
-  //     };
-  // }
+  //   id: ChargebeePlanEnums.ENTERPRISE_PLAN,
+  //   name: 'Enterprise Plan Main',
+  //   description: 'This is a enterprise subscription plan.',
+  // };
 
   // try {
-  //     const { status, statusCode, item, error } = await createSubscription();
+  //   const { status, statusCode, item, error } = await createChargebeeItem(newItemData);
 
-  //     if (status === 'Error') {
-  //     console.error('Error retrieving customer card details:', error);
+  //   if (status === 'Error') {
+  //     console.error('Error retrieving customer:', error);
   //     return {
-  //         statusCode: statusCode || 500,
-  //         body: { message: 'Error retrieving customer card details', error }
+  //       statusCode: statusCode || 500,
+  //       body: { message: 'Error retrieving customer', error }
   //     };
-  //     }
+  //   }
 
-  //     console.log('Customer card: ', item);
-  //     return {
+  //   console.log('Customer', item);
+  //   return {
   //     statusCode: 200,
   //     body: item
-  //     };
+  //   };
   // } catch (err: any) {
-  //     console.error('Unexpected error:', err);
-  //     return {
+  //   console.error('Unexpected error:', err);
+  //   return {
   //     statusCode: 500,
   //     body: { message: 'Unexpected error occurred', error: err.message }
-  //     };
+  //   };
   // }
+
+  //  ****** Cancel user subscription
+  try {
+    const { error: errorMessage } = await cancelSubscription('subs-001') // need to pass subscription id
+
+    console.error('Error retrieving customer card details:', errorMessage)
+
+    return {
+      statusCode: 200,
+      body: 'dsds',
+    }
+  }
+  catch (err: any) {
+    console.error('Unexpected error:', err)
+    return {
+      statusCode: 500,
+      body: { message: 'Unexpected error occurred', error: err.message },
+    }
+  }
 })
