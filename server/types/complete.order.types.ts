@@ -36,17 +36,22 @@ export interface UserStripeDetails {
 }
 
 export interface SubscriptionDetails {
-  user_id: string
-  sub_type_id: string
+  userId?: string
+  subscriptionTypeId: string
+  itemPriceId: string
   amount: number
-  plan_start_date: Date
-  plan_end_date: Date
-  currency: string
-  plan_type: string
+  currentDate?: Date
+  endDate?: Date
+  currencyCode?: string
+  planType?: string
+  chargebeeSubId?: string
+  object?: string
 }
 
-export interface PaymentIntent {
-  statusCode: number
-  status: string
-  paymentId: string
+export interface TransactionDetails {
+  transactionId?: string
+  paymentSourceId?: string
+  paymentMethod?: string
+  gateway?: string
+  transactionStatus?: string
 }
