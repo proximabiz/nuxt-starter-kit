@@ -127,4 +127,5 @@ export interface getPriceCardDetailsTypes {
   yearlyprice: number
   chargebeeplanid: null | string
   features: null | string
+  sno: number
 }

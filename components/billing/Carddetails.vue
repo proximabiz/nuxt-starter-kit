@@ -56,7 +56,7 @@ const billingSchema = z.object({
 async function getCardDetails() {
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
-    const validCard = response?.msg !== 'no data' || response?.message !== 'unable to find card details of user please add card first'
+    const validCard = response ? response?.msg !== 'no data' : response !== undefined
     const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (validCard) {
