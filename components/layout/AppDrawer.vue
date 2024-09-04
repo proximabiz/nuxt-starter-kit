@@ -21,7 +21,7 @@ async function singOut() {
     navigateTo('/')
   }
   catch (error) {
-    $error(error)
+    $error(error.data.message)
   }
 }
 watch([cardDetails.value, isCardEmtpy.value], () => {

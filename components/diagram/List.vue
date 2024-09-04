@@ -78,7 +78,7 @@ async function fetchDiagramTypes() {
     diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
-    $error(error)
+    $error(error.statusMessage)
   }
 }
 async function fetchDiagrams() {
@@ -94,7 +94,7 @@ async function fetchDiagrams() {
     diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
-    $error(error)
+    $error(error.statusMessage)
   }
 }
 
@@ -132,7 +132,7 @@ async function createDiagram() {
     }
     catch (error) {
       isLoading.value = false
-      $error(error)
+      $error(error.statusMessage)
     }
   }
 }
@@ -152,7 +152,7 @@ async function deleteDiagram(diagramId: string) {
   }
   catch (error) {
     isDelete.value = true
-    $error(error)
+    $error(error.statusMessage)
   }
 }
 
@@ -168,7 +168,7 @@ async function confirmedDeleteDiagram() {
     isDiagramLimitExceeded.value = diagramsCountList.value.currentCount === diagramsCountList?.value.allowedCount
   }
   catch (error) {
-    $error(error)
+    $error(error.statusMessage)
   }
 }
 

@@ -26,6 +26,9 @@ export const useBillingDetailsStore = defineStore('billingPropsPage', {
       disabled: false,
       calculatedPrice: '',
       currencySymbol: '',
+      planType: '',
+      currencyCode: '',
+      id: '',
     },
   }),
   actions: {
@@ -36,6 +39,9 @@ export const useBillingDetailsStore = defineStore('billingPropsPage', {
       disabled: boolean
       calculatedPrice: string
       currencySymbol: string
+      planType: string
+      currencyCode: string
+      id: string
     }) {
       this.propObject = newObject
     },

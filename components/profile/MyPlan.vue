@@ -20,7 +20,7 @@ async function getActivePlan() {
 async function cancelPlan() {
   const payload = {
     userId: planData.value.user_id,
-    userSubscriptionId: planData.value.id,
+    userSubscriptionId: planData.value.sub_type_id,
     note: 'Cancel Subscription',
   }
   try {

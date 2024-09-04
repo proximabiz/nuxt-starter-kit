@@ -19,15 +19,15 @@ const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 
-const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
-
-if (cardHolderName !== ''
-  && cardNo !== ''
-  && expDate !== ''
-  && cvv !== '')
-  isEditDisable.value = true
-else
-  isEditDisable.value = false
+watch([cardDetails.value], () => {
+  const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
+  if (cardHolderName
+    && cardNo
+    && expDate
+    && cvv
+  )
+    isEditDisable.value = false
+}, { deep: true, immediate: true })
 
 const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
@@ -56,9 +56,30 @@ const billingSchema = z.object({
 async function getCardDetails() {
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
-    isEditDisable.value = response?.msg !== 'no data'
+    const validCard = response?.msg !== 'no data' || response?.message !== 'unable to find card details of user please add card first'
+    const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
+    const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
+    if (validCard) {
+      cardDetails.value.cardHolderName = response?.cardHolderName ? response?.cardHolderName : ''
+      cardDetails.value.cardNo = response?.cardNumber
+      cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
+      cardDetails.value.cvv = ''
+      isEditDisable.value = true
+    }
+    else {
+      cardDetails.value.cardHolderName = ''
+      cardDetails.value.cardNo = ''
+      cardDetails.value.expDate = ''
+      cardDetails.value.cvv = ''
+      isEditDisable.value = false
+    }
   }
   catch (error) {
+    cardDetails.value.cardHolderName = ''
+    cardDetails.value.cardNo = ''
+    cardDetails.value.expDate = ''
+    cardDetails.value.cvv = ''
+    isEditDisable.value = false
     $error(error.statusMessage)
   }
 }

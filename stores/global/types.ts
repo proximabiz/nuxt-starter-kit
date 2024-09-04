@@ -14,5 +14,8 @@ export interface BillingProps {
     disabled: boolean
     calculatedPrice: string
     currencySymbol: string
+    planType: string
+    currencyCode: string
+    id: string
   }
 }
