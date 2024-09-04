@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   if (!subUser || subUser === null) {
     return {
       status: 200,
-      message: 'unable to find card details of user please add card first',
+      data: { message: 'unable to find card details of user please add card first' },
     }
   }
 
