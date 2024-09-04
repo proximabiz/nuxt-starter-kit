@@ -45,7 +45,7 @@ export const CompleteOrderValidation = Joi.object({
   gstNumber: Joi.string().optional(),
 
   cardHolderName: Joi.string().required(),
-  cardNumber: Joi.string().creditCard().required(),
+  cardNumber: Joi.string().required(),
   expiryMonth: Joi.number().integer().positive().required(),
   expiryYear: Joi.number().integer().positive().required(),
   securityCode: Joi.string().min(3).max(4).required(),
