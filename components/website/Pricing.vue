@@ -82,6 +82,7 @@ const prices = computed(() => {
       calculatedPrice: (planPrice * adjustmentFactor).toFixed(2), // Adjusting the price
       currencySymbol: selectedRegion?.currencySymbol, // Setting the currency symbol
       disabled: disabledPlan,
+      featureData: isMonthly.value ? plan?.features?.monthly?.includedItems : plan?.features?.annually?.includedItems,
     }
   })
   return adjustedPrices
@@ -102,19 +103,6 @@ function providePlanDetails(val: any) {
   billingStore.setPropObject(planDetails)
   navigateTo('/plan/upgrade-plan')
   return cardValue
-}
-function uptoMindMaps(plan: string, isMonthly: boolean) {
-  return plan === 'Basic' && isMonthly
-    ? 'Up to 4 mindmaps'
-    : plan === 'Basic'
-      ? 'Up to 48 mindmaps'
-      : plan === 'Free'
-        ? 'Up to 8 mindmaps'
-        : plan === 'Premium' && isMonthly
-          ? 'Up to 8 mindmaps'
-          : plan === 'Premium'
-            ? 'Up to 96 mindmaps'
-            : 'Unlimited mindmaps'
 }
 </script>
 
@@ -189,52 +177,24 @@ function uptoMindMaps(plan: string, isMonthly: boolean) {
             >
               What's included:
             </p>
-            <ul class="mt-2 space-y-2 sm:mt-2">
+            <ul v-for="(feature, i) in value?.featureData" :key="i" class="mt-2 space-y-2 sm:mt-2">
               <li class="flex items-center gap-1">
                 <svg
+                  v-if="feature.icon === 'checkmark'"
                   xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="h-5 w-5 text-indigo-700"
                 >
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
-                <span class="text-gray-700"> {{
-                  uptoMindMaps(value.name, isMonthly) }}</span>
-              </li>
-              <li class="flex items-center gap-1">
+
                 <svg
+                  v-else
                   xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
+                  stroke="currentColor" class="h-5 w-5 text-red-700"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                <span class="text-gray-700"> File,image attachments </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <span class="text-gray-700"> PNG image and JSON export </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <span class="text-gray-700"> Mindmap printing </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <span class="text-gray-700"> Version history </span>
+                <span class="text-gray-700"> {{ feature?.description }}</span>
               </li>
             </ul>
           </div>

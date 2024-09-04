@@ -17,6 +17,7 @@ const inActivePlanModal = ref<boolean>(false)
 const fetchPlanDetails = ref()
 const isActiveTitleSort = ref<boolean>(false)
 const isActiveUpdateDateSort = ref<boolean>(false)
+const isDiagramsLoading = ref<boolean>(false)
 const selectedHeader = ref('')
 
 const diagramsList = computed(() => diagramStore.diagramsList)
@@ -82,10 +83,14 @@ async function fetchDiagramTypes() {
   }
 }
 async function fetchDiagrams() {
+  isDiagramsLoading.value = true
   try {
-    await diagramStore.list()
-    await fetchDiagramTypes()
-    await diagramStore.getDiagramsCount()
+    const diagramsListData = await diagramStore.list()
+    const diagramTypes = await fetchDiagramTypes()
+    const getDiagramsCountList = await diagramStore.getDiagramsCount()
+    const cardResponse = await subscriptionStore.getCardDetailsAPI()
+    if (cardResponse || diagramsListData || diagramTypes || getDiagramsCountList)
+      isDiagramsLoading.value = false
     currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
 
     const value = diagramsCountList?.value.currentCount
@@ -94,6 +99,7 @@ async function fetchDiagrams() {
     diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
+    isDiagramsLoading.value = false
     $error(error.statusMessage)
   }
 }
@@ -186,15 +192,10 @@ async function getActivePlan() {
 
 onMounted(async () => {
   fetchDiagrams()
-  saveModal.value = false
-  if (cardDetails.value.cardNo === '') {
-    return (
-      saveModal.value = true
-    )
-  }
   await getActivePlan()
 })
 watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async () => {
+  const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
   if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
     isDiagramLimitExceeded.value = true
   else
@@ -203,6 +204,15 @@ watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async ()
   await diagramStore.list()
   await getActivePlan()
   fetchDiagrams()
+  saveModal.value = false
+  if (!cardHolderName
+    && !cardNo
+    && !expDate
+    && !cvv) {
+    return (
+      saveModal.value = true
+    )
+  }
 }, { deep: true, immediate: true })
 
 function saveDetails(_valid: boolean) {
@@ -228,6 +238,12 @@ function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSor
 
 <template>
   <div class="pl-6">
+    <UModal v-model="isDiagramsLoading">
+      <UProgress animation="carousel" />
+      <UCard>
+        Fetching your <span class="font-bold">mindmaps.</span>
+      </UCard>
+    </UModal>
     <template v-if="!diagramsList?.length">
       <div class="flex justify-center my-4">
         <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />

@@ -43,10 +43,10 @@ const _isPaymentDateSort = ref<boolean>(false)
 const { $success, $error } = useNuxtApp()
 const { cardHolderName, cardNo, expDate, cvv } = cardData.value
 
-if (cardHolderName !== ''
-  && cardNo !== ''
-  && expDate !== ''
-  && cvv !== '') {
+if (cardHolderName
+  && cardNo
+  && expDate
+  && cvv) {
   isEditDisable.value = true
   isFieldEmtpy.value = false
 }
@@ -187,11 +187,11 @@ async function handleSubmit() {
       securityCode: cvv.toString(),
     }
     const response = await subscriptionStore.addNewCardDetails(payload)
-    if (cardHolderName !== ''
-      || cardNo !== ''
-      || expDate !== ''
-      || cvv !== ''
-      || response) {
+    if ((cardHolderName
+      && cardNo
+      && expDate
+      && cvv)
+      && response) {
       return (
         $success('Your new card details has succussfuly added'),
         isLoadingAdd.value = false,
@@ -219,10 +219,10 @@ onMounted(async () => {
 watch([cardDetails.value, cardData.value, isFieldEmtpy.value, diagramsList.value?.length], () => {
   const { cardHolderName, cardNo, expDate, cvv } = cardData.value
 
-  if (cardHolderName !== ''
-    && cardNo !== ''
-    && expDate !== ''
-    && cvv !== '') { isFieldEmtpy.value = false }
+  if (cardHolderName
+    && cardNo
+    && expDate
+    && cvv) { isFieldEmtpy.value = false }
   else {
     isFieldEmtpy.value = true
     isEditDisable.value = false
