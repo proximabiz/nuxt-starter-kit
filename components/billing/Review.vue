@@ -48,7 +48,7 @@ async function handleCompleteOrder(valid: boolean) {
       cardNumber: allDetails.value.cardNo,
       expiryMonth: Number(expirationDate[0]),
       expiryYear: Number(expirationDate[1]),
-      securityCode: allDetails.value.cvv !== '****' ? allDetails.value.cvv.toString() : '',
+      securityCode: allDetails.value.cvv !== '' ? allDetails.value.cvv.toString() : '000',
     }
     const gst = { gstNumber: allDetails.value?.taxId ? allDetails.value?.taxId : '' }
     const finalPayload = allDetails.value?.taxId ? { ...payload, ...gst } : payload

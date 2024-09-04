@@ -243,7 +243,15 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_pricing_card_details' as never)
       if (supabaseError)
         throw supabaseError
-      this.pricingData = supabaseResponse
+
+      const dataList = Array.isArray(supabaseResponse) ? supabaseResponse : []
+
+      this.pricingData = dataList.map((plan: any) => {
+        return {
+          ...plan,
+          sno: plan.name === 'Free' ? 0 : plan.name === 'Basic' ? 1 : plan.name === 'Premium' ? 2 : 3,
+        }
+      })
       return supabaseResponse
     },
 

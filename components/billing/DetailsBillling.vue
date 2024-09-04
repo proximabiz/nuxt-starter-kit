@@ -44,7 +44,7 @@ async function setActiveStep(index: number) {
       isFieldEmtpy.value = true
     }
   }
-  if (index === 3 && index < 4) {
+  if (index === 3) {
     const { cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
     const response = await subscriptionStore.getCardDetailsAPI()
     const validCardDetails = cardHolderName !== '' && cardNo !== '' && expDate !== '' && cvv !== ''

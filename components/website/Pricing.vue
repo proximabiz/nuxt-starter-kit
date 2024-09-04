@@ -10,24 +10,20 @@ const authStore = useAuthStore()
 const isLoading = ref<boolean>(true)
 const currencyList = ref()
 const getPlanName = ref()
-const priceCardDetails = ref()
-const { $error } = useNuxtApp()
+const isLoadingPrices = ref<boolean>(false)
+
+// const { $error } = useNuxtApp()
 
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
 const currency = await subscriptionStore.getCountryCurrencyData()
 const getPlanData = await subscriptionStore.fetchActivePlan()
+const pricingData = computed(() => subscriptionStore.pricingData)
 
 if (currency !== '')
   currencyList.value = currency
 getPlanName.value = getPlanData
 
-// interface PricePlan {
-//   plan: string
-//   price: number | any
-//   month: number
-//   disabled: boolean
-// }
 interface regionTypes {
   name: string
   value: string
@@ -61,86 +57,35 @@ const regions: regionTypes[] = [
   },
 ]
 
-async function fetchPriceCards() {
-  try {
-    const response = await subscriptionStore.getPriceCardDetails()
-
-    const selectedRegion = regions.find(r => r.value === region.value)
-
-    if (!selectedRegion)
-      return
-
-    const adjustmentFactor = selectedRegion.conversionRate
-
-    priceCardDetails.value = Array.isArray(response) && response.map((plan) => {
-      const planPrice = isMonthly.value ? plan.monthlyprice : plan.yearlyprice
-      const disabledPlan = plan.name === 'Free'
-        ? (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === plan.name
-        : plan.name === 'Enterprise'
-          ? true
-          : getPlanName.value.name !== null && getPlanName.value.name === plan.name
-      console.log('Plan', plan)
-      return {
-        ...plan,
-        calculatedPrice: (planPrice * adjustmentFactor).toFixed(2), // Adjusting the price
-        currencySymbol: selectedRegion?.currencySymbol, // Setting the currency symbol
-        disabled: disabledPlan,
-      }
-    })
-
-    console.log('priceCardDetails.value', priceCardDetails.value)
-  }
-  catch (error) {
-    $error(error.statusMessage)
-  }
-}
-
 onMounted(async () => {
-  await fetchPriceCards()
+  await subscriptionStore.getPriceCardDetails()
 })
 
-// const basePlane = getPlanName.value.name !== null && getPlanName.value.name === 'Basic'
-// const premiumPlane = getPlanName.value.name !== null && getPlanName.value.name === 'Premium'
+const prices = computed(() => {
+  const selectedRegion = regions.find(r => r.value === region.value)
 
-// const monthlyPrices: PricePlan[] = [
-//   { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === 'Free' },
-//   { plan: 'Basic', price: 5, month: 1, disabled: basePlane },
-//   { plan: 'Premium', price: 8, month: 1, disabled: premiumPlane },
-//   { plan: 'Enterprise', price: 'Custom', month: 1, disabled: true },
-// ]
+  if (!selectedRegion)
+    return
 
-// const annualPrices: PricePlan[] = reactive([
-//   { plan: 'Free', price: 0, month: 11, disabled: (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === 'Free' },
-//   { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: basePlane },
-//   { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: premiumPlane },
-//   { plan: 'Enterprise', price: 'Custom', month: 11, disabled: true },
-// ])
+  const adjustmentFactor = selectedRegion.conversionRate
+  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+  const adjustedPrices = Array.isArray(pricingData.value) && pricingData.value.sort((a, b) => a.sno - b.sno).map((plan) => {
+    const planPrice = isMonthly.value ? plan.monthlyprice : plan.yearlyprice
+    const disabledPlan = plan.name === 'Free'
+      ? (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === plan.name
+      : plan.name === 'Enterprise'
+        ? true
+        : getPlanName.value.name !== null && getPlanName.value.name === plan.name
 
-// const prices = computed(() => {
-//   const selectedRegion = regions.find(r => r.value === region.value)
-
-//   if (!selectedRegion)
-//     return
-
-//   const adjustmentFactor = selectedRegion.conversionRate
-//   const adjustedPrices = Array.isArray(priceCardDetails.value) && priceCardDetails.value.map((plan) => {
-//     const planPrice = isMonthly.value ? plan.monthlyprice : plan.yearlyprice
-//     const disabledPlan = plan.name === 'Free'
-//       ? (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === plan.name
-//       : plan.name === 'Enterprise'
-//         ? true
-//         : getPlanName.value.name !== null && getPlanName.value.name === plan.name
-
-//     return {
-//       ...plan,
-//       calculatedPrice: (planPrice * adjustmentFactor).toFixed(2), // Adjusting the price
-//       currencySymbol: selectedRegion?.currencySymbol, // Setting the currency symbol
-//       disabled: disabledPlan,
-//     }
-//   })
-//   console.log('adjustedPrices', adjustedPrices)
-//   return adjustedPrices
-// })
+    return {
+      ...plan,
+      calculatedPrice: (planPrice * adjustmentFactor).toFixed(2), // Adjusting the price
+      currencySymbol: selectedRegion?.currencySymbol, // Setting the currency symbol
+      disabled: disabledPlan,
+    }
+  })
+  return adjustedPrices
+})
 
 if (currencyList.value !== '')
   isLoading.value = false
@@ -174,6 +119,12 @@ function uptoMindMaps(plan: string, isMonthly: boolean) {
 </script>
 
 <template>
+  <UModal v-model="isLoadingPrices">
+    <UProgress animation="carousel" />
+    <UCard>
+      Fetching your <span class="font-bold">Plan Prices.</span>
+    </UCard>
+  </UModal>
   <div class="text-center my-5">
     <span class="text-3xl font-medium my-5">Choose Your AI FlowMapper Plan</span>
   </div>
@@ -201,9 +152,9 @@ function uptoMindMaps(plan: string, isMonthly: boolean) {
 
   <div class="max-w-screen-xl mx-12 px-4 py-8 sm:px-6 sm:py-4 lg:px-8 lg:py-4 mb-4 text-sm">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4 lg:gap-8">
-      <template v-if="priceCardDetails && priceCardDetails.length && !isLoading">
+      <template v-if="prices && prices.length && !isLoading">
         <div
-          v-for="(value, index) in priceCardDetails" :key="index"
+          v-for="(value, index) in prices" :key="index"
           class="divide-gray-200 rounded-2xl border border-gray-200 shadow-sm"
         >
           <div class="p-4 pb-0">
@@ -220,9 +171,8 @@ function uptoMindMaps(plan: string, isMonthly: boolean) {
               {{ value.currencySymbol }}{{ value.calculatedPrice }}
             </strong>
             <span class="text-sm font-medium text-gray-700">
-              {{ value.description === 'Enterprice' ? ''
-                : value.description === 'Free' ? '/15 days' : isMonthly
-                  ? '/month' : '/year' }}
+              {{ (value.monthlyprice === 0 && value.name === 'Free') ? '/15 days' : isMonthly
+                ? '/month' : '/year' }}
             </span>
             <UButton
               class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
