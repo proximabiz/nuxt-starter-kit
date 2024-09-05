@@ -66,7 +66,7 @@ async function setActiveStep(index: number) {
             $success('Your new card details has succussfuly added')
         }
         catch (error) {
-          $error(error.statusMessage)
+          $error(error.data.message)
           return isFieldEmtpy.value = false
         }
       }

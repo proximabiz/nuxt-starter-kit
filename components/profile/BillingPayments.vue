@@ -151,7 +151,7 @@ async function getCardDetails() {
   }
   catch (error) {
     isLoadingFetch.value = false
-    $error(error.statusMessage)
+    $error(error.data.message)
   }
 }
 
@@ -208,7 +208,7 @@ async function handleSubmit() {
     }
   }
   catch (error) {
-    $error(error.statusMessage)
+    $error(error.data.message)
     isLoadingAdd.value = false
   }
 }

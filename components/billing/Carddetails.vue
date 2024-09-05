@@ -82,7 +82,7 @@ async function getCardDetails() {
     cardDetails.value.expDate = ''
     cardDetails.value.cvv = ''
     isEditDisable.value = false
-    $error(error.statusMessage)
+    $error(error.data.message)
   }
 }
 

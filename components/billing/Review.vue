@@ -40,7 +40,6 @@ async function handleCompleteOrder(valid: boolean) {
       address: allDetails.value.address,
       phoneNumber: allDetails.value.phone,
       amount: sub_status.value.amount,
-      // amount: Number.parseInt(props.duePrice),
       subscriptionTypeId: planDetails.value.id,
       planType: planDetails.value.planType,
       currencyCode: planDetails.value.currencyCode,
