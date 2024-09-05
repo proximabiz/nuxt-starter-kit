@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
         is_subscription_active: false,
         note: params.note + chargebeeStatus ?? `Cancel User Subscriptions. ${chargebeeStatus}`,
       },
-    ).eq('user_id', params.userId).eq('id', params.userSubscriptionId)
+    ).eq('user_id', params.userId).eq('sub_type_id', params.userSubscriptionId).eq('is_subscription_active', true)
     if (error)
       throw new CustomError(`Supabase Error: ${error.message}`, status)
     return { message: 'Your subscriptions is canceled successfully!', status }
