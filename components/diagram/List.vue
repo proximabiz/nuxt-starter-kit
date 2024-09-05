@@ -188,9 +188,17 @@ async function getActivePlan() {
 onMounted(async () => {
   fetchDiagrams()
   await getActivePlan()
+  const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
+  if (!cardHolderName
+    && !cardNo
+    && !expDate
+    && !cvv) {
+    return (
+      saveModal.value = true
+    )
+  }
 })
 watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async () => {
-  const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
   if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
     isDiagramLimitExceeded.value = true
   else
@@ -200,15 +208,6 @@ watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async ()
   await getActivePlan()
   fetchDiagrams()
   await diagramStore.getDiagramsCount()
-  saveModal.value = false
-  if (!cardHolderName
-    && !cardNo
-    && !expDate
-    && !cvv) {
-    return (
-      saveModal.value = true
-    )
-  }
 }, { deep: true, immediate: true })
 
 function saveDetails(_valid: boolean) {
