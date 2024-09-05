@@ -17,7 +17,7 @@ const inActivePlanModal = ref<boolean>(false)
 const fetchPlanDetails = ref()
 const isActiveTitleSort = ref<boolean>(false)
 const isActiveUpdateDateSort = ref<boolean>(false)
-const selectedHeader = ref('')
+const selectedHeader = ref<string>('')
 
 const diagramsList = computed(() => diagramStore.diagramsList)
 const activeDiagrams = computed(() => diagramStore.activeDiagrams)

@@ -28,6 +28,7 @@ const isFieldEmtpy = ref<boolean>(true)
 const isLoadingFetch = ref<boolean>(false)
 const isLoadingDelete = ref<boolean>(false)
 const isLoadingAdd = ref<boolean>(false)
+const selectedHeader = ref<string>('')
 const isLoadingBillingHistory = ref<boolean>(false)
 const cardData = ref({
   cardHolderName: '',
@@ -239,6 +240,7 @@ async function onCancel() {
   isFieldEmtpy.value = true
 }
 function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaymentDateSort: boolean) {
+  selectedHeader.value = column
   const billingHistoryList = Array.isArray(rows.value) && rows.value
   column === 'amount'
   && billingHistoryList && billingHistoryList.sort((a: any, b: any) => _isAmountSort ? (a[column].toLowerCase() > b[column].toLowerCase()) ? 1 : -1 : -1)
@@ -340,10 +342,10 @@ function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaym
                 @click="sortBillingHistoryList(column.key, isAmountSort = column.key === 'paymentDate' ? !isAmountSort : isAmountSort, _isPaymentDateSort = column.key === 'amount' ? !_isPaymentDateSort : _isPaymentDateSort)"
               >
                 <span>
-                  <span v-if="column.key === 'paymentDate' && isAmountSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
-                  <span v-else-if="column.key === 'paymentDate' && !isAmountSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
-                  <span v-else-if="column.key === 'amount' && _isPaymentDateSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
-                  <span v-else-if="column.key === 'amount' && !_isPaymentDateSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                  <span v-if="selectedHeader === 'paymentDate' && column.key === 'paymentDate' && isAmountSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                  <span v-else-if="selectedHeader === 'paymentDate' && column.key === 'paymentDate' && !isAmountSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                  <span v-else-if="selectedHeader === 'amount' && column.key === 'amount' && _isPaymentDateSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                  <span v-else-if="selectedHeader === 'amount' && column.key === 'amount' && !_isPaymentDateSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
                   {{ column.label }}</span>
               </th>
             </tr>

@@ -16,7 +16,7 @@ const planDetails = computed(() => billingStore.propObject)
 
 const { $success, $error } = useNuxtApp()
 const router = useRouter()
-const saveModal = ref(false)
+const saveModal = ref<boolean>(false)
 
 function completeOrder() {
   saveModal.value = true

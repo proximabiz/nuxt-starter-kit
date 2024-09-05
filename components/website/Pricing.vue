@@ -3,7 +3,7 @@ import { useBillingDetailsStore } from '~/stores/global'
 
 const isMonthly = ref<boolean>(true)
 const cardValue = ref()
-const region = ref('us')
+const region = ref<string>('us')
 const subscriptionStore = useSubscriptionStore()
 const billingStore = useBillingDetailsStore()
 const authStore = useAuthStore()
@@ -11,8 +11,6 @@ const isLoading = ref<boolean>(true)
 const currencyList = ref()
 const getPlanName = ref()
 const isLoadingPrices = ref<boolean>(false)
-
-// const { $error } = useNuxtApp()
 
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
