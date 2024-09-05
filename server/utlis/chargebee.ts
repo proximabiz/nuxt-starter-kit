@@ -465,7 +465,7 @@ async function getListOfTransaction(chargebeeCustomerId: string, limit: number =
   try {
     const transactions = await chargebee.transaction.list({
       limit,
-      customer_id: chargebeeCustomerId as any,
+      customer_id: { is: chargebeeCustomerId },
     }).request()
 
     if (!transactions || transactions.list.length === 0)

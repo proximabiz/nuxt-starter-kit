@@ -23,17 +23,19 @@ export default defineEventHandler(async (event) => {
 
   if (subData?.name !== SubscriptionPlanName.FREE) {
     //* *** */ Cancel user Subscription in Chargebee (using subscription id)
-    const { data: chargeUser, error: chargeUserError, status: chargeUserStatus } = await client
-      .from('user_chargebee_details')
-      .select('chargebee_user_id')
+    const { data: chargeUserSub, error: chargeUserError, status: chargeUserStatus } = await client
+      .from('user_subscriptions')
+      .select('chargeebee_subscription_id')
       .eq('user_id', params.userId)
+      .eq('sub_type_id', params.userSubscriptionId)
+      .eq('is_subscription_active', true)
       .single()
 
     if (chargeUserError)
       throw new CustomError(`Supabase Error: ${chargeUserError.message}`, chargeUserStatus)
 
-    if (chargeUser?.chargebee_user_id) {
-      const { subscripton: subStatus, error: userSubError, statusCode: userSubStatus } = await cancelSubscription(chargeUser?.chargebee_user_id)
+    if (chargeUserSub?.chargeebee_subscription_id) {
+      const { subscripton: subStatus, error: userSubError, statusCode: userSubStatus } = await cancelSubscription(chargeUserSub?.chargeebee_subscription_id)
       if (userSubError)
         throw new CustomError(`Error: ${userSubError.message}`, userSubStatus)
       chargebeeStatus = subStatus.status ? `ChargeBee Status: ${subStatus.status}` : ''
