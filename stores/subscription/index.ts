@@ -1,4 +1,4 @@
-import type { ActivePlanType, AddAPIPayload, AddNewCardPayload, CancelAPIPayload, CompleteOrderPostAPIPayload, GetCardDetails, State, getBillingHistoryDetails } from './types'
+import type { ActivePlanType, AddAPIPayload, AddNewCardPayload, CancelAPIPayload, CompleteOrderPostAPIPayload, GetCardDetails, State, getBillingHistoryDetails, getPriceCardDetailsTypes } from './types'
 import type { Database } from '~/types/supabase'
 
 function initialState() {
@@ -12,6 +12,8 @@ function initialState() {
       total_diagrams_count: 0,
       plan_start_date: '',
       plan_end_date: '',
+      sub_type_id: '',
+      amount: 0,
     },
     activePlan: {
       id: '',
@@ -22,6 +24,7 @@ function initialState() {
       auto_renew: false,
       is_subscription_active: false,
       sub_key: null,
+      sub_type_id: null,
       name: '',
       description: '',
       monthly_price: 0,
@@ -47,6 +50,7 @@ function initialState() {
       cvv: 0,
       taxId: '',
     },
+    pricingData: [],
   }
 }
 
@@ -70,7 +74,6 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_user_subscription', {
         userid: userId as string,
       })
-
       if (supabaseError)
         throw supabaseError
       const response = supabaseResponse as ActivePlanType
@@ -81,6 +84,8 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       this.subscriptionStatus.plan_type = response?.plan_type
       this.subscriptionStatus.plan_start_date = response?.plan_start_date
       this.subscriptionStatus.plan_end_date = response?.plan_end_date
+      this.subscriptionStatus.sub_type_id = response?.sub_type_id
+      this.subscriptionStatus.amount = response?.amount
       if (this.subscriptionStatus.plan_type === 'monthly')
         this.subscriptionStatus.total_diagrams_count = response?.monthly_price
       else
@@ -180,6 +185,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       const getRefreshToken = (await supabaseClient.auth.getSession()).data.session?.refresh_token
       const cookie = `sb-access-token=${accessToken}; sb-refresh-token=${getRefreshToken}`
       const user_id = (await supabaseClient.auth.getSession()).data.session?.user?.id
+
       const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/user/card/${user_id}`, {
         method: 'PATCH',
         headers: {
@@ -230,6 +236,23 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
 
       /* @ts-expect-error need to be fixed */
       return supabaseResponse.value?.data
+    },
+
+    async getPriceCardDetails(): Promise<getPriceCardDetailsTypes> {
+      const supabaseClient = useSupabaseClient<Database>()
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_pricing_card_details' as never)
+      if (supabaseError)
+        throw supabaseError
+
+      const dataList = Array.isArray(supabaseResponse) ? supabaseResponse : []
+
+      this.pricingData = dataList.map((plan: any) => {
+        return {
+          ...plan,
+          sno: plan.name === 'Free' ? 0 : plan.name === 'Basic' ? 1 : plan.name === 'Premium' ? 2 : 3,
+        }
+      })
+      return supabaseResponse
     },
 
   },

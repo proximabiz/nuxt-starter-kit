@@ -24,17 +24,20 @@ export default defineEventHandler(async (event) => {
     throw new CustomError(`Supabase Error: ${subError.message}`, subStatus)
 
   // Check if user already has an active subscription
-  const { error: userSubError, status: userSubStatus } = await client
+  const { data: userSubData, error: userSubError, status: userSubStatus } = await client
     .from('user_subscriptions')
-    .select('user_id')
+    .select('user_id,is_subscription_active')
     .eq('user_id', params.userId)
     .eq('is_subscription_active', true)
 
   if (userSubError)
     throw new CustomError(`Supabase Error: ${userSubError.message}`, userSubStatus)
 
+  const subscriptionStatus = userSubData.find(
+    sub => sub?.is_subscription_active === null,
+  )
   // If the last subscription was "Free" and has not ended, do not create a new one
-  if (subData?.name === SubscriptionPlanName.FREE)
+  if (subData?.name === SubscriptionPlanName.FREE && subscriptionStatus)
     throw new CustomError(`Cannot re-subscribe to Free plan after cancellation`, 401)
 
   const currentDate = new Date()

@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
     .from('user_subscriptions')
     .select('plan_start_date, plan_end_date, sub_type_id, plan_type')
     .eq('user_id', userId)
+    .eq('is_subscription_active', true)
     .order('id', { ascending: false })
     .single()
 

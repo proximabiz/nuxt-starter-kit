@@ -43,10 +43,10 @@ const _isPaymentDateSort = ref<boolean>(false)
 const { $success, $error } = useNuxtApp()
 const { cardHolderName, cardNo, expDate, cvv } = cardData.value
 
-if (cardHolderName !== ''
-  && cardNo !== ''
-  && expDate !== ''
-  && cvv !== '') {
+if (cardHolderName
+  && cardNo
+  && expDate
+  && cvv) {
   isEditDisable.value = true
   isFieldEmtpy.value = false
 }
@@ -74,7 +74,7 @@ const billingSchema = z.object({
       )
     }, 'Expiration date must be in the future'),
   cvv: z.string()
-    .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
+    .length(3, 'Security code must be 3 or 4 digits long') // Default message for general case
     .refine(securityCode => /^\d+$/.test(securityCode), 'Security code must only contain digits'),
 })
 const page = ref(1)
@@ -113,7 +113,7 @@ async function handleDeleteConfirm(): Promise<void> {
   }
   catch (error) {
     isLoadingDelete.value = false
-    $error(error)
+    $error(error.data.message)
   }
 }
 
@@ -121,8 +121,10 @@ async function getCardDetails() {
   isLoadingFetch.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
-    const expiryDate = response?.msg !== 'no data' ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
-    if (response?.msg !== 'no data') {
+    const validCard = response?.message || response?.msg !== 'no data' || response !== undefined
+    const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
+    const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
+    if (validCard) {
       isLoadingFetch.value = false
       cardData.value.cardHolderName = response?.cardHolderName
       cardData.value.cardNo = response?.cardNumber
@@ -160,14 +162,14 @@ async function getBillingHistoryData() {
       billingHistoryData.value = response.map((item: any) => {
         return {
           ...item,
-          currencySymbol: item.currencyCode.toLowerCase() === 'europe' ? '€' : item.currencyCode.toLowerCase() === 'india' ? '₹' : '$',
+          currencySymbol: item.currencyCode.toLowerCase() === 'EUR' ? '€' : item.currencyCode.toLowerCase() === 'INR' ? '₹' : '$',
         }
       })
     }
   }
   catch (error) {
     isLoadingBillingHistory.value = false
-    $error(error.statusMessage)
+    $error(error.statusMessage !== 'Internal Server Error' ? error.statusMessage : 'Something went wrong')
   }
 }
 
@@ -176,7 +178,7 @@ async function handleSubmit() {
     const { cardHolderName, cardNo, expDate, cvv } = cardData.value
 
     isLoadingAdd.value = true
-    const monthYear = expDate.split('/')
+    const monthYear = expDate && expDate.split('/')
     const payload = {
       cardHolderName,
       cardNumber: cardNo.toString(),
@@ -185,11 +187,11 @@ async function handleSubmit() {
       securityCode: cvv.toString(),
     }
     const response = await subscriptionStore.addNewCardDetails(payload)
-    if (cardHolderName !== ''
-      || cardNo !== ''
-      || expDate !== ''
-      || cvv !== ''
-      || response) {
+    if ((cardHolderName
+      && cardNo
+      && expDate
+      && cvv)
+      && response) {
       return (
         $success('Your new card details has succussfuly added'),
         isLoadingAdd.value = false,
@@ -217,10 +219,10 @@ onMounted(async () => {
 watch([cardDetails.value, cardData.value, isFieldEmtpy.value, diagramsList.value?.length], () => {
   const { cardHolderName, cardNo, expDate, cvv } = cardData.value
 
-  if (cardHolderName !== ''
-    && cardNo !== ''
-    && expDate !== ''
-    && cvv !== '') { isFieldEmtpy.value = false }
+  if (cardHolderName
+    && cardNo
+    && expDate
+    && cvv) { isFieldEmtpy.value = false }
   else {
     isFieldEmtpy.value = true
     isEditDisable.value = false
@@ -345,7 +347,7 @@ function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaym
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody v-if="rows.length" class="bg-white divide-y divide-gray-200">
             <tr v-for="payment in rows" :key="payment.paymentDate" class="hover:bg-gray-100">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">
                 {{ payment.paymentDate }}
@@ -358,6 +360,13 @@ function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaym
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ payment.paymentStatus }}
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr>
+              <td colspan="4" class="text-center py-5">
+                No billing history found.
               </td>
             </tr>
           </tbody>

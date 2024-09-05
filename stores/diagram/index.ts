@@ -144,14 +144,19 @@ export const useDiagramStore = defineStore('diagramStore', {
         },
       })
 
-      if (supabaseError.value)
+      if (supabaseError.value) {
+        this.diagramsCountList.allowedCount = 0
+        this.diagramsCountList.currentCount = 0
+        this.diagramsCountList.planType = ''
         throw supabaseError.value
+      }
+      else {
+        const response = supabaseResponse.value as GetDiagramsCountType
 
-      const response = supabaseResponse.value as GetDiagramsCountType
-
-      this.diagramsCountList.allowedCount = response?.allowedCount
-      this.diagramsCountList.currentCount = response?.currentCount
-      this.diagramsCountList.planType = response?.planType
+        this.diagramsCountList.allowedCount = response?.allowedCount
+        this.diagramsCountList.currentCount = response?.currentCount
+        this.diagramsCountList.planType = response?.planType
+      }
 
       return supabaseResponse.value
     },

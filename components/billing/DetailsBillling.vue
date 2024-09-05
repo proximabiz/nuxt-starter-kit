@@ -2,14 +2,13 @@
 const users = ['1user']
 const user = ref(users[0])
 const billingStore = useBillingDetailsStore()
-const isFieldEmtpy = ref<boolean>(false)
-const { $error } = useNuxtApp()
+const isFieldEmtpy = ref<boolean>(true)
+const { $success, $error } = useNuxtApp()
 
 const subscriptionStore = useSubscriptionStore()
 const billingAddressCard = computed(() => subscriptionStore.billingDetails)
 const duePrice = computed(() => billingStore.propObject.currencySymbol + billingStore.propObject.calculatedPrice)
-const { cardHolderName, cardNo, expDate, cvv, name, orgName, country, zip, city, region, address, phone } = billingAddressCard.value
-
+const { name, orgName, country, zip, city, region, address, phone } = billingAddressCard.value
 const steps = [
   { label: 'Your plan', component: 'BillingDetailsBillling' },
   { label: 'Your Address', component: 'BillingAddress' },
@@ -21,18 +20,19 @@ const steps = [
 const state = reactive({
   activeStep: 0,
 })
+
 watch([billingAddressCard.value, isFieldEmtpy.value], () => {
-  if (cardHolderName !== ''
-    && cardNo !== ''
-    && expDate !== ''
-    && cvv !== '')
+  const { cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
+
+  if (cardHolderName && cardNo && expDate && cvv)
     isFieldEmtpy.value = false
   else
     isFieldEmtpy.value = true
-}, { deep: true })
+}, { deep: true, immediate: true })
 
 async function setActiveStep(index: number) {
-  isFieldEmtpy.value = false
+  const { cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
+  isFieldEmtpy.value = true
   if (index >= 2) {
     // Check if any of the required billingState fields are empty
     const isAddressComplete = name && orgName && country && zip && city && region && address && phone
@@ -45,29 +45,37 @@ async function setActiveStep(index: number) {
     }
   }
   if (index >= 3) {
-    const response = await subscriptionStore.getCardDetailsAPI()
-    const isCardDetailsComplete = cardHolderName === '' && cardNo === '' && expDate === ''
-    const monthYear = expDate.split('/')
-    const payload = {
-      cardHolderName,
-      cardNumber: cardNo.toString(),
-      expiryMonth: Number(monthYear[0]),
-      expiryYear: Number(monthYear[1]),
-      securityCode: cvv.toString(),
-    }
-    if (response?.msg === 'no data') {
-      if (isCardDetailsComplete) {
+    if (!cardHolderName
+      && !cardNo
+      && !expDate) {
+      const response = await subscriptionStore.getCardDetailsAPI()
+      const validCardDetails = cardHolderName && cardNo && expDate && cvv
+
+      if ((response?.message || response?.msg === 'no data' || response === undefined) && validCardDetails) {
+        try {
+          const monthYear = expDate.split('/')
+          const payload = {
+            cardHolderName,
+            cardNumber: cardNo.toString(),
+            expiryMonth: Number(monthYear[0]),
+            expiryYear: Number(monthYear[1]),
+            securityCode: cvv.toString(),
+          }
+          const newCardAdd = await subscriptionStore.addNewCardDetails(payload)
+          if (newCardAdd)
+            $success('Your new card details has succussfuly added')
+        }
+        catch (error) {
+          $error(error.statusMessage)
+          return isFieldEmtpy.value = false
+        }
+      }
+      else if ((response?.message || response?.msg === 'no data' || response === undefined) && !validCardDetails) {
         $error('Please fill out all the fields in your billing card details.')
         return isFieldEmtpy.value = false
       }
       else {
         isFieldEmtpy.value = true
-      }
-      try {
-        await subscriptionStore.addNewCardDetails(payload)
-      }
-      catch (error) {
-        $error(error.statusMessage)
       }
     }
   }
@@ -106,13 +114,13 @@ function backStep() {
     <UCard v-if="state.activeStep === 0" class="mb-6 mt-4">
       <div class="divide-y divide-solid">
         <header class="flex justify-start">
-          AI FlowMapper {{ billingStore.propObject.plan }}
+          AI FlowMapper {{ billingStore.propObject.planName }}
         </header>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <USelect v-model="user" :options="users" color="blue" />
           <div>
-            <span>1 month *
-              {{ billingStore.propObject.month > 1 ? billingStore.propObject.month : '' }}</span>
+            <span>
+              {{ billingStore.propObject.planType === 'monthly' ? '1 month : ' : '12 months : ' }}</span>
             <span class="font-semibold pl-1">{{ billingStore.propObject.currencySymbol }}{{ billingStore.propObject.calculatedPrice }}</span>
           </div>
         </section>
@@ -130,9 +138,9 @@ function backStep() {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="billingStore.propObject.plan" :due-price="duePrice" />
+    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="billingStore.propObject.planName" :due-price="duePrice" />
     <BillingTaxId v-if="state.activeStep === 3" />
-    <BillingReview v-if="state.activeStep === 4" :plan-name="billingStore.propObject.plan" :due-price="duePrice" />
+    <BillingReview v-if="state.activeStep === 4" :plan-name="billingStore.propObject.planName" :due-price="duePrice" />
     <div class="d-flex">
       <UButton v-if="state.activeStep !== 4" class="mr-5" @click="backStep">
         Back

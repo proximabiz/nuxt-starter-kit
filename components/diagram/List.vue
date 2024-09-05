@@ -78,15 +78,16 @@ async function fetchDiagramTypes() {
     diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
-    $error(error)
+    $error(error.statusMessage)
   }
 }
 async function fetchDiagrams() {
   try {
-    await diagramStore.list()
-    await fetchDiagramTypes()
-    await diagramStore.getDiagramsCount()
-    currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
+    const diagramsListData = await diagramStore.list()
+    const diagramTypes = await fetchDiagramTypes()
+    const cardResponse = await subscriptionStore.getCardDetailsAPI()
+    if (cardResponse || diagramsListData || diagramTypes)
+      currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
 
     const value = diagramsCountList?.value.currentCount
     const max = diagramsCountList?.value.allowedCount
@@ -94,7 +95,7 @@ async function fetchDiagrams() {
     diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
-    $error(error)
+    $error(error.statusMessage)
   }
 }
 
@@ -132,7 +133,7 @@ async function createDiagram() {
     }
     catch (error) {
       isLoading.value = false
-      $error(error)
+      $error(error.statusMessage)
     }
   }
 }
@@ -152,7 +153,7 @@ async function deleteDiagram(diagramId: string) {
   }
   catch (error) {
     isDelete.value = true
-    $error(error)
+    $error(error.statusMessage)
   }
 }
 
@@ -168,7 +169,7 @@ async function confirmedDeleteDiagram() {
     isDiagramLimitExceeded.value = diagramsCountList.value.currentCount === diagramsCountList?.value.allowedCount
   }
   catch (error) {
-    $error(error)
+    $error(error.statusMessage)
   }
 }
 
@@ -186,13 +187,16 @@ async function getActivePlan() {
 
 onMounted(async () => {
   fetchDiagrams()
-  saveModal.value = false
-  if (cardDetails.value.cardNo === '') {
+  await getActivePlan()
+  const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
+  if (!cardHolderName
+    && !cardNo
+    && !expDate
+    && !cvv) {
     return (
       saveModal.value = true
     )
   }
-  await getActivePlan()
 })
 watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async () => {
   if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
@@ -203,6 +207,7 @@ watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async ()
   await diagramStore.list()
   await getActivePlan()
   fetchDiagrams()
+  await diagramStore.getDiagramsCount()
 }, { deep: true, immediate: true })
 
 function saveDetails(_valid: boolean) {

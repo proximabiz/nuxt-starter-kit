@@ -11,10 +11,17 @@ export default defineEventHandler(async (event) => {
     throw new CustomError('Please provide user-id', 401)
   const client = await serverSupabaseClient<Database>(event)
 
-  const { data: subUser, error: suError, status: suStatus } = await client.from('user_chargebee_details').select('chargebee_user_id').eq('user_id', userId).single()
+  const { data: subUser, error: suError, status: suStatus } = await client.from('user_chargebee_details').select('chargebee_user_id').eq('user_id', userId).limit(1).single()
 
-  if (suError || !subUser)
-    throw new CustomError(suError?.message || 'User not found', suStatus || 404)
+  if (!subUser || subUser === null) {
+    return {
+      status: 200,
+      data: { message: 'unable to find card details of user please add card first' },
+    }
+  }
+
+  if (suError)
+    throw new CustomError(suError, suStatus || 404)
 
   const chargebeeUserId = subUser.chargebee_user_id
   if (!chargebeeUserId)
