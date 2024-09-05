@@ -17,7 +17,6 @@ const inActivePlanModal = ref<boolean>(false)
 const fetchPlanDetails = ref()
 const isActiveTitleSort = ref<boolean>(false)
 const isActiveUpdateDateSort = ref<boolean>(false)
-const isDiagramsLoading = ref<boolean>(false)
 const selectedHeader = ref('')
 
 const diagramsList = computed(() => diagramStore.diagramsList)
@@ -83,15 +82,12 @@ async function fetchDiagramTypes() {
   }
 }
 async function fetchDiagrams() {
-  isDiagramsLoading.value = true
   try {
     const diagramsListData = await diagramStore.list()
     const diagramTypes = await fetchDiagramTypes()
-    const getDiagramsCountList = await diagramStore.getDiagramsCount()
     const cardResponse = await subscriptionStore.getCardDetailsAPI()
-    if (cardResponse || diagramsListData || diagramTypes || getDiagramsCountList)
-      isDiagramsLoading.value = false
-    currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
+    if (cardResponse || diagramsListData || diagramTypes)
+      currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
 
     const value = diagramsCountList?.value.currentCount
     const max = diagramsCountList?.value.allowedCount
@@ -99,7 +95,6 @@ async function fetchDiagrams() {
     diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
-    isDiagramsLoading.value = false
     $error(error.statusMessage)
   }
 }
@@ -204,6 +199,7 @@ watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async ()
   await diagramStore.list()
   await getActivePlan()
   fetchDiagrams()
+  await diagramStore.getDiagramsCount()
   saveModal.value = false
   if (!cardHolderName
     && !cardNo
@@ -238,12 +234,6 @@ function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSor
 
 <template>
   <div class="pl-6">
-    <UModal v-model="isDiagramsLoading">
-      <UProgress animation="carousel" />
-      <UCard>
-        Fetching your <span class="font-bold">mindmaps.</span>
-      </UCard>
-    </UModal>
     <template v-if="!diagramsList?.length">
       <div class="flex justify-center my-4">
         <UButton label="Create your first mindmap" icon="i-heroicons-plus" @click="createDiagram()" />

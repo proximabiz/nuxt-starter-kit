@@ -56,7 +56,7 @@ export interface ActivePlanType {
   description: string
   monthly_price: number
   status: boolean
-  features: null | string
+  features: any
   yearly_price: number
   subscription_status: string
   plan_type: string

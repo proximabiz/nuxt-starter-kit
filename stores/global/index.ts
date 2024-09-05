@@ -20,7 +20,7 @@ export const useGlobalStore = defineStore('globalStore', {
 export const useBillingDetailsStore = defineStore('billingPropsPage', {
   state: (): BillingProps => ({
     propObject: {
-      plan: '',
+      planName: '',
       price: 0,
       month: 0,
       disabled: false,
@@ -33,7 +33,7 @@ export const useBillingDetailsStore = defineStore('billingPropsPage', {
   }),
   actions: {
     setPropObject(newObject: {
-      plan: string
+      planName: string
       price: number
       month: number
       disabled: boolean
