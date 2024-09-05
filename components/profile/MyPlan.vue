@@ -7,7 +7,8 @@ const planData = ref()
 const planFeatures = ref()
 const showUpgradeModal = ref<boolean>(false)
 const noplanModal = ref<boolean>(false)
-const isModalVisible = ref(false)
+const isModalVisible = ref<boolean>(false)
+const isCancelSubLoading = ref<boolean>(false)
 
 async function getActivePlan() {
   try {
@@ -21,20 +22,23 @@ async function getActivePlan() {
   }
 }
 async function cancelPlan() {
-  const payload = {
-    userId: planData.value.user_id,
-    userSubscriptionId: planData.value.sub_type_id,
-    note: 'Cancel Subscription',
-  }
+  isCancelSubLoading.value = true
   try {
+    const payload = {
+      userId: planData.value.user_id,
+      userSubscriptionId: planData.value.sub_type_id,
+      note: 'Cancel Subscription',
+    }
     const res = await subscriptionStore.cancelSubscription(payload)
     if (res?.status === 204) {
+      isCancelSubLoading.value = false
       noplanModal.value = true
       $success(res.message)
       setTimeout(() => navigateTo('/website/pricing'), 1000)
     }
   }
   catch (error) {
+    isCancelSubLoading.value = false
     $error(error.statusMessage)
   }
 }
@@ -68,6 +72,12 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
 </script>
 
 <template>
+  <UModal v-model="isCancelSubLoading">
+    <UProgress animation="carousel" />
+    <UCard>
+      Cancelling your <span class="font-bold">plan subscription.</span>
+    </UCard>
+  </UModal>
   <ProfileBreadCrumb text="My plan" />
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">

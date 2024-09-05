@@ -131,12 +131,12 @@ async function getCardDetails() {
       cardData.value.cardHolderName = response?.cardHolderName
       cardData.value.cardNo = response?.cardNumber
       cardData.value.expDate = expiryDate !== undefined ? expiryDate : ''
-      cardData.value.cvv = response?.cardNumber && '****'
+      cardData.value.cvv = '****'
 
       cardDetails.value.cardHolderName = response?.cardHolderName
       cardDetails.value.cardNo = response?.cardNumber
       cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
-      cardDetails.value.cvv = response?.cardNumber && '****'
+      cardDetails.value.cvv = '****'
 
       isEditDisable.value = true
     }
