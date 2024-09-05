@@ -39,7 +39,7 @@ async function handleCompleteOrder(valid: boolean) {
       zipcode: allDetails.value.zip,
       address: allDetails.value.address,
       phoneNumber: allDetails.value.phone,
-      amount: sub_status.value.amount,
+      amount: sub_status.value.amount !== null ? sub_status.value.amount : 0,
       subscriptionTypeId: planDetails.value.id,
       planType: planDetails.value.planType,
       currencyCode: planDetails.value.currencyCode,
