@@ -32,6 +32,7 @@ watch([billingAddressCard.value, isFieldEmtpy.value], () => {
 }, { deep: true, immediate: true })
 
 async function setActiveStep(index: number) {
+  const { cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
   isFieldEmtpy.value = true
   if (index >= 2) {
     // Check if any of the required billingState fields are empty
@@ -44,36 +45,39 @@ async function setActiveStep(index: number) {
       isFieldEmtpy.value = true
     }
   }
-  if (index === 3) {
-    const { cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
-    const response = await subscriptionStore.getCardDetailsAPI()
-    const validCardDetails = cardHolderName !== '' && cardNo !== '' && expDate !== '' && cvv !== ''
+  if (index >= 3) {
+    if (!cardHolderName
+      && !cardNo
+      && !expDate) {
+      const response = await subscriptionStore.getCardDetailsAPI()
+      const validCardDetails = cardHolderName && cardNo && expDate && cvv
 
-    if ((response?.msg === 'no data' || response === undefined) && validCardDetails) {
-      try {
-        const monthYear = expDate.split('/')
-        const payload = {
-          cardHolderName,
-          cardNumber: cardNo.toString(),
-          expiryMonth: Number(monthYear[0]),
-          expiryYear: Number(monthYear[1]),
-          securityCode: cvv.toString(),
+      if ((response?.msg === 'no data' || response === undefined) && validCardDetails) {
+        try {
+          const monthYear = expDate.split('/')
+          const payload = {
+            cardHolderName,
+            cardNumber: cardNo.toString(),
+            expiryMonth: Number(monthYear[0]),
+            expiryYear: Number(monthYear[1]),
+            securityCode: cvv.toString(),
+          }
+          const newCardAdd = await subscriptionStore.addNewCardDetails(payload)
+          if (newCardAdd)
+            $success('Your new card details has succussfuly added')
         }
-        const newCardAdd = await subscriptionStore.addNewCardDetails(payload)
-        if (newCardAdd)
-          $success('Your new card details has succussfuly added')
+        catch (error) {
+          $error(error.statusMessage)
+          return isFieldEmtpy.value = false
+        }
       }
-      catch (error) {
-        $error(error.statusMessage)
+      else if ((response?.msg === 'no data' || response === undefined) && !validCardDetails) {
+        $error('Please fill out all the fields in your billing card details.')
         return isFieldEmtpy.value = false
       }
-    }
-    else if ((response?.msg === 'no data' || response === undefined) && !validCardDetails) {
-      $error('Please fill out all the fields in your billing card details.')
-      return isFieldEmtpy.value = false
-    }
-    else {
-      isFieldEmtpy.value = true
+      else {
+        isFieldEmtpy.value = true
+      }
     }
   }
   if (index >= 0 && index < steps.length)
