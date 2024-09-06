@@ -68,13 +68,14 @@ const prices = computed(() => {
   const adjustmentFactor = selectedRegion.conversionRate
   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
   const adjustedPrices = Array.isArray(pricingData.value) && pricingData.value.sort((a, b) => a.sno - b.sno).map((plan) => {
+    const isMonthDisabled = isMonthly.value && getPlanName.value.plan_type === 'monthly'
+    const isAnnualDiabled = !isMonthly.value && getPlanName.value.plan_type === 'yearly'
     const planPrice = isMonthly.value ? plan.monthlyprice : plan.yearlyprice
     const disabledPlan = plan.name === 'Free'
       ? (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === plan.name
       : plan.name === 'Enterprise'
         ? true
-        : getPlanName.value.name !== null && getPlanName.value.name === plan.name
-
+        : getPlanName.value.name !== null && isMonthly.value ? (getPlanName.value.name === plan.name && isMonthDisabled) : (getPlanName.value.name === plan.name && isAnnualDiabled)
     return {
       ...plan,
       calculatedPrice: (planPrice * adjustmentFactor).toFixed(2), // Adjusting the price

@@ -9,6 +9,7 @@ interface Props {
   duePrice: string
 }
 const props = defineProps<Props>()
+const isLoadingFetch = ref<boolean>(false)
 const subscriptionStore = useSubscriptionStore()
 
 const { $error } = useNuxtApp()
@@ -55,6 +56,7 @@ const billingSchema = z.object({
 })
 
 async function getCardDetails() {
+  isLoadingFetch.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
     const validCard = response?.cardNumber !== undefined && (response?.msg !== 'no data' || response !== undefined)
@@ -62,6 +64,7 @@ async function getCardDetails() {
     const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (validCard) {
+      isLoadingFetch.value = false
       cardDetails.value.cardHolderName = response?.cardHolderName ? response?.cardHolderName : ''
       cardDetails.value.cardNo = response?.cardNumber
       cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
@@ -69,6 +72,7 @@ async function getCardDetails() {
       isEditDisable.value = true
     }
     else {
+      isLoadingFetch.value = false
       cardDetails.value.cardHolderName = ''
       cardDetails.value.cardNo = ''
       cardDetails.value.expDate = ''
@@ -77,6 +81,7 @@ async function getCardDetails() {
     }
   }
   catch (error) {
+    isLoadingFetch.value = false
     cardDetails.value.cardHolderName = ''
     cardDetails.value.cardNo = ''
     cardDetails.value.expDate = ''
@@ -92,6 +97,12 @@ onMounted(async () => {
 </script>
 
 <template>
+  <UModal v-model="isLoadingFetch">
+    <UProgress animation="carousel" />
+    <UCard>
+      Fetching your <span class="font-bold">Card details.</span>
+    </UCard>
+  </UModal>
   <div class="bg-slate-100 p-4 rounded-md mt-3 min-width">
     <p class="font-medium text-xl">
       AI FlowMapper {{ props.planName }}

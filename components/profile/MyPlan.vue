@@ -9,12 +9,15 @@ const showUpgradeModal = ref<boolean>(false)
 const noplanModal = ref<boolean>(false)
 const isModalVisible = ref<boolean>(false)
 const isCancelSubLoading = ref<boolean>(false)
+const pricingData = computed(() => subscriptionStore.pricingData)
 
 async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
     showUpgradeModal.value = ['PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION', 'NO_SUBSCRIPTION'].includes(response?.subscription_status)
-    planData.value = response
+    const getPricingData = Array.isArray(pricingData.value) && pricingData.value.find(plan => plan.name === response.name)
+    const getCurrency = getPricingData && getPricingData?.currency
+    planData.value = { ...response, currencySymbol: getCurrency === 'IND' ? '₹' : getCurrency === 'EUR' ? '€' : '$' }
     planFeatures.value = response.plan_type === 'monthly' ? response.features?.monthly?.includedItems : response.features?.annually?.includedItems
   }
   catch (error) {
@@ -117,7 +120,8 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
         <p class="text-gray-700">
           {{ planData?.description }}
         </p>
-        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">${{ planData?.monthly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : "/month" }}</span>
+        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
+          {{ planData?.currencySymbol }}{{ planData?.plan_type === 'monthly' ? planData.monthly_price : planData.yearly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : "/month" }}</span>
         </strong>
         <p class="text-lg font-medium text-gray-900 sm:text-xl">
           What's included:
