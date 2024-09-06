@@ -83,11 +83,10 @@ async function fetchDiagramTypes() {
 }
 async function fetchDiagrams() {
   try {
-    const diagramsListData = await diagramStore.list()
-    const diagramTypes = await fetchDiagramTypes()
-    const cardResponse = await subscriptionStore.getCardDetailsAPI()
-    if (cardResponse || diagramsListData || diagramTypes)
-      currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
+    await diagramStore.list()
+    await fetchDiagramTypes()
+    await subscriptionStore.getCardDetailsAPI()
+    currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
 
     const value = diagramsCountList?.value.currentCount
     const max = diagramsCountList?.value.allowedCount
