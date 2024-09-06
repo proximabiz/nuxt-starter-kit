@@ -95,11 +95,10 @@ else
 
 function providePlanDetails(val: any) {
   const currencyCode = val.currency
-  const planDetails = { ...val, planType: isMonthly.value ? 'monthly' : 'yearly', currencyCode }
+  const planDetails = { ...val, planName: val.name, planType: isMonthly.value ? 'monthly' : 'yearly', currencyCode }
   if (!authStore.getAuthUser.value)
     return navigateTo('/login')
   cardValue.value = val
-
   billingStore.setPropObject(planDetails)
   navigateTo('/plan/upgrade-plan')
   return cardValue
@@ -150,8 +149,8 @@ function providePlanDetails(val: any) {
               {{ value.name }}
               <span class="sr-only">Plan</span>
             </h2>
-            <p v-if="value.name = 'Free'" class="text-gray-700">
-              No credit card required. Plan valid upto 15 days.
+            <p class="text-gray-700">
+              {{ value.description }}
             </p>
             <strong
               class="text-3xl font-bold text-gray-900 sm:text-3xl"

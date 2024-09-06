@@ -106,7 +106,7 @@ async function handleCompleteOrder(valid: boolean) {
         <p>Name on the card: {{ allDetails.cardHolderName }}</p>
         <p>Credit or debit card number: {{ allDetails.cardNo }}</p>
         <p>Expire date: {{ allDetails.expDate }}</p>
-        <p>Security code: {{ allDetails.cvv }}</p>
+        <p>Security code: {{ allDetails.cvv !== '' ? allDetails.cvv : '***' }}</p>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-8 bg-slate-100 p-4 min-width">

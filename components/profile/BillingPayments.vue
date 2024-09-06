@@ -74,7 +74,7 @@ const billingSchema = z.object({
       )
     }, 'Expiration date must be in the future'),
   cvv: z.string()
-    .length(4, 'Security code must be 3 or 4 digits long') // Default message for general case
+    .length(3, 'Security code must be 3 or 4 digits long') // Default message for general case
     .refine(securityCode => /^\d+$/.test(securityCode), 'Security code must only contain digits'),
 })
 const page = ref(1)
@@ -121,7 +121,7 @@ async function getCardDetails() {
   isLoadingFetch.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
-    const validCard = response?.msg !== 'no data' || response !== undefined
+    const validCard = response?.message || response?.msg !== 'no data' || response !== undefined
     const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (validCard) {
