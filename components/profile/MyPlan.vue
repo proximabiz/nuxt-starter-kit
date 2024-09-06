@@ -4,34 +4,41 @@ import dayjs from 'dayjs'
 const { $success, $error } = useNuxtApp()
 const subscriptionStore = useSubscriptionStore()
 const planData = ref()
+const planFeatures = ref()
 const showUpgradeModal = ref<boolean>(false)
 const noplanModal = ref<boolean>(false)
-const isModalVisible = ref(false)
+const isModalVisible = ref<boolean>(false)
+const isCancelSubLoading = ref<boolean>(false)
+
 async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
     showUpgradeModal.value = ['PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION', 'NO_SUBSCRIPTION'].includes(response?.subscription_status)
     planData.value = response
+    planFeatures.value = response.plan_type === 'monthly' ? response.features?.monthly?.includedItems : response.features?.annually?.includedItems
   }
   catch (error) {
     $error(error.statusMessage)
   }
 }
 async function cancelPlan() {
-  const payload = {
-    userId: planData.value.user_id,
-    userSubscriptionId: planData.value.id,
-    note: 'Cancel Subscription',
-  }
+  isCancelSubLoading.value = true
   try {
+    const payload = {
+      userId: planData.value.user_id,
+      userSubscriptionId: planData.value.sub_type_id,
+      note: 'Cancel Subscription',
+    }
     const res = await subscriptionStore.cancelSubscription(payload)
     if (res?.status === 204) {
+      isCancelSubLoading.value = false
       noplanModal.value = true
       $success(res.message)
       setTimeout(() => navigateTo('/website/pricing'), 1000)
     }
   }
   catch (error) {
+    isCancelSubLoading.value = false
     $error(error.statusMessage)
   }
 }
@@ -62,18 +69,15 @@ function calculateDaysRemainingFromToday(endDateStr: string | undefined) {
   return diffDays
 }
 const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.value?.plan_end_date))
-function uptoMindMaps(plan: string) {
-  return plan === 'Basic'
-    ? 'Up to 4 mindmaps'
-    : plan === 'Free'
-      ? 'Up to 8 mindmaps'
-      : plan === 'Premimum'
-        ? 'Up to 8 mindmaps'
-        : 'Unlimited mindmaps'
-}
 </script>
 
 <template>
+  <UModal v-model="isCancelSubLoading">
+    <UProgress animation="carousel" />
+    <UCard>
+      Cancelling your <span class="font-bold">plan subscription.</span>
+    </UCard>
+  </UModal>
   <ProfileBreadCrumb text="My plan" />
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">
@@ -118,51 +122,24 @@ function uptoMindMaps(plan: string) {
         <p class="text-lg font-medium text-gray-900 sm:text-xl">
           What's included:
         </p>
-        <ul class="mt-2 space-y-2 sm:mt-2">
+        <ul v-for="(feature, i) in planFeatures" :key="i" class="mt-2 space-y-2 sm:mt-2">
           <li class="flex items-center gap-1">
             <svg
+              v-if="feature.icon === 'checkmark'"
               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="h-5 w-5 text-indigo-700"
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
-            <span class="text-gray-700"> {{ uptoMindMaps(planData?.name) }} </span>
-          </li>
-          <li class="flex items-center gap-1">
+
             <svg
+              v-else
               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="h-5 w-5 text-indigo-700"
+              stroke="currentColor" class="h-5 w-5 text-red-700"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-            <span class="text-gray-700"> File,image attachments </span>
-          </li>
-          <li class="flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="h-5 w-5 text-indigo-700"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-            <span class="text-gray-700"> PNG image and JSON export </span>
-          </li>
-          <li class="flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="h-5 w-5 text-indigo-700"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-            <span class="text-gray-700"> Mindmap printing </span>
-          </li>
-          <li class="flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="h-5 w-5 text-indigo-700"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-            <span class="text-gray-700"> Version history </span>
+            <span class="text-gray-700"> {{ feature?.description }}</span>
           </li>
         </ul>
         <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>

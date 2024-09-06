@@ -10,6 +10,8 @@ function initialState() {
       allowedCount: 0,
       currentCount: 0,
       planType: '',
+      diagramPercentage: '',
+      actualDiagramCount: '',
     },
   }
 }
@@ -21,17 +23,18 @@ export const useDiagramStore = defineStore('diagramStore', {
     async list(): Promise<void> {
       const supabaseClient = useSupabaseClient()
       const authStore = useAuthStore()
+      const userId: string | undefined = authStore.getAuthUser.value?.id || ''
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_diagrams_list', {
+        userid: userId,
+      } as never)
 
-      const { data: supabaseResponse, error: supabaseError } = await supabaseClient
-        .from('diagrams')
-        .select()
-        .eq('user_id', authStore.getAuthUser.value?.id as string)
+      const dataList = Array.isArray(supabaseResponse) ? supabaseResponse : []
 
       if (supabaseError)
         throw supabaseError
-      this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')
-      this.activeDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && !el.active_status)
-      this.deletedDiagrams = supabaseResponse.filter((el: Diagram) => el.title !== 'default' && el.active_status)
+      this.diagramsList = dataList.filter((el: Diagram) => el.title !== 'default')
+      this.activeDiagrams = dataList.filter((el: Diagram) => el.title !== 'default' && !el.active_status)
+      this.deletedDiagrams = dataList.filter((el: Diagram) => el.title !== 'default' && el.active_status)
     },
 
     async get(payload: getAPIPayload) {
@@ -141,14 +144,19 @@ export const useDiagramStore = defineStore('diagramStore', {
         },
       })
 
-      if (supabaseError.value)
+      if (supabaseError.value) {
+        this.diagramsCountList.allowedCount = 0
+        this.diagramsCountList.currentCount = 0
+        this.diagramsCountList.planType = ''
         throw supabaseError.value
+      }
+      else {
+        const response = supabaseResponse.value as GetDiagramsCountType
 
-      const response = supabaseResponse.value as GetDiagramsCountType
-
-      this.diagramsCountList.allowedCount = response?.allowedCount
-      this.diagramsCountList.currentCount = response?.currentCount
-      this.diagramsCountList.planType = response?.planType
+        this.diagramsCountList.allowedCount = response?.allowedCount
+        this.diagramsCountList.currentCount = response?.currentCount
+        this.diagramsCountList.planType = response?.planType
+      }
 
       return supabaseResponse.value
     },

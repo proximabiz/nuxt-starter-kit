@@ -12,8 +12,6 @@ export interface BillingState {
   expDate: string
   cvv: number | string
   taxId: string
-  diagramPercentage: string
-  actualDiagramCount: string
 }
 export interface AddAPIPayload {
   userId: string
@@ -35,10 +33,13 @@ export interface SubscriptionStatus {
   total_diagrams_count: number
   plan_start_date: string
   plan_end_date: string
+  sub_type_id: null | string
+  amount: number
 }
 export interface State {
   subscriptionStatus: SubscriptionStatus
   billingDetails: BillingState
+  pricingData: getPriceCardDetailsTypes[] | null
 }
 
 export interface ActivePlanType {
@@ -50,32 +51,40 @@ export interface ActivePlanType {
   auto_renew: boolean
   is_subscription_active: boolean
   sub_key: null | string
+  sub_type_id: null | string
   name: string
   description: string
   monthly_price: number
   status: boolean
-  features: null | string
+  features: any
   yearly_price: number
   subscription_status: string
   plan_type: string
   total_diagrams_count: number
+
 }
 
 export interface CompleteOrderPostAPIPayload {
+  firstName: string
+  lastName: string
+  email: string | undefined
   country: string
   region: string
   city: string
   zipcode: string
   address: string
   phoneNumber: string
-  subscriptionTypeId: string
+  amount: number
+  subscriptionTypeId: string | null
   planType: string
   currencyCode: string
+  // gstNumber: string
   cardHolderName: string
-  cardNumber: number
-  expiryDate: string
-  securityCode: number
-  taxId: string
+  cardNumber: string | number
+  expiryMonth: number
+  expiryYear: number
+  securityCode: string
+  // taxId: string
 }
 
 export interface AddNewCardPayload {
@@ -91,10 +100,32 @@ export interface DeleteCardDetailsPayload {
 }
 
 export interface GetCardDetails {
+  message: string
   msg: string
   cardHolderName: string
   expiryYear: number
   expiryMonth: number
   cardNumber: string
   id: string
+}
+
+export interface getBillingHistoryDetails {
+  paymentDate: string
+  searchedYear: number
+  amount: number
+  currencyCode: string
+  paymentStatus: string
+  planName: string
+}
+
+export interface getPriceCardDetailsTypes {
+  id: string
+  name: string
+  description: string
+  monthlyprice: number
+  currency: string
+  yearlyprice: number
+  chargebeeplanid: null | string
+  features: any
+  sno: number
 }

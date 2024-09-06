@@ -1,11 +1,12 @@
-<script setup>
+<script setup lang="ts">
 const route = useRoute()
 const { $error } = useNuxtApp()
 const supabaseClient = useSupabaseClient()
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const currentRoutePath = computed(() => route.fullPath)
-const isCardEmtpy = ref(true)
+const isCardEmtpy = ref<boolean>(true)
+
 const links = computed(() => [
   {
     title: 'My Account',
@@ -21,11 +22,15 @@ async function singOut() {
     navigateTo('/')
   }
   catch (error) {
-    $error(error)
+    $error(error.data.message)
   }
 }
 watch([cardDetails.value, isCardEmtpy.value], () => {
-  if (cardDetails.value.cardNo !== '')
+  const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
+  if (cardHolderName
+    && cardNo
+    && expDate
+    && cvv)
     isCardEmtpy.value = false
   else
     isCardEmtpy.value = true

@@ -17,6 +17,7 @@ export interface Diagram {
   updated_at: string | null
   user_id: string | null
   active_status: boolean
+  plan_name: string
 }
 
 export interface getAPIPayload {
@@ -26,7 +27,7 @@ export interface getAPIPayload {
 export interface createAPIPayload {
   title: string
   diagramTypeId: string
-  subTypeId:string
+  subTypeId: string
 }
 
 export interface updateAPIPayload {
@@ -53,6 +54,8 @@ export interface State {
     allowedCount: number
     currentCount: number
     planType: string
+    diagramPercentage: string
+    actualDiagramCount: string
   }
 }
 

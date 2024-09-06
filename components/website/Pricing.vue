@@ -3,28 +3,25 @@ import { useBillingDetailsStore } from '~/stores/global'
 
 const isMonthly = ref<boolean>(true)
 const cardValue = ref()
-const region = ref('india')
+const region = ref<string>('us')
 const subscriptionStore = useSubscriptionStore()
 const billingStore = useBillingDetailsStore()
 const authStore = useAuthStore()
 const isLoading = ref<boolean>(true)
 const currencyList = ref()
 const getPlanName = ref()
+const isLoadingPrices = ref<boolean>(false)
+
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 
 const currency = await subscriptionStore.getCountryCurrencyData()
 const getPlanData = await subscriptionStore.fetchActivePlan()
+const pricingData = computed(() => subscriptionStore.pricingData)
 
 if (currency !== '')
   currencyList.value = currency
 getPlanName.value = getPlanData
 
-interface PricePlan {
-  plan: string
-  price: number | any
-  month: number
-  disabled: boolean
-}
 interface regionTypes {
   name: string
   value: string
@@ -58,22 +55,9 @@ const regions: regionTypes[] = [
   },
 ]
 
-const basePlane = getPlanName.value.name !== null && getPlanName.value.name === 'Basic'
-const premiumPlane = getPlanName.value.name !== null && getPlanName.value.name === 'Premium'
-
-const monthlyPrices: PricePlan[] = [
-  { plan: 'Free', price: 0, month: 1, disabled: (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === 'Free' },
-  { plan: 'Basic', price: 5, month: 1, disabled: basePlane },
-  { plan: 'Premium', price: 8, month: 1, disabled: premiumPlane },
-  { plan: 'Enterprise', price: 'Custom', month: 1, disabled: true },
-]
-
-const annualPrices: PricePlan[] = reactive([
-  { plan: 'Free', price: 0, month: 11, disabled: (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === 'Free' },
-  { plan: 'Basic', price: monthlyPrices[1].price * 11, month: 11, disabled: basePlane },
-  { plan: 'Premium', price: monthlyPrices[2].price * 11, month: 11, disabled: premiumPlane },
-  { plan: 'Enterprise', price: 'Custom', month: 11, disabled: true },
-])
+onMounted(async () => {
+  await subscriptionStore.getPriceCardDetails()
+})
 
 const prices = computed(() => {
   const selectedRegion = regions.find(r => r.value === region.value)
@@ -82,18 +66,21 @@ const prices = computed(() => {
     return
 
   const adjustmentFactor = selectedRegion.conversionRate
-  const adjustedPrices = (isMonthly.value ? monthlyPrices : annualPrices).map((plan) => {
-    if (plan.price === 'Custom') {
-      return {
-        ...plan,
-        calculatedPrice: plan.price, // Use the string 'Free' or 'Custom' directly
-        currencySymbol: '', // No currency symbol for 'Free' or 'Custom' plans
-      }
-    }
+  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+  const adjustedPrices = Array.isArray(pricingData.value) && pricingData.value.sort((a, b) => a.sno - b.sno).map((plan) => {
+    const planPrice = isMonthly.value ? plan.monthlyprice : plan.yearlyprice
+    const disabledPlan = plan.name === 'Free'
+      ? (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === plan.name
+      : plan.name === 'Enterprise'
+        ? true
+        : getPlanName.value.name !== null && getPlanName.value.name === plan.name
+
     return {
       ...plan,
-      calculatedPrice: (plan.price * adjustmentFactor).toFixed(2), // Adjusting the price
+      calculatedPrice: (planPrice * adjustmentFactor).toFixed(2), // Adjusting the price
       currencySymbol: selectedRegion?.currencySymbol, // Setting the currency symbol
+      disabled: disabledPlan,
+      featureData: isMonthly.value ? plan?.features?.monthly?.includedItems : plan?.features?.annually?.includedItems,
     }
   })
   return adjustedPrices
@@ -105,31 +92,24 @@ else
   isLoading.value = true
 
 function providePlanDetails(val: any) {
+  const currencyCode = val.currency
+  const planDetails = { ...val, planName: val.name, planType: isMonthly.value ? 'monthly' : 'yearly', currencyCode }
   if (!authStore.getAuthUser.value)
     return navigateTo('/login')
   cardValue.value = val
-  billingStore.setPropObject(val)
+  billingStore.setPropObject(planDetails)
   navigateTo('/plan/upgrade-plan')
   return cardValue
-}
-function uptoMindMaps(plan: string, isMonthly: boolean) {
-  return plan === 'Basic' && isMonthly
-    ? 'Up to 4 mindmaps'
-    : plan === 'Basic'
-      ? 'Up to 48 mindmaps'
-      : plan === 'Free' && isMonthly
-        ? 'Up to 8 mindmaps'
-        : plan === 'Free'
-          ? 'Up to 96 mindmaps'
-          : plan === 'Premium' && isMonthly
-            ? 'Up to 8 mindmaps'
-            : plan === 'Premium'
-              ? 'Up to 96 mindmaps'
-              : 'Unlimited mindmaps'
 }
 </script>
 
 <template>
+  <UModal v-model="isLoadingPrices">
+    <UProgress animation="carousel" />
+    <UCard>
+      Fetching your <span class="font-bold">Plan Prices.</span>
+    </UCard>
+  </UModal>
   <div class="text-center my-5">
     <span class="text-3xl font-medium my-5">Choose Your AI FlowMapper Plan</span>
   </div>
@@ -164,11 +144,11 @@ function uptoMindMaps(plan: string, isMonthly: boolean) {
         >
           <div class="p-4 pb-0">
             <h2 class="text-lg font-medium text-gray-900">
-              {{ value.plan }}
+              {{ value.name }}
               <span class="sr-only">Plan</span>
             </h2>
             <p class="text-gray-700">
-              No credit card required. Plan valid upto 15 days.
+              {{ value.description }}
             </p>
             <strong
               class="text-3xl font-bold text-gray-900 sm:text-3xl"
@@ -176,9 +156,8 @@ function uptoMindMaps(plan: string, isMonthly: boolean) {
               {{ value.currencySymbol }}{{ value.calculatedPrice }}
             </strong>
             <span class="text-sm font-medium text-gray-700">
-              {{ value.price === 'Custom' ? ''
-                : value.plan === 'Free' ? '/15 days' : isMonthly
-                  ? '/month' : '/year' }}
+              {{ (value.monthlyprice === 0 && value.name === 'Free') ? '/15 days' : isMonthly
+                ? '/month' : '/year' }}
             </span>
             <UButton
               class="w-full mt-2 block rounded border border-indigo-600 bg-indigo-600 px-8 py-3 text-center text-sm font-medium text-white focus:outline-none focus:ring active:text-indigo-500 sm:mt-2"
@@ -186,7 +165,7 @@ function uptoMindMaps(plan: string, isMonthly: boolean) {
                 value.disabled ? 'bg-slate-200 border-transparent' : 'hover:bg-transparent hover:text-indigo-600']"
               :disabled="value.disabled" @click="providePlanDetails(value)"
             >
-              {{ value.plan === 'Enterprise' ? 'Coming Soon' : 'Get started' }}
+              {{ value.name === 'Enterprise' ? 'Coming Soon' : 'Get started' }}
             </UButton>
           </div>
           <div class="p-2 sm:px-4">
@@ -195,52 +174,24 @@ function uptoMindMaps(plan: string, isMonthly: boolean) {
             >
               What's included:
             </p>
-            <ul class="mt-2 space-y-2 sm:mt-2">
+            <ul v-for="(feature, i) in value?.featureData" :key="i" class="mt-2 space-y-2 sm:mt-2">
               <li class="flex items-center gap-1">
                 <svg
+                  v-if="feature.icon === 'checkmark'"
                   xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="h-5 w-5 text-indigo-700"
                 >
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
-                <span class="text-gray-700"> {{
-                  uptoMindMaps(value.plan, isMonthly) }}</span>
-              </li>
-              <li class="flex items-center gap-1">
+
                 <svg
+                  v-else
                   xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
+                  stroke="currentColor" class="h-5 w-5 text-red-700"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                <span class="text-gray-700"> File,image attachments </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <span class="text-gray-700"> PNG image and JSON export </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <span class="text-gray-700"> Mindmap printing </span>
-              </li>
-              <li class="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="h-5 w-5 text-indigo-700"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <span class="text-gray-700"> Version history </span>
+                <span class="text-gray-700"> {{ feature?.description }}</span>
               </li>
             </ul>
           </div>

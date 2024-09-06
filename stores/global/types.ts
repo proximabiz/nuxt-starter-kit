@@ -8,11 +8,14 @@ export interface State {
 
 export interface BillingProps {
   propObject: {
-    plan: string
+    planName: string
     price: number
     month: number
     disabled: boolean
     calculatedPrice: string
     currencySymbol: string
+    planType: string
+    currencyCode: string
+    id: string
   }
 }
