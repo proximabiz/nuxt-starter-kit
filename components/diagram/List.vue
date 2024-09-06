@@ -165,20 +165,7 @@ async function confirmedDeleteDiagram() {
     isDelete.value = false
     $success('Diagram deleted successfully!')
     fetchDiagrams()
-    getActivePlan()
     isDiagramLimitExceeded.value = diagramsCountList.value.currentCount === diagramsCountList?.value.allowedCount
-  }
-  catch (error) {
-    $error(error.statusMessage)
-  }
-}
-
-async function getActivePlan() {
-  try {
-    const response = await subscriptionStore.fetchActivePlan()
-    fetchPlanDetails.value = response
-    const plan_exp = dayjs().isBefore(dayjs(response.plan_end_date))
-    isInactiveSubscription.value = ['NO_SUBSCRIPTION', 'PLAN_EXPIRED'].includes(response?.subscription_status) || (response?.subscription_status === 'NO_ACTIVE_SUBSCRIPTION' && !plan_exp)
   }
   catch (error) {
     $error(error.statusMessage)
@@ -187,7 +174,6 @@ async function getActivePlan() {
 
 onMounted(async () => {
   fetchDiagrams()
-  await getActivePlan()
   const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
   if (!cardHolderName
     && !cardNo
@@ -205,9 +191,12 @@ watch([diagramsList.value, apiResponse.value, diagramsCountList.value], async ()
     isDiagramLimitExceeded.value = false
 
   await diagramStore.list()
-  await getActivePlan()
   fetchDiagrams()
-  await diagramStore.getDiagramsCount()
+  const plan_exp = dayjs().isBefore(dayjs(sub_status.value?.plan_end_date))
+  isInactiveSubscription.value = ['NO_SUBSCRIPTION', 'PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION'].includes(sub_status.value?.planStatus) && !plan_exp
+  const subscriptionState = ['NO_SUBSCRIPTION', 'NO_ACTIVE_SUBSCRIPTION'].includes(sub_status.value?.planStatus)
+  if (!subscriptionState)
+    await diagramStore.getDiagramsCount()
 }, { deep: true, immediate: true })
 
 function saveDetails(_valid: boolean) {
