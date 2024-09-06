@@ -166,7 +166,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       const getRefreshToken = (await supabaseClient.auth.getSession()).data.session?.refresh_token
       const cookie = `sb-access-token=${accessToken}; sb-refresh-token=${getRefreshToken}`
       const user_id = (await supabaseClient.auth.getSession()).data.session?.user?.id
-      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/user/c/${user_id}`, {
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/user/card/${user_id}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
