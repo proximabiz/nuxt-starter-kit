@@ -210,7 +210,7 @@ watch([diagramsList.value, apiResponse.value, diagramsCountList.value, cardDetai
   fetchDiagrams()
   const plan_exp = dayjs().isBefore(dayjs(sub_status.value?.plan_end_date))
   const planExpStatus = (['NO_SUBSCRIPTION', 'PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION'].includes(sub_status.value?.planStatus) && !plan_exp)
-  isInactiveSubscription.value = planExpStatus || isCardExpired.value
+  isInactiveSubscription.value = planExpStatus && isCardExpired.value
   const subscriptionState = ['NO_SUBSCRIPTION', 'NO_ACTIVE_SUBSCRIPTION'].includes(sub_status.value?.planStatus)
   if (!subscriptionState)
     await diagramStore.getDiagramsCount()
@@ -247,7 +247,7 @@ function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSor
   <div class="pl-6">
     <template v-if="!diagramsList?.length">
       <div class="flex justify-center my-4">
-        <UButton label="Create your first mindmap" icon="i-heroicons-plus" :disabled="isCardExpired" @click="createDiagram()" />
+        <UButton label="Create your first mindmap" icon="i-heroicons-plus" :disabled="isInactiveSubscription" @click="createDiagram()" />
       </div>
       <DiagramEmptyListInstructions />
     </template>
@@ -259,7 +259,7 @@ function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSor
           <div class="flex justify-center sm:justify-end my-4">
             <UButton
               label="Create New" icon="i-heroicons-plus"
-              :disabled="isCardExpired"
+              :disabled="isInactiveSubscription"
               @click="createDiagram()"
             />
           </div>

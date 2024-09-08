@@ -281,6 +281,9 @@ function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaym
           Fetching your <span class="font-bold">Billing History.</span>
         </UCard>
       </UModal>
+      <div class="text-red-500 mb-2">
+        Your card is expired, Please add a new valid card details.
+      </div>
       <UCard>
         <UForm :schema="billingSchema" :state="cardData" class="space-y-2">
           <UFormGroup label="Name on the card" name="cardHolderName">

@@ -121,7 +121,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
           {{ planData?.description }}
         </p>
         <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
-          {{ planData?.currencySymbol }}{{ planData?.plan_type === 'monthly' ? planData.monthly_price : planData.yearly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : "/month" }}</span>
+          {{ planData?.currencySymbol }}{{ planData?.plan_type === 'monthly' ? planData.monthly_price : planData.yearly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : planData?.plan_type === 'monthly' ? "/month" : "/yearly" }}</span>
         </strong>
         <p class="text-lg font-medium text-gray-900 sm:text-xl">
           What's included:

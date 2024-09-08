@@ -60,7 +60,7 @@ async function handleCompleteOrder(valid: boolean) {
   catch (error) {
     isLoading.value = false
     $error(error.data.message)
-    if (error?.data?.message && error?.data?.message.toLowerCase().includes('expired card'))
+    if (error?.data?.message && error?.data?.message.toLowerCase().includes('empty'))
       setActiveStep(2)
   }
 }

@@ -27,7 +27,7 @@ export interface getAPIPayload {
 export interface createAPIPayload {
   title: string
   diagramTypeId: string
-  subTypeId: string
+  subTypeId: null | string
 }
 
 export interface updateAPIPayload {
