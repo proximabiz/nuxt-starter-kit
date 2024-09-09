@@ -3,10 +3,11 @@ interface Props {
   isOpen: boolean
   onDeleteConfirm: () => void
   text: string
+  leftButton: string
+  rightButton: string
 }
 interface Emit {
   (e: 'update:isOpen', value: boolean): void
-
 }
 const props = defineProps<Props>()
 const emit = defineEmits<Emit>()
@@ -25,14 +26,13 @@ function cancel() {
     <div class="p-8">
       <div class="mb-8">
         {{ props.text }}
-        <!-- Are you sure you want to delete this Tax ID/GST No? -->
       </div>
       <div class="mt-4 flex justify-end gap-4">
         <UButton class="" color="blue" @click="cancel">
-          Cancel
+          {{ props.leftButton }}
         </UButton>
         <UButton color="gray" @click="confirmDeletion">
-          {{ props.text.includes("delete") ? "Delete" : "Confirm" }}
+          {{ props.rightButton }}
         </UButton>
       </div>
     </div>

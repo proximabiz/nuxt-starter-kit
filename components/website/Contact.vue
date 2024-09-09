@@ -60,7 +60,6 @@ async function onSubmit() {
     message: state.message,
     token: state.token,
   }
-
   try {
     const response = await contactStore.create(payload)
     if (response?.status === 201) {

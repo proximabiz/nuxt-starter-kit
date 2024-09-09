@@ -9,5 +9,5 @@ globalStore.pageHeading.title = 'My Account'
 </script>
 
 <template>
-  <ProfileMyAccount />
+  <ProfileAddresDetails />
 </template>

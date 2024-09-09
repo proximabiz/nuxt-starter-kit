@@ -13,11 +13,13 @@ export const useUserStore = defineStore('userStore', {
     async fetchTaxGst(): Promise<GetTaxGSTResponseType> {
       const supabaseClient = useSupabaseClient()
       const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
-
+      const getRefreshToken = (await supabaseClient.auth.getSession()).data.session?.refresh_token
+      const cookie = `sb-access-token=${accessToken}; sb-refresh-token=${getRefreshToken}`
       const { data: supabaseResponse, error: supabaseError } = await useFetch('/api/user/gst', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          Cookie: cookie,
         },
       })
 

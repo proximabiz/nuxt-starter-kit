@@ -3,7 +3,6 @@ import avatar from '@/assets/media/user.png'
 
 const route = useRoute()
 const router = useRouter()
-const { $error } = useNuxtApp()
 const authStore = useAuthStore()
 const supabaseClient = useSupabaseClient()
 const subscriptionStore = useSubscriptionStore()
@@ -63,7 +62,7 @@ async function singOut() {
     navigateTo('/')
   }
   catch (error) {
-    $error(error)
+    error(error)
   }
 }
 function isActiveRoute(to: string) {

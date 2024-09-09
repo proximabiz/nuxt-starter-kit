@@ -1,9 +1,18 @@
-import type { CreateDiagramResponseType, Diagram, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
+import type { CreateDiagramResponseType, Diagram, GetDiagramsCountType, State, UpdateDiagramResponseType, createAPIPayload, getAPIPayload, saveAPIPayload, updateAPIPayload } from './types'
 import type { Database } from '~/types/supabase'
 
 function initialState() {
   return {
     diagramsList: null,
+    activeDiagrams: [],
+    deletedDiagrams: [],
+    diagramsCountList: {
+      allowedCount: 0,
+      currentCount: 0,
+      planType: '',
+      diagramPercentage: '',
+      actualDiagramCount: '',
+    },
   }
 }
 
@@ -14,16 +23,18 @@ export const useDiagramStore = defineStore('diagramStore', {
     async list(): Promise<void> {
       const supabaseClient = useSupabaseClient()
       const authStore = useAuthStore()
+      const userId: string | undefined = authStore.getAuthUser.value?.id || ''
+      const { data: supabaseResponse, error: supabaseError } = await supabaseClient.rpc('get_diagrams_list', {
+        userid: userId,
+      } as never)
 
-      const { data: supabaseResponse, error: supabaseError } = await supabaseClient
-        .from('diagrams')
-        .select()
-        .eq('user_id', authStore.getAuthUser.value?.id as string)
+      const dataList = Array.isArray(supabaseResponse) ? supabaseResponse : []
 
       if (supabaseError)
         throw supabaseError
-
-      this.diagramsList = supabaseResponse.filter((el: Diagram) => el.title !== 'default')
+      this.diagramsList = dataList.filter((el: Diagram) => el.title !== 'default')
+      this.activeDiagrams = dataList.filter((el: Diagram) => el.title !== 'default' && !el.active_status)
+      this.deletedDiagrams = dataList.filter((el: Diagram) => el.title !== 'default' && el.active_status)
     },
 
     async get(payload: getAPIPayload) {
@@ -33,10 +44,8 @@ export const useDiagramStore = defineStore('diagramStore', {
         .from('diagrams')
         .select()
         .eq('id', payload.diagramId)
-
       if (supabaseError)
         throw supabaseError
-
       return supabaseResponse
     },
 
@@ -102,7 +111,8 @@ export const useDiagramStore = defineStore('diagramStore', {
 
       const { data: supabaseResponse, error: supabaseError } = await supabaseClient
         .from('diagrams')
-        .delete()
+        // .delete()
+        .update({ active_status: true } as never)
         .eq('id', payload.diagramId)
 
       if (supabaseError)
@@ -122,6 +132,35 @@ export const useDiagramStore = defineStore('diagramStore', {
 
       return supabaseResponse
     },
+
+    async getDiagramsCount() {
+      const supabaseClient = useSupabaseClient()
+      const accessToken = (await supabaseClient.auth.getSession()).data.session?.access_token
+
+      const { data: supabaseResponse, error: supabaseError } = await useFetch(`/api/diagram/diagramsCount`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      if (supabaseError.value) {
+        this.diagramsCountList.allowedCount = 0
+        this.diagramsCountList.currentCount = 0
+        this.diagramsCountList.planType = ''
+        throw supabaseError.value
+      }
+      else {
+        const response = supabaseResponse.value as GetDiagramsCountType
+
+        this.diagramsCountList.allowedCount = response?.allowedCount
+        this.diagramsCountList.currentCount = response?.currentCount
+        this.diagramsCountList.planType = response?.planType
+      }
+
+      return supabaseResponse.value
+    },
+
   },
   persist: {
     storage: persistedState.localStorage,

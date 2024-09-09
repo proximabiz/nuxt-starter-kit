@@ -87,10 +87,11 @@
           <p>Under GDPR, You can be referred to as the Data Subject or as the User as you are the individual using the Service.</p>
         </li>
       </ul>
-      <h2 class="font-semibold text-2xl mt-8">
-        Collecting and Using Your Personal Data
-      </h2>
-      <h3 class="font-bold">
+
+      <h2>Collecting and Using Your Personal Data</h2>
+      <h3>Types of Data Collected</h3>
+      <h4>Personal Data</h4>
+      <h3>
         Types of Data Collected
       </h3>
       <h4 class="font-semibold mt-8">
@@ -118,10 +119,10 @@
       <p>Usage Data may include information such as Your Device's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that You visit, the time and date of Your visit, the time spent on those pages, unique device identifiers and other diagnostic data.</p>
       <p>When You access the Service by or through a mobile device, We may collect certain information automatically, including, but not limited to, the type of mobile device You use, Your mobile device unique ID, the IP address of Your mobile device, Your mobile operating system, the type of mobile Internet browser You use, unique device identifiers and other diagnostic data.</p>
       <p>We may also collect information that Your browser sends whenever You visit our Service or when You access the Service by or through a mobile device.</p>
-      <h4 class="font-semibold mt-8">
-        Tracking Technologies and Cookies
-      </h4>
+
+      <h4>Tracking Technologies and Cookies</h4>
       <p>We use Cookies and similar tracking technologies to track the activity on Our Service and store certain information. Tracking technologies used are beacons, tags, and scripts to collect and track information and to improve and analyze Our Service. The technologies We use may include:</p>
+
       <ul class="ms-8 list-disc">
         <li><strong>Cookies or Browser Cookies.</strong> A cookie is a small file placed on Your Device. You can instruct Your browser to refuse all Cookies or to indicate when a Cookie is being sent. However, if You do not accept Cookies, You may not be able to use some parts of our Service. Unless you have adjusted Your browser setting so that it will refuse Cookies, our Service may use Cookies.</li>
         <li><strong>Web Beacons.</strong> Certain sections of our Service and our emails may contain small electronic files known as web beacons (also referred to as clear gifs, pixel tags, and single-pixel gifs) that permit the Company, for example, to count users who have visited those pages or opened an email and for other related website statistics (for example, recording the popularity of a certain section and verifying system and server integrity).</li>
@@ -138,7 +139,6 @@
         <li>
           <p><strong>Necessary / Essential Cookies</strong></p>
           <p>Type: Session Cookies</p>
-          <p>Administered by: Us</p>
           <p>Purpose: These Cookies are essential to provide You with services available through the Website and to enable You to use some of its features. They help to authenticate users and prevent fraudulent use of user accounts. Without these Cookies, the services that You have asked for cannot be provided, and We only use these Cookies to provide You with those services.</p>
         </li>
         <li>
@@ -236,17 +236,14 @@
         <li>Protect the personal safety of Users of the Service or the public</li>
         <li>Protect against legal liability</li>
       </ul>
-      <h3 class="font-bold mt-8">
-        Security of Your Personal Data
-      </h3>
+
+      <h3>Security of Your Personal Data</h3>
       <p>The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While We strive to use commercially acceptable means to protect Your Personal Data, We cannot guarantee its absolute security.</p>
-      <h2 class="font-semibold text-2xl my-8">
-        Detailed Information on the Processing of Your Personal Data
-      </h2>
+      <h2>Detailed Information on the Processing of Your Personal Data</h2>
       <p>The Service Providers We use may have access to Your Personal Data. These third-party vendors collect, store, use, process and transfer information about Your activity on Our Service in accordance with their Privacy Policies.</p>
-      <h3 class="font-bold mt-8">
-        Email Marketing
-      </h3>
+      <h3>Email Marketing</h3>
+      <p>We may use Your Personal Data to contact You with newsletters, marketing or promotional materials and other information that may be of interest to You. You may opt-out of receiving any, or all, of these communications from Us by following the unsubscribe link or instructions provided in any email We send or by contacting Us.</p>
+      <p>We may use Email Marketing Service Providers to manage and send emails to You.</p>
       <p>We may use Your Personal Data to contact You with newsletters, marketing or promotional materials and other information that may be of interest to You. You may opt-out of receiving any, or all, of these communications from Us by following the unsubscribe link or instructions provided in any email We send or by contacting Us.</p>
       <p>We may use Email Marketing Service Providers to manage and send emails to You.</p>
       <ul class="ms-8 list-disc">

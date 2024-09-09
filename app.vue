@@ -2,14 +2,17 @@
 /** Constants */
 const authStore = useAuthStore()
 const subscriptionStore = useSubscriptionStore()
+const cardDetails = computed(() => subscriptionStore.billingDetails)
 const userStore = useUserStore()
 const route = useRoute()
-
 /** Refs */
 const showUpgradeModal = ref<boolean>(false)
+const billingModal = ref<boolean>(false)
 
 /** Computed */
 const authUser = computed(() => authStore.getAuthUser.value)
+
+const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
 
 /** Watcher */
 watch(
@@ -17,13 +20,15 @@ watch(
   async (user) => {
     if (user?.id) {
       const response = await subscriptionStore.fetchActivePlan()
+
+      if (response.subscription_status !== 'NO_SUBSCRIPTION')
+        await subscriptionStore.getCardDetailsAPI()
+
       switch (response?.subscription_status) {
         case 'PLAN_EXPIRED':
           showUpgradeModal.value = true
-
           break
         case 'NO_SUBSCRIPTION':
-
           if (!route.fullPath.includes('/profile/account')) {
             const payload = {
               userId: user.id,
@@ -34,35 +39,38 @@ watch(
             await subscriptionStore.addSubscription(payload)
           }
           break
-
+        case 'ACTIVE_SUBSCRIPTION':
+          if (!cardHolderName
+            && !cardNo
+            && !expDate
+            && !cvv
+            && user && route.fullPath.includes('/app/diagram/list')
+          ) {
+            billingModal.value = true
+            return navigateTo('/profile/billing-payments')
+          }
+          break
         default:
           break
       }
-      //   if (response?.subscription_status === 'PLAN_EXPIRED') {
-      //     showUpgradeModal.value = true
-      //   }
-      //   else if (response.subscription_status === 'NO_SUBSCRIPTION') {
-      //     const payload = {
-      //       userId: user.id,
-      //       subscriptionTypeId: '10dbc647-04ea-4588-b6c8-7c535049f18c',
-      //       amount: 0,
-      //       email: authUser.value?.email,
-      //     }
-      //     if (!route.fullPath.includes('/profile/account'))
-      //       await subscriptionStore.addSubscription(payload)
-      //   }
-      // }
     }
     if (user && route.fullPath.includes('/login'))
       return handlePostAuthentication()
   },
+
   { immediate: true },
+
 )
 
 /** Methods */
 function upgradePlan() {
   showUpgradeModal.value = false
   navigateTo('/website/pricing')
+}
+
+function addCard() {
+  billingModal.value = false
+  navigateTo('/profile/billing-payments')
 }
 
 async function handlePostAuthentication() {
@@ -91,6 +99,21 @@ async function handlePostAuthentication() {
       </div>
     </div>
   </UModal>
+
+  <UModal :model-value="billingModal" :transition="false">
+    <div class="p-8">
+      <p class="mb-3">
+        Your card details are missing!
+      </p>
+      <p>To continue working with mindmaps, please add card details.</p>
+      <div class="mt-4 flex justify-end gap-4">
+        <UButton class="" @click="addCard">
+          Ok
+        </UButton>
+      </div>
+    </div>
+  </UModal>
+
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

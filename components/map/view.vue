@@ -573,3 +573,10 @@ onBeforeUnmount(() => {
     />
   </UModal>
 </template>
+
+<style scoped>
+:deep(.custom-size img) {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+</style>
