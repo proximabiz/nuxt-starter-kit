@@ -24,6 +24,7 @@ const diagramsList = computed(() => diagramStore.diagramsList)
 const isEditDisable = ref<boolean>(false)
 const confirmationModal = ref<boolean>(false)
 const isFieldEmtpy = ref<boolean>(true)
+const isCardExpired = ref<boolean>(false)
 
 const isLoadingFetch = ref<boolean>(false)
 const isLoadingDelete = ref<boolean>(false)
@@ -123,6 +124,7 @@ async function getCardDetails() {
   isLoadingFetch.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
+    isCardExpired.value = false
     const validCard = response?.message || response?.msg !== 'no data' || response !== undefined
     const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
@@ -152,6 +154,8 @@ async function getCardDetails() {
   catch (error) {
     isLoadingFetch.value = false
     $error(error.data.message)
+    // isCardExpired.value = error.data.message.includes('Expired Card')
+    isCardExpired.value = error.data.message.includes('not found')
   }
 }
 
@@ -281,22 +285,22 @@ function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaym
           Fetching your <span class="font-bold">Billing History.</span>
         </UCard>
       </UModal>
-      <div class="text-red-500 mb-2">
+      <!-- <div v-if="isCardExpired" class="text-red-500 mb-2">
         Your card is expired, Please add a new valid card details.
-      </div>
+      </div> -->
       <UCard>
         <UForm :schema="billingSchema" :state="cardData" class="space-y-2">
-          <UFormGroup label="Name on the card" name="cardHolderName">
+          <UFormGroup label="Name on the card" name="cardHolderName" required>
             <UInput v-model="cardData.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
           </UFormGroup>
-          <UFormGroup label="Credit or debit card number" name="cardNo">
+          <UFormGroup label="Credit or debit card number" name="cardNo" required>
             <UInput v-model="cardData.cardNo" placeholder="**** **** ****" :disabled="isEditDisable" />
           </UFormGroup>
           <div class="flex flex-col md:flex-row md:gap-2">
-            <UFormGroup label="Expire date" name="expDate" class="flex-grow">
+            <UFormGroup label="Expire date" name="expDate" class="flex-grow" required>
               <UInput v-model="cardData.expDate" placeholder="MM/YYYY" :disabled="isEditDisable" />
             </UFormGroup>
-            <UFormGroup label="Security code" name="cvv" class="flex-grow">
+            <UFormGroup label="Security code" name="cvv" class="flex-grow" required>
               <UInput v-model="cardData.cvv" placeholder="****" :disabled="isEditDisable" />
             </UFormGroup>
           </div>

@@ -146,9 +146,9 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
             <span class="text-gray-700"> {{ feature?.description }}</span>
           </li>
         </ul>
-        <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
+        <!-- <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
           Current Plan
-        </UButton>
+        </UButton> -->
         <UButton v-if="planData?.name !== 'Free'" type="submit" class="w-fit mt-2" color="blue" :disabled="planData?.name === 'Free'" @click="() => { isModalVisible = true }">
           Cancel Subscription
         </UButton>
