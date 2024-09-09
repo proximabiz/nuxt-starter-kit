@@ -24,10 +24,12 @@ const diagramsList = computed(() => diagramStore.diagramsList)
 const isEditDisable = ref<boolean>(false)
 const confirmationModal = ref<boolean>(false)
 const isFieldEmtpy = ref<boolean>(true)
+const isCardExpired = ref<boolean>(false)
 
 const isLoadingFetch = ref<boolean>(false)
 const isLoadingDelete = ref<boolean>(false)
 const isLoadingAdd = ref<boolean>(false)
+const selectedHeader = ref<string>('')
 const isLoadingBillingHistory = ref<boolean>(false)
 const cardData = ref({
   cardHolderName: '',
@@ -74,7 +76,8 @@ const billingSchema = z.object({
       )
     }, 'Expiration date must be in the future'),
   cvv: z.string()
-    .length(3, 'Security code must be 3 or 4 digits long') // Default message for general case
+    .min(3, 'Security code must be 3 or 4 digits long')
+    .max(4, 'Security code must be 3 or 4 digits long') // Default message for general case
     .refine(securityCode => /^\d+$/.test(securityCode), 'Security code must only contain digits'),
 })
 const page = ref(1)
@@ -121,6 +124,7 @@ async function getCardDetails() {
   isLoadingFetch.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
+    isCardExpired.value = false
     const validCard = response?.message || response?.msg !== 'no data' || response !== undefined
     const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
@@ -129,12 +133,12 @@ async function getCardDetails() {
       cardData.value.cardHolderName = response?.cardHolderName
       cardData.value.cardNo = response?.cardNumber
       cardData.value.expDate = expiryDate !== undefined ? expiryDate : ''
-      cardData.value.cvv = response?.cardNumber && '****'
+      cardData.value.cvv = '****'
 
       cardDetails.value.cardHolderName = response?.cardHolderName
       cardDetails.value.cardNo = response?.cardNumber
       cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
-      cardDetails.value.cvv = response?.cardNumber && '****'
+      cardDetails.value.cvv = '****'
 
       isEditDisable.value = true
     }
@@ -149,7 +153,9 @@ async function getCardDetails() {
   }
   catch (error) {
     isLoadingFetch.value = false
-    $error(error.statusMessage)
+    $error(error.data.message)
+    // isCardExpired.value = error.data.message.includes('Expired Card')
+    isCardExpired.value = error.data.message.includes('not found')
   }
 }
 
@@ -206,7 +212,7 @@ async function handleSubmit() {
     }
   }
   catch (error) {
-    $error(error.statusMessage)
+    $error(error.data.message)
     isLoadingAdd.value = false
   }
 }
@@ -238,6 +244,7 @@ async function onCancel() {
   isFieldEmtpy.value = true
 }
 function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaymentDateSort: boolean) {
+  selectedHeader.value = column
   const billingHistoryList = Array.isArray(rows.value) && rows.value
   column === 'amount'
   && billingHistoryList && billingHistoryList.sort((a: any, b: any) => _isAmountSort ? (a[column].toLowerCase() > b[column].toLowerCase()) ? 1 : -1 : -1)
@@ -278,19 +285,22 @@ function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaym
           Fetching your <span class="font-bold">Billing History.</span>
         </UCard>
       </UModal>
+      <!-- <div v-if="isCardExpired" class="text-red-500 mb-2">
+        Your card is expired, Please add a new valid card details.
+      </div> -->
       <UCard>
         <UForm :schema="billingSchema" :state="cardData" class="space-y-2">
-          <UFormGroup label="Name on the card" name="cardHolderName">
+          <UFormGroup label="Name on the card" name="cardHolderName" required>
             <UInput v-model="cardData.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
           </UFormGroup>
-          <UFormGroup label="Credit or debit card number" name="cardNo">
+          <UFormGroup label="Credit or debit card number" name="cardNo" required>
             <UInput v-model="cardData.cardNo" placeholder="**** **** ****" :disabled="isEditDisable" />
           </UFormGroup>
           <div class="flex flex-col md:flex-row md:gap-2">
-            <UFormGroup label="Expire date" name="expDate" class="flex-grow">
+            <UFormGroup label="Expire date" name="expDate" class="flex-grow" required>
               <UInput v-model="cardData.expDate" placeholder="MM/YYYY" :disabled="isEditDisable" />
             </UFormGroup>
-            <UFormGroup label="Security code" name="cvv" class="flex-grow">
+            <UFormGroup label="Security code" name="cvv" class="flex-grow" required>
               <UInput v-model="cardData.cvv" placeholder="****" :disabled="isEditDisable" />
             </UFormGroup>
           </div>
@@ -339,10 +349,10 @@ function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaym
                 @click="sortBillingHistoryList(column.key, isAmountSort = column.key === 'paymentDate' ? !isAmountSort : isAmountSort, _isPaymentDateSort = column.key === 'amount' ? !_isPaymentDateSort : _isPaymentDateSort)"
               >
                 <span>
-                  <span v-if="column.key === 'paymentDate' && isAmountSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
-                  <span v-else-if="column.key === 'paymentDate' && !isAmountSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
-                  <span v-else-if="column.key === 'amount' && _isPaymentDateSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
-                  <span v-else-if="column.key === 'amount' && !_isPaymentDateSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                  <span v-if="selectedHeader === 'paymentDate' && column.key === 'paymentDate' && isAmountSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                  <span v-else-if="selectedHeader === 'paymentDate' && column.key === 'paymentDate' && !isAmountSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
+                  <span v-else-if="selectedHeader === 'amount' && column.key === 'amount' && _isPaymentDateSort"><UIcon name="i-heroicons-bars-arrow-down" class="w-5 h-5" /></span>
+                  <span v-else-if="selectedHeader === 'amount' && column.key === 'amount' && !_isPaymentDateSort"><UIcon name="i-heroicons-bars-arrow-up" class="w-5 h-5" /></span>
                   {{ column.label }}</span>
               </th>
             </tr>

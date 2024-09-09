@@ -7,13 +7,17 @@ const planData = ref()
 const planFeatures = ref()
 const showUpgradeModal = ref<boolean>(false)
 const noplanModal = ref<boolean>(false)
-const isModalVisible = ref(false)
+const isModalVisible = ref<boolean>(false)
+const isCancelSubLoading = ref<boolean>(false)
+const pricingData = computed(() => subscriptionStore.pricingData)
 
 async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
     showUpgradeModal.value = ['PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION', 'NO_SUBSCRIPTION'].includes(response?.subscription_status)
-    planData.value = response
+    const getPricingData = Array.isArray(pricingData.value) && pricingData.value.find(plan => plan.name === response.name)
+    const getCurrency = getPricingData && getPricingData?.currency
+    planData.value = { ...response, currencySymbol: getCurrency === 'IND' ? '₹' : getCurrency === 'EUR' ? '€' : '$' }
     planFeatures.value = response.plan_type === 'monthly' ? response.features?.monthly?.includedItems : response.features?.annually?.includedItems
   }
   catch (error) {
@@ -21,20 +25,23 @@ async function getActivePlan() {
   }
 }
 async function cancelPlan() {
-  const payload = {
-    userId: planData.value.user_id,
-    userSubscriptionId: planData.value.sub_type_id,
-    note: 'Cancel Subscription',
-  }
+  isCancelSubLoading.value = true
   try {
+    const payload = {
+      userId: planData.value.user_id,
+      userSubscriptionId: planData.value.sub_type_id,
+      note: 'Cancel Subscription',
+    }
     const res = await subscriptionStore.cancelSubscription(payload)
     if (res?.status === 204) {
+      isCancelSubLoading.value = false
       noplanModal.value = true
       $success(res.message)
       setTimeout(() => navigateTo('/website/pricing'), 1000)
     }
   }
   catch (error) {
+    isCancelSubLoading.value = false
     $error(error.statusMessage)
   }
 }
@@ -68,6 +75,12 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
 </script>
 
 <template>
+  <UModal v-model="isCancelSubLoading">
+    <UProgress animation="carousel" />
+    <UCard>
+      Cancelling your <span class="font-bold">plan subscription.</span>
+    </UCard>
+  </UModal>
   <ProfileBreadCrumb text="My plan" />
   <UModal :model-value="showUpgradeModal" :transition="false">
     <div class="p-8">
@@ -107,7 +120,8 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
         <p class="text-gray-700">
           {{ planData?.description }}
         </p>
-        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">${{ planData?.monthly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : "/month" }}</span>
+        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
+          {{ planData?.currencySymbol }}{{ planData?.plan_type === 'monthly' ? planData.monthly_price : planData.yearly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : planData?.plan_type === 'monthly' ? "/month" : "/yearly" }}</span>
         </strong>
         <p class="text-lg font-medium text-gray-900 sm:text-xl">
           What's included:
@@ -132,9 +146,9 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
             <span class="text-gray-700"> {{ feature?.description }}</span>
           </li>
         </ul>
-        <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
+        <!-- <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
           Current Plan
-        </UButton>
+        </UButton> -->
         <UButton v-if="planData?.name !== 'Free'" type="submit" class="w-fit mt-2" color="blue" :disabled="planData?.name === 'Free'" @click="() => { isModalVisible = true }">
           Cancel Subscription
         </UButton>

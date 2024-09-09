@@ -7,8 +7,6 @@ const cardDetails = computed(() => subscriptionStore.billingDetails)
 const currentRoutePath = computed(() => route.fullPath)
 const isCardEmtpy = ref<boolean>(true)
 
-const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
-
 const links = computed(() => [
   {
     title: 'My Account',
@@ -28,6 +26,7 @@ async function singOut() {
   }
 }
 watch([cardDetails.value, isCardEmtpy.value], () => {
+  const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
   if (cardHolderName
     && cardNo
     && expDate

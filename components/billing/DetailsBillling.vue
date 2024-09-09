@@ -5,7 +5,66 @@ const billingStore = useBillingDetailsStore()
 const isFieldEmtpy = ref<boolean>(true)
 const { $success, $error } = useNuxtApp()
 
+const isLoading = ref<boolean>(false)
 const subscriptionStore = useSubscriptionStore()
+const authStore = useAuthStore()
+
+const authUser = computed(() => authStore.getAuthUser.value)
+const allDetails = computed(() => subscriptionStore.billingDetails)
+const sub_status = computed(() => subscriptionStore.subscriptionStatus)
+const planDetails = computed(() => billingStore.propObject)
+
+const router = useRouter()
+const saveModal = ref<boolean>(false)
+
+function completeOrder() {
+  saveModal.value = true
+}
+function navigateTo(path: string) {
+  router.push(path)
+}
+const expirationDate = allDetails.value.expDate && allDetails.value.expDate.split('/')
+async function handleCompleteOrder(valid: boolean) {
+  saveModal.value = false
+  try {
+    isLoading.value = true
+    const payload = {
+      firstName: allDetails.value.name.split(' ')[0],
+      lastName: allDetails.value.name.split(' ')[1],
+      email: authUser.value?.email,
+      country: allDetails.value.country,
+      region: allDetails.value.region,
+      city: allDetails.value.city,
+      zipcode: allDetails.value.zip,
+      address: allDetails.value.address,
+      phoneNumber: allDetails.value.phone,
+      amount: sub_status.value.amount !== null ? sub_status.value.amount : 0,
+      subscriptionTypeId: planDetails.value.id,
+      planType: planDetails.value.planType,
+      currencyCode: planDetails.value.currencyCode,
+      cardHolderName: allDetails.value.cardHolderName,
+      cardNumber: allDetails.value.cardNo,
+      expiryMonth: Number(expirationDate[0]),
+      expiryYear: Number(expirationDate[1]),
+      securityCode: allDetails.value.cvv !== '' ? allDetails.value.cvv.toString() : '000',
+    }
+    const gst = { gstNumber: allDetails.value?.taxId ? allDetails.value?.taxId : '' }
+    const finalPayload = allDetails.value?.taxId ? { ...payload, ...gst } : payload
+    const response = await subscriptionStore.completeOrder(finalPayload)
+    if (valid && response) {
+      isLoading.value = false
+      $success('Plan upgraded successfully.')
+      navigateTo('/app/diagram/list')
+    }
+  }
+  catch (error) {
+    isLoading.value = false
+    $error(error.data.message)
+    if (error?.data?.message && error?.data?.message.toLowerCase().includes('empty'))
+      setActiveStep(2)
+  }
+}
+
 const billingAddressCard = computed(() => subscriptionStore.billingDetails)
 const duePrice = computed(() => billingStore.propObject.currencySymbol + billingStore.propObject.calculatedPrice)
 const { name, orgName, country, zip, city, region, address, phone } = billingAddressCard.value
@@ -33,7 +92,7 @@ watch([billingAddressCard.value, isFieldEmtpy.value], () => {
 async function setActiveStep(index: number) {
   const { cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
   isFieldEmtpy.value = true
-  if (index >= 2) {
+  if (index === 2) {
     // Check if any of the required billingState fields are empty
     const isAddressComplete = name && orgName && country && zip && city && region && address && phone
     if (!isAddressComplete) {
@@ -50,8 +109,7 @@ async function setActiveStep(index: number) {
       && !expDate) {
       const response = await subscriptionStore.getCardDetailsAPI()
       const validCardDetails = cardHolderName && cardNo && expDate && cvv
-
-      if ((response?.message || response?.msg === 'no data' || response === undefined) && validCardDetails) {
+      if ((response?.msg === 'no data' || response === undefined) && validCardDetails) {
         try {
           const monthYear = expDate.split('/')
           const payload = {
@@ -66,7 +124,7 @@ async function setActiveStep(index: number) {
             $success('Your new card details has succussfuly added')
         }
         catch (error) {
-          $error(error.statusMessage)
+          $error(error.data.message)
           return isFieldEmtpy.value = false
         }
       }
@@ -79,6 +137,7 @@ async function setActiveStep(index: number) {
       }
     }
   }
+
   if (index >= 0 && index < steps.length)
     state.activeStep = index
 }
@@ -94,6 +153,12 @@ function backStep() {
 </script>
 
 <template>
+  <UModal v-model="isLoading">
+    <UProgress animation="carousel" />
+    <UCard>
+      Upgrading your new plan...
+    </UCard>
+  </UModal>
   <div class="grid place-items-center">
     <div class="">
       <ol class="flex">
@@ -142,12 +207,27 @@ function backStep() {
     <BillingTaxId v-if="state.activeStep === 3" />
     <BillingReview v-if="state.activeStep === 4" :plan-name="billingStore.propObject.planName" :due-price="duePrice" />
     <div class="d-flex">
-      <UButton v-if="state.activeStep !== 4" class="mr-5" @click="backStep">
-        Back
-      </UButton>
-      <UButton v-if="state.activeStep !== 4" @click="() => setActiveStep(state.activeStep + 1)">
-        Continue
+      <span v-if="state.activeStep !== 4">
+        <UButton class="mr-5" @click="backStep">
+          Back
+        </UButton>
+        <UButton @click="() => setActiveStep(state.activeStep + 1)">
+          Continue
+        </UButton>
+      </span>
+
+      <UButton v-else class="mt-4" @click="completeOrder">
+        Complete order
       </UButton>
     </div>
   </div>
+  <Confirmation
+    v-model="saveModal"
+    :is-open="saveModal"
+    text="Are you sure you want to submit details?"
+    left-button="Cancel"
+    right-button="Ok"
+    @update:is-open="saveModal = $event"
+    @delete-confirm="handleCompleteOrder(true)"
+  />
 </template>

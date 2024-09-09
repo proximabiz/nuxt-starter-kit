@@ -9,6 +9,8 @@ interface Props {
   duePrice: string
 }
 const props = defineProps<Props>()
+const isLoadingFetch = ref<boolean>(false)
+const changeCardChecked = ref<boolean>(false)
 const subscriptionStore = useSubscriptionStore()
 
 const { $error } = useNuxtApp()
@@ -19,8 +21,9 @@ const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 
+const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
+
 watch([cardDetails.value], () => {
-  const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
   if (cardHolderName
     && cardNo
     && expDate
@@ -29,7 +32,7 @@ watch([cardDetails.value], () => {
     isEditDisable.value = false
 }, { deep: true, immediate: true })
 
-const billingSchema = z.object({
+const billingSchema = !changeCardChecked.value && z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
   cardNo: z.string()
     .min(1, 'Card number is required')
@@ -49,25 +52,43 @@ const billingSchema = z.object({
       )
     }, 'Expiration date must be in the future'),
   cvv: z.string()
-    .length(3, 'Security code must be 3 or 4 digits long') // Default message for general case
+    .min(3, 'Security code must be 3 or 4 digits long')
+    .max(4, 'Security code must be 3 or 4 digits long') // Default message for general case
     .refine(securityCode => /^\d+$/.test(securityCode), 'Security code must only contain digits'),
 })
 
+watch(changeCardChecked, async (newVal) => {
+  if (newVal) {
+    cardDetails.value.cardHolderName = ''
+    cardDetails.value.cardNo = ''
+    cardDetails.value.expDate = ''
+    cardDetails.value.cvv = ''
+    isEditDisable.value = false
+  }
+  else {
+    // Re-fetch card details if unchecking the box
+    await getCardDetails()
+    isEditDisable.value = true
+  }
+})
+
 async function getCardDetails() {
+  isLoadingFetch.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
     const validCard = response?.cardNumber !== undefined && (response?.msg !== 'no data' || response !== undefined)
-
     const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (validCard) {
+      isLoadingFetch.value = false
       cardDetails.value.cardHolderName = response?.cardHolderName ? response?.cardHolderName : ''
       cardDetails.value.cardNo = response?.cardNumber
       cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
-      cardDetails.value.cvv = ''
+      cardDetails.value.cvv = '****'
       isEditDisable.value = true
     }
     else {
+      isLoadingFetch.value = false
       cardDetails.value.cardHolderName = ''
       cardDetails.value.cardNo = ''
       cardDetails.value.expDate = ''
@@ -76,12 +97,13 @@ async function getCardDetails() {
     }
   }
   catch (error) {
+    isLoadingFetch.value = false
     cardDetails.value.cardHolderName = ''
     cardDetails.value.cardNo = ''
     cardDetails.value.expDate = ''
     cardDetails.value.cvv = ''
     isEditDisable.value = false
-    $error(error.statusMessage)
+    $error(error.data.message)
   }
 }
 
@@ -91,6 +113,12 @@ onMounted(async () => {
 </script>
 
 <template>
+  <UModal v-model="isLoadingFetch">
+    <UProgress animation="carousel" />
+    <UCard>
+      Fetching your <span class="font-bold">Card details.</span>
+    </UCard>
+  </UModal>
   <div class="bg-slate-100 p-4 rounded-md mt-3 min-width">
     <p class="font-medium text-xl">
       AI FlowMapper {{ props.planName }}
@@ -110,7 +138,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2">
+    <UForm v-if="changeCardChecked" :schema="billingSchema" :state="cardDetails" class="space-y-2">
       <UFormGroup label="Name on the card" name="cardHolderName">
         <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
       </UFormGroup>
@@ -126,6 +154,25 @@ onMounted(async () => {
         </UFormGroup>
       </div>
     </UForm>
+
+    <UForm v-else :state="cardDetails" class="space-y-2">
+      <UFormGroup label="Name on the card" name="cardHolderName">
+        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
+      </UFormGroup>
+      <UFormGroup label="Credit or debit card number" name="cardNo">
+        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditDisable" />
+      </UFormGroup>
+      <div class="flex flex-col md:flex-row md:gap-2">
+        <UFormGroup label="Expire date" name="expDate" class="flex-grow">
+          <UInput v-model="cardDetails.expDate" placeholder="MM/YYYY" :disabled="isEditDisable" />
+        </UFormGroup>
+        <UFormGroup label="Security code" name="cvv" class="flex-grow">
+          <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditDisable" />
+        </UFormGroup>
+      </div>
+    </UForm>
+
+    <UCheckbox v-model="changeCardChecked" label="I want to change my card" class="mt-2" />
   </UCard>
 </template>
 
