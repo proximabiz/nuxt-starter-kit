@@ -18,6 +18,10 @@ services:
       - NUXT_PUBLIC_UMAMI_ID
       - APP_URL
       - SUPABASE_SERVICE_KEY
+      - CHARGEBEE_SITE
+      - CHARGEBEE_API_KEY
+      - CHARGEBEE_PRODUCT_CATLOG_VERSION
+      - CHARGEBEE_GATEWAY_ACCOUNT_ID
     labels:
       - service.stack=nuxt
       - service.name=aiflowmapper
