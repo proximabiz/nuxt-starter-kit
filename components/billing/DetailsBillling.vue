@@ -16,6 +16,7 @@ const planDetails = computed(() => billingStore.propObject)
 
 const router = useRouter()
 const saveModal = ref<boolean>(false)
+const errorMsg = ref<string>('')
 
 function completeOrder() {
   saveModal.value = true
@@ -109,6 +110,17 @@ async function setActiveStep(index: number) {
       && !expDate) {
       const response = await subscriptionStore.getCardDetailsAPI()
       const validCardDetails = cardHolderName && cardNo && expDate && cvv
+      // Compare API-fetched card details with user-entered card details
+      if (
+        cardHolderName === response.cardHolderName
+        && cardNo === response.cardNumber
+
+      ) {
+        // Set an error message for BillingCardDetails component
+        errorMsg.value = 'You have entered the same card details that already exist.'
+        return isFieldEmtpy.value = false
+      }
+
       if ((response?.msg === 'no data' || response === undefined) && validCardDetails) {
         try {
           const monthYear = expDate.split('/')
@@ -203,7 +215,7 @@ function backStep() {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="billingStore.propObject.planName" :due-price="duePrice" />
+    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="billingStore.propObject.planName" :due-price="duePrice" :error-msg="errorMsg"/>
     <BillingTaxId v-if="state.activeStep === 3" />
     <BillingReview v-if="state.activeStep === 4" :plan-name="billingStore.propObject.planName" :due-price="duePrice" />
     <div class="d-flex">

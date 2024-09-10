@@ -7,6 +7,7 @@ import visa from '@/assets/media/visa.png'
 interface Props {
   planName: string
   duePrice: string
+  errorMsg: String
 }
 const props = defineProps<Props>()
 const isLoadingFetch = ref<boolean>(false)
@@ -127,6 +128,10 @@ onMounted(async () => {
       {{ props.duePrice }}
     </p>
     <p>Billed annually. 18% tax included</p>
+  </div>
+
+  <div  class="text-red-500">
+      {{ errorMsg }}
   </div>
   <UCard class="mb-6 mt-6">
     <div class="flex gap-3 items-center">
