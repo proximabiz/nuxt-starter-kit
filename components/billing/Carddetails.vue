@@ -17,7 +17,9 @@ const subscriptionStore = useSubscriptionStore()
 
 const { $error } = useNuxtApp()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
+const getPlanData = computed(() => subscriptionStore.subscriptionStatus)
 const isEditDisable = ref<boolean>(false)
+const showCheckbox = ref<boolean>(true)
 
 const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
@@ -79,14 +81,19 @@ async function getCardDetails() {
   isLoadingFetch.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
+
+    if (response?.msg !== 'no data' || getPlanData.value.planName !== 'Free')
+      showCheckbox.value = false
+
     const validCard = response?.cardNumber !== undefined && (response?.msg !== 'no data' || response !== undefined)
     const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
+
     if (validCard) {
       isLoadingFetch.value = false
       cardDetails.value.cardHolderName = response?.cardHolderName ? response?.cardHolderName : ''
       cardDetails.value.cardNo = response?.cardNumber
-      cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
+      cardDetails.value.expDate = expiryDate
       cardDetails.value.cvv = '****'
       isEditDisable.value = true
     }
@@ -161,7 +168,7 @@ onMounted(async () => {
       </div>
     </UForm>
 
-    <UCheckbox v-model="changeCardChecked" label="I want to change my card" class="mt-2" />
+    <UCheckbox v-if="showCheckbox" v-model="changeCardChecked" label="I want to change my card" class="mt-2" />
   </UCard>
 </template>
 
