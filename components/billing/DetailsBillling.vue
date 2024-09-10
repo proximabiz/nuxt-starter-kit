@@ -105,49 +105,14 @@ async function setActiveStep(index: number) {
     }
   }
   if (index >= 3) {
-    if (!cardHolderName
-      && !cardNo
-      && !expDate) {
-      const response = await subscriptionStore.getCardDetailsAPI()
       const validCardDetails = cardHolderName && cardNo && expDate && cvv
-      // Compare API-fetched card details with user-entered card details
-      if (
-        cardHolderName === response.cardHolderName
-        && cardNo === response.cardNumber
-
-      ) {
-        // Set an error message for BillingCardDetails component
-        errorMsg.value = 'You have entered the same card details that already exist.'
-        return isFieldEmtpy.value = false
-      }
-
-      if ((response?.msg === 'no data' || response === undefined) && validCardDetails) {
-        try {
-          const monthYear = expDate.split('/')
-          const payload = {
-            cardHolderName,
-            cardNumber: cardNo.toString(),
-            expiryMonth: Number(monthYear[0]),
-            expiryYear: Number(monthYear[1]),
-            securityCode: cvv.toString(),
-          }
-          const newCardAdd = await subscriptionStore.addNewCardDetails(payload)
-          if (newCardAdd)
-            $success('Your new card details has succussfuly added')
-        }
-        catch (error) {
-          $error(error.data.message)
-          return isFieldEmtpy.value = false
-        }
-      }
-      else if ((response?.message || response?.msg === 'no data' || response === undefined) && !validCardDetails) {
+      if (!validCardDetails) {
         $error('Please fill out all the fields in your billing card details.')
         return isFieldEmtpy.value = false
       }
       else {
         isFieldEmtpy.value = true
       }
-    }
   }
 
   if (index >= 0 && index < steps.length)

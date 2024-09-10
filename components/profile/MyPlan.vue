@@ -165,13 +165,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
         </h2>
       </div>
     </UCard>
-    <p v-if="planData?.name === 'Free'" class="mt-4">
-      To know more about paid plans, please contact us at
-      <br><NuxtLink to="mailto:support@flowmapper.ai" class="text-blue-700 underline flex justify-center">
-        support@flowmapper.ai
-      </NuxtLink>
-    </p>
-    <NuxtLink v-else to="/website/pricing">
+    <NuxtLink to="/website/pricing">
       <h1 class="font-semibold text-blue-700 underline mt-4 hover:text-blue-900 cursor-pointer">
         <i>Upgrade Now By Comparing
           Other Plans</i>
