@@ -77,8 +77,8 @@ export default defineEventHandler(async (event) => {
       if (itemData) {
         const subscription: SubscriptionDetails = {
           subscriptionTypeId: chargebeePlanId,
-          itemPriceId: itemData.chargebee_item_price_id ?? 'test',
-          amount: itemData.price ?? 0,
+          itemPriceId: itemData.chargebee_item_price_id ? itemData.chargebee_item_price_id : 'test',
+          amount: itemData.price ? itemData.price : 0,
         }
 
         // check subscription check on chargebee side
@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
               const { error, status } = await client.from('user_subscriptions').update(
                 {
                   is_subscription_active: false,
-                  note: params.note + chargebeeSubStatus.status ?? `Cancel User Subscriptions. ${chargebeeSubStatus.status}`,
+                  note: params.note + chargebeeSubStatus.status ? params.note + chargebeeSubStatus.status : `Cancel User Subscriptions. ${chargebeeSubStatus.status}`,
                 },
               ).eq('user_id', userId).eq('is_subscription_active', true).eq('chargeebee_subscription_id', chargebeeSubId.chargeebee_subscription_id)
               if (error)

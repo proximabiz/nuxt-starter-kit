@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
     const { error, status } = await client.from('user_subscriptions').update(
       {
         is_subscription_active: false,
-        note: params.note + chargebeeStatus ?? `Cancel User Subscriptions. ${chargebeeStatus}`,
+        note: params.note + chargebeeStatus ? params.note + chargebeeStatus : `Cancel User Subscriptions. ${chargebeeStatus}`,
       },
     ).eq('user_id', params.userId).eq('sub_type_id', params.userSubscriptionId).eq('is_subscription_active', true)
     if (error)
