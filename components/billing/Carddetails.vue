@@ -33,7 +33,7 @@ watch([cardDetails.value], () => {
     isEditDisable.value = false
 }, { deep: true, immediate: true })
 
-const billingSchema = !changeCardChecked.value && z.object({
+const billingSchema = z.object({
   cardHolderName: z.string().min(1, 'Card holder name is required'),
   cardNo: z.string()
     .min(1, 'Card number is required')

@@ -175,7 +175,7 @@ async function getBillingHistoryData() {
   }
   catch (error) {
     isLoadingBillingHistory.value = false
-    $error(error.statusMessage !== 'Internal Server Error' ? error.statusMessage : 'Something went wrong')
+    $error(error.statusMessage !== 'Internal Server Error' ? 'Something went wrong':error.data.message)
   }
 }
 
