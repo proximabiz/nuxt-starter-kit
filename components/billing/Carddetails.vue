@@ -7,12 +7,12 @@ import visa from '@/assets/media/visa.png'
 interface Props {
   planName: string
   duePrice: string
-  errorMsg: String
+  errorMsg: string
 }
 const props = defineProps<Props>()
 const isLoadingFetch = ref<boolean>(false)
 const changeCardChecked = ref<boolean>(false)
-const formRef=ref<typeof UForm>()
+const formRef = ref<any>()
 const subscriptionStore = useSubscriptionStore()
 
 const { $error } = useNuxtApp()
@@ -24,7 +24,6 @@ const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 
 const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
-
 
 watch([cardDetails.value], () => {
   if (cardHolderName
@@ -132,9 +131,8 @@ onMounted(async () => {
     </p>
     <p>Billed annually. 18% tax included</p>
   </div>
-{{ cardDetails }}
-  <div  class="text-red-500">
-      {{ errorMsg }}
+  <div class="text-red-500">
+    {{ errorMsg }}
   </div>
   <UCard class="mb-6 mt-6">
     <div class="flex gap-3 items-center">
@@ -146,12 +144,12 @@ onMounted(async () => {
       </div>
     </div>
 
-    <UForm :schema="billingSchema" :state="cardDetails" class="space-y-2" ref="formRef">
+    <UForm ref="formRef" :schema="billingSchema" :state="cardDetails" class="space-y-2">
       <UFormGroup label="Name on the card" name="cardHolderName">
-        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable"/>
+        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
       </UFormGroup>
       <UFormGroup label="Credit or debit card number" name="cardNo">
-        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditDisable"/>
+        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditDisable" />
       </UFormGroup>
       <div class="flex flex-col md:flex-row md:gap-2">
         <UFormGroup label="Expire date" name="expDate" class="flex-grow">

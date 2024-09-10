@@ -105,14 +105,14 @@ async function setActiveStep(index: number) {
     }
   }
   if (index >= 3) {
-      const validCardDetails = cardHolderName && cardNo && expDate && cvv
-      if (!validCardDetails) {
-        $error('Please fill out all the fields in your billing card details.')
-        return isFieldEmtpy.value = false
-      }
-      else {
-        isFieldEmtpy.value = true
-      }
+    const validCardDetails = cardHolderName && cardNo && expDate && cvv
+    if (!validCardDetails) {
+      $error('Please fill out all the fields in your billing card details.')
+      return isFieldEmtpy.value = false
+    }
+    else {
+      isFieldEmtpy.value = true
+    }
   }
 
   if (index >= 0 && index < steps.length)
@@ -180,7 +180,7 @@ function backStep() {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="billingStore.propObject.planName" :due-price="duePrice" :error-msg="errorMsg"/>
+    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="billingStore.propObject.planName" :due-price="duePrice" :error-msg="errorMsg" />
     <BillingTaxId v-if="state.activeStep === 3" />
     <BillingReview v-if="state.activeStep === 4" :plan-name="billingStore.propObject.planName" :due-price="duePrice" />
     <div class="d-flex">
