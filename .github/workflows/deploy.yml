@@ -27,15 +27,15 @@ jobs:
       - name: Build check
         run: pnpm check
 
-      - name: 🔔 ➜ Slack Notification
-        if: failure()
-        uses: act10ns/slack@v2
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          channel: ${{ secrets.SLACK_CHANNEL }}
-          config: .github/slack.yml
+      # - name: 🔔 ➜ Slack Notification
+      #   if: failure()
+      #   uses: act10ns/slack@v2
+      #   with:
+      #     status: ${{ job.status }}
+      #     steps: ${{ toJson(steps) }}
+      #     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     channel: ${{ secrets.SLACK_CHANNEL }}
+      #     config: .github/slack.yml
 
   Build-Stage:
     runs-on: ubuntu-latest
@@ -84,15 +84,15 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: 🔔 ➜ Slack Notification
-        if: always()
-        uses: act10ns/slack@v2
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          channel: ${{ secrets.SLACK_CHANNEL }}
-          config: .github/config/slack.yml
+      # - name: 🔔 ➜ Slack Notification
+      #   if: always()
+      #   uses: act10ns/slack@v2
+      #   with:
+      #     status: ${{ job.status }}
+      #     steps: ${{ toJson(steps) }}
+      #     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     channel: ${{ secrets.SLACK_CHANNEL }}
+      #     config: .github/config/slack.yml
 
   E2E:
     name: End-to-End Test
@@ -125,15 +125,15 @@ jobs:
             echo "Deploying aiflowmapper stack to Stage"
             cd ai-flow-mapper
             sh deploy.stage.sh
-      - name: 🔔 Stage Deployment Notification
-        if: failure()
-        uses: act10ns/slack@v2
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          channel: ${{ secrets.SLACK_CHANNEL }}
-          config: .github/slack.yml
+      # - name: 🔔 Stage Deployment Notification
+      #   if: failure()
+      #   uses: act10ns/slack@v2
+      #   with:
+      #     status: ${{ job.status }}
+      #     steps: ${{ toJson(steps) }}
+      #     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     channel: ${{ secrets.SLACK_CHANNEL }}
+      #     config: .github/slack.yml
 
   Build-Production:
     runs-on: ubuntu-latest
@@ -183,15 +183,15 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: 🔔 ➜ Slack Notification
-        if: always()
-        uses: act10ns/slack@v2
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          channel: ${{ secrets.SLACK_CHANNEL }}
-          config: .github/config/slack.yml
+      # - name: 🔔 ➜ Slack Notification
+      #   if: always()
+      #   uses: act10ns/slack@v2
+      #   with:
+      #     status: ${{ job.status }}
+      #     steps: ${{ toJson(steps) }}
+      #     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     channel: ${{ secrets.SLACK_CHANNEL }}
+      #     config: .github/config/slack.yml
 
   Production:
     name: Deploy Production
@@ -210,12 +210,12 @@ jobs:
             cd ai-flow-mapper
             sh deploy.sh
 
-      - name: 🔔 Production Deployment Notification
-        if: failure()
-        uses: act10ns/slack@v2
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          channel: ${{ secrets.SLACK_CHANNEL }}
-          config: .github/slack.yml
+      # - name: 🔔 Production Deployment Notification
+      #   if: failure()
+      #   uses: act10ns/slack@v2
+      #   with:
+      #     status: ${{ job.status }}
+      #     steps: ${{ toJson(steps) }}
+      #     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     channel: ${{ secrets.SLACK_CHANNEL }}
+      #     config: .github/slack.yml
