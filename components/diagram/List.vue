@@ -9,7 +9,7 @@ const isLoading = ref<boolean>(false)
 const isDelete = ref<boolean>(false)
 const apiResponse = ref()
 const deleteDiagramId = ref<string>('')
-const saveModal = ref<boolean>(false)
+const showModal = ref<boolean>(false)
 const isInactiveSubscription = ref<boolean>(false)
 const isDiagramLimitExceeded = ref<boolean>(false)
 const currentMonthActivatedDiagrams = ref()
@@ -19,7 +19,6 @@ const isActiveUpdateDateSort = ref<boolean>(false)
 const isFetchingMindmpas = ref<boolean>(false)
 const isCardExpired = ref<boolean>(false)
 const selectedHeader = ref<string>('')
-
 const diagramsList = computed(() => diagramStore.diagramsList)
 const activeDiagrams = computed(() => diagramStore.activeDiagrams)
 const deletedDiagrams = computed(() => diagramStore.deletedDiagrams)
@@ -83,17 +82,19 @@ async function fetchDiagramTypes() {
   }
 }
 async function fetchDiagrams() {
+  isFetchingMindmpas.value = true
   try {
     await diagramStore.list()
     await fetchDiagramTypes()
     currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
-
+    isFetchingMindmpas.value = false
     const value = diagramsCountList?.value.currentCount
     const max = diagramsCountList?.value.allowedCount
     diagramsCountList.value.diagramPercentage = toPercentage(value, max).toString()
     diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
+    isFetchingMindmpas.value = false
     $error(error.statusMessage)
   }
 }
@@ -174,9 +175,29 @@ async function confirmedDeleteDiagram() {
 async function getCardDetails() {
   isFetchingMindmpas.value = true
   try {
-    await subscriptionStore.getCardDetailsAPI()
+    const response = await subscriptionStore.getCardDetailsAPI()
+    const validCard = response?.cardNumber !== undefined && (response?.msg !== 'no data' || response !== undefined)
+    const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
+    const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     isCardExpired.value = false
     isFetchingMindmpas.value = false
+    if (validCard) {
+      cardDetails.value.cardHolderName = response?.cardHolderName
+      cardDetails.value.cardNo = response?.cardNumber
+      cardDetails.value.expDate = expiryDate
+      cardDetails.value.cvv = '****'
+    }
+    const { cardHolderName, cardNumber, expiryMonth, expiryYear } = response
+    if ((!cardHolderName
+      && !cardNumber
+      && !expiryMonth
+      && !expiryYear)
+      || isCardExpired.value
+    ) {
+      return (
+        showModal.value = true
+      )
+    }
   }
   catch (error) {
     isFetchingMindmpas.value = false
@@ -188,17 +209,6 @@ async function getCardDetails() {
 onMounted(async () => {
   fetchDiagrams()
   await getCardDetails()
-  const { cardHolderName, cardNo, expDate, cvv } = cardDetails.value
-  if ((!cardHolderName
-    && !cardNo
-    && !expDate
-    && !cvv)
-    || isCardExpired.value
-  ) {
-    return (
-      saveModal.value = true
-    )
-  }
 })
 watch([diagramsList.value, apiResponse.value, diagramsCountList.value, cardDetails.value], async () => {
   if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
@@ -207,7 +217,6 @@ watch([diagramsList.value, apiResponse.value, diagramsCountList.value, cardDetai
     isDiagramLimitExceeded.value = false
 
   await diagramStore.list()
-  fetchDiagrams()
   const plan_exp = dayjs().isBefore(dayjs(sub_status.value?.plan_end_date))
   const planExpStatus = (['NO_SUBSCRIPTION', 'PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION'].includes(sub_status.value?.planStatus) && !plan_exp)
   isInactiveSubscription.value = planExpStatus && isCardExpired.value
@@ -217,7 +226,7 @@ watch([diagramsList.value, apiResponse.value, diagramsCountList.value, cardDetai
 }, { deep: true, immediate: true })
 
 function saveDetails(_valid: boolean) {
-  saveModal.value = false
+  showModal.value = false
   if (_valid)
     navigateTo('/profile/billing-payments')
 }
@@ -412,7 +421,7 @@ function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSor
     />
   </UModal>
 
-  <UModal :model-value="saveModal" :transition="false">
+  <UModal :model-value="showModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">
         {{ isCardExpired ? 'Your card is expired!' : 'Your card details are missing!' }}
