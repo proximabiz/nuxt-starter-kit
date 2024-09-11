@@ -25,6 +25,7 @@ function navigateTo(path: string) {
   router.push(path)
 }
 const expirationDate = allDetails?.value.expDate && allDetails?.value.expDate.split('/')
+
 async function handleCompleteOrder(valid: boolean) {
   saveModal.value = false
   try {
