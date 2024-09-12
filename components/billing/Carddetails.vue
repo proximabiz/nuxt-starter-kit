@@ -82,7 +82,7 @@ async function getCardDetails() {
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
 
-    if (response?.msg !== 'no data' || getPlanData.value.planName !== 'Free')
+    if (getPlanData.value.planName === 'Free' || response?.msg === 'no data')
       showCheckbox.value = false
 
     const validCard = response?.cardNumber !== undefined && (response?.msg !== 'no data' || response !== undefined)
