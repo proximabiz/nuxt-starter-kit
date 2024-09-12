@@ -51,6 +51,15 @@ function initialState() {
       taxId: '',
     },
     pricingData: [],
+    selectedPlan: {
+      planName: '',
+      disabled: false,
+      calculatedPrice: '',
+      currencySymbol: '',
+      planType: '',
+      currencyCode: '',
+      id: '',
+    },
   }
 }
 

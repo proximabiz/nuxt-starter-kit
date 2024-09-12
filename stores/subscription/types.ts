@@ -36,10 +36,20 @@ export interface SubscriptionStatus {
   sub_type_id: null | string
   amount: number
 }
+export interface SelectedPlan {
+  planName: string
+  disabled: boolean
+  calculatedPrice: string
+  currencySymbol: string
+  planType: string
+  currencyCode: string
+  id: string
+}
 export interface State {
   subscriptionStatus: SubscriptionStatus
   billingDetails: BillingState
   pricingData: getPriceCardDetailsTypes[] | null
+  selectedPlan: SelectedPlan
 }
 
 export interface ActivePlanType {

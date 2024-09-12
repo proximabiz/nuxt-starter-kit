@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const users = ['1user']
 const user = ref(users[0])
-const billingStore = useBillingDetailsStore()
 const isFieldEmtpy = ref<boolean>(true)
 const { $success, $error } = useNuxtApp()
 
@@ -12,7 +11,7 @@ const authStore = useAuthStore()
 const authUser = computed(() => authStore.getAuthUser.value)
 const allDetails = computed(() => subscriptionStore.billingDetails)
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
-const planDetails = computed(() => billingStore.propObject)
+const selectedPlan = computed(() => subscriptionStore.selectedPlan)
 
 const router = useRouter()
 const saveModal = ref<boolean>(false)
@@ -41,9 +40,9 @@ async function handleCompleteOrder(valid: boolean) {
       address: allDetails.value.address,
       phoneNumber: allDetails.value.phone,
       amount: sub_status.value.amount !== null ? sub_status.value.amount : 0,
-      subscriptionTypeId: planDetails.value.id,
-      planType: planDetails.value.planType,
-      currencyCode: planDetails.value.currencyCode,
+      subscriptionTypeId: selectedPlan.value.id,
+      planType: selectedPlan.value.planType,
+      currencyCode: selectedPlan.value.currencyCode,
       cardHolderName: allDetails.value.cardHolderName,
       cardNumber: allDetails.value.cardNo,
       expiryMonth: Number(expirationDate[0]),
@@ -68,7 +67,7 @@ async function handleCompleteOrder(valid: boolean) {
 }
 
 const billingAddressCard = computed(() => subscriptionStore.billingDetails)
-const duePrice = computed(() => billingStore.propObject.currencySymbol + billingStore.propObject.calculatedPrice)
+const duePrice = computed(() => selectedPlan.value.currencySymbol + selectedPlan.value.calculatedPrice)
 const { name, orgName, country, zip, city, region, address, phone } = billingAddressCard.value
 const steps = [
   { label: 'Your plan', component: 'BillingDetailsBillling' },
@@ -84,7 +83,6 @@ const state = reactive({
 
 watch([billingAddressCard.value, isFieldEmtpy.value], () => {
   const { cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
-
   if (cardHolderName && cardNo && expDate && cvv)
     isFieldEmtpy.value = false
   else
@@ -157,14 +155,14 @@ function backStep() {
     <UCard v-if="state.activeStep === 0" class="mb-6 mt-4">
       <div class="divide-y divide-solid">
         <header class="flex justify-start">
-          AI FlowMapper {{ billingStore.propObject.planName }}
+          AI FlowMapper {{ selectedPlan.planName }}
         </header>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
           <USelect v-model="user" :options="users" color="blue" />
           <div>
             <span>
-              {{ billingStore.propObject.planType === 'monthly' ? '1 month : ' : '12 months : ' }}</span>
-            <span class="font-semibold pl-1">{{ billingStore.propObject.currencySymbol }}{{ billingStore.propObject.calculatedPrice }}</span>
+              {{ selectedPlan.planType === 'monthly' ? '1 month : ' : '12 months : ' }}</span>
+            <span class="font-semibold pl-1">{{ selectedPlan.currencySymbol }}{{ selectedPlan.calculatedPrice }}</span>
           </div>
         </section>
         <section class="grid grid-cols-2 gap-32 mt-3 py-4">
@@ -181,9 +179,9 @@ function backStep() {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="billingStore.propObject.planName" :due-price="duePrice" :error-msg="errorMsg" />
+    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="selectedPlan.planName" :due-price="duePrice" :error-msg="errorMsg" />
     <BillingTaxId v-if="state.activeStep === 3" />
-    <BillingReview v-if="state.activeStep === 4" :plan-name="billingStore.propObject.planName" :due-price="duePrice" />
+    <BillingReview v-if="state.activeStep === 4" :plan-name="selectedPlan.planName" :due-price="duePrice" />
     <div class="d-flex">
       <span v-if="state.activeStep !== 4">
         <UButton class="mr-5" @click="backStep">
