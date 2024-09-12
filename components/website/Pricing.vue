@@ -91,8 +91,6 @@ else
   isLoading.value = true
 
 function providePlanDetails(val: any) {
-  // const currencyCode = val.currency
-  // const planDetails = { ...val, planName: val.name, planType: isMonthly.value ? 'monthly' : 'yearly', currencyCode }
   if (!authStore.getAuthUser.value)
     return navigateTo('/login')
   cardValue.value = val
