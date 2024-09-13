@@ -7,21 +7,32 @@ import visa from '@/assets/media/visa.png'
 interface Props {
   planName: string
   duePrice: string
-  errorMsg: string
 }
 const props = defineProps<Props>()
-const isLoadingFetch = ref<boolean>(false)
-const changeCardChecked = ref<boolean>(false)
+// Listen for the validate-card event from the parent component
+const emit = defineEmits<{
+  (event: 'validateCardDetails', isValid: boolean): void
+}>()
+const isLoading = ref<boolean>(false)
+const isChangeCardChecked = ref<boolean>(false)
 const formRef = ref<any>()
 const subscriptionStore = useSubscriptionStore()
 
 const { $error } = useNuxtApp()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const getPlanData = computed(() => subscriptionStore.subscriptionStatus)
-const isEditDisable = ref<boolean>(false)
+const isEditable = ref<boolean>(false)
 const showCheckbox = ref<boolean>(true)
+const isValid = ref<boolean>(false)
+const errorMessage = ref<string>('')
 
-const basicExpDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/
+const cardDetailsFromApi = ref({
+  cardNo: '',
+  expDate: '',
+})
+
+// const basicExpDateRegex = /^(0?[1-9]|1[0-2])\/([0-9]{4})$/ //if required the format 08/2028 optional 0
+const basicExpDateRegex = /^([1-9]|1[0-2])\/([0-9]{4})$/ // format 8/2028
 const masterCardRegex = /^(?:5[1-5][0-9]{14})$/
 const visaCardRegex = /^(?:4[0-9]{12})(?:[0-9]{3})?$/
 
@@ -33,7 +44,7 @@ watch([cardDetails.value], () => {
     && expDate
     && cvv
   )
-    isEditDisable.value = false
+    isEditable.value = false
 }, { deep: true, immediate: true })
 
 const billingSchema = z.object({
@@ -61,24 +72,24 @@ const billingSchema = z.object({
     .refine(securityCode => /^\d+$/.test(securityCode), 'Security code must only contain digits'),
 })
 
-watch(changeCardChecked, async (newVal) => {
+watch(isChangeCardChecked, async (newVal) => {
   if (newVal) {
     cardDetails.value.cardHolderName = ''
     cardDetails.value.cardNo = ''
     cardDetails.value.expDate = ''
     cardDetails.value.cvv = ''
-    isEditDisable.value = false
+    isEditable.value = false
   }
   else {
     // Re-fetch card details if unchecking the box
     await getCardDetails()
-    isEditDisable.value = true
+    isEditable.value = true
     formRef.value.clear()
   }
 })
 
 async function getCardDetails() {
-  isLoadingFetch.value = true
+  isLoading.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
 
@@ -90,40 +101,65 @@ async function getCardDetails() {
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
 
     if (validCard) {
-      isLoadingFetch.value = false
+      // Store fetched card details
+      cardDetailsFromApi.value = {
+        cardNo: response?.cardNumber || '',
+        expDate: expiryDate || '',
+      }
       cardDetails.value.cardHolderName = response?.cardHolderName ? response?.cardHolderName : ''
       cardDetails.value.cardNo = response?.cardNumber
       cardDetails.value.expDate = expiryDate
       cardDetails.value.cvv = '****'
-      isEditDisable.value = true
+      isEditable.value = true
     }
     else {
-      isLoadingFetch.value = false
       cardDetails.value.cardHolderName = ''
       cardDetails.value.cardNo = ''
       cardDetails.value.expDate = ''
       cardDetails.value.cvv = ''
-      isEditDisable.value = false
+      isEditable.value = false
     }
   }
   catch (error) {
-    isLoadingFetch.value = false
     cardDetails.value.cardHolderName = ''
     cardDetails.value.cardNo = ''
     cardDetails.value.expDate = ''
     cardDetails.value.cvv = ''
-    isEditDisable.value = false
+    isEditable.value = false
     $error(error.data.message)
+  }
+  finally {
+    isLoading.value = false
   }
 }
 
 onMounted(async () => {
   await getCardDetails()
 })
+
+async function validateCardDetails() {
+  const enteredCardNo = cardDetails.value.cardNo?.slice(-4)
+  const enteredExpDate = cardDetails.value.expDate
+
+  if (isChangeCardChecked.value) {
+    if (enteredCardNo === cardDetailsFromApi.value.cardNo?.slice(-4)
+      && enteredExpDate === cardDetailsFromApi.value.expDate) {
+      isValid.value = true
+      errorMessage.value = 'The entered card details are same as the existing card details.'
+    }
+    else {
+      isValid.value = false
+      errorMessage.value = ''
+    }
+  }
+  emit('validateCardDetails', isValid.value)
+}
+// Expose validate method to the parent
+defineExpose({ validateCardDetails })
 </script>
 
 <template>
-  <UModal v-model="isLoadingFetch">
+  <UModal v-model="isLoading">
     <UProgress animation="carousel" />
     <UCard>
       Fetching your <span class="font-bold">Card details.</span>
@@ -138,9 +174,9 @@ onMounted(async () => {
     </p>
     <p>Billed annually. 18% tax included</p>
   </div>
-  <div class="text-red-500">
-    {{ errorMsg }}
-  </div>
+  <p v-if="isValid" class="text-red-500 p-2 mt-2 text-xs bg-red-100 rounded">
+    {{ errorMessage }}
+  </p>
   <UCard class="mb-6 mt-6">
     <div class="flex gap-3 items-center">
       <img :src="card" alt="" class="w-8">
@@ -153,22 +189,22 @@ onMounted(async () => {
 
     <UForm ref="formRef" :schema="billingSchema" :state="cardDetails" class="space-y-2">
       <UFormGroup label="Name on the card" name="cardHolderName">
-        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditDisable" />
+        <UInput v-model="cardDetails.cardHolderName" placeholder="Name on the card" :disabled="isEditable" />
       </UFormGroup>
       <UFormGroup label="Credit or debit card number" name="cardNo">
-        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditDisable" />
+        <UInput v-model="cardDetails.cardNo" placeholder="**** **** ****" :disabled="isEditable" />
       </UFormGroup>
       <div class="flex flex-col md:flex-row md:gap-2">
         <UFormGroup label="Expire date" name="expDate" class="flex-grow">
-          <UInput v-model="cardDetails.expDate" placeholder="MM/YYYY" :disabled="isEditDisable" />
+          <UInput v-model="cardDetails.expDate" placeholder="MM/YYYY" :disabled="isEditable" />
         </UFormGroup>
         <UFormGroup label="Security code" name="cvv" class="flex-grow">
-          <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditDisable" />
+          <UInput v-model="cardDetails.cvv" placeholder="****" :disabled="isEditable" />
         </UFormGroup>
       </div>
     </UForm>
 
-    <UCheckbox v-if="showCheckbox" v-model="changeCardChecked" label="I want to change my card" class="mt-2" />
+    <UCheckbox v-if="showCheckbox" v-model="isChangeCardChecked" label="I want to change my card" class="mt-2" />
   </UCard>
 </template>
 

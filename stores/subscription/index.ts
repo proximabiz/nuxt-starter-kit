@@ -45,7 +45,7 @@ function initialState() {
       address: '',
       phone: '',
       cardHolderName: '',
-      cardNo: 0,
+      cardNo: '',
       expDate: '',
       cvv: 0,
       taxId: '',

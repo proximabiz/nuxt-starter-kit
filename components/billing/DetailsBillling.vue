@@ -2,6 +2,9 @@
 const users = ['1user']
 const user = ref(users[0])
 const isFieldEmtpy = ref<boolean>(true)
+const billingCardDetailsRef = ref<any>(null)
+const billingCardDetailsValid = ref<boolean>(false)
+const saveModal = ref<boolean>(false)
 const { $success, $error } = useNuxtApp()
 
 const isLoading = ref<boolean>(false)
@@ -12,16 +15,11 @@ const authUser = computed(() => authStore.getAuthUser.value)
 const allDetails = computed(() => subscriptionStore.billingDetails)
 const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 const selectedPlan = computed(() => subscriptionStore.selectedPlan)
-
-const router = useRouter()
-const saveModal = ref<boolean>(false)
-const errorMsg = ref<string>('')
+const billingAddressCard = computed(() => subscriptionStore.billingDetails)
+const duePrice = computed(() => selectedPlan.value.currencySymbol + selectedPlan.value.calculatedPrice)
 
 function completeOrder() {
   saveModal.value = true
-}
-function navigateTo(path: string) {
-  router.push(path)
 }
 const expirationDate = allDetails?.value.expDate && allDetails?.value.expDate.split('/')
 
@@ -39,7 +37,7 @@ async function handleCompleteOrder(valid: boolean) {
       zipcode: allDetails.value.zip,
       address: allDetails.value.address,
       phoneNumber: allDetails.value.phone,
-      amount: sub_status.value.amount !== null ? sub_status.value.amount : 0,
+      amount: !sub_status.value.amount ? sub_status.value.amount : 0,
       subscriptionTypeId: selectedPlan.value.id,
       planType: selectedPlan.value.planType,
       currencyCode: selectedPlan.value.currencyCode,
@@ -47,28 +45,26 @@ async function handleCompleteOrder(valid: boolean) {
       cardNumber: allDetails.value.cardNo,
       expiryMonth: Number(expirationDate[0]),
       expiryYear: Number(expirationDate[1]),
-      securityCode: allDetails.value.cvv !== '' ? allDetails.value.cvv.toString() : '000',
+      securityCode: !allDetails.value.cvv ? allDetails.value.cvv.toString() : '000',
     }
     const gst = { gstNumber: allDetails.value?.taxId ? allDetails.value?.taxId : '' }
     const finalPayload = allDetails.value?.taxId ? { ...payload, ...gst } : payload
     const response = await subscriptionStore.completeOrder(finalPayload)
     if (valid && response) {
-      isLoading.value = false
       $success('Plan upgraded successfully.')
       navigateTo('/app/diagram/list')
     }
   }
   catch (error) {
-    isLoading.value = false
     $error(error.data.message)
     if (error?.data?.message && error?.data?.message.toLowerCase().includes('empty'))
       setActiveStep(2)
   }
+  finally {
+    isLoading.value = false
+  }
 }
 
-const billingAddressCard = computed(() => subscriptionStore.billingDetails)
-const duePrice = computed(() => selectedPlan.value.currencySymbol + selectedPlan.value.calculatedPrice)
-const { name, orgName, country, zip, city, region, address, phone } = billingAddressCard.value
 const steps = [
   { label: 'Your plan', component: 'BillingDetailsBillling' },
   { label: 'Your Address', component: 'BillingAddress' },
@@ -83,37 +79,47 @@ const state = reactive({
 
 watch([billingAddressCard.value, isFieldEmtpy.value], () => {
   const { cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
-  if (cardHolderName && cardNo && expDate && cvv)
-    isFieldEmtpy.value = false
-  else
-    isFieldEmtpy.value = true
+  cardHolderName && cardNo && expDate && cvv ? isFieldEmtpy.value = false : isFieldEmtpy.value = true
 }, { deep: true, immediate: true })
 
-async function setActiveStep(index: number) {
-  const { cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
-  isFieldEmtpy.value = true
-  if (index === 2) {
-    // Check if any of the required billingState fields are empty
-    const isAddressComplete = name && orgName && country && zip && city && region && address && phone
-    if (!isAddressComplete) {
-      $error('Please fill out all the fields in your billing address.')
-      return isFieldEmtpy.value = false
-    }
-    else {
-      isFieldEmtpy.value = true
-    }
-  }
-  if (index >= 3) {
-    const validCardDetails = cardHolderName && cardNo && expDate && cvv
-    if (!validCardDetails) {
-      $error('Please fill out all the fields in your billing card details.')
-      return isFieldEmtpy.value = false
-    }
-    else {
-      isFieldEmtpy.value = true
-    }
-  }
+// Define function to handle the validation result from the child
+function handleCardValidation(isValid: boolean) {
+  billingCardDetailsValid.value = isValid
+}
 
+async function setActiveStep(index: number) {
+  const { name, orgName, country, zip, city, region, address, phone, cardHolderName, cardNo, expDate, cvv } = billingAddressCard.value
+  isFieldEmtpy.value = true
+  try {
+    if (index === 2) {
+    // Check if any of the required billingState fields are empty
+      const isAddressComplete = name && orgName && country && zip && city && region && address && phone
+      if (!isAddressComplete) {
+        $error('Please fill out all the fields in your billing address.')
+        return isFieldEmtpy.value = false
+      }
+      else {
+        isFieldEmtpy.value = true
+      }
+    }
+    if (index >= 3) {
+      const validCardDetails = cardHolderName && cardNo && expDate && cvv
+      if (!validCardDetails) {
+        $error('Please fill out all the fields in your billing card details.')
+        return isFieldEmtpy.value = false
+      }
+      else {
+        isFieldEmtpy.value = true
+      }
+      await billingCardDetailsRef?.value?.validateCardDetails()
+      // Wrap in nextTick to ensure reactivity updates
+      if (billingCardDetailsValid.value)
+        return
+    }
+  }
+  catch (error) {
+    $error(error)
+  }
   if (index >= 0 && index < steps.length)
     state.activeStep = index
 }
@@ -179,7 +185,7 @@ function backStep() {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCardDetails v-if="state.activeStep === 2" :plan-name="selectedPlan.planName" :due-price="duePrice" :error-msg="errorMsg" />
+    <BillingCardDetails v-if="state.activeStep === 2" ref="billingCardDetailsRef" :plan-name="selectedPlan.planName" :due-price="duePrice" @validate-card-details="handleCardValidation" />
     <BillingTaxId v-if="state.activeStep === 3" />
     <BillingReview v-if="state.activeStep === 4" :plan-name="selectedPlan.planName" :due-price="duePrice" />
     <div class="d-flex">

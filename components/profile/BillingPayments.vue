@@ -26,7 +26,7 @@ const confirmationModal = ref<boolean>(false)
 const isFieldEmtpy = ref<boolean>(true)
 const isCardExpired = ref<boolean>(false)
 
-const isLoadingFetch = ref<boolean>(false)
+const isLoading = ref<boolean>(false)
 const isLoadingDelete = ref<boolean>(false)
 const isLoadingAdd = ref<boolean>(false)
 const selectedHeader = ref<string>('')
@@ -121,7 +121,7 @@ async function handleDeleteConfirm(): Promise<void> {
 }
 
 async function getCardDetails() {
-  isLoadingFetch.value = true
+  isLoading.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
     isCardExpired.value = false
@@ -129,21 +129,19 @@ async function getCardDetails() {
     const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     if (validCard) {
-      isLoadingFetch.value = false
+      // input field values
       cardData.value.cardHolderName = response?.cardHolderName
       cardData.value.cardNo = response?.cardNumber
       cardData.value.expDate = expiryDate !== undefined ? expiryDate : ''
       cardData.value.cvv = '****'
-
+      // we are storing the api data store variable
       cardDetails.value.cardHolderName = response?.cardHolderName
       cardDetails.value.cardNo = response?.cardNumber
       cardDetails.value.expDate = expiryDate !== undefined ? expiryDate : ''
       cardDetails.value.cvv = '****'
-
       isEditDisable.value = true
     }
     else {
-      isLoadingFetch.value = false
       isEditDisable.value = false
       cardDetails.value.cardHolderName = ''
       cardDetails.value.cardNo = ''
@@ -152,10 +150,12 @@ async function getCardDetails() {
     }
   }
   catch (error) {
-    isLoadingFetch.value = false
     $error(error.data.message)
     // isCardExpired.value = error.data.message.includes('Expired Card')
     isCardExpired.value = error.data.message.includes('not found')
+  }
+  finally {
+    isLoading.value = false
   }
 }
 
@@ -261,7 +261,7 @@ function sortBillingHistoryList(column: string, _isAmountSort: boolean, __isPaym
   <hr class="ml-4 mt-2">
   <section class="grid place-items-center p-4">
     <div class="relative mb-6 mt-6 w-full max-w-lg">
-      <UModal v-model="isLoadingFetch">
+      <UModal v-model="isLoading">
         <UProgress animation="carousel" />
         <UCard>
           Fetching your <span class="font-bold">Card details.</span>

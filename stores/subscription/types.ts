@@ -8,7 +8,7 @@ export interface BillingState {
   address: string
   phone: string
   cardHolderName: string
-  cardNo: number | string
+  cardNo: string
   expDate: string
   cvv: number | string
   taxId: string

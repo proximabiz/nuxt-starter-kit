@@ -9,14 +9,14 @@ const isLoading = ref<boolean>(false)
 const isDelete = ref<boolean>(false)
 const apiResponse = ref()
 const deleteDiagramId = ref<string>('')
-const showModal = ref<boolean>(false)
+const showCardStatusModal = ref<boolean>(false)
 const isInactiveSubscription = ref<boolean>(false)
 const isDiagramLimitExceeded = ref<boolean>(false)
 const currentMonthActivatedDiagrams = ref()
 const inActivePlanModal = ref<boolean>(false)
 const isActiveTitleSort = ref<boolean>(false)
 const isActiveUpdateDateSort = ref<boolean>(false)
-const isFetchingMindmpas = ref<boolean>(false)
+const mindMapLoader = ref<boolean>(false)
 const isCardExpired = ref<boolean>(false)
 const selectedHeader = ref<string>('')
 const diagramsList = computed(() => diagramStore.diagramsList)
@@ -82,20 +82,21 @@ async function fetchDiagramTypes() {
   }
 }
 async function fetchDiagrams() {
-  isFetchingMindmpas.value = true
+  mindMapLoader.value = true
   try {
     await diagramStore.list()
     await fetchDiagramTypes()
     currentMonthActivatedDiagrams.value = Array.isArray(diagramsList.value) && diagramsList.value.filter((item: any) => item.updated_at >= sub_status.value.plan_start_date)
-    isFetchingMindmpas.value = false
     const value = diagramsCountList?.value.currentCount
     const max = diagramsCountList?.value.allowedCount
     diagramsCountList.value.diagramPercentage = toPercentage(value, max).toString()
     diagramsCountList.value.actualDiagramCount = value.toString()
   }
   catch (error) {
-    isFetchingMindmpas.value = false
     $error(error.statusMessage)
+  }
+  finally {
+    mindMapLoader.value = false
   }
 }
 
@@ -103,8 +104,8 @@ function toPercentage(value: number, max: number) {
   return max === 0 ? 0 : (value / max) * 100
 }
 async function createDiagram() {
-  const plan_exp = dayjs().isBefore(dayjs(sub_status.value.plan_end_date))
-  if (['NO_SUBSCRIPTION', 'PLAN_EXPIRED'].includes(sub_status.value?.planName) || (sub_status.value?.planName === 'NO_ACTIVE_SUBSCRIPTION' && !plan_exp)) {
+  const isPlanExpired = dayjs().isBefore(dayjs(sub_status.value.plan_end_date))
+  if (['NO_SUBSCRIPTION', 'PLAN_EXPIRED'].includes(sub_status.value?.planName) || (sub_status.value?.planName === 'NO_ACTIVE_SUBSCRIPTION' && !isPlanExpired)) {
     inActivePlanModal.value = true
   }
   else {
@@ -173,14 +174,13 @@ async function confirmedDeleteDiagram() {
 }
 
 async function getCardDetails() {
-  isFetchingMindmpas.value = true
+  mindMapLoader.value = true
   try {
     const response = await subscriptionStore.getCardDetailsAPI()
     const validCard = response?.cardNumber !== undefined && (response?.msg !== 'no data' || response !== undefined)
     const validExpDate = (response?.expiryMonth && response?.expiryMonth) && (response?.expiryYear && response?.expiryYear)
     const expiryDate = validCard && validExpDate ? `${response?.expiryMonth}/${response?.expiryYear}` : ''
     isCardExpired.value = false
-    isFetchingMindmpas.value = false
     if (validCard) {
       cardDetails.value.cardHolderName = response?.cardHolderName
       cardDetails.value.cardNo = response?.cardNumber
@@ -195,14 +195,16 @@ async function getCardDetails() {
       || isCardExpired.value
     ) {
       return (
-        showModal.value = true
+        showCardStatusModal.value = true
       )
     }
   }
   catch (error) {
-    isFetchingMindmpas.value = false
     // isCardExpired.value = error.data.message.includes('Expired Card')
     isCardExpired.value = error.data.message.includes('not found')
+  }
+  finally {
+    mindMapLoader.value = false
   }
 }
 
@@ -211,22 +213,21 @@ onMounted(async () => {
   await getCardDetails()
 })
 watch([diagramsList.value, apiResponse.value, diagramsCountList.value, cardDetails.value], async () => {
-  if (diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount)
-    isDiagramLimitExceeded.value = true
-  else
-    isDiagramLimitExceeded.value = false
+  diagramsCountList?.value.currentCount === diagramsCountList?.value.allowedCount
+    ? isDiagramLimitExceeded.value = true
+    : isDiagramLimitExceeded.value = false
 
   await diagramStore.list()
-  const plan_exp = dayjs().isBefore(dayjs(sub_status.value?.plan_end_date))
-  const planExpStatus = (['NO_SUBSCRIPTION', 'PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION'].includes(sub_status.value?.planStatus) && !plan_exp)
+  const isPlanExpired = dayjs().isBefore(dayjs(sub_status.value?.plan_end_date))
+  const planExpStatus = (['NO_SUBSCRIPTION', 'PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION'].includes(sub_status.value?.planStatus) && !isPlanExpired)
   isInactiveSubscription.value = planExpStatus && isCardExpired.value
   const subscriptionState = ['NO_SUBSCRIPTION', 'NO_ACTIVE_SUBSCRIPTION'].includes(sub_status.value?.planStatus)
   if (!subscriptionState)
     await diagramStore.getDiagramsCount()
 }, { deep: true, immediate: true })
 
-function saveDetails(_valid: boolean) {
-  showModal.value = false
+function checkCardDetails(_valid: boolean) {
+  showCardStatusModal.value = false
   if (_valid)
     navigateTo('/profile/billing-payments')
 }
@@ -247,7 +248,7 @@ function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSor
 </script>
 
 <template>
-  <UModal v-model="isFetchingMindmpas">
+  <UModal v-model="mindMapLoader">
     <UProgress animation="carousel" />
     <UCard>
       Fetching your <span class="font-bold">Mindmaps.</span>
@@ -421,7 +422,7 @@ function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSor
     />
   </UModal>
 
-  <UModal :model-value="showModal" :transition="false">
+  <UModal :model-value="showCardStatusModal" :transition="false">
     <div class="p-8">
       <p class="mb-3">
         {{ isCardExpired ? 'Your card is expired!' : 'Your card details are missing!' }}
@@ -430,10 +431,10 @@ function sortDiagramList(header: string, _diagramType: string, _isActiveTitleSor
         {{ isCardExpired ? 'Please add a new valid card details.' : 'To continue working with mindmaps, please add card details.' }}
       </p>
       <div class="mt-4 flex justify-end gap-4">
-        <UButton v-if="isCardExpired" color="gray" class="" @click="saveDetails(false)">
+        <UButton v-if="isCardExpired" color="gray" class="" @click="checkCardDetails(false)">
           Cancel
         </UButton>
-        <UButton class="" @click="saveDetails(true)">
+        <UButton class="" @click="checkCardDetails(true)">
           Ok
         </UButton>
       </div>

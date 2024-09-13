@@ -15,7 +15,7 @@ async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
     showUpgradeModal.value = ['PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION', 'NO_SUBSCRIPTION'].includes(response?.subscription_status)
-    const getPricingData = Array.isArray(pricingData.value) && pricingData.value.find(plan => plan.name === response.name)
+    const getPricingData = pricingData?.value?.find(plan => plan.name === response.name)
     const getCurrency = getPricingData && getPricingData?.currency
     planData.value = { ...response, currencySymbol: getCurrency === 'IND' ? '₹' : getCurrency === 'EUR' ? '€' : '$' }
     planFeatures.value = response.plan_type === 'monthly' ? response.features?.monthly?.includedItems : response.features?.annually?.includedItems
@@ -146,9 +146,6 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
             <span class="text-gray-700"> {{ feature?.description }}</span>
           </li>
         </ul>
-        <!-- <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
-          Current Plan
-        </UButton> -->
         <UButton v-if="planData?.name !== 'Free'" type="submit" class="w-fit mt-2" color="blue" :disabled="planData?.name === 'Free'" @click="() => { isModalVisible = true }">
           Cancel Subscription
         </UButton>
