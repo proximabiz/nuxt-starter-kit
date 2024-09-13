@@ -68,7 +68,7 @@ async function handleCompleteOrder(valid: boolean) {
 const steps = [
   { label: 'Your plan', component: 'BillingDetailsBillling' },
   { label: 'Your Address', component: 'BillingAddress' },
-  { label: 'Card Details', component: 'BillingCardDetails' },
+  { label: 'Card Details', component: 'BillingPaymentCardDetails' },
   { label: 'Tax ID', component: 'TaxId' },
   { label: 'Review your details', component: 'BillingReview' },
 ]
@@ -185,7 +185,7 @@ function backStep() {
       </div>
     </UCard>
     <BillingAddress v-if="state.activeStep === 1" />
-    <BillingCardDetails v-if="state.activeStep === 2" ref="billingCardDetailsRef" :plan-name="selectedPlan.planName" :due-price="duePrice" @validate-card-details="handleCardValidation" />
+    <BillingPaymentCardDetails v-if="state.activeStep === 2" ref="billingCardDetailsRef" :plan-name="selectedPlan.planName" :due-price="duePrice" @validate-card-details="handleCardValidation" />
     <BillingTaxId v-if="state.activeStep === 3" />
     <BillingReview v-if="state.activeStep === 4" :plan-name="selectedPlan.planName" :due-price="duePrice" />
     <div class="d-flex">
