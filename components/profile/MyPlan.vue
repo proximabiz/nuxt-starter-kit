@@ -9,12 +9,15 @@ const showUpgradeModal = ref<boolean>(false)
 const noplanModal = ref<boolean>(false)
 const isModalVisible = ref<boolean>(false)
 const isCancelSubLoading = ref<boolean>(false)
+const pricingData = computed(() => subscriptionStore.pricingData)
 
 async function getActivePlan() {
   try {
     const response = await subscriptionStore.fetchActivePlan()
     showUpgradeModal.value = ['PLAN_EXPIRED', 'NO_ACTIVE_SUBSCRIPTION', 'NO_SUBSCRIPTION'].includes(response?.subscription_status)
-    planData.value = response
+    const getPricingData = pricingData?.value?.find(plan => plan.name === response.name)
+    const getCurrency = getPricingData && getPricingData?.currency
+    planData.value = { ...response, currencySymbol: getCurrency === 'IND' ? '₹' : getCurrency === 'EUR' ? '€' : '$' }
     planFeatures.value = response.plan_type === 'monthly' ? response.features?.monthly?.includedItems : response.features?.annually?.includedItems
   }
   catch (error) {
@@ -117,7 +120,8 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
         <p class="text-gray-700">
           {{ planData?.description }}
         </p>
-        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">${{ planData?.monthly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : "/month" }}</span>
+        <strong class="text-3xl font-bold text-gray-900 sm:text-3xl">
+          {{ planData?.currencySymbol }}{{ planData?.plan_type === 'monthly' ? planData.monthly_price : planData.yearly_price }}<span class="text-sm font-medium text-gray-700">{{ planData?.name === "Free" ? '/15 days' : planData?.plan_type === 'monthly' ? "/month" : "/yearly" }}</span>
         </strong>
         <p class="text-lg font-medium text-gray-900 sm:text-xl">
           What's included:
@@ -142,9 +146,6 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
             <span class="text-gray-700"> {{ feature?.description }}</span>
           </li>
         </ul>
-        <UButton type="submit" class="w-fit mt-2 mr-4" color="blue" disabled>
-          Current Plan
-        </UButton>
         <UButton v-if="planData?.name !== 'Free'" type="submit" class="w-fit mt-2" color="blue" :disabled="planData?.name === 'Free'" @click="() => { isModalVisible = true }">
           Cancel Subscription
         </UButton>
@@ -161,13 +162,7 @@ const daysRemaining = computed(() => calculateDaysRemainingFromToday(planData.va
         </h2>
       </div>
     </UCard>
-    <p v-if="planData?.name === 'Free'" class="mt-4">
-      To know more about paid plans, please contact us at
-      <br><NuxtLink to="mailto:support@flowmapper.ai" class="text-blue-700 underline flex justify-center">
-        support@flowmapper.ai
-      </NuxtLink>
-    </p>
-    <NuxtLink v-else to="/website/pricing">
+    <NuxtLink to="/website/pricing">
       <h1 class="font-semibold text-blue-700 underline mt-4 hover:text-blue-900 cursor-pointer">
         <i>Upgrade Now By Comparing
           Other Plans</i>

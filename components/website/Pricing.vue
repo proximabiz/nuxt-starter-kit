@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-import { useBillingDetailsStore } from '~/stores/global'
-
 const isMonthly = ref<boolean>(true)
 const cardValue = ref()
 const region = ref<string>('us')
 const subscriptionStore = useSubscriptionStore()
-const billingStore = useBillingDetailsStore()
 const authStore = useAuthStore()
 const isLoading = ref<boolean>(true)
 const currencyList = ref()
@@ -17,6 +14,7 @@ const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 const currency = await subscriptionStore.getCountryCurrencyData()
 const getPlanData = await subscriptionStore.fetchActivePlan()
 const pricingData = computed(() => subscriptionStore.pricingData)
+const selectedPlan = computed(() => subscriptionStore.selectedPlan)
 
 if (currency !== '')
   currencyList.value = currency
@@ -68,13 +66,14 @@ const prices = computed(() => {
   const adjustmentFactor = selectedRegion.conversionRate
   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
   const adjustedPrices = Array.isArray(pricingData.value) && pricingData.value.sort((a, b) => a.sno - b.sno).map((plan) => {
+    const isMonthDisabled = isMonthly.value && getPlanName.value.plan_type === 'monthly'
+    const isAnnualDiabled = !isMonthly.value && getPlanName.value.plan_type === 'yearly'
     const planPrice = isMonthly.value ? plan.monthlyprice : plan.yearlyprice
     const disabledPlan = plan.name === 'Free'
       ? (authStore.getAuthUser.value?.role === 'authenticated') || sub_status?.value.planName === plan.name
       : plan.name === 'Enterprise'
         ? true
-        : getPlanName.value.name !== null && getPlanName.value.name === plan.name
-
+        : getPlanName.value.name !== null && isMonthly.value ? (getPlanName.value.name === plan.name && isMonthDisabled) : (getPlanName.value.name === plan.name && isAnnualDiabled)
     return {
       ...plan,
       calculatedPrice: (planPrice * adjustmentFactor).toFixed(2), // Adjusting the price
@@ -92,12 +91,18 @@ else
   isLoading.value = true
 
 function providePlanDetails(val: any) {
-  const currencyCode = val.currency
-  const planDetails = { ...val, planName: val.name, planType: isMonthly.value ? 'monthly' : 'yearly', currencyCode }
   if (!authStore.getAuthUser.value)
     return navigateTo('/login')
   cardValue.value = val
-  billingStore.setPropObject(planDetails)
+
+  selectedPlan.value.planName = val.name
+  selectedPlan.value.disabled = val.disabled
+  selectedPlan.value.calculatedPrice = val.calculatedPrice
+  selectedPlan.value.currencySymbol = val.currencySymbol
+  selectedPlan.value.planType = isMonthly.value ? 'monthly' : 'yearly'
+  selectedPlan.value.currencyCode = val.currency
+  selectedPlan.value.id = val.id
+
   navigateTo('/plan/upgrade-plan')
   return cardValue
 }

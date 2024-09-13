@@ -45,12 +45,21 @@ function initialState() {
       address: '',
       phone: '',
       cardHolderName: '',
-      cardNo: 0,
+      cardNo: '',
       expDate: '',
       cvv: 0,
       taxId: '',
     },
     pricingData: [],
+    selectedPlan: {
+      planName: '',
+      disabled: false,
+      calculatedPrice: '',
+      currencySymbol: '',
+      planType: '',
+      currencyCode: '',
+      id: '',
+    },
   }
 }
 

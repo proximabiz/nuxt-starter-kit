@@ -56,7 +56,7 @@ onMounted(async () => {
         <UFormGroup label="Full Name" name="name" required>
           <UInput v-model="subscriptionStore.billingDetails.name" color="blue" />
         </UFormGroup>
-        <UFormGroup label="Organisation Name" name="orgname" required>
+        <UFormGroup label="Organisation Name" name="orgname">
           <UInput v-model="subscriptionStore.billingDetails.orgName" color="blue" />
         </UFormGroup>
       </div>
