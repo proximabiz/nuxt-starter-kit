@@ -36,19 +36,30 @@ export default defineEventHandler(async (event) => {
   const { limit } = subscriptionTypeData
 
   // Determine the period type and set the start date accordingly
-  let periodType: 'monthly' | 'yearly'
+  let periodType: 'monthly' | 'yearly' | '15days'
   let periodLimit: number | null
 
-  if (plan_type === 'monthly') {
-    periodType = 'monthly'
-    periodLimit = limit
-  }
-  else if (plan_type === 'yearly' && limit) {
-    periodType = 'yearly'
-    periodLimit = limit * 12
-  }
-  else {
-    throw new CustomError('Unknown plan type', 400)
+  switch (plan_type) {
+    case 'monthly':
+      periodType = 'monthly'
+      periodLimit = limit
+      break
+
+    case 'yearly':
+      if (limit) {
+        periodType = 'yearly'
+        periodLimit = limit * 12
+      }
+      else {
+        throw new CustomError('Invalid limit for yearly plan', 400)
+      }
+      break
+    case null:
+      periodType = '15days'
+      periodLimit = limit
+      break
+    default:
+      throw new CustomError('Unknown plan type', 400)
   }
 
   // Fetch diagrams count based on the period type
