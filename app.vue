@@ -44,7 +44,7 @@ watch(
             && !cardNo
             && !expDate
             && !cvv
-            && user && route.fullPath.includes('/app/diagram/list')
+            && user && response.name!== 'Free'&& route.fullPath.includes('/app/diagram/list')
           ) {
             billingModal.value = true
             return navigateTo('/profile/billing-payments')
