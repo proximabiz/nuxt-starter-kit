@@ -21,7 +21,7 @@ const duePrice = computed(() => selectedPlan.value.currencySymbol + selectedPlan
 function completeOrder() {
   saveModal.value = true
 }
-const expirationDate = allDetails?.value.expDate && allDetails?.value.expDate.split('/')
+const expirationDate = allDetails?.value?.expDate && allDetails?.value?.expDate.split('/')
 
 async function handleCompleteOrder(valid: boolean) {
   saveModal.value = false
