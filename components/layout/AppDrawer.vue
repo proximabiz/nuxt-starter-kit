@@ -5,6 +5,7 @@ const supabaseClient = useSupabaseClient()
 const subscriptionStore = useSubscriptionStore()
 const cardDetails = computed(() => subscriptionStore.billingDetails)
 const currentRoutePath = computed(() => route.fullPath)
+const sub_status = computed(() => subscriptionStore.subscriptionStatus)
 const isCardEmtpy = ref<boolean>(true)
 
 const links = computed(() => [
@@ -30,7 +31,7 @@ watch([cardDetails.value, isCardEmtpy.value], () => {
   if (cardHolderName
     && cardNo
     && expDate
-    && cvv)
+    && cvv ||sub_status.value.planName==='Free')
     isCardEmtpy.value = false
   else
     isCardEmtpy.value = true
