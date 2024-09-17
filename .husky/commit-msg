@@ -1,0 +1,6 @@
+# This script is used by Husky to validate commit messages before allowing a commit.
+
+# Use npx to run commitlint without requiring a global installation
+# `--no-install` flag ensures that `commitlint` is not installed globally and uses the local version in node_modules
+# `--edit` flag tells commitlint to lint the commit message provided by the user
+npx --no-install commitlint --edit

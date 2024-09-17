@@ -25,7 +25,8 @@
     "setup:local": "sh ./etc/setup.local.sh",
     "typecheck": "nuxt typecheck",
     "unlighthouse": "pnpm build && pnpm preview & pnpm dlx unlighthouse --desktop --site http://localhost:3000",
-    "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug"
+    "unlighthouse:debug": "pnpm dlx unlighthouse --desktop --site http://localhost:3000 --debug",
+    "prepare": "husky"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
@@ -48,10 +49,13 @@
     "vue-recaptcha-v3": "^2.0.1",
     "vue-tel-input": "^8.3.1",
     "vue3-toastify": "^0.2.1",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "husky": "^9.1.6"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.6.1",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@nuxt/devtools": "latest",
     "@nuxtbase/auth-ui-vue": "^0.3.6",
     "@nuxtjs/fontaine": "^0.4.1",

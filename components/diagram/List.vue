@@ -187,11 +187,11 @@ async function getCardDetails() {
       cardDetails.value.expDate = expiryDate
       cardDetails.value.cvv = '****'
     }
-    const { cardHolderName, cardNumber, expiryMonth, expiryYear, } = response
+    const { cardHolderName, cardNumber, expiryMonth, expiryYear } = response
     if ((!cardHolderName
       && !cardNumber
       && !expiryMonth
-      && !expiryYear && sub_status.value.planName!=='Free')
+      && !expiryYear && sub_status.value.planName !== 'Free')
       || isCardExpired.value
     ) {
       return (

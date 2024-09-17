@@ -1,0 +1,22 @@
+# This script is used by Husky to run checks before a commit is finalized
+
+# Exit the script as soon as any command fails
+set -e
+
+# Print commands and their arguments as they are executed
+set -x
+
+# Run linting to ensure code style and correctness
+echo "Running lint checks..."
+pnpm lint
+
+# Perform type checking to catch type-related issues
+echo "Running type checks..."
+pnpm typecheck
+
+# Build the project to ensure there are no build issues
+echo "Building the project..."
+pnpm build
+
+# Optionally, you can include additional checks here if needed
+echo "Pre-commit checks passed successfully!"
